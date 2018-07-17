@@ -1,15 +1,14 @@
-Git
-===
+# Git
 
-*Fuentes:*
+_Fuentes:_
+
 - [Cisco Git Lab](https://learninglabs.cisco.com/lab/git-intro/step/1)
-- [Instalación de Git](https://git-scm.com/book/es/v2/Inicio---Sobre-el-Control-de-Versiones-Instalaci%C3%B3n-de-Git)*
+- [Instalación de Git](https://git-scm.com/book/es/v2/Inicio---Sobre-el-Control-de-Versiones-Instalaci%C3%B3n-de-Git)\*
 - [What a branch is](https://git-scm.com/book/en/v1/Git-Branching-What-a-Branch-Is)
 - [Git reference](http://gitref.org/basic/)
 - [What is a git "snapshot"](http://stackoverflow.com/questions/4964099/what-is-a-git-snapshot)
 
-Sistema de control de versiones.
----
+## Sistema de control de versiones.
 
 Los sistemas de control de versiones de archivo existen desde la invención del desarrollo de software. Algunas de sus funciones principales son:
 
@@ -22,8 +21,7 @@ Los sistemas de control de versiones de archivo existen desde la invención del 
 
 `git` es el sistema de control de versiones más popular en el mundo, desarrollado por Linus Torvalds, quien es el el fundador del kernel de linux. Es importante no confundir `git` con "Github". El último es una compania popular que utiliza el protocolo `git` para compartir bases de codigo entre múltiples usuarios, brindando herramientas adicionales para construir comunidades en torno al codigo.
 
-Instalación de Git
----
+## Instalación de Git
 
 ### Ubuntu
 
@@ -67,8 +65,7 @@ Se puede instalar el paquete `git-scm` o "Github para Windows". Recomendamos la 
 - [Github para Windows](https://desktop.github.com/)
 - [Git Reference](http://gitref.org/basic/)
 
-Configuración de Git
----
+## Configuración de Git
 
 Una vez instalado debemos configurar nuestras credenciales para obtener el credito (o la culpa) de nuestros aportes al código. Para eso utilizaremos el comando `git config` con nuestra cuenta de correo.
 
@@ -79,8 +76,7 @@ git config --global user.name ["Su nombre"]
 git config --global user.email [Su mail]
 ```
 
-Inicializar un repositorio (repo)
----
+## Inicializar un repositorio (repo)
 
 Un repositorio (o "repo") es simplemente el directorio raiz de nuestro proyecto, el cual sera monitoreado por `git`.
 
@@ -106,9 +102,7 @@ drwxrwxr-x  7 user user 1M ene 24 10:25 .git
 
 Todas las interacciones con `git` serán a través de la linea de comandos. Nunca vamos a tener que realizar ninguna modificación a los archivos encontrados dentro de la carpeta `.git`. Podemos olvidarnos de la existencia de la misma y seguir adelante.
 
-
-Registrando cambios
----
+## Registrando cambios
 
 Para que `git` comienze a registrar los cambios en nuestro archivos tenemos que indicarle los archivos a seguir. Esto lo hacemos con el comando `git add`. Si realizamos el proceso de inicialización del proyecto en un directorio vació, `git` no va a tener nada para seguir. Podemos veríficar el estado de `git` en cualquier momento utilizando el comando `git status`.
 
@@ -121,7 +115,7 @@ Initial commit
 nothing to commit (create/copy files and use "git add" to track)
 ```
 
-Para comenzar a entender el resultado de este comando tenemos que conocer el significado de un "commit" y "branch". 
+Para comenzar a entender el resultado de este comando tenemos que conocer el significado de un "commit" y "branch".
 
 Un "commit" es el termino que usamos para referir al proceso de almacenamiento de los cambios realizados. `git` no almacena por defecto todas las modificaciones realizadas en nuestro proyecto. Cada modificación se registra en un índice en estado de "staging" (presentación). Es responsabilidad del desarrolador definir cuales de estos cambios queremos almacenar. Debemos realizar un "commit" para guardar los cambios en el sistema de control. Esto permite ordenar la forma en que se almacenarán los cambios, independientemente de como los realizamos.
 
@@ -159,7 +153,6 @@ Changes to be committed:
   (use "git rm --cached <file>..." to unstage)
 
 	new file:   test.txt
-
 ```
 
 Ahora si el archivo `test.txt` esta en la fase de "stage" listo para ser incluido en nuestro proximo "commit". El comando para realizar un "commit" es `git commit`. Usualmente se le agrega el flag `-m` más un mensaje entre comillas indicando de que se compone el "commit". La formalidad del mensaje a incluir varía entre proyecto, pero usualmente es una buena practica indicar de forma concisa los cambios efectuados.
@@ -181,8 +174,7 @@ On branch master
 nothing to commit, working directory clean
 ```
 
-Modificaciones
----
+## Modificaciones
 
 En el ejemplo anterior creamos un nuevo archivo vacío y guardamos esta acción en `git`. Veamos el mismo proceso pero ahora realizando una modificación a un archivo.
 
@@ -210,8 +202,7 @@ $ git commit -m "agregado de nueva línea a test.txt"
  1 file changed, 1 insertion(+)
 ```
 
-Corrección de errores
----
+## Corrección de errores
 
 La mejor forma de correjir errores en el codigo es realizando un nuevo "commit" despues de haber correjido el problema. Por ejemplo, en el caso anterior nos olvidamos de terminar la oración con un punto.
 
@@ -222,8 +213,7 @@ $ git add --all && git commit -m "bug fix - punto agregado al final de la línea
  1 file changed, 1 insertion(+), 1 deletion(-)
 ```
 
-Log de cambios
----
+## Log de cambios
 
 Hay veces en que es importante entender que cambios se realizaron en el proyecto de forma reciente. Algo muy común cuando trabajamos con una base de código de otra persona, o volvemos a un proyecto despues de haber transcurrido un tiempo. Para ver esta información historica usamos el comando `git log`.
 
@@ -245,13 +235,11 @@ Author: User <user@example.com>
 Date:   Tue Jan 24 11:24:26 2017 -0300
 
     creación del archivo test.txt
-
 ```
 
 **OBS: En la salida del comando `git log` podemos ver el hash completo de nuestro commit. El que devuelve el comando `git commit` es el resultado de los primeros 7 carácteres del hash completo.**
 
-Diferencia entre "commits"
----
+## Diferencia entre "commits"
 
 Además de poder ver el historial de "commits" realizados, podemos comparar dos "commits" entre si para ver los cambios realizados. Para esto utilizamos el comando `git diff`, ingresando los valores de los "commits" que queremos comparar. Primer el "commit" anterior y luego el que queremos comparar.
 
@@ -284,8 +272,7 @@ index d1962cd..ffe9678 100644
 +Una nueva línea
 ```
 
-Crear un nuevo "branch"
----
+## Crear un nuevo "branch"
 
 Un "branch" (como referencia su nombre en ingles) es una rama del árbol de commits que construye `git` para almacenar las modificaciones realizadas sobre el proyecto. Crear múltiples "branches" dentro de un proyecto puede ser beneficioso en alguna instancias. Por ejemplo, buenas prácticas indican que la "branch" `master` contenga el cofigo de producción, mientras que el desarrollo de nuevas funcionalidades se realiza en "branches" paralelas. Una vez que este codigo construido paralelamente es testeado y aprobado para entrar en producción se realiza un "branch merge" (una "union").
 
@@ -302,7 +289,7 @@ $ git branch
 * master
 ```
 
-El comando `git branch` sin incluir el nombre devuelve todas las "branches" del proyecto e indica la "branch" donde estamos trabajando utilizando un "*".
+El comando `git branch` sin incluir el nombre devuelve todas las "branches" del proyecto e indica la "branch" donde estamos trabajando utilizando un "\*".
 
 Ahora crearemos la "branch" de desarrollo.
 
@@ -370,8 +357,7 @@ Deleted branch desarrollo (was 88c2543).
 
 **OBS: Si la "branch" a eliminar contara con cambios sin guardar, un mensaje de advertencia será emitido. Se puede forzar la elminación de la "branch" de todas maneras utilizando el flag `-f`.**
 
-Almacenar repositorio en GitHub
----
+## Almacenar repositorio en GitHub
 
 Una forma de compartir y almacenar nuestro codigo es a través de servicios como GitHub. Para poder sincronizar nuestro codigo en GitHub, debemos crear un repositorio en GitHun y luego agregar el endpoint que nos proveen en la carpeta local de nuestro proyecto. Esto lo hacemos utilizando el comando `git remote`. La comunicación con GitHub puede realizarse a través de SSH o HTTPS. La primera es más segura pero requiere de la creación de una clave RSA que debe ser cargada en GitHub, mientras que para usar HTTPS solo debemos utilizar nuestras credenciales cada vez que queramos comunicarnos con GitHub, ya sea para subir o descargar archivos.
 
@@ -393,18 +379,20 @@ El comando `git pull` funciona de manera similar pero descara la "branch" indica
 $ git pull origin master
 ```
 
-Git Backpack & Git Kraken
----
+## Git Backpack & Git Kraken
 
 GitHub ofrece un servicio llamado [Git Backpack](https://education.github.com/pack) con beneficios para nuevos desarrolladores. Hay acceso a páginas con cursos como Pluralsight, y licencias de software. Entre ellas, podemos encontrar una licencia de uso profesional de un software llamado Git Kraken. El mismo abstrae los comandos explicados anteriormente (y más) en un interfaz gráfica donde podemos controlar el estado de nuestro proyecto.
 
-Se puede descargar para Linux, Windows o Mac. 
+Se puede descargar para Linux, Windows o Mac.
 
 **OBS: Todas las funcionalidades ofrecidas por Git Kraken también están disponibles en la línea de comandos de `git`.**
 
 ---
 
-Setup del proyecto
----
+## Setup del proyecto
 
-TODO: Escribir detalles para descargar el repositorio con los archivos del curso.
+Se puede descargar el repositorio del curso a la máquina local ejecutando el siguiente comando:
+
+```bash
+git clone https://github.com/conapps/Devops-101.git
+```
