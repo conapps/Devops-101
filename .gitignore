@@ -1,1 +1,9 @@
 \.idea/
+*/__pycache__/*
+**/*.pyc
+
+# Ignore files for Devnet Express
+
+Devnet\ Express/code/soluciones/desafio_final_solucion.py
+Devnet\ Express/.idea/
+Devnet\ Express/code/playground/
