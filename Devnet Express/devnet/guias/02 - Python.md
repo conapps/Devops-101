@@ -1,10 +1,8 @@
-Python
-===
+# Python
 
-Python Version and Interpreter
----
+## Python, interprete y versión
 
-It's quite easy to check the version of Python installed on your system. For example, in the Windows Operating System simply access a terminal window, then at the command prompt type: `python -V` and press the return key. If you have multiple versions of python installed on your system or python 3 you may need to type either `py -3 -V` or `python3 -V` depending upon your operating system.
+Es bastante sencillo chequear que versión de Python tenemos instalada en nuestro sistema. Por ejemplo, en Windows se accede a una terminal y se ejecuta el comando `python -V`. Si tienes múltiples versiones de Python instaladas, tal vez necesites escribir `py -3 -V` o `python3 -V`
 
 ```bash
 $ python -V
@@ -14,22 +12,21 @@ $ py -3 -V
 $ python3 -V
 ```
 
-Hello World
----
+## Hola Mundo!
 
-1. Type the appropriate python command to start the interpreter. For example, in Windows you would type python then press the return key.
-2. Type `print("Hello World! How are you?")` and press the return key.
-3. When you are done, to exit the interpreter type `quit()` and press the Enter key
+1.  Inicia el intérprete de Python con el comando apropiado para tu sistema. Por ejemplo, en Windows deberías escribir `python` o `py` y luego enter.
+2.  Una vez dentro del intérprete escribe `>>> print("Hello world")`.
+3.  Cuando hayas terminado, puedes salir del intérprete con cualquiera de los siguientes comandos `>>> exit()` o `>>> quit()`
 
-Python scripts
----
+## Scripts en Python
 
-A Python script is just a text file that has two essential characteristics:
+Un script en Python es simplemente un archivo de texto que tiene dos características escenciales:
 
-1. The script contains the required Python syntax. For example, I could write in a file `print("I'm a Python script!")` and save it. This would almost make this file a Python script because the function `print` is a built-in Python function and I'm using the required Python syntax to call the function. More on that later.
-2. The script ends with a `.py`. For example, if I named a script `myscript.txt` it would not be a python script because the name does not end with a `.py`. To make it a python script I would have to rename it `myscript.py`.
+1.  El script contiene código con la sintáxis de Python. Por ejemplo, podría escribir en un archivo de texto:
+    `print("Soy un script de Python!")` y salvarlo. Técnicamente esto convertiría a dicho archivo en un script dado que `print` es una función nativa del lenguaje, y estamos utilizando la sintáxis adecuada para llamar a la función.
+2.  El script tiene la extensión `.py`. Si bien esto no es estrictamente mandatorio, (se podría correr el script aunque tenga una extensión `.txt`), para que un archivo sea considerado verdaderamente un script de Python debe tener la extesión `.py`.
 
-To run a Python script is quite simple. For example in the Windows Operating System access a terminal window command prompt and type python followed by the full name of the python script and press the return key. If you are not at the directory where the python script resides you will have to specify the full directory location of the script followed by the name of the script.
+Correr un script de Python es bastante sencillo. Por ejemplo, en Windows, desde una terminal, se debe de escribir `py` o `python`, seguido del nombre del archivo y luego enter. Si no estamos ubicados en el mismo directorio donde se encuentra el script, entonces hay que indicar el camino completo seguido por el nombre del script.
 
 ```bash
 $ python script.py
@@ -39,12 +36,12 @@ $ python script.py
 
 Vamos a escribir nuestro primer script de Python. El mismo contiene varios componentes que vamos a desarrollar sobre este curso. Por ahora, solo copiaremos el script que aparece a continuación y lo correremos.
 
-**Recomendación:** Intente escribir el codigo en el editor de texto en vez de copiarlo para empezar a acostumbrarse a escibir codigo.
+**Recomendación:** Intente escribir el codigo en el editor de texto en lugar de copiarlo para empezar a acostumbrarse a escibir codigo.
 
 #### Instrucciones
 
-1. Ir al archivo `code/01-primer-script.py`.
-2. Copiar o redactar el siguiente contenido dentro del archivo:
+1.  Ir al archivo `code/01-primer-script.py`.
+2.  Copiar o redactar el siguiente contenido dentro del archivo:
 
 ```python
 """ 01 - Primer script """
@@ -76,12 +73,11 @@ puts("Devnet express.")
 blue("Cisco .:|:.:|:.")
 ```
 
-Python Basics
----
+## Python Basics
 
-If you've written code in other languages you've noticed that statement blocks define scope (the range that a statement affects or a variable exists) which is set by curly braces {}. These braces are used to define the start and end of the statement, and therefore, its scope.
+Si has escrito código en otros lenguajes, habrás notado que ciertas instrucciones definen su alcance a través de llaves.
 
-Here's an example using the C programming language. Notice that the curly braces start and end the if statement block.
+El siguiente es un ejemplo utilizando el lenguaje de programación C. Es importante notar aquí que la sentencia `if` define su alcance utilizando las llaves `{}`
 
 ```c
 #include <stdio.h>
@@ -94,24 +90,27 @@ if(num < 1){
 }
 ```
 
-Python doesn't use curly braces to define scope; instead it uses indentation. The indentation can be in the form of spaces or tabs, but must be consistent or the Python interpretor will complain.
+Python no utiliza llaves para definir el alcance de sus sentencias, sino que en su lugar utiliza la indentación.
+La indentación puede estar compuesta por espacio o tabulaciones, pero debe ser consistente en todo el código o el intérprete arrojará un error.
 
-Consider the Python code below.
+Considera el siguiente código Python:
 
 ```python
-print ("Hello World!")
+print ("Hola mundo!")
 num = 1
 if num < 1:
    print ("I'm less than 1!")
    print ("Goodbye Cruel World!")
 ```
 
-When a Python script is run the Python interpreter starts reading the code from the top and works its way down. As it encounters each line of code it either acts on it or stores it in memory for possible future use.
+Cuando se corre un script de Python, el intérprete comienza leyendo el código desde arriba hacia abajo. A medida que recorre cada instrucción, o bien la ejecuta, o la guarda en memoria para uso futuro.
 
-1. On the first line the Python interpreter prints to the screen the text `Hello World!` which is the function request. Note that print is a built-in Python function. `Hello World!` is printed because there's nothing to block it.
-2. On the second line we create a variable which we call `num` and assign it the value of `1`. By the way we could have called that variable 'brett', 'a' and many other things. You can read more about naming variables. The Python interpreter stores this information that variable `num` has the value of `1`.
-3. On the next line the Python interpreter checks the value of the `num` variable asking if it is less than `1`. The less than symbol `<` is an operator. Python has many operator types with the most commonly used being Comparison, Assignment and Arithmetic. This `if` statement is called a conditional statement because we are checking a condition. If the condition is `true`, then whatever is inside the scope of the conditional statement block gets executed; otherwise if the condition is `false` then whatever is inside the scope of the conditional statement block gets skipped. In this case the conditional statement is false because the variable num has the value of `1` and `1` is not less than `1`. Syntax-wise notice that the if statement ends with a colon. In Python alot of things like conditional statements, functions and loops end with a colon. More on that later.
-4. Notice that the next two statements are indented. That indentation signifies that they are inside the scope of the conditional statement block. Because the conditional statement is false and these two statements are part of the conditional statement block, they are skipped.
+1.  En la primer línea, el intérprete imprime a pantalla el texto `Hola mundo!` tal como lo indica la función invocada. Notese que la función `print` es nativa del lenguaje.
+2.  En la segunda línea, se crea una variable llamada `num` y se le asigna el valor `1`. Por cierto, la variable podría haber tenido cualquier otro nombre desde `mi_variable` hasta `pepe`. Se puede profundizar sobre como nombrar variables en Python aquí:
+    [PEP8 - Style Guide for Python Code](https://www.python.org/dev/peps/pep-0008/?#naming-conventions)
+3.  En la próxima línea el intérprete chequea el valor de la variable `num`, preguntando si la misma es menor a 1. El símbolo `<` es un operador. Python tiene varios tipos de operadores, entre los que se encuentran los operadores de comparación, asignación y aritméticos; discutiremos sobre operadores mas adelante. A la instrucción `if` se la llama condicional porque chequea una condición y ejecuta un bloque de código si y sólo si la misma es evaluada como `True`. A nivel de sintáxis, es importante notar que la instrucción `if` termina con dos putos `:`. En Python, muchas instrucciónes como los condicionales, funciones y bucles terminan con dos puntos.
+
+4.  Es muy importante notar que las próximas dos instrucciones están indentadas. Esta indentación significa que estas instrucciones están dentro del bloque condicional. Dado que la condición es evaluada como `False` (debido a que la variable `num` vale 1 y 1 no es menor a 1), las instrucciones indentadas no son ejecutadas por el intpérprete.
 
 ### Script #2
 
@@ -119,8 +118,8 @@ Este segundo script muestra como funcionan las reglas de `scope` en Python. Pode
 
 #### Instrucciones
 
-1. Ir al archivo `code/02-segundo-script.py`.
-2. Copiar o redactar el siguiente contenido dentro del archivo:
+1.  Ir al archivo `code/02-segundo-script.py`.
+2.  Copiar o redactar el siguiente contenido dentro del archivo:
 
 ```python
 """ Segundo script """
@@ -147,20 +146,21 @@ print("the VAL is " + str(VAL))
 NEW_VAL = "the VALue is" + str(VAL)
 ```
 
-Operadores
+## Operadores
+
+Si bien Python tiene muchos operadores, en este curso nos enfocaremos en los operadores más básicos. Los operadores de asignación y los de comparación.
+
+Las tablas a continuación muestran un resumen de los operadores en Python y ejemplos básicos de su uso.
+
 ---
 
-Python has many operators and for a detailed explanation of them check out Python Basic Operators . We're going to focus on the very basic ones which are the assignment and comparison operators.
-
----
-
-### Python Arithmetic Operators
+### Operadores aritméticos.
 
 <table class="table table-bordered">
 <tbody><tr>
-<th style="width:10%">Operator</th>
-<th style="width:45%">Description</th>
-<th>Example</th>
+<th style="width:10%">Operador</th>
+<th style="width:45%">Descripción</th>
+<th>Ejemplo</th>
 </tr>
 <tr>
 <td>+ Addition</td>
@@ -199,11 +199,11 @@ Python has many operators and for a detailed explanation of them check out Pytho
 </tr>
 </tbody></table>
 
-### Python Comparison Operators
+### Operadores de comparación
 
 <table class="table table-bordered">
 <tbody><tr>
-<th style="width:10%">Operator</th><th style="width:45%">Description</th><th>Example</th>
+<th style="width:10%">Operador</th><th style="width:45%">Descripción</th><th>Ejemplo</th>
 </tr>
 <tr>
 <td>==</td>
@@ -241,13 +241,13 @@ Python has many operators and for a detailed explanation of them check out Pytho
 </tr>
 </tbody></table>
 
-### Python assignment operators
+### Operadores de asignación
 
 <table class="table table-bordered">
 <tbody><tr>
-<th style="width:10%">Operator</th>
-<th style="width:45%">Description</th>
-<th>Example</th>
+<th style="width:10%">Operador</th>
+<th style="width:45%">Descripción</th>
+<th>Ejemplo</th>
 </tr>
 <tr>
 <td>=</td>
@@ -298,13 +298,13 @@ Floor Division</td>
 </tr>
 </tbody></table>
 
-### Python Bitwise Operators
+### Operadores a nivel de bit
 
 <table class="table table-bordered">
 <tbody><tr>
-<th style="width:10%">Operator</th>
-<th style="width:45%">Description</th>
-<th>Example</th>
+<th style="width:10%">Operador</th>
+<th style="width:45%">Descripción</th>
+<th>Ejemplo</th>
 </tr>
 <tr>
 <td>&amp; Binary AND</td>
@@ -341,7 +341,7 @@ Ones Complement</td>
 </tr>
 </tbody></table>
 
-### Python Membership Operators
+### Operadores de membresía o pertenencia
 
 <table class="table table-bordered">
 <tbody><tr>
@@ -359,11 +359,11 @@ Ones Complement</td>
 </tr>
 </tbody></table>
 
-### Python Identity Operators
+### Operadores de identidad
 
 <table class="table table-bordered">
 <tbody><tr>
-<th style="width:10%">Operator</th><th style="width:45%">Description</th><th>Example</th>
+<th style="width:10%">Operador</th><th style="width:45%">Descripción</th><th>Ejemplo</th>
 </tr>
 <tr>
 <td>is</td><td>Evaluates to true if the variables on either side of the operator point to the same object and false otherwise.</td><td> x is y, here <b>is</b> results in 1 if id(x) equals id(y).</td>
@@ -373,10 +373,10 @@ Ones Complement</td>
 </tr>
 </tbody></table>
 
-### Python Operators Precedence
+### Precedencia de los operadores en Python
 
 <table class="table table-bordered">
-<tbody><tr><th>Operator</th><th>Description</th></tr>
+<tbody><tr><th>Operador</th><th>Descripción</th></tr>
 <tr>
 <td>**</td>
 <td>Exponentiation (raise to the power)</td>
@@ -425,7 +425,8 @@ Ones Complement</td>
 
 ---
 
-Consider the Python code below which was introduced in Step 3. The comparison statement `if num < 1:` uses the less-than operator `<` and in this case evaluates to `false`. You should know by now why this statement evaluates to `false` which is because the variable `num` is assigned the value of `1` and `1` is not less than `1`.
+A modo de ejmplo, considera el código Python a continuación, (es el mismo que ya vimos anteriormente).
+El bloque condicional `if num < 1:` utiliza el operador de comparación "menor-que" `<` que en este caso evalúa a `False` dado que 1 no es menor que 1.
 
 ```python
 print ("Hello World!")
@@ -435,10 +436,11 @@ if num < 1:
    print ("Goodbye Cruel World!")
 ```
 
-Python conditional statements
----
+## Condicionales
 
-In the example code we've discuss so far we've looked at one conditional statement if num < 1. In the original example the statement evaluates to false because the variable num equals 1 and 1 is not less than 1. As a result of this evaluation the statement block is skipped. However, many times the software engineer may want an action to occur if a different condition is met or have a default action occur if no condition is met. Consider the python code below.
+En el ejemplo anterior hemos discutido como el bloque condicional `if num < 1:` evalúa a `False` y por tanto saltea la ejecución de las instrucciones dentro de dicho bloque. Sin embargo, muchas veces un desarrollador está interesado en tomar alguna acción cuando la condición no se cumple.
+
+Por ejemplo:
 
 ```python
 print ("Hello World!")
@@ -452,9 +454,13 @@ else:
   print("I'm greater than 1!")
 ```
 
-In the source code above we've added a new condition to check and a default action if no condition is met. In these conditional statements the first if statement that evaluates to true has its statements contained within its block executed and the rest of the conditional statements as well as the default statement are skipped. For example, the variable num equals 1. The first conditional statement `if num < 1` evaluates to `false`, so we now go to next check `elif num == 1` which evaluates to `true`, so the statement `print("I'm equal to 1!")` is executed.
+En el código mas arriba hemos agregado una nueva condición para chequear y una acción por defecto para tomar si ninguna de las dos condiciones anteriores se cumplen (evalúan a `True`).
 
-If the variable `num` were assigned the value of `2` the evaluation would still follow the same path. The first conditional statement `if num < 1` evaluates to `false`, so we now go to next check `elif num == 1` which also evaluates to `false`. We then go to the default statement because no conditions were met and the statement `print("I'm greater than 1!")` is executed.
+Si alguno de las condiciones se cumple, se ejecutará el bloque de código perteneciente a dicha condición y ningún otro.
+
+Si ninguna de las condiciones se cumple, se ejecutará el bloque de código correspondiente a la condición por defecto `else:`. Vale la pena resaltar que este bloque de código asociado a la condición por defecto solo se ejecuta si ninguna de las condiciones se cumple.
+
+Para terminar de entender el concepto, puedes correr el código mas arriba tres veces modificando el valor asignado a la variable `num` en cada corrida con los siguientes valores: 0, 1 y 2.
 
 ### Script #3
 
@@ -462,8 +468,8 @@ Para ver funcionar el condicional vamos a escribir un script que permita consumi
 
 #### Instrucciones
 
-1. Ir al archivo `code/03-tercer-script.py`.
-2. Copiar o redactar el siguiente contenido dentro del archivo:
+1.  Ir al archivo `code/03-tercer-script.py`.
+2.  Copiar o redactar el siguiente contenido dentro del archivo:
 
 ```python
 """
@@ -482,9 +488,11 @@ else:
     print("I'm the default statement!")
 ```
 
-Defining Python Strings
----
+## Defining Python Strings
 
+Por varios motivos habrá veces en que necesitemos combinar texto y otros tipos de datos, así como asignarlos a variables y/o mostrarlos en pantalla.
+
+Si bien hay muchas formas de concatenar strings
 For purposes of readability and display there will be many times that the engineer will want to combine Python strings as well as other datatypes and assign them to variables and/or display on the screen. While there are several methods to combine strings in Python we're going to first focus on the simplest one which is to use the plus `+` operator to combine strings, otherwise known as concatenation. Let's look at a few examples below.
 
 ```python
@@ -543,14 +551,13 @@ El siguiente script tiene las distintas maneras que vimos para concatenar string
 
 #### Instrucciones
 
-1. Ir al archivo `code/04-concat.py`.
-3. Correr el script y verificar que existe un error con el mismo.
-4. Solucionar el error y verificar su funcionamiento corriendolo nuevamente.
+1.  Ir al archivo `code/04-concat.py`.
+2.  Correr el script y verificar que existe un error con el mismo.
+3.  Solucionar el error y verificar su funcionamiento corriendolo nuevamente.
 
-Python Data Types
----
+## Python Data Types
 
-In this step we'll explore Python data types. There are many data types listed in the figure below. There are simple numeric ones like **integers** and **floats**. For our purposes the differences between a float and an integer is that a float has a decimal in it. For example `52.856` is a float while `52` is an integer. `Boolean` data types can only be either `True` or `False`.  Text is a data type that is shrouded in quotes `"text"` and can be alphanumeric. Text is more commonly called `string`. For example: `"brett"` is a `string`, so is `'brett123'`, but `123` is an `integer`.
+In this step we'll explore Python data types. There are many data types listed in the figure below. There are simple numeric ones like **integers** and **floats**. For our purposes the differences between a float and an integer is that a float has a decimal in it. For example `52.856` is a float while `52` is an integer. `Boolean` data types can only be either `True` or `False`. Text is a data type that is shrouded in quotes `"text"` and can be alphanumeric. Text is more commonly called `string`. For example: `"brett"` is a `string`, so is `'brett123'`, but `123` is an `integer`.
 
 ![python data types](https://learninglabs.cisco.com/posts/files/00-prep-04-python-primer2/assets/images/python-datatypes.png)
 
@@ -559,6 +566,7 @@ There are also more complex data types such as lists, tuples and dictionaries. L
 ### Lists
 
 A list contains any number of sequential elements and is defined by square brackets `[]`. Here's a list:
+
 ```python
 [
   'Martha',
@@ -597,7 +605,6 @@ myvar = {
 }
 ```
 
-
 The value in a dictionary is accessed by its key. For example if I entered the python statement `print(myvar["car"])`, it would display `corvette`. If I entered the python statement `print(myvar["food"])`, it would display pizza and so on. Dictionaries are sometimes also called `maps` or `associative arrays`.
 
 ![Python example data types](https://learninglabs.cisco.com/posts/files/00-prep-04-python-primer2/assets/images/python-datatypes2.png)
@@ -610,12 +617,11 @@ Al igual que en el script anterior, hay ciertos errores en el script que se tien
 
 #### Instrucciones
 
-1. Ir al archivo `code/05-first-data-types.py`.
-3. Correr el script y verificar que existe un error con el mismo.
-4. Solucionar el error y verificar su funcionamiento corriendolo nuevamente.
+1.  Ir al archivo `code/05-first-data-types.py`.
+2.  Correr el script y verificar que existe un error con el mismo.
+3.  Solucionar el error y verificar su funcionamiento corriendolo nuevamente.
 
-Defining and Accessing Nested Data Types
----
+## Defining and Accessing Nested Data Types
 
 As discussed in Step 1, there are several complex data types which are lists, tuples and dictionaries. While each complex data type can exist on its own, there are many cases where one is nested inside the other. A common example is to have a dictionary of lists or the opposite such as a list of dictionaries.
 
@@ -664,19 +670,18 @@ Las listas, los diccionarios, y las tuplas, pueden crearese dentro de otros tipo
 
 Este script tiene configurado una estructura de datos compleja. La idea del ejercicio es imprimir en la consola:
 
-1. El segundo vegetal.
-2. El último postre.
-3. El modelo sport de Dodge.
-4. El modelo clasico de Lincoln.
+1.  El segundo vegetal.
+2.  El último postre.
+3.  El modelo sport de Dodge.
+4.  El modelo clasico de Lincoln.
 
 #### Instrucciones
 
-1. Ir al archivo `code/06-nested-data-types.py`.
-2. Correr el script y verificar que los datos pedidos no son impresos.
-3. Modificar los comandos `print` para que sean impresos en la consola los valores requeridos.
+1.  Ir al archivo `code/06-nested-data-types.py`.
+2.  Correr el script y verificar que los datos pedidos no son impresos.
+3.  Modificar los comandos `print` para que sean impresos en la consola los valores requeridos.
 
-Python Loops
----
+## Python Loops
 
 There are many reasons to write loops in Python or any coding language for that matter. The most common reason is that you have a list of data that you want to process. You might have noticed in the previous steps that when you wanted to access an object that you had to specify the element number or the key. Imagine how difficult that would be if you had to do the same thing for a hundred or a thousand objects! Loops make processing lists, tuples and dictionaries much easier because the loop will iterate through each object for you and you can then process the data via the source code that you write.
 
@@ -738,19 +743,18 @@ La idea es ver con este script algunos metodos básicos para iterar sobre una es
 
 Dadas las estructuras de datos encontradas en el archivo `code/07-nested-data-type-loops.py`, escriba los `loops` necesarios para:
 
-1. Imprimir todos los vegetales.
-2. Imprimir todos los postres.
-3. Imprimir todos los modelos y marcas de autos sport.
-4. Imprimir todos los modelos y marcas de autos clasicos.
+1.  Imprimir todos los vegetales.
+2.  Imprimir todos los postres.
+3.  Imprimir todos los modelos y marcas de autos sport.
+4.  Imprimir todos los modelos y marcas de autos clasicos.
 
 #### Instrucciones
 
-1. Ir al archivo `code/07-nested-data-type-loops.py`.
-2. Correr el script y verificar que los datos pedidos no son impresos.
-3. Agregar los loops necesarios para cumplir con lo pedido anteriormente.
+1.  Ir al archivo `code/07-nested-data-type-loops.py`.
+2.  Correr el script y verificar que los datos pedidos no son impresos.
+3.  Agregar los loops necesarios para cumplir con lo pedido anteriormente.
 
-Python Functions
----
+## Python Functions
 
 A function is a block of code that is run only when it's explicitly called. For example, print() is a built-in function written in Python that you've called many times. Functions are written to modularize code to make it easy to read, reuse and easier to debug because it's located in one place. Essentially, you don't want to write code over and over again that does the same thing. Instead you would put that code into a function and then call that function whenever you need it.
 
@@ -784,7 +788,7 @@ En este script hay varios ejemplos de funciones que imprimen en la consola. La i
 
 #### Instrucciones
 
-1. Ir al archivo `code/08-call-functions.py`.
-2. Correr el script y estudiar el error que tira.
-3. Crear las funciones correspondientes según los comentarios incluidos en el script.
-4. Probar que el script corre correctamente.
+1.  Ir al archivo `code/08-call-functions.py`.
+2.  Correr el script y estudiar el error que tira.
+3.  Crear las funciones correspondientes según los comentarios incluidos en el script.
+4.  Probar que el script corre correctamente.
