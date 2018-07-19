@@ -488,12 +488,13 @@ else:
     print("I'm the default statement!")
 ```
 
-## Defining Python Strings
+## Como concatenar Strings en Python
 
 Por varios motivos habrá veces en que necesitemos combinar texto y otros tipos de datos, así como asignarlos a variables y/o mostrarlos en pantalla.
 
-Si bien hay muchas formas de concatenar strings
-For purposes of readability and display there will be many times that the engineer will want to combine Python strings as well as other datatypes and assign them to variables and/or display on the screen. While there are several methods to combine strings in Python we're going to first focus on the simplest one which is to use the plus `+` operator to combine strings, otherwise known as concatenation. Let's look at a few examples below.
+Si bien hay muchas formas de combinar texto en Python, nos vamos a enfocar en la mas simple de todas que es utilizar el operador `+` en una operación conocida como **concatenar strings**.
+
+Veamos algunos ejemplos:
 
 ```python
 myVarRed= "Red"
@@ -509,32 +510,37 @@ print(myStr)
 print(varStr)
 ```
 
-Now let's concatenate different data types. Python expects concatenated data to be the string datatype, but in the example below we have strings and integers. As a result, we have to wrap each integer in a built-in Python function called `str()` that converts a simple datatype like an integer to a string.
+Ahora exploremos como concatenar distintos tipos de datos. Python es un leguaje **fuertemente tipado**, lo que quiere decir que espera que al concatenar Strings, haya Strings a ambos lados del operador `+`. Si por ejemplo intentamos concatenar un String con un entero, el compilador arrojará un error. Por tal motivo, si nos interesa concatenar un String con un entero, primero debemos convertir dicho entero a String. Esto se hace mediante la función nativa `str()` en una acción llamada comunmente "castear".
+
+Veamos esto con un ejemplo:
 
 ```python
 name = "Joe"
 feet= 6
 inches= 2
 
-print("My name is " + name + ". I'm " + str(feet) + " feet " + str(inches) + " inches tall.")
+print("My name is " + name + ". I'm " + str(feet) + " feet " + str(inchesCombining Python Strings Using the , Operator) + " inches tall.")
 
 myStr = "My name is " + name + ". I'm " + str(feet) + " feet " + str(inches) + " inches tall."
 print(myStr)
 ```
 
-### Combining Python Strings Using the , Operator
+### Concatenar strings utilizando la funcion print
 
-Using the `+` operator to combine Python strings is fairly intuitive, but as you've seen datatypes that are not strings need to be accounted for and converted into strings. Python provides another way to combine strings that does this conversion automatically when using the comma `,` operator if the operation is inside the print function. Let's review the first few lines of the last example using this new operator.
+La función nativa `print()` acepta varios argumentos. A diferencia del operador de concatenación `+` visto anteriormente, la función print combina Strings y otros tipos de datos haciendo el "casting" de forma implícita, por lo que no es necesario utilizar la función `str()`.
+
+Veamos esto con un ejemplo:
 
 ```python
 name = "Joe"
 feet= 6
 inches= 2
 
-print("My name is ",name,". I'm ",feet," feet ",inches," inches tall.")
+print("My name is ", name, ". I'm ", feet, " feet ", inches, " inches tall.")
 ```
 
-Please note that this concatenation operation will not work as expected if you try to assign it to a variable, and then print it as the data is not concatenated.
+Por favor notar que las comas no son operadores sino que simplemente separan los argumentos que se le pasan a la función `print(arg1, arg2, arg3)`.
+Si intentaramos utilizar comas para asignar un String concatenado a una variable, esto **no funcionaría**.
 
 ```python
 name = "Joe"
