@@ -488,7 +488,35 @@ else:
     print("I'm the default statement!")
 ```
 
-## Como concatenar Strings en Python
+## Tipos de datos en Python
+
+En este punto exploraremos los distintos tipos de datos en Python. Los mismos se encuentran listados en la figura a continuación.
+A los efectos de nuestro aprendizaje los categorizaremos arbitrariamente como tipos de datos simples o tipos de datos complejos.
+
+Tipos de datos simples:
+
+- Integer
+- Float
+- String
+- Bool
+
+Tipos de datos complejos:
+
+- List
+- Touple
+- Dictionary
+
+![python data types](https://learninglabs.cisco.com/posts/files/00-prep-04-python-primer2/assets/images/python-datatypes.png)
+
+### Integer & Float (enteros y punto flotante)
+
+Son números, a los efectos de este curso podemos considerar como que la única diferencia entre ambos es la existencia de un punto decimal. A modo de ejemplo, 52 es un `int`, mientras que 52.01 es un `float`.
+
+### String (texto)
+
+El texto (String) en Python puede escribirse con comillas simples o dobles. Los siguientes son algunos ejémplos de `Strings` válidos: `"Hola mundo!"` `'Hola mundo!'`. Si bien es posible definirlos de cualquiera de las dos maneras, es muy importante mantener una consistencia a lo largo del código, tal como se especifica en [PEP8-String Quotes](https://www.python.org/dev/peps/pep-0008/?#string-quotes).
+
+#### Como concatenar Strings en Python
 
 Por varios motivos habrá veces en que necesitemos combinar texto y otros tipos de datos, así como asignarlos a variables y/o mostrarlos en pantalla.
 
@@ -510,7 +538,7 @@ print(myStr)
 print(varStr)
 ```
 
-Ahora exploremos como concatenar distintos tipos de datos. Python es un leguaje **fuertemente tipado**, lo que quiere decir que espera que al concatenar Strings, haya Strings a ambos lados del operador `+`. Si por ejemplo intentamos concatenar un String con un entero, el compilador arrojará un error. Por tal motivo, si nos interesa concatenar un String con un entero, primero debemos convertir dicho entero a String. Esto se hace mediante la función nativa `str()` en una acción llamada comunmente "castear".
+Ahora exploremos como concatenar distintos tipos de datos. Python es un leguaje **fuertemente tipado**, lo que en este contexto quiere decir que espera que al concatenar Strings, haya Strings a ambos lados del operador `+`. Si por ejemplo intentamos concatenar un String con un entero, el compilador arrojará un error. Por tal motivo, si nos interesa concatenar un String con un entero, primero debemos convertir dicho entero a String. Esto se hace mediante la función nativa `str()` en una acción conocida comunmente como "casting".
 
 Veamos esto con un ejemplo:
 
@@ -525,7 +553,7 @@ myStr = "My name is " + name + ". I'm " + str(feet) + " feet " + str(inches) + "
 print(myStr)
 ```
 
-### Concatenar strings utilizando la funcion print
+#### Concatenar strings utilizando la funcion print
 
 La función nativa `print()` acepta varios argumentos. A diferencia del operador de concatenación `+` visto anteriormente, la función print combina Strings y otros tipos de datos haciendo el "casting" de forma implícita, por lo que no es necesario utilizar la función `str()`.
 
@@ -541,6 +569,7 @@ print("My name is ", name, ". I'm ", feet, " feet ", inches, " inches tall.")
 
 Por favor notar que las comas no son operadores sino que simplemente separan los argumentos que se le pasan a la función `print(arg1, arg2, arg3)`.
 Si intentaramos utilizar comas para asignar un String concatenado a una variable, esto **no funcionaría**.
+Veámoslo con un ejemplo:
 
 ```python
 name = "Joe"
@@ -548,26 +577,23 @@ feet= 6
 inches= 2
 
 myStr="My name is ",name,". I'm ",feet," feet ",inches," inches tall."
+# En lugar de concatenar, el compilador interpreta esto como una tupla, veremos tuplas mas adelante.
 print(myStr)
 ```
 
 ### Script #4 - `concat.py`
 
-El siguiente script tiene las distintas maneras que vimos para concatenar strings. Una de ellas tiene un error, que hace que el script falle cuando lo corremos. La idea es encontrar donde esta el error.
+El siguiente script tiene las distintas maneras que vimos para concatenar strings. Una de ellas tiene un error que hace que el script falle cuando lo corremos. La idea es encontrar donde está el error.
 
 #### Instrucciones
 
 1.  Ir al archivo `code/04-concat.py`.
 2.  Correr el script y verificar que existe un error con el mismo.
-3.  Solucionar el error y verificar su funcionamiento corriendolo nuevamente.
+3.  Solucionar el error y verificar su funcionamiento corriéndolo nuevamente.
 
-## Python Data Types
+### Bool (Booleano)
 
-In this step we'll explore Python data types. There are many data types listed in the figure below. There are simple numeric ones like **integers** and **floats**. For our purposes the differences between a float and an integer is that a float has a decimal in it. For example `52.856` is a float while `52` is an integer. `Boolean` data types can only be either `True` or `False`. Text is a data type that is shrouded in quotes `"text"` and can be alphanumeric. Text is more commonly called `string`. For example: `"brett"` is a `string`, so is `'brett123'`, but `123` is an `integer`.
-
-![python data types](https://learninglabs.cisco.com/posts/files/00-prep-04-python-primer2/assets/images/python-datatypes.png)
-
-There are also more complex data types such as lists, tuples and dictionaries. Let's explore these types.
+Los datos del tipo `Bool` solo pueden tomar dos valores `True` o `False`.
 
 ### Lists
 
