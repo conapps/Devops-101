@@ -2,6 +2,8 @@
 Script #9 - JSON print.
 """
 
+# Los siguientes son solo ejemplos para tener como referencia
+
 VAR = {
     "car": "volvo",
     "fruit": "apple"
@@ -33,6 +35,9 @@ for f in VAR1["donut"]:
 print()
 print()
 
+
+# Aquí comienza el ejercicio
+
 VAR2 = {
     "vegetable": "carrot",
     "fruit": "apple",
@@ -50,4 +55,5 @@ VAR3 = {
     ]
 }
 
-# 1. Imprimir todos los valores incluidos en los JSONs declarados.
+# 1. Imprimir todos los valores (no las llaves) incluidos en los VAR2.
+# 2. Imprimir todos los animales

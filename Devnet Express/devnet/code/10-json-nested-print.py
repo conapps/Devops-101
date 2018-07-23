@@ -2,6 +2,8 @@
 Script #10 - JSON nested print.
 """
 
+# A continuación se presentan algunos ejemplos que pueden utilizarse como referencia
+
 VAR = {
     "donut": {
         "flavors": [
@@ -51,6 +53,8 @@ for f in VAR1["flavors"]["flavor"]:
 print()
 
 print()
+
+# Aquí comienza el ejercicio
 
 # 1. Imprimir todos los ejercicios de alto impacto.
 

@@ -1,43 +1,45 @@
-JSON
-===
+# JSON
 
-JSON Basics
----
+## JSON - Conceptos básicos
 
-JSON which stands for **Java Script Object Notation** consists of text-based name-value pairs making it simple for applications to store and exchange data. It's designed to be lightweight and readable as well as minimal so there's not excessive text which has sometimes been the complaint of XML which is another text-based protocol for exchanging and storing data.
+**Java Script Object Notation** (JSON) es una estructura de datos en formato nombre-valor, diseñada para facilitar el intercambio de información entre aplicaciones. Fue pensado para ser muy liviano y fácilmente legible por un ser humano. Su diseño minimalista evita el exceso de texto que históricamente se le atribuyó a XML.
 
-The JSON Structure
----
+## La estructura JSON
 
-In JSON data is set up in name value pairs just like a Python dictionary. However, in JSON dictionaries are referred to as objects. For example, `{"car": "volvo", "fruit": "apple"}` is a JSON object, but looks just like a Python dictionary. The object is assigned to a variable in the same manner as well: `var = {"car": "volvo", "fruit": "apple"}`. In addition, JSON data is accessed the same way as when accessing data in a Python dictionary. For example, to get the value for fruit in Python we would enter `var["fruit"]` which would return apple. To display this value we enter `print(var["fruit"])` . We can also loop through and display all of the keys and values.
+En JSON, los datos se almacenan en pares nombre-valor, tal como si fuera un diccionario de Python. Sin embargo, en JSON nos referiremos a ellos como objetos en lugar de diccionarios.
+
+Por ejemplo, `{"auto": "volvo", "fruta": "manzana"}` es un objeto JSON, pero luce exactamente igual a un diccionario de Python. Las diferencias entre JSON y las estructuras de datos de Python son mínimas; por ejemplo los booleanos se representan ligeramente distintos, `true` en JSON y `True` en Python.
+
+En líneas generales, los datos se transmiten entre las APIs REST y los scripts de Python en formato JSON, mientras que se procesan dentro de los scripts utilizando las estructuras clásicas de datos de Python que hemos visto hasta ahora.
+Para simplificar, desde el punto de vista de Python, una estructura de datos en JSON podría pensarse como una estructura de datos de Python, (un diccionario de listas por ejemplo), convertido a `String` con algunas modificaciones mínimas.
+
+Para simplificar este proceso de conversión, Python dispone de una librería: `json`. Esta librería cuenta con dos funciones principales `json.loads(datos_en_json)`, que toma datos en JSON y los convierte a diccionarios de Python, y `json.dumps(datos_en_python)` que toma estructuras de datos de Python y los convierte a JSON.
+
+Una vez que convertimos los datos en JSON a estructuras de datos de Python, podemos utilizar todo lo que hemos aprendido hasta ahora para trabajar con dichas estructuras (diccionarios, tuplas, listas, bool, etc). En el siguiente ejemplo, supongamos que la variable `json_recibido_desde_api` contiene datos obtenidos a través de una consulta a una API REST y veamos como una vez que transformamos los datos en JSON a estructuras de datos de Python podemos procesarlos normalmente:
 
 ```python
-var = {
-  "car": "volvo", 
-  "fruit":"apple"
-}
-print(var["fruit"])
-for f in var:
-  print("key: " + f + " value: " + var[f])
+json_recibido_desde_api = '{"auto": "volvo", "frutas": ["manzanas", "peras", "naranjas"]}'
+mi_variable = json.loads(json_recibido_desde_api)
+
+# Vamos a imprimir cada una de las frutas
+for fruta in mi_variable["frutas"]:
+  print(fruta)
 ```
 
-As with Python, JSON also uses lists which it refers to as arrays. In JSON an array is typically nested in an object. For example, `{"donut": ["chocolate", "glazed", "sprinkled"]}` . Let's assign this JSON object to a variable: `var1 = {"donut": ["chocolate", "glazed", "sprinkled"]}`. Notice here that donut is the key, and the value is the array of the donut flavors. If I wanted to get the chocolate donut, I would access it by entering `var1["donut"][0]` which would return chocolate because it is the first element in the array. I could display the text by entering `print(var1["donut"][0])`. We'll loop through and display the values too.
+En el trabajo diario con scripts de Python, típicamente interactuamos con APIs REST para obtener datos en formato JSON, luego convertimos estos datos a estructuras anidadas de Python (diccionarios de listas, listas de diccionarios, diccionarios de listas de diccionarios, etc), las procesamos y finalmente tomamos alguna acción.
+
+Dado que repetiremos este proceso una y otra vez a lo largo del curso, a partir de ahora practicaremos mas en profundidad como recorrer estructuras anidadas en Python.
 
 ### Script #9 - `09-json-print.py`
 
-El documento contiene multiples ejemplos de como imprimir los valores dentro de documentos de python. La idea es utilizando estos ejemplos, imprimir todos los valores de los últimos dos elementos de JSON.
-
 #### Instrucciones
 
-1. Ir al archivo `code/09-json-print.py`.
-2. Correr el script y estudiar el resultado.
-3. Escribir el codigo necesario para imprimir todo el documento JSON y cada uno de sus valores individualmente.
-4. Probar que el script corre correctamente.
+1.  Ir al archivo `code/09-json-print.py`.
+2.  Seguir las instrucciones dentro del archivo.
 
-Deeply Nested JSON Structures
----
+## Estructuras JSON anidadas
 
-In JSON objects and arrays are often nested several layers in order to organize data. In the following relatively simple example we classify the flavors of a `donut` and put them in an array as shown in JSON structure `{"donut": {"flavors": ["chocolate", "jelley", "maple", "plain"]}}`. Looking at this structure from the inside and moving outward you see that we've nested an array inside an object which itself is nested inside an object. With this structure starting from the outside and moving in we see that donut is the key with the object flavors being its value. But notice that flavors is also a key and its value is the array of donut flavors. As a result, to get the chocolate flavor we need to dig a little deeper. First we assign the JSON to a variable `myvar = {"donut": {"flavors": ["chocolate", "jelley", "maple", "plain"]}}` . We access chocolate by entering `myvar["donut"]["flavors"][0]`. We can display it by entering `print(myvar["donut"]["flavors"][0])`. We'll loop through and display the values too.
+Los objetos y arrays JSON que recibimos desde las APIs típicamente se encuentran anidados en varios niveles con el fin de organizar los datos. Por esto, una vez que convertidos los datos JSON a estructuras de datos de Python nos encontraremos con estructuras como la del ejemplo. Allí podemos ver que tenemos un diccionario con una única llave, que contiene otro diccionario que a su vez contiene también una única llave y que el valor correspondiente a dicha llave es una lista de 4 elementos.
 
 ```python
 myvar = {
@@ -52,13 +54,18 @@ myvar = {
 }
 
 print(myvar["donut"]["flavors"][0])
-print("My favorite donut flavors are:", end=" ")
+>>> chocolate
 
+
+print("My favorite donut flavors are:", end=" ")
 for f in myvar["donut"]["flavors"]:
   print(f, end=" ")
+
+>>> My favorite donut flavors are: chocolate jelley maple plain
 ```
 
-Let's look at a slightly more complex JSON structure such as:  `{"type": "donut", "flavors": {"flavor": [{"type" :"chocolate", "id": "1001"}, {"type": "glazed", "id": "1002"},{"type": "sprinkled", "id": "1003"}]}}`. In this case working from the inside out you should see that there are three objects nested in an array, and that this array is the value of the key flavor. The flavor key is part of an object that is the value of the key flavors. From the outside moving in, you see that both type and flavors are keys. As just mentioned the value of the key flavors is an object, and that object has the key flavor which has an array as its value that contains objects. First we assign this JSON structure to a variable `myvar1 = {"type": "donut", "flavors": {"flavor": [{"type": "chocolate", "id":"1001"}, {"type": "glazed", "id": "1002"},{"type": "sprinkled", "id": "1003"}]}}`. For each object we'll want to print the type and the id. We can access the value chocolate and its corresponding id by entering `myvar1["flavors"]["flavor"][0]["type"]` and `myvar1["flavors"]["flavor"][0]["id"]`. We can display it by entering `print("Id: " + str(myvar1["flavors"]["flavor"][0]["id"]) + " type: " + myvar1["flavors"]["flavor"][0]["type"])`. We'll loop through and display the values of id and type too.
+Avancemos ahora con un ejemplo un poco mas complejo.
+Intenta seguir seguir el ejemplo buscando las estructuras anidadas, recuerda: los diccionarios comienzan con `{` y las listas con `[`.
 
 ```python
 myvar1 = {
@@ -78,41 +85,21 @@ myvar1 = {
 }
 
 print("Id: " + str(myvar1["flavors"]["flavor"][0]["id"]) + " type: " + myvar1["flavors"]["flavor"][0]["type"])
+>>> Id: 1001 type: chocolate
 
 for f in myvar1["flavors"]["flavor"]:
     print("Id is: " + str(f["id"]) + " type is: " + f["type"])
-```
 
-JSON Validation and Formatting
----
-
-As you might have guessed if a JSON structure is being created a syntax error might be made making the structure difficult to parse. When creating a JSON structure you can validate your structure via websites or other tools.
-
-For viewing purposes JSON is typically reformatted. The example above would typically look like the picture below, but is still parsed the same way.
-
-```json
-{
-  "type": "donut",
-  "flavors": [{
-    "type": "chocolate",
-    "id": "1001"
-  }, {
-    "type": "glazed",
-    "id": "1002"
-  }, {
-    "type": "sprinkled",
-    "id": "1003"
-  }
-}
+>>> Id is: 1001 type is: chocolate
+>>> Id is: 1002 type is: glazed
+>>> Id is: 1003 type is: sprinkled
 ```
 
 ### Script #10 - `10-json-nested-print.py`
 
-El documento contiene multiples ejemplos de como imprimir los valores dentro de documentos de python. La idea es utilizando estos ejemplos, imprimir todos los valores de los últimos dos elementos de JSON.
+El script contiene multiples ejemplos de como imprimir los valores dentro de estructuras de datos de python. La idea es, utilizando estos ejemplos como referencia, imprimir algunas estructuras de datos anidadas de complejidad media.
 
 #### Instrucciones
 
-1. Ir al archivo `code/10-json-nested-print.py`.
-2. Correr el script y estudiar el resultado.
-3. Escribir el codigo necesario para imprimir todo el documento JSON y cada uno de sus valores individualmente.
-4. Probar que el script corre correctamente.
+1.  Ir al archivo `code/10-json-nested-print.py`.
+2.  Imprimir las estructuras de datos de acuerdo a las instrucciones dentro del archivo.
