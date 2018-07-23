@@ -73,7 +73,7 @@ puts("Devnet express.")
 blue("Cisco .:|:.:|:.")
 ```
 
-## Python Basics
+## Conceptos básicos de Python
 
 Si has escrito código en otros lenguajes, habrás notado que ciertas instrucciones definen su alcance a través de llaves.
 
