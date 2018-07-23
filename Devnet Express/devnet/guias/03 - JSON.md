@@ -39,7 +39,7 @@ Dado que repetiremos este proceso una y otra vez a lo largo del curso, a partir 
 
 ## Estructuras JSON anidadas
 
-Los objetos y arrays JSON que recibimos desde las APIs típicamente se encuentran anidados en varios niveles con el fin de organizar los datos. Por esto, una vez convertidos los datos JSON a estructuras de datos de Python nos encontraremos con estructuras como la del ejemplo. Allí podemos ver que tenemos un diccionario con una única llave, que contiene otro diccionario que a su vez contiene también una única llave y que el valor correspondiente a dicha llave es una lista de 4 elementos.
+Los objetos y arrays JSON que recibimos desde las APIs típicamente se encuentran anidados en varios niveles con el fin de organizar los datos. Por esto, una vez convertidos los datos JSON a estructuras de datos de Python, nos encontraremos con estructuras como la del ejemplo. Allí podemos ver que tenemos un diccionario con una única llave, que contiene otro diccionario que a su vez contiene también una única llave y que el valor correspondiente a dicha llave es una lista de 4 elementos.
 
 ```python
 myvar = {
