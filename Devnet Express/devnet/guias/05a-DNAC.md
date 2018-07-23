@@ -76,10 +76,10 @@ Para incluir el service token en la llamada se debe utilizar el encabezado HTTP 
 
 `{"X-Auth-Token": "service_token_value" }`
 
-Mientras no hayan expirado los tokens pueden re-utilizarse en tantas llamadas como sea necesario. En este laboratorio, por simplicidad, obtendremos un nuevo token por cada request que vayamos a hacer.
+Mientras no hayan expirado, los tokens pueden re-utilizarse en tantas llamadas como sea necesario. En este laboratorio, por simplicidad, obtendremos un nuevo token por cada request que vayamos a hacer.
 
 A continuación haremos una llamada simple a la API para ver la autenticación mediante token en funcionamiento.
-En concreto, enviaremos un request HTTP del tipo `GET` al endpoint `/host`. Esto debería devolvernos la lista de hosts presentes en la topología que se muesrta a continuación de acuerdo a los permisos del usuario (reflejados en el service token).
+En concreto, enviaremos un request HTTP del tipo `GET` al endpoint `/host`. Esto debería devolvernos la lista de **hosts** presentes en la topología que se muesrta a continuación de acuerdo a los permisos del usuario (reflejados en el service token).
 
 ![Toplogia DNAC](../imagenes/DNAC_topology.png)
 
@@ -87,51 +87,50 @@ La llamada `GET` a `/host` no requiere ningún argumento adicional, únicamente 
 
 ### Script #16.
 
-Partir desde el archivo `16-DNAC-get-hosts.py` y modificarlo para que obtener una lista de hosts del DNAC.
+Partir desde el archivo `16-DNAC-get-hosts.py` y modificarlo donde se indica en los comentarios para que obtener una lista de hosts del DNAC.
 
-## Network device related APIs
+## API endopoints referentes dispositivos de red.
 
-#### Objectives
+### Objetivos
 
-The Cisco DNAC controller assigns a unique ID to every network device. You can pass this ID to a variety of network device-related calls to retrieve information about a specific device, such as its IOS configuration and interfaces.
+El controlador Cisco DNAC asigna un ID único a cada dispositivo de red. Se puede utilizar este ID para obtener información específica de un dispositivo determinado, como ser su configuración o una lista de sus interfaces.
 
-In this lab, the Python application makes the following calls:
+En el próximo laboratorio, trabajaremos con un script que hace las siguiente llamadas a la API del DNAC:
 
 - `GET /network-device`
 - `GET /network-device/{networkDeviceId}/config`
 - `GET /interface/network-device/{deviceId}`
 
-Note: The Cisco DNAC controller can scan for and discover physical devices attached to a network. To initiate this discovery process, you can send a POST /discovery call to the controller, or you can click the Discovery icon in its GUI. The Cisco DNAC controller in the Cisco DevNet Learning Labs is pre-populated with the results of a previous discovery, so this lab does not examine Discovery.
+**Nota:** El Cisco DNAC tiene la capacidad de escanear y descubrir dispositivos conectados a la red. Para iniciar este proceso de descubrimiento, se puede enviar un `POST` al endpoint `/discovery`, o se puede hacer click en el ícono "Discovery" de la interface gráfica de usuario. El DNAC que estamos utilizando en este laboratorio ya tiene pre-cargados dispositivos descubiertos con anterioridad, por lo que no efectuaremos un proceso de descubrimiento.
 
-### Application that displays IOS configuration
+### Cómo mostrar la configuración de un dispositivo
 
-In this section, you create a simple application to:
+En esta sección, crearemos una aplicación simple para:
 
-Prompt the user to select a device.
-Display the IOS configuration of the user-selected device.
-Pseudo-code:
+- Solicitar al usuario que seleccione un dispsitivo de red.
+- Mostrar la configuración del dispositivo generado por el usuario.
 
-1.  Use GET /network-device to display a list of network devices with IP addresses.
-2.  Accept user input of device selection.
-3.  Use `GET /network-device/{deviceId}/config` to retrieve the IOS configuration of the specified device, then display the IOS configuration to the user.
+Pseudo-código:
 
-### Task 1: Present a list of network devices with IP addresses (script 17)
+1.  Usar `GET /network-device` para mostrar una lista con los dispositivos y sus correspondientes IPs
+2.  Solicitar al usuario que seleccione un equipo y guardar su selección..
+3.  Utilizar `GET /network-device/{deviceId}/config` para obtener la configuración del dispositivo y mostrarla en pantalla.
 
-To display a list of network devices to the user, retrieve network device information by issuing the `GET /network-device` request. The response body returns a list of network devices. Each block in the response provides information about a single device, including its network device name, IP, type, network device ID and more.
+### Script #17 - Tarea 1: Presentar una lista de dispositivos con sus direcciones IP
 
-This **network device ID** provides a way of identifying a specific network device to many APIs, including the `GET /network-device/{deviceId}/config` request.
+Para mostrar una lista de dispositivos con sus direcciones IP al usuario, realizaremos una llamada del tipo `GET` al endpoint `/network-device`. Los datos, contenidos en el `BODY` de la respuesta, serán una lista de dispositivos. Cada elemento de dicha lista contiene información del dispositivo en cuestión, en particular:
 
-The `GET /network-device` response block provides many attributes. Your application uses the following attributes:
+- **instanceUuid** o **id**, este es el identificador que el DNAC asigna a cada dispositivo que descubre.
+- **hostname**, este es el nombre del dispositivo de red.
+- **managementIpAddress**, esta es la dirección IP de gestión del dispositivo de red.
+- **type**, tipo de dispositivo como ser: switch, router, access-point, etc.
 
-- **instanceUuid** or **id** is the ID the controller assigned to the network device at discovery.
-- **hostname** is the name of the network device. Note that this attribute applies to both hosts and devices.
-- **managementIpAddress** is the IP address of the network device.
-- **type** is the type of network device, such as a switch, router, or access point.
+Lo que nos interesa en particular es el ID, dado que es el identificador que utilizaremos para seleccionar el dispositivo al hacer requests a otros endpoints. Por ejemplo, para traer la configuración del dispositivo seleccionado haremos una llamada del tipo `GET` al endpoint `/network-device/{deviceId}/config`.
 
-Your task is the following:
+La tarea concreta es la siguiente:
 
-1.  Locate and open the file `17-DNAC-get-network-device-list.py`
-2.  Modify it so the script executes a `GET /network-device` request and displays a list of devices in exactly the following format:
+1.  Ubicar el script `17-DNAC-get-network-device-list.py`
+2.  Modificarlo para que ejecute un request del tipo `GET /network-device` y muestre una lista de dispositivos en el siguiente formato:
 
 ```
 === Equipo 1  ===
@@ -156,9 +155,9 @@ Your task is the following:
 	Management IP Address:  10.10.22.69
 ```
 
-### Task 2: Prompt the user for input and retrieve the device ID (script 17)
+### Script #17 - Tarea 2: solicitar al usuario que seleccione un equipo
 
-Add the following code to `17-DNAC-get-network-device-list.py` so it prompts the user for a device selection:
+Agregar el siguiente código a `17-DNAC-get-network-device-list.py` para que solicite al usuario que seleccione un equipo:
 
 ```python
 device_list = response['response']
@@ -182,8 +181,8 @@ while True:
 print('El equipo seleccionado es el: ', device_id)
 ```
 
-### Task 3: Get the IOS configuration of the specified device and display it to the user (script 18)
+### Script #18: Obtener la configuración IOS del dispositivo seleccionado y mostrarla en pantalla
 
-Now, use the script `18-DNAC-get-network-config.py` (it starts where `17-DNAC-get-network-device-list.py` left) and complete it so it retreives the selected device configuration.
+Ahora utilizaremos el script `18-DNAC-get-network-config.py` (el mismo retoma donde se quedó el script `17-DNAC-get-network-device-list.py`). La tarea consiste en completar el script para que obtenga la configuración IOS del dispositivo seleccionado y la muestre en pantalla.
 
-> Hint: You can ask DNA Center for a device configuration issuing a `GET /network-device/{device-id}/config`.
+> Pista: Se le puede pedir al DNAC la configuración de un dispositivo de red enviando un request `GET /network-device/{device-id}/config`.
