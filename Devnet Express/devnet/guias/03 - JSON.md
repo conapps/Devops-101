@@ -13,7 +13,7 @@ Por ejemplo, `{"auto": "volvo", "fruta": "manzana"}` es un objeto JSON, pero luc
 En líneas generales, los datos se transmiten entre las APIs REST y los scripts de Python en formato JSON, mientras que se procesan dentro de los scripts utilizando las estructuras clásicas de datos de Python que hemos visto hasta ahora.
 Para simplificar, desde el punto de vista de Python, una estructura de datos en JSON podría pensarse como una estructura de datos de Python, (un diccionario de listas por ejemplo), convertido a `String` con algunas modificaciones mínimas.
 
-Para simplificar este proceso de conversión, Python dispone de una librería: `json`. Esta librería cuenta con dos funciones principales `json.loads(datos_en_json)`, que toma datos en JSON y los convierte a diccionarios de Python, y `json.dumps(datos_en_python)` que toma estructuras de datos de Python y los convierte a JSON.
+Para realizar este proceso de conversión, Python dispone de una librería: `json`. Esta librería cuenta con dos funciones principales `json.loads(datos_en_json)`, que toma datos en JSON y los convierte a diccionarios de Python, y `json.dumps(datos_en_python)` que toma estructuras de datos de Python y los convierte a JSON.
 
 Una vez que convertimos los datos en JSON a estructuras de datos de Python, podemos utilizar todo lo que hemos aprendido hasta ahora para trabajar con dichas estructuras (diccionarios, tuplas, listas, bool, etc). En el siguiente ejemplo, supongamos que la variable `json_recibido_desde_api` contiene datos obtenidos a través de una consulta a una API REST y veamos como una vez que transformamos los datos en JSON a estructuras de datos de Python podemos procesarlos normalmente:
 
@@ -39,7 +39,7 @@ Dado que repetiremos este proceso una y otra vez a lo largo del curso, a partir 
 
 ## Estructuras JSON anidadas
 
-Los objetos y arrays JSON que recibimos desde las APIs típicamente se encuentran anidados en varios niveles con el fin de organizar los datos. Por esto, una vez que convertidos los datos JSON a estructuras de datos de Python nos encontraremos con estructuras como la del ejemplo. Allí podemos ver que tenemos un diccionario con una única llave, que contiene otro diccionario que a su vez contiene también una única llave y que el valor correspondiente a dicha llave es una lista de 4 elementos.
+Los objetos y arrays JSON que recibimos desde las APIs típicamente se encuentran anidados en varios niveles con el fin de organizar los datos. Por esto, una vez convertidos los datos JSON a estructuras de datos de Python nos encontraremos con estructuras como la del ejemplo. Allí podemos ver que tenemos un diccionario con una única llave, que contiene otro diccionario que a su vez contiene también una única llave y que el valor correspondiente a dicha llave es una lista de 4 elementos.
 
 ```python
 myvar = {
