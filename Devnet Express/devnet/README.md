@@ -43,5 +43,5 @@ https://documenter.getpostman.com/view/897512/meraki-dashboard-prov-api/2To9xm#i
 ### preventaconatel@gmail.com Meraki API Key:
 
 ```
-fbabc72a20a98eed4ed736d035b7b12b44c21b76
+<se agregara al momento del laboratorio>
 ```
