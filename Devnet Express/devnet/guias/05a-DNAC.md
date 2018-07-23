@@ -14,55 +14,56 @@ De esta forma podemos utilizar la API Rest (Norte) para configurar el controlado
 
 ## RBAC & service tokens
 
-The Role-Based Access Control (RBAC) mechanism on the Cisco DNAC assigns a security role to every user account. That role determines which Cisco DNAC resources and operations are available for that user account.
+El mecanismo de Role-Based Access Control (RBAC) en el Cisco DNAC asigna a cada usuario un rol de seguridad. Este rol es lo que determina que recursos y operaciones estarán disponibles para este usuario.
 
-The Cisco DNAC controller defines the following roles and privileges:
+Por defecto, se encuentran definidos los siguientes roles y privilegios:
 
-* **Administrator (SUPER_ADMIN-ROLE)** provides the user with full administrative privileges to all Cisco DNAC resources, including the ability to add or remove users and accounts.
-* **Network Administrator (NETWORK_ADMIN-ROLE)** enables the user to provision, upgrade and change the configuration of network devices.
-* **Observer (OBSERVER-ROLE)** provides the user with primarily read-only privileges to the Cisco DNAC.
-* **Telemetry (TELEMETRY-ADMIN-ROLE)** enables the user to administer the telemetry (Assurance) configuration.
+- **Administrator (SUPER_ADMIN-ROLE)** provee al usuario permisos totales sobre los recursos del DNA Center, incluyendo la capacidad para agregar o eliminar usuarios y cuentas.
+- **Network Administrator (NETWORK_ADMIN-ROLE)** permite al usuario aprovisionar, hace upgrades y cambiar la configuración de los equipos de red.
+- **Observer (OBSERVER-ROLE)** otorga al usuario permisos de solo lectura al Cisco DNA Center.
+- **Telemetry (TELEMETRY-ADMIN-ROLE)** permite al usuario administrar la configuración de telemetría (Assurance).
 
-A security token known as a service token encapsulates user identity and role information as a single value.
+Un token de seguridad, comunmente llamado "service token", encapsula el rol y la identidad del usuario en una única entidad.
 
-RBAC-governed APIs use the service token to make access-control decisions. Therefore, to start, you send the Cisco DNAC a POST /token request with your username and password. If the DNAC controller authenticates your request, it returns a service token that encapsulates the role associated with the authenticated user account.
+La API del DNAC, o cualquier API que funcione con RBAC, utiliza los service tokens para tomar decisiones de control de acceso. Por tal motivo, para comenzar a interactuar con la misma, necesitamos obtener nuestro token. Para ello debemos enviar un POST a la url `/token` indicando en el `BODY` nuestro usuario y password. En caso de que la autenticación resulte exitosa, el DNAC nos devolvera un service token que podremos utilizar luego para acceder a recursos y ejecutar acciones.
 
-After you get the service token, you include it in all of the subsequent calls you send to the controller. When the controller receives those calls, it checks the service token before performing the action requested by the call.
+Es importante tener el cuenta que el service token se debe incluir **en cada una** de las interacciones que tengamos con la API.
 
-## Generate a service token (script 14a)
+### Script #15 - Obtener el service token.
 
-Carefully review the [API documentation](https://developer.cisco.com/site/dna-center-rest-api/) regarding how to get a service token.
-The procedure explained in the docs, assumes the use of a web browser (cookie based JWT).
-In our case we are not using a browser to interact with the API; we are going to interact with it through a Python script.
-Although both procedures are almost the same, they have some minor differences:
+Leer la documentación [API documentation](https://developer.cisco.com/site/dna-center-rest-api/) para entender en detalle cual es el procedimiento para obtener un service token. Tener en cuenta que estaremos utilizando `Token based authentication`.
 
-Procedure to get a token using POSTMAN:
+Siga los pasos a continaución para obtener un token utilizando POSTMAN:
 
-1.  Configure the method as "POST"
-2.  Configure the URL as: https://sandboxdnac.cisco.com/api/system/v1/auth/token
-3.  Add a header `{"Content-Type":"application/json"}`
-4.  Add a header `{"Authorization":"Basic <username:password>"}`
-    Pay attention to the space after "Basic". <username:password> must be "devnetuser:Cisco123!" 
-    encoded in Base64 (ZGV2bmV0dXNlcjpDaXNjbzEyMyE=)
-5.  Submit and see the results in the body of the response.
+1.  Conigurar el método como "POST"
+2.  Configurar la URL como: https://sandboxdnac.cisco.com/api/system/v1/auth/token
+3.  Agregar un Header `{"Content-Type":"application/json"}`
+4.  Agregar un Header `{"Authorization":"Basic <username:password>"}`
+    Prestar atención al espacio luego de "Basic".
+    <username:password> deben ser "devnetuser:Cisco123!" codificados en Base64 (ZGV2bmV0dXNlcjpDaXNjbzEyMyE=)
+5.  Enviar y copiar la respuesta del DNAC al portapapeles de nuestra máquina.
+6.  Navegar al servicio online [JWT.IO](https://jwt.io/) y pegar el token dentro del campo de texto identificado como "Encoded" (borrar el texto presente en dicho campo); observar los resultados dentro del área denominada "Decoded".
 
-Now let's see how to get a service token programmatically using Python:
+Ahora veamos como obtener un token de forma programática utilizando Python:
 
-1.  Locate the 15-DNAC-get-token.py.
-2.  Use a Python command to run the script. For example:
-    * On Linux or Mac OS: ```python3 15-DNAC-get-token.py```
-    * On Windows: ```py -3 15-DNAC-get-token.py or python 14a-DNAC-get-token.py```
-3.  Copy the service token printed in the console, navigate to [https://jwt.io](https://jwt.io), paste it inside "Encoded" text area and see the results in "Decoded" field.
+1.  Ubicar el script 15-DNAC-get-token.py.
+2.  Correr el script utilizando el intérprete de Pyhont. Por ejemplo:
+    - En Linux o Mac OS: `python3 15-DNAC-get-token.py`
+    - En Windows: `py -3 15-DNAC-get-token.py or python 14a-DNAC-get-token.py`
+3.  Copiar al portapapeles el service token que se imprime en la consola.
+4.  Navegar al servicio online [JWT.IO](https://jwt.io/) y pegar el token dentro del campo de texto identificado como "Encoded" (borrar el texto presente en dicho campo); observar los resultados dentro del área denominada "Decoded".
 
-> Observe that the function `HTTPBasicAuth` takes care of base64 encoding of the username and password and to include the encoded field in a header in the request.
+> Observe que la función `HTTPBasicAuth` se encarga de codificar el usuario y password en Base64 y de incluir dicho campo "encodeado" dentro del encabezado correspondiente en el request HTTP.
 
 **Bonus:**
 
-> Read **Authentication/Authorization** section of the [API documentation](https://developer.cisco.com/site/dna-center-rest-api/), `import base64` and use the function `base64.b64encode(bytes(username + ':' + password, 'utf-8')).decode('utf-8')` to encode username:password in base64 and get the token **without** using `HTTPBasicAuth`.
+> Leer la sección **token-based-authnz-api-eft** de la [API documentation](https://developer.cisco.com/site/dna-center-rest-api/), `import base64` y utilizar la función `base64.b64encode(bytes(username + ':' + password, 'utf-8')).decode('utf-8')` para codificar `username:password` en base64 y obtener el token **sin** utilizar `HTTPBasicAuth`.
 
-## Prepare to reuse the generation of service tokens (script DNAC.py)
+### Script DNAC.py - Generación de service tokens re-utilizable.
 
-Now we are going to make a **python module** called `DNAC.py` with a function in it called `get_token(username, password)` that returns the service token as a string. Complete the script `DNAC.py` and obtain a re-usable function.
+Ahora vamos a crear un **módulo de Python** llamado `DNAC.py`. Dicho módulo tendrá dentro una función `get_token(username, password)` que retorna el service token como un `String`.
+
+1.  Completar el scritp `DNAC.py` para obtener una función re-utilizable.
 
 ## Using the service token (Script 16)
 
@@ -70,7 +71,7 @@ Almost every API call you send to Cisco DNAC REST must provide a service token; 
 
 `{"X-Auth-Token": "service_token_value" }`
 
-Replace service_token_value with the value of your service token. You don't have to get a new service token every time you make a request. However, the service token value must be valid and unexpired. In this lab, for simplicity, you start by getting a new service token each time you make a call to the API. 
+Replace service_token_value with the value of your service token. You don't have to get a new service token every time you make a request. However, the service token value must be valid and unexpired. In this lab, for simplicity, you start by getting a new service token each time you make a call to the API.
 
 The following GET /host request shows how to use a service token. This request returns a list of DNAC hosts. The content of the list it returns is governed by the role of the caller. If the caller has an admin role, the response contains a list of all hosts. If the caller has an observer role, the response contains only the caller's host information.
 
@@ -102,9 +103,9 @@ Prompt the user to select a device.
 Display the IOS configuration of the user-selected device.
 Pseudo-code:
 
-1. Use GET /network-device to display a list of network devices with IP addresses.
-2. Accept user input of device selection.
-3. Use `GET /network-device/{deviceId}/config` to retrieve the IOS configuration of the specified device, then display the IOS configuration to the user.
+1.  Use GET /network-device to display a list of network devices with IP addresses.
+2.  Accept user input of device selection.
+3.  Use `GET /network-device/{deviceId}/config` to retrieve the IOS configuration of the specified device, then display the IOS configuration to the user.
 
 ### Task 1: Present a list of network devices with IP addresses (script 17)
 
@@ -119,10 +120,10 @@ The `GET /network-device` response block provides many attributes. Your applicat
 - **managementIpAddress** is the IP address of the network device.
 - **type** is the type of network device, such as a switch, router, or access point.
 
-Your task is the following: 
+Your task is the following:
 
-1. Locate and open the file `17-DNAC-get-network-device-list.py`
-2. Modify it so the script executes a `GET /network-device` request and displays a list of devices in exactly the following format:
+1.  Locate and open the file `17-DNAC-get-network-device-list.py`
+2.  Modify it so the script executes a `GET /network-device` request and displays a list of devices in exactly the following format:
 
 ```
 === Equipo 1  ===
@@ -145,7 +146,6 @@ Your task is the following:
 	Type:  Cisco Catalyst38xx stack-able ethernet switch
 	Device id:  8be78ab1-d684-49c1-8529-2b08e9c5a6d4
 	Management IP Address:  10.10.22.69
-
 ```
 
 ### Task 2: Prompt the user for input and retrieve the device ID (script 17)
@@ -177,4 +177,5 @@ print('El equipo seleccionado es el: ', device_id)
 ### Task 3: Get the IOS configuration of the specified device and display it to the user (script 18)
 
 Now, use the script `18-DNAC-get-network-config.py` (it starts where `17-DNAC-get-network-device-list.py` left) and complete it so it retreives the selected device configuration.
+
 > Hint: You can ask DNA Center for a device configuration issuing a `GET /network-device/{device-id}/config`.
