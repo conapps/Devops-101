@@ -937,32 +937,30 @@ Dadas las estructuras de datos encontradas en el archivo `code/07-nested-data-ty
 2.  Correr el script y verificar que los datos pedidos no son impresos.
 3.  Agregar los loops necesarios para cumplir con lo pedido anteriormente.
 
-## Python Functions
+## Funciones en Python
 
-A function is a block of code that is run only when it's explicitly called. For example, print() is a built-in function written in Python that you've called many times. Functions are written to modularize code to make it easy to read, reuse and easier to debug because it's located in one place. Essentially, you don't want to write code over and over again that does the same thing. Instead you would put that code into a function and then call that function whenever you need it.
+Una función es un bloque de código que es ejecutado sólo cuando se lo llama de forma explícita.
+Por ejemplo, `print()` es una función nativa del lenguaje que hemos llamado de forma explícita varias veces.
+Las funciones existen para modularizar el código, hacerlo fácil de leer y por sobre todo re-utilizable.
+Escencialmente, como programadores no querremos escribir código que haga la misma acción mas de una vez; si se presenta la necesidad simplemente escribimos una función y luego la llamamos cuantas veces sea necesario.
 
-Let's look at the structure of a function, then we'll look at a simple example. In Python a function is defined in the manner shown below. The keyword def specifies that a function is defined which is then followed by the name of the function and optional arguments that are passed into it. Code to be included within the function must be indented under the function and become part of the function block. This code is then executed only when the function is called.
+Para definir una función en Python utilizamos la palabra clave `def` seguida del nombre de la función y entre paréntesis, opcionalmente, definimos los parámetros que la misma espera recibir.
 
 ![Function structure](https://learninglabs.cisco.com/posts/files/00-prep-04-python-primer2/assets/images/function-struct.png)
 
-Let's look at some simple examples of functions. The first function named `my_function` simply prints a statement. The second function `brett` takes an argument called val which it passes to the function `range` and uses for looping.
-
-![Function examples](https://learninglabs.cisco.com/posts/files/00-prep-04-python-primer2/assets/images/function-ex.png)
-
-Now let's look at these simple functions in a script to see how they're called. When a Python script is run the interpreter looks at what it should run now. The interpreter sees the call to print and executes that statement. It then sees the next two defined functions, makes note of them, but does not execute them because they have not yet been explicitly called. Continuing down the script the interpreter then sees the call to function `my_function` and executes it. Finally, it sees the call to function `brett` with the argument of 5 passed in and executes it.
+Veamos ahora algunos ejemplos de funciones. La primer función imprime en pantalla siempre el mismo saludo, mientras que la segunda imprime un saludo personalizado basado en el argumento que recibe.
 
 ```python
-print("I'm not a function")
+def saludo():
+  print("Hola mundo!")
 
-def my_function():
-        print("Hey I'm a function!")
+def saludo_personalizado(nombre):
+  print("Hola " + nombre + "!")
 
-def brett(val):
-    for i in range(val):
-        print("I'm a function with args!")
-
-my_function()
-brett(5)
+>>> saludo()
+>>> Hola mundo!
+>>> saludo_personalizado("Juan")
+>>> Hola Juan!
 ```
 
 ### Script #8 - `08-call-functions.py`
