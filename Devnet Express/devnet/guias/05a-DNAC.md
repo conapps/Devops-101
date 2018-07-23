@@ -57,7 +57,7 @@ Ahora veamos como obtener un token de forma programática utilizando Python:
 
 **Bonus:**
 
-> Leer la sección **token-based-authnz-api-eft** de la [API documentation](https://developer.cisco.com/site/dna-center-rest-api/). Modificar el script anterior de la siguiente manera:
+Leer la sección **token-based-authnz-api-eft** de la [API documentation](https://developer.cisco.com/site/dna-center-rest-api/). Modificar el script anterior de la siguiente manera:
 
 1.  `import base64`
 2.  utilizar la función `base64.b64encode(bytes(username + ':' + password, 'utf-8')).decode('utf-8')` para codificar `username:password` en base64 y obtener el token **sin** utilizar `HTTPBasicAuth`.
