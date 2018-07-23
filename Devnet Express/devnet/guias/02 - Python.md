@@ -595,9 +595,10 @@ El siguiente script tiene las distintas maneras que vimos para concatenar string
 
 Los datos del tipo `Bool` solo pueden tomar dos valores `True` o `False`.
 
-### Lists
+### Lists (Listas)
 
-A list contains any number of sequential elements and is defined by square brackets `[]`. Here's a list:
+Una lista es una secuencia ordenada de elementos, de cualquier tipo de datos. La misma se define mediante los paréntesis rectos `[]`.
+El siguiente fragmento de código muestra la definición de una lista:
 
 ```python
 [
@@ -607,37 +608,122 @@ A list contains any number of sequential elements and is defined by square brack
 ]
 ```
 
-Which contains strings and an integer. Assigning a list to a variable is as simple as `var = ['Martha', 'Betty', 5]`. Lists are mutable which means that **they can be changed**. You can add data to a list, modify, delete it or even sort it. Notice that lists can have different data types inside them.
+Esta lista contiene `Strings` e `Int` como elementos.
+Asignar una lista a una variable es tan sencillo como `mi_lista = ['Martha', 'Betty', 5]`.
+Al ser un conjunto **ordenado** de elementos, las listas utilizan un indice correlativo para enumerar dichos elementos que comienza a contar **desde cero**. Para acceder a un elemento de una lista, se coloca el índice correspondiente al elemento que se quiere acceder dentro de paréntesis rectos`[i]`. Así, si yo quisiera acceder al primer elemento de la lista definida anteriormente haría:
 
-### Tuples
+```python
+>>> mi_lista = ['Martha', 'Betty', 5]
+>>> print(mi_lista[0])
+>>> 'Martha'
+```
 
-A tuple contains any number of sequential elements and is defined by parenthesis `()`. Here's a tuple `('Brett',9,'Cisco')`. Assigning a tuple to a variable is simple: `var1 = ('Brett',9,'Cisco')` which contains `strings` and an `integer`. Tuples are similar to lists, but they are immutable which means they **cannot be changed**. You might use a tuple to group similar data. For example, referring to the tuple defined above the similarity is that my name is Brett and I've worked at Cisco for 9 years. Because tuples are immutable they are more efficient meaning that their data can be accessed more quickly than lists.
+Algo importante es que las listas son mutables, lo cual quiere decir que sus elementos se pueden modificar:
 
-While lists and tuples are defined a little differently, they both have their data accessed the same manner which is by square brackets `[]`. The first data element always starts at **position zero**. In the example in the list that was defined earlier, `var = ['Martha', 'Betty', 5]`, if I entered the python statement `print(var[0])`, it would display `Martha`. If I entered the python statement `print(var[1])`, it would display `Betty` and so on. The same syntax applies to tuples. For the tuple defined above, `var1 = ('Brett', 9, 'Cisco')`, if I entered the python statement `print(var1[0])`, it would display `Brett`. If I entered the python statement `print(var1[1])`, it would display 9 and so on.
+```python
+>>> mi_lista = ['Martha', 'Betty', 5]
+>>> mi_lista[0] = 'Martita'
+>>> print(mi_lista[0])
+>>> 'Martita'
+```
+
+También se puede agregar elementos al final de una lista:
+
+```python
+>>> mi_lista = ['Martha', 'Betty', 5]
+>>> mi_lista.append('Martita)
+>>> print(mi_lista)
+>>> ['Martha', 'Betty', 5, 'Martita']
+```
+
+O se pueden quitar elementos de la misma:
+
+```python
+>>> mi_lista = ['Martha', 'Betty', 5]
+>>> el_ultimo_elemento = mi_lista.pop()
+>>> print(el_ultimo_elemento)
+>>> 5
+>>> print(mi_lista)
+>>> ['Martha', 'Betty']
+```
+
+### Tuples (Tuplas)
+
+Una tupla es una secuencia ordenada de elementos, de cualquier tipo de datos. La misma se define mediante los paréntesis rectos `())`.
+El siguiente fragmento de código muestra la definición de una tupla:
+
+```python
+(
+  'Martha',
+  'Betty',
+  5,
+)
+```
+
+Esta tupla contiene `Strings` e `Int` como elementos.
+Asignar una tupla a una variable es tan sencillo como `mi_tupla = ('Martha', 'Betty', 5)`.
+Al ser un conjunto **ordenado** de elementos, las tuplas utilizan un indice correlativo para enumerar dichos elementos que comienza a contar **desde cero**. Al igual que con las listas, para acceder a un elemento de una tupla, se coloca el índice correspondiente al elemento que se quiere acceder dentro de paréntesis rectos`[i]`.
+Así, si yo quisiera acceder al primer elemento de la tupla definida anteriormente haría:
+
+```python
+>>> mi_tupla = ['Martha', 'Betty', 5]
+>>> print(mi_tupla[0])
+>>> 'Martha'
+```
+
+A diferencia de las listas, las tuplas **no son mutables**, lo cual quiere decir que sus elementos **no se pueden modificar**:
+
+```python
+>>> mi_tupla = ['Martha', 'Betty', 5]
+>>> mi_tupla[0] = 'Martita'
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+TypeError: 'tuple' object does not support item assignment
+```
 
 ### Dictionaries
 
-A dictionary is a different than a list or a tuple. Each element in a dictionary must contain a key followed by a value. This key value association is typically referred to as name-value pairs. Dictionaries are defined by curly braces `{}`. Here's a dictionary:
+Los diccionarios son un conjunto arbitrario de elementos compuestos por una llave y un valor correspondiente a dicha llave; es decir, cada elemento es un par llave-valor.
+Los diccionarios se definen con llaves `{}` y a diferencia de las listas y las tuplas, sus elementos no tienen un orden específico.
+
+El siguiente ejemplo muestra la definición de un diccionario:
 
 ```python
 {
-  "car": "corvette",
-  "age": 7,
-  "food": "pizza"
+  "auto": "Chevrolet",
+  "edad": 7,
+  "comida": "pizza"
 }
 ```
 
-Assigning a dictionary to a variable is simple:
+Para asignar un diccionario a una variable puedo ejecutar el siguiente código:
 
 ```python
-myvar = {
-  "car": "corvette",
-  "age": 7,
-  "food": "pizza"
+mi_diccionario = {
+  "auto": "Chevrolet",
+  "edad": 7,
+  "comida": "pizza"
 }
 ```
 
-The value in a dictionary is accessed by its key. For example if I entered the python statement `print(myvar["car"])`, it would display `corvette`. If I entered the python statement `print(myvar["food"])`, it would display pizza and so on. Dictionaries are sometimes also called `maps` or `associative arrays`.
+Cada valor dentro de un diccionario se accede a través de su llave correspondiente; veamos algunos ejemplos:
+
+```python
+mi_diccionario = {
+  "auto": "Chevrolet",
+  "edad": 7,
+  "comida": "pizza"
+}
+
+>>> print(mi_diccionario["auto"])
+>>> Chevrolet
+>>> print(mi_diccionario["comida"])
+>>> pizza
+>>> print(mi_diccionario["otra_llave"])
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+KeyError: 'otra_llave'
+```
 
 ![Python example data types](https://learninglabs.cisco.com/posts/files/00-prep-04-python-primer2/assets/images/python-datatypes2.png)
 
