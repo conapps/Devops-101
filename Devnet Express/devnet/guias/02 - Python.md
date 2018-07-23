@@ -649,7 +649,7 @@ O se pueden quitar elementos de la misma:
 
 ### Tuples (Tuplas)
 
-Una tupla es una secuencia ordenada de elementos, de cualquier tipo de datos. La misma se define mediante los paréntesis rectos `())`.
+Una tupla es una secuencia ordenada de elementos, de cualquier tipo de datos. La misma se define mediante los paréntesis rectos `()`.
 El siguiente fragmento de código muestra la definición de una tupla:
 
 ```python
@@ -739,47 +739,54 @@ Al igual que en el script anterior, hay ciertos errores en el script que se tien
 2.  Correr el script y verificar que existe un error con el mismo.
 3.  Solucionar el error y verificar su funcionamiento corriendolo nuevamente.
 
-## Defining and Accessing Nested Data Types
+## Tipos de datos anidados
 
-As discussed in Step 1, there are several complex data types which are lists, tuples and dictionaries. While each complex data type can exist on its own, there are many cases where one is nested inside the other. A common example is to have a dictionary of lists or the opposite such as a list of dictionaries.
+Si bien cada uno de los tipos de datos complejos que vimos anteriormente, (listas, tuplas y diccionarios), pueden existir de forma independiente, muy comunmente deberemos trabajar en situaciones donde tenemos uno dentro del otro. A modo de ejemplo, podríamos tener una lista de diccionarios, o un diccionario de listas.
 
-For example, if I wanted to classify food by vegetables and desserts I'd create a list of vegetables and then a separate list of desserts. How can I organize these different lists into one complex datatype so I can access them? This question is a common one that software engineers ask and answer. In Python that nested datatype would look something like what's assigned to variables `food` below. Here we are using a dictionary datatype with the vegetables or desserts as the key followed by a list of each type. Recall that to access the value in the dictionary that we have to specify the key. And to access an element in a list that we need to specify the element number.
-
-We might do a similar thing for cars, but here we'd like to list the make and model of each sports and classic car. In this case we use sports and classic as the keys and for the value we have a dictionary of the make and model of each car. Recall that to access the value in the dictionary that we have to specify the key, so in this case we specify the key twice - first to access the dictionary of sports car and second to access type sports car model.
+Si por ejemplo quisiera clasificar la comida en dos categorías, vegetales y postres, crearía una lista de vegetales y luego otra lista de postres por separado. Ahora, ¿cómo podría definir una estructura de datos mas compleja, que respete la clasificación y me permita alacenar todo en una única variable? Véamoslo en un ejemplo:
 
 ```python
-food = {
-  "vegetables": [
-    "carrots",
-    "kale",
-    "cucumber",
-    "tomato"
+comida = {
+  "vegetales": [
+    "zanahorias",
+    "pepino",
+    "tomate"
   ],
-  "desserts": [
-    "cake",
-    "ice cream",
-    "donut"
+  "postres": [
+    "torta",
+    "helado",
+    "panqueque"
   ]
 }
 
-print("My favorite vegetable is " + food["vegetables"][0])
-print("My favorite dessert is " + food["desserts"][1])
+>>> print("Mi vegetal favorito es " + comida["vegetales"][0])
+>>> zanahorias
+>>> print("Mi postre favorito es " + comida["postres"][1])
+>>> helado
+```
 
-cars = {
-  "sports": {
+En el ejemplo anterior se definió una variable `comida` y se le asignó un diccionario con dos llaves: `vegetales` y `postres`, cada una conteniendo una lista. De esta forma, `comida["vegetales"]` contiene el valor correspondiente a la llave "vegetales" dentro del diccionario, en este caso una lista de vegetales, mientras que `comida["vegetales"][0]` contiene el primer elemento de dicha lista. Resumiendo, la estructura de datos contenida dentro de la variable `comida` es un diccionario de listas. Para acceder a cada uno de los elementos, `zanahorias`, `torta`, `helado`, etc, simplementes utilizaremos combinaciones de los métodos de acceso que ya hemos aprendido según sea necesario.
+
+Para terminar de fijar las ideas veamos otro ejemplo lijeramente distinto:
+
+```python
+autos = {
+  "deportivos": {
     "Volkswagon": "Porsche",
     "Dodge": "Viper",
     "Chevy": "Corvette"
   },
-  "classic": {
+  "clasicos": {
     "Mercedes-Benz": "300SL",
     "Toyota": "2000GT",
     "Lincoln": "Continental"
   }
 }
 
-print("My favorite sports car is a Dodge " + cars["sports"]["Dodge"])
-print("My favorite classic car is a Lincoln " + cars["classic"]["Lincoln"])
+>>> print("Mi auto deportivo favorito es el Dodge " + autos["deportivos"]["Dodge"])
+>>> Viper
+>>> print("Mi auto clasico favorito es el Lincoln " + autos["clasicos"]["Lincoln"])
+>>> Continental
 ```
 
 ### Script #6 - `nested-data-types.py`
@@ -799,60 +806,118 @@ Este script tiene configurado una estructura de datos compleja. La idea del ejer
 2.  Correr el script y verificar que los datos pedidos no son impresos.
 3.  Modificar los comandos `print` para que sean impresos en la consola los valores requeridos.
 
-## Python Loops
+## Python Loops (búcles)
 
-There are many reasons to write loops in Python or any coding language for that matter. The most common reason is that you have a list of data that you want to process. You might have noticed in the previous steps that when you wanted to access an object that you had to specify the element number or the key. Imagine how difficult that would be if you had to do the same thing for a hundred or a thousand objects! Loops make processing lists, tuples and dictionaries much easier because the loop will iterate through each object for you and you can then process the data via the source code that you write.
+Existen muchas razones para utilizar loops en Python o cualqueir otro lenguaje. Uno de los motivos mas comunes es la necesidad de procesar estructuras de datos anidadas como las que vimos en la sección anterior.
+Los loops nos permiten procesar estas estructura aún cuando las mismas tengan cientos o miles de elementos.
 
-Let's start by looking at different types of loops in Python
+Comencemos por explorar ejemplos sencillos de los distintos tipos de loops que existen en Python.
 
-The first type of loop uses the `range` function to specify a fixed amount of iterations that will occur in a loop. The first example specifies there should be `5` iterations. By default Python will start counting from `0` so going from `0` to `4` is `5` iterations. In the next example we provide a starting and ending point. Here there will be `3` iterations since python excludes the last number, so the iterations will be `2, 3, 4`. The `in` keyword is important because this keyword causes the value iterated over in the range to be assigned to the variable count. In this case that means that the variable name `count` is incremented with each iteration.
+### `for` loops.
 
-Similarly in the example `for fruit in basket`, **basket** is a list or dictionary that we iterate over and with each iteration the value found is assigned to the variable named `fruit` which we can then parse. In the final two examples, `while loops` don't assign a value to a variable and are typically used for processing inputs or data that is not in a list. For example, the `while True` infinite loop might be used when waiting for user input.
-
-![Different python loops](https://learninglabs.cisco.com/posts/files/00-prep-04-python-primer2/assets/images/loops.png)
-
-Using this new information about loops let's see how we can now process nested datatypes much more quickly. In step 2 you parsed the food and cars variables that contained nested data types. The solution required writing a line code to print each element. Observe the added code below under `#Parse datatypes with Loops` to see how much simpler and faster it is to access the data via looping.
+A diferencia de otros lenguajes, en Python, los loops del tipo `for` necesitan un objeto "iterable" para determinar la cantidad de veces que se ejecutará un bloque de código específico. Esto comportamiento hace que para el caso mas común, cuando se quiere recorrer una estructura de datos, el código sea mucho mas legible.
+Veamos esto con un ejemplo, supongamos que queremos imprimir cada uno de los vegetales en la lista:
 
 ```python
-food = {
-  "vegetables": [
-    "carrots",
-    "kale",
-    "cucumber",
-    "tomato"
+vegetales = [
+  "zanahorias",
+  "pepino",
+  "tomate"
+]
+
+for vegetal in vegetales:
+  print(vegetal)
+
+>>> zanahorias
+>>> pepino
+>>> tomate
+```
+
+En cada iteración el loop `for` asigna a la varible `vegetal` cada uno de los elementos de la lista (nuestro iterable), y ejecuta luego el código correspondiente.
+
+Ahora, ¿que sucede si el problema que estoy intentando resolver no es procesar un tipo de datos "iterable" sino simplemente ejecutar una misma acción una cantidad determinada de veces?
+Para esto, Python dispone de la función `range()`. La misma es capas de generar un iterable del tamaño desado para darle como insumo al loop `for` para que pueda recorre.
+Veámos la función `range()` en acción con un ejemplo:
+
+```python
+for item in range(10):
+  print('Quiero imprimir esto 10 veces')
+
+Quiero imprimir esto 10 veces
+Quiero imprimir esto 10 veces
+Quiero imprimir esto 10 veces
+Quiero imprimir esto 10 veces
+Quiero imprimir esto 10 veces
+Quiero imprimir esto 10 veces
+Quiero imprimir esto 10 veces
+Quiero imprimir esto 10 veces
+Quiero imprimir esto 10 veces
+Quiero imprimir esto 10 veces
+```
+
+### `while` loops.
+
+A diferencia de los loops del tipo `for`, los loops del tipo `while` ejecutarán un bloque de código específico, un número indeterminado de veces, mientras se cumpla cierta condición.
+
+Veámoslo con un ejemplo:
+
+```python
+limite = 10
+contador = 0
+while contador < limite:
+  print('Quiero imprimir esto 5 veces')
+  contador = contador + 1
+
+Quiero imprimir esto 10 veces
+Quiero imprimir esto 10 veces
+Quiero imprimir esto 10 veces
+Quiero imprimir esto 10 veces
+Quiero imprimir esto 10 veces
+Quiero imprimir esto 10 veces
+Quiero imprimir esto 10 veces
+Quiero imprimir esto 10 veces
+Quiero imprimir esto 10 veces
+Quiero imprimir esto 10 veces
+```
+
+### Ejmplo de aplicación de loops
+
+Utilizando lo aprendido sobre tipos de datos anidados y sobre loops en Python, veamos con un ejemplo como podemos procesar los `vegetales` y `postres` de las secciones anteriores.
+
+```python
+comida = {
+  "vegetales": [
+    "zanahorias",
+    "pepino",
+    "tomate"
   ],
-  "desserts": [
-    "cake",
-    "ice cream",
-    "donut"
+  "postres": [
+    "torta",
+    "helado",
+    "panqueque"
   ]
 }
 
-print("My favorite vegetable is " + food["vegetables"][0])
-print("My favorite vegetable is " + food["vegetables"][1])
+print('La lista de vegetales es:')
+for vegetal in comida['vegetales']:
+  print('\t' + vegetal)
 
-cars = {
-  "sports": {
-    "Volkswagon": "Porsche",
-    "Dodge": "Viper",
-    "Chevy": "Corvette"
-  },
-  "classic": {
-    "Mercedes-Benz": "300SL",
-    "Toyota": "2000GT",
-    "Lincoln": "Continental"
-  }
-}
+print('La lista de postres es:')
+for postre in comida['postres']:
+  print('\t' + postre)
+```
 
-print("My favorite sports car is a " + cars["sports"]["Dodge"])
-print("My favorite sports car is a " + cars["sports"]["Chevy"])
+...y el resultado de correr el código en el ejemplo anterior es:
 
-#Parse datatypes with loops
-for hungry in food["vegetables"]:
-  print("My favorite vegetable is " + hungry)
-
-for auto in cars["sports"]:
-  print("My favorite sports car is a " + cars["sports"][auto])
+```python
+>>> La lista de vegetales es:
+>>>   zanahorias
+>>>   pepino
+>>>   tomate
+>>> La lista de postres es:
+>>>   torta
+>>>   helado
+>>>   panqueque
 ```
 
 ### Script #7 - `nested-data-type-loops.py`
