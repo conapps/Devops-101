@@ -1,19 +1,7 @@
-### DevNet APIC-EM API URL
-
-```
-https://devnetapi.cisco.com/sandbox/apic_em/api/v1/
-```
-
-### DevNet APIC-EM API documentation
-
-```
-http://devnetapic.cisco.com/
-```
-
 ### Devnet DNA Center API documentation
 
 ```
-https://developer.cisco.com/site/dna-center-rest-api/?version=1.0
+https://developer.cisco.com/site/dna-center-rest-api/
 ```
 
 ### Devnet DNA Center API URL (to get the token)
