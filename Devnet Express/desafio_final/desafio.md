@@ -41,19 +41,19 @@ Los técnicos de ACME se encargarán luego de configurar sus sistemas para que e
 ____
 
 ##### Clave para poder autenticar con la API de Meraki
-MERAKI_KEY = "76268186c0b0da0eb10af1ba92419703930f9322"
+MERAKI_KEY = "c3c60821f6c5e1c7928f76fd5b1e1305184a24f5"
 
 ##### Nombre de la organización que contiene la red para la cuál hay que obtener estadísticas
-ORG_NAME = 'C001 - CONATEL S.A.'
+ORG_NAME = 'C008 - Preventa Conatel'
 
 ##### Nombre de la red para cuál hay que obtener estadísticas
-NETWORK_NAME = 'W001 - Wireless ACME'
+NETWORK_NAME = 'X001 - LAB CONATEL'
 
 #### Spark
 ____
 
+##### Clave para poder autenticar con la API de Spark
+SPARK_KEY = "MDE5NmViZWItMzc4ZS00YzEwLTlhNzUtYjQ0NDQ2ZDlhMmRlNDFlNDhkY2MtNDQ5"
+
 ##### Nombre de la sala donde hay que publicar las alarmas de tráfico
-SPARK_ROOM_NAME = 'ACME IT Room'
-
-
-<strong style="color: red">Descargue <a href="https://www.dropbox.com/s/9w0yndci1quwim2/desafio_final.py?dl=1">aquí</a> un script para utilizar como template, el mismo ya contiene los datos precargados, así como la implementación para leer el umbral de tráfico como un parámetro.</strong>
+SPARK_ROOM_NAME = 'CONATEL - Devnet Express 2018'
