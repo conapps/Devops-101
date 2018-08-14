@@ -18,8 +18,8 @@ Los contenedores pueden conectarse a estas redes al momento de su creación con 
 Si no especificamos ninguna opción, Docker conecta los contenedores a la red ```bridge``` por defecto.
 Estas tres redes utilizan drivers dinsintos y por tanto tienen comportamientos también distintos, a continuación veremos una breve explicación de cada una de ellas:
 
-#### bridge
-La red ```bridge``` representa a la interface ```docker0``` en el host. Básicamente, al instalar Docker, se crea en el host una interface ```docker0``` que "mira" hacia el motor de Docker, se le asigna una dirección IP, y se la deja lista para que los containers que no definan ninguna red específica al momento de su creación se conecten a ella.
+### bridge
+La red ```bridge``` representa a la interface ```docker0``` en el host. Básicamente, al instalar Docker, se crea en el host una interface ```docker0``` que "mira" hacia los contenedores, se le asigna una dirección IP, y se la deja lista para que los contenedores que no definan ninguna red específica al momento de su creación se conecten a ella.
 
 ```bash
 $ ifconfig
@@ -37,15 +37,15 @@ docker0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
 
 La red se llama ```bridge``` debido a que técnicamente es eso, un bridge, que interconecta en capa 2 a todos los contenedores que la utilizan, (y a la interface ```docker0``` del host). La interface ```docker0``` existe para que los contenedores conectados a la red ```bridge``` tengan conectividad con el exterior; esto se hace con un PAT utilizando la IP de dicha interface.
 
-#### none
+### none
 La red tipo ```none``` básicamente deja al contenedor aislado del mundo.
-Veamos esto con un ejemplo, pero antes un breve ejercicio para preparar el ambiente de pruebas:
+Veamos esto con un breve ejercicio guiado.
 
-> **Ejercicio:**
->
-> Crear una imagen llamada ```netubuntu``` basada en la imagen ubuntu, que tenga instalado el paquete ```net-tools```.
+#### Ejercicio 16
 
-Ahora que contamos con la imagen ```netubuntu``` podemos verificar el funcionamiento de la red ```none``` con driver ```null```.
+1 - Crear una imagen llamada ```netubuntu``` basada en la imagen ubuntu, que tenga instalado el paquete ```net-tools```.
+
+2 - Ahora que contamos con la imagen ```netubuntu``` podemos verificar el funcionamiento de la red ```none``` con driver ```null```.
 
 
 ```bash
@@ -61,11 +61,26 @@ lo        Link encap:Local Loopback
 ```
 
 
-#### host
-La red tipo ```host``` lo que hace es que el contenedor utiliza directamente el stack TCP/IP de la máquina host. Por lo que en lo que a red se refiere, el contenedor y el host son la misma cosa. Verfiquemos el funcionamiento de esta red:
+### host
+La red tipo ```host``` lo que hace es que el contenedor utiliza directamente el stack TCP/IP de la máquina host. Por lo que en lo que a red se refiere, el contenedor y el host son la misma cosa. Verfiquemos el funcionamiento de esta red con un ejercicio guiado.
+
+#### Ejercicio 17
+
+1 - En la máquina host ejecutar y documentar la salida del siguiente comando.
+
+``` bash
+$ ifconfig
+```
+
+2 - Generar un contenedor nuevo de la siguiente forma:
 
 ```bash
 $ docker run -it --name my-host-container --rm --network=host netubuntu bash
+```
+
+3 - Parados dentro del contenedor ejecutar el siguiente comando y verficar que la salida es exactamente la misma que la de la máquina host.
+
+``` bash
 root@68965d657e5d:/# ifconfig
 ---> AQUÍ DEBERÍA VERSE EXACTAMENTE LO MISMO QUE EN EL HOST <---
 ```
@@ -76,24 +91,30 @@ Las redes ```none``` y ```host``` son bastante simples de comprender, no tanto a
 
 La figura a continuación muestra gráficamente como sería la conexión de varios containers a la red ```bridge```.
 
-![alt text](network-type-bridge.png "Conexión de tres contenedores a una red bridgeada.")
+![alt text](Imagenes/network-type-bridge.png "Conexión de tres contenedores a una red bridgeada.")
 
-Veamos como se vería la figura anterior en la consola, pero antes un breve ejercicio para preparar el ambiente de pruebas:
+Veamos como se vería la figura anterior en la consola a través de un ejercicio guiado.
 
-> **Ejercicio:**
->
-> Actualizar la imagen ```netubuntu``` creada en el ejercicio anterior para que además incluya el paquete ```iputils-ping```.
+#### Ejercicio 18
 
-Ahora que tenemos la imagen necesaria, armemos una topología y aprendamos como obtener la información de la misma en formato JSON.
+1 - Actualizar la imagen ```netubuntu``` creada en el ejercicio anterior para que además incluya el paquete ```iputils-ping```.
 
-```bash
+2 - Ahora que tenemos la imagen necesaria, armemos la topología. 
+
+``` bash
 $ docker run -d -it --name c1 --rm netubuntu bash
 0c31832e576a9e082768eb0fbdb6271ffdbda8538a4894775b28f3c54540e00a
+
 $ docker run -d -it --name c2 --rm netubuntu bash
 4d723cf46218c94895bb87eb3097055869357fd56b1c8a0df4c863b4b4903129
+
 $ docker run -d -it --name c3 --rm netubuntu bash
 4d61c3f6b98b163680ac19c701778b4b7d2749898deef432bf13c30b404ef15e
+```
 
+3 - Aprendamos ahora como obtener la información de la red y los contenedores conectados a la misma en formato JSON.
+
+```bash
 $ docker network inspect bridge
 [
     {
@@ -156,9 +177,9 @@ $ docker network inspect bridge
 ]
 ```
 
-Notemos dentro de los campos del JSON retornado por el comando ```docker network inspect bridge``` la dirección de red ```172.17.0.0/16```, la dirección IP (```172.17.0.1```) correspondiente a la interface ```docker0``` y las direcciones MAC y direcciones IP de cada uno de los contenedores.
+Notemos dentro de los campos del JSON retornado por el comando ```docker network inspect bridge``` la dirección de la red ```172.17.0.0/16```, la dirección IP (```172.17.0.1```) correspondiente a la interface ```docker0``` y las direcciones MAC y direcciones IP de cada uno de los contenedores.
 
-Comprobaremos ahora que los contenedores tienen conectividad IP entre si, con la interface ```docker0``` del host y con el mundo exterior.
+4 - Comprobaremos ahora que los contenedores tienen conectividad IP entre si, con la interface ```docker0``` del host y con el mundo exterior.
 
 > **Nota-1:** se puede salir de la consola de un contenedor sin apagarlo con la secuencia de comandos ```ctl+p,ctl+q```
 > **Nota-2:** verficar además que no se puede resolver mediante DNS el nombre de los contenedores, en este caso ```c1```, ```c2``` y ```c3```
@@ -176,6 +197,7 @@ PING 172.17.0.3 (172.17.0.3) 56(84) bytes of data.
 --- 172.17.0.3 ping statistics ---
 3 packets transmitted, 3 received, 0% packet loss, time 2048ms
 rtt min/avg/max/mdev = 0.134/0.139/0.145/0.004 ms
+
 root@0d1697247d1d:/# ping 172.17.0.4
 PING 172.17.0.4 (172.17.0.4) 56(84) bytes of data.
 64 bytes from 172.17.0.4: icmp_seq=1 ttl=64 time=0.285 ms
@@ -185,6 +207,7 @@ PING 172.17.0.4 (172.17.0.4) 56(84) bytes of data.
 --- 172.17.0.4 ping statistics ---
 3 packets transmitted, 3 received, 0% packet loss, time 2055ms
 rtt min/avg/max/mdev = 0.144/0.212/0.285/0.057 ms
+
 root@0d1697247d1d:/# ping 172.17.0.1
 PING 172.17.0.1 (172.17.0.1) 56(84) bytes of data.
 64 bytes from 172.17.0.1: icmp_seq=1 ttl=64 time=0.257 ms
@@ -194,6 +217,7 @@ PING 172.17.0.1 (172.17.0.1) 56(84) bytes of data.
 --- 172.17.0.1 ping statistics ---
 3 packets transmitted, 3 received, 0% packet loss, time 2052ms
 rtt min/avg/max/mdev = 0.116/0.169/0.257/0.062 ms
+
 root@0d1697247d1d:/# ping 8.8.8.8
 PING 8.8.8.8 (8.8.8.8) 56(84) bytes of data.
 64 bytes from 8.8.8.8: icmp_seq=1 ttl=51 time=36.6 ms
@@ -203,87 +227,14 @@ PING 8.8.8.8 (8.8.8.8) 56(84) bytes of data.
 --- 8.8.8.8 ping statistics ---
 3 packets transmitted, 3 received, 0% packet loss, time 2003ms
 rtt min/avg/max/mdev = 32.989/34.370/36.613/1.600 ms
+
+root@0d1697247d1d:/# ping c3
+ping: c3: Name or service not known
 ```
 
-```bash
-$ docker attach c2
-root@3fd032d1d648:/#
-root@3fd032d1d648:/# ping 172.17.0.2
-PING 172.17.0.2 (172.17.0.2) 56(84) bytes of data.
-64 bytes from 172.17.0.2: icmp_seq=1 ttl=64 time=0.195 ms
-64 bytes from 172.17.0.2: icmp_seq=2 ttl=64 time=0.144 ms
-64 bytes from 172.17.0.2: icmp_seq=3 ttl=64 time=0.138 ms
-^C
---- 172.17.0.2 ping statistics ---
-3 packets transmitted, 3 received, 0% packet loss, time 2045ms
-rtt min/avg/max/mdev = 0.138/0.159/0.195/0.025 ms
-root@3fd032d1d648:/# ping 172.17.0.4
-PING 172.17.0.4 (172.17.0.4) 56(84) bytes of data.
-64 bytes from 172.17.0.4: icmp_seq=1 ttl=64 time=0.254 ms
-64 bytes from 172.17.0.4: icmp_seq=2 ttl=64 time=0.048 ms
-64 bytes from 172.17.0.4: icmp_seq=3 ttl=64 time=0.134 ms
-^C
---- 172.17.0.4 ping statistics ---
-3 packets transmitted, 3 received, 0% packet loss, time 2039ms
-rtt min/avg/max/mdev = 0.048/0.145/0.254/0.085 ms
-root@3fd032d1d648:/# ping 172.17.0.1
-PING 172.17.0.1 (172.17.0.1) 56(84) bytes of data.
-64 bytes from 172.17.0.1: icmp_seq=1 ttl=64 time=0.220 ms
-64 bytes from 172.17.0.1: icmp_seq=2 ttl=64 time=0.132 ms
-^C
---- 172.17.0.1 ping statistics ---
-2 packets transmitted, 2 received, 0% packet loss, time 1031ms
-rtt min/avg/max/mdev = 0.132/0.176/0.220/0.044 ms
-root@3fd032d1d648:/# ping 8.8.8.8
-PING 8.8.8.8 (8.8.8.8) 56(84) bytes of data.
-64 bytes from 8.8.8.8: icmp_seq=1 ttl=51 time=36.6 ms
-64 bytes from 8.8.8.8: icmp_seq=2 ttl=51 time=32.9 ms
-64 bytes from 8.8.8.8: icmp_seq=3 ttl=51 time=33.5 ms
-^C
---- 8.8.8.8 ping statistics ---
-3 packets transmitted, 3 received, 0% packet loss, time 2003ms
-rtt min/avg/max/mdev = 32.989/34.370/36.613/1.600 ms
-```
+Repetir el procedimiento anterior para `c2` y `c3`.
 
-```bash
-$ docker attach c3
-root@75cfce7d09c6:/#
-root@75cfce7d09c6:/# ping 172.17.0.2
-PING 172.17.0.2 (172.17.0.2) 56(84) bytes of data.
-64 bytes from 172.17.0.2: icmp_seq=1 ttl=64 time=0.188 ms
-64 bytes from 172.17.0.2: icmp_seq=2 ttl=64 time=0.134 ms
-64 bytes from 172.17.0.2: icmp_seq=3 ttl=64 time=0.130 ms
-^C
---- 172.17.0.2 ping statistics ---
-3 packets transmitted, 3 received, 0% packet loss, time 2025ms
-rtt min/avg/max/mdev = 0.130/0.150/0.188/0.030 ms
-root@75cfce7d09c6:/# ping 172.17.0.3
-PING 172.17.0.3 (172.17.0.3) 56(84) bytes of data.
-64 bytes from 172.17.0.3: icmp_seq=1 ttl=64 time=0.186 ms
-64 bytes from 172.17.0.3: icmp_seq=2 ttl=64 time=0.137 ms
-^C
---- 172.17.0.3 ping statistics ---
-2 packets transmitted, 2 received, 0% packet loss, time 1006ms
-rtt min/avg/max/mdev = 0.137/0.161/0.186/0.027 ms
-root@75cfce7d09c6:/# ping 172.17.0.1
-PING 172.17.0.1 (172.17.0.1) 56(84) bytes of data.
-64 bytes from 172.17.0.1: icmp_seq=1 ttl=64 time=0.251 ms
-64 bytes from 172.17.0.1: icmp_seq=2 ttl=64 time=0.120 ms
-64 bytes from 172.17.0.1: icmp_seq=3 ttl=64 time=0.118 ms
-^C
---- 172.17.0.1 ping statistics ---
-3 packets transmitted, 3 received, 0% packet loss, time 2030ms
-rtt min/avg/max/mdev = 0.118/0.163/0.251/0.062 ms
-root@75cfce7d09c6:/# ping 8.8.8.8
-PING 8.8.8.8 (8.8.8.8) 56(84) bytes of data.
-64 bytes from 8.8.8.8: icmp_seq=1 ttl=51 time=36.6 ms
-64 bytes from 8.8.8.8: icmp_seq=2 ttl=51 time=32.9 ms
-64 bytes from 8.8.8.8: icmp_seq=3 ttl=51 time=33.5 ms
-^C
---- 8.8.8.8 ping statistics ---
-3 packets transmitted, 3 received, 0% packet loss, time 2003ms
-rtt min/avg/max/mdev = 32.989/34.370/36.613/1.600 ms
-```
+
 
 ### Redes definidas por el usuario.
 
@@ -291,14 +242,22 @@ Adicional a las redes por defecto, ```bridge```, ```none``` y ```host```, que ut
 Con esta funcionalidad se pueden armar topologías de red complejas y controlar de forma granular la conectividad entre containers.
 Veamos por ejemplo como podemos crear una un par de redes del tipo ```bridge``` y aislar los containers.
 
+#### Ejercicio 19
 
-```bash
+1 - Primero vamos a crear dos redes **distintas** utilizando el mismo driver, `bridge`.
+
+``` bash
 $ docker network create --driver bridge red1
 9daf91cc58503d6b2f0594cacbb90691a8ac420593491f28940154bf1d703542
 ~
 $ docker network create --driver bridge red2
 4d37ca443e8a7e5d56d0410f65b8b6222f93555ddd8c4ec5e7df7c63b5f1711b
 ~
+```
+
+2 - Ahora vamos a crear 4 contenedores y a conectar dos en cada red. `c1` y `c2` se conectarán a `red1` mientras que `c3` y `c4` se conectarán a `red2`.
+
+``` bash
 $ docker run -it -d --rm --name c1 --network red1 netubuntu bash
 af8e9429257fb816009c8cc13d9f6b785b28c520999a970def24bcd90564de35
 ~
@@ -310,8 +269,12 @@ $ docker run -it -d --rm --name c3 --network red2 netubuntu bash
 ~
 $ docker run -it -d --rm --name c4 --network red2 netubuntu bash
 7bdcda94ebf8284e855b2a150900721ac97c7dc54ec0c72f14a0d4a9b32a7014
+```
+
+3 - Inspeccionemos ahora `red1` y `red2`.
 
 
+```bash
 $ docker network inspect red1
 [
     {
@@ -408,9 +371,9 @@ $ docker network inspect red2
 
 ```
 
-Probemos ahora la conectividad entre containers.
+4 - Probemos ahora la conectividad entre containers. ¿Qué conclusiones obtiene?
 
-> **Nota:** verificar nuevamente si funciona la resolución DNS de los nombres de los containers.
+> **Nota:** no olvidar verificar nuevamente si funciona la resolución DNS de los nombres de los containers.
 
 ```bash
 $ docker attach c1
@@ -504,8 +467,28 @@ $ docker inspect prueba-web-server
       }
   }
 ---> SALIDA OMITIDA PARA MAYOR CLARIDAD <---
-````
-Si ahora abrimos un explorador y navegamos a la url ```http://172.17.0.2:2368``` podemos comprobar que accedemos sin problemas. ¿Pero que sucede si utilizando el mismo navegador intentamos acceder a la url ```http://localhost:2368```?. Esto no funciona debido a que ```localhost``` está mapeado a una IP "exterior" del host y por defecto los contenedores no son accesibles dede afuera.
+
+```
+
+Si tuviésemos a disposición un explorador y navegamos a la url ```http://172.17.0.2:2368``` podríamos comprobar que accedemos sin problemas. De hecho, hagamos algo para verlo utilizando la línea de comandos:
+
+``` bash
+$ curl http://172.17.0.2:2368
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <title>Ghost</title>
+<-- Salida omitida para mayor claridad -->
+```
+
+Como podemos ver el servidor devuelve la página en HTML, lo que demuestra que está funcionando.
+
+¿Pero que sucede si utilizando el navegador de nuestra notebook intentamos acceder a la url ```http://serverx.labs.conatel.cloud:2368```?. Esto no funciona debido a que ```serverx.labs.conatel.cloud``` está mapeado a una IP "exterior" del host y por defecto los contenedores no son accesibles dede afuera.
 Para hacer que un contenedor pueda ser accesible desde afuera es necesario publicar dicho puerto al momento de la creación del contenedor; esto se hace utilizando la opción ```-p```. De esta forma, si ahora ejecutamos el siguiete comando:
 
 ```bash
@@ -534,20 +517,19 @@ $ docker inspect prueba-web-server
 ---> SALIDA OMITIDA PARA MAYOR CLARIDAD <---
 ```
 
-Para comprobar que esto funciona intente nuevamente navegar a la url ```http://localhost:2368```.
 Si quisieramos tener mas control sobre el puerto elegido para publicar servicios en la máquina host podríamos correr:
 
 ```bash
 $ docker run -d --rm --name prueba-web-server -p 80:2368 ghost
 ```
-Para comprobar que esto funciona intente navegar a la url ```http://localhost```.
+De esta forma el puerto `2368` del contenedor queda mapeado al puerto `80` de la máquina host.
+
+Para comprobar que esto funciona intente navegar a la url ```http://serverx.labs.conatest.click```.
 Si quisieramos además del puerto, poder controlar sobre que IP de la máquina host publicamos el servicio podríamos ejecutar:
 
 ```bash
 $ docker run -d --rm --name prueba-web-server -p <ip-a-publicar>:80:2368 ghost
 ```
-
-Para comprobar que funciona puede intentar navegar a ```http://<ip-a-publicar>``` y luego ver que si intenta acceder a ```http://localhost``` dicha url no responde.
 
 
 
