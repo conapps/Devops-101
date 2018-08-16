@@ -1,7 +1,7 @@
 Docker Compose
 ===
 
-Ref:
+Referencias:
 - [Documentación oficial Docker Compose](https://docs.docker.com/compose/)
 
 
@@ -38,18 +38,49 @@ volumes:
 Luego avanzaremos sobre los detalles de este archivo.
 
 
-Instalando Docker Compose
----
-Docker Compose se puede instalar de varias formas, recomendamos realizar la instalación con pip.
-Nota: Al momento de escribir este tutorial, instalar Docker Compose mediante *apt-get* nos ha dado problemas, dado que la versión instalada no soporta el archivo de configuración *version: 3* que es el que utilizamos en este tutorial.
 
-**Instalación:**
+## Instalando Docker Compose
+
+Docker Compose se puede instalar de varias formas, recomendamos realizar la instalación mediante una de estas dos alternativas.
+
+Nota: Al momento de escribir este tutorial, instalar Docker Compose mediante *apt-get* nos ha dado problemas, dado que la versión instalada no soporta el archivo de configuración *version 3* que es el que utilizamos en este tutorial. Por tanto no recomendamos por el momento instalar de esta forma.
+
+
+
+#### Alternativa 1: Instalación mediante *curl* 
+
+```bash
+sudo curl -L https://github.com/docker/compose/releases/download/1.22.0/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose
 ```
+
+Para instalar la última versión, en el comando anterior debemos indicar el último release disponible, el cual lo podemos ver aquí: [Compose repository release page on GitHub](https://github.com/docker/compose/releases).
+
+Luego de finalizada la instalación debemos aplicar permiso de ejecución al binario:
+
+```bash
+sudo chmod +x /usr/local/bin/docker-compose
+```
+
+
+
+#### Alternativa 2: Instlación mediante *pip*
+
+```bash
 $ sudo pip install docker-compose
 ```
 
-**Verificación:**
-```
+
+
+#### Verificación de la instalación:
+
+```bash
 $ docker-compose --version
 docker-compose version 1.21.2, build 1719ceb
 ```
+
+
+
+Ref.: [Instalación Docker Compose](https://docs.docker.com/compose/install/#install-compose)
+
+
+
