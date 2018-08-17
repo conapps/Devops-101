@@ -79,13 +79,15 @@ Ref.: [Compose file version 3 reference](https://docs.docker.com/compose/compose
 
 
 
+## Desplegando nuestro ambiente
+
+Para entender como se realiza el despliegue de los contonedores, realizaremos el siguiente ejercicio.
+
+En el mismo vamos a crear un ambiente con dos contenedores, uno con *wordpress* y el otro con la base de datos requerida por el primero.
+
+
+
 #### Ejercicio 20:
-
-Veamos como crear un ambiente que consiste en levantar un contenedor con *wordpress*, utilizando Docker Compose. Este contenedor dependerá de otro que
-
-A modo de ejemplo y para que el ejercicio sea rápido, utilizaremos simplemente una imagen de ubuntu para cada contenedor. Esto claramente puede cambiarse por la imagen necesaria.
-
-
 
 1. Crear un directorio para nuestro proyecto.
 
@@ -102,7 +104,7 @@ A modo de ejemplo y para que el ejercicio sea rápido, utilizaremos simplemente 
 
    ```bash
    version: '3.3'
-
+   
    services:
       db:
         image: mysql:5.7
@@ -114,7 +116,7 @@ A modo de ejemplo y para que el ejercicio sea rápido, utilizaremos simplemente 
           MYSQL_DATABASE: wordpress
           MYSQL_USER: wordpress
           MYSQL_PASSWORD: wordpress
-
+   
       wordpress:
         depends_on:
           - db
@@ -128,15 +130,23 @@ A modo de ejemplo y para que el ejercicio sea rápido, utilizaremos simplemente 
           WORDPRESS_DB_PASSWORD: wordpress
    volumes:
        db_data:
-
+   
    ```
 
 
 
-3. Realizar el despliegue, mediante el siguiente comando:
+***DUDA: Ya incluimos los volumenes en este ejemplo? o lo dejamos para que lo descubran solos en el desafío final???**
+
+
+
+3. Realizar el despliegue, mediante el comando  `docker-compose up -d` desde el directorio que creamos, que contiene el archivo *docker-compose.yml*.
+
+   Como ya hemos visto, si no tenemos las imagenes almacenadas localmente, las descargará del repositorio desde [dockerhub](https://hub.docker.com/).
+
+   
 
    ```bash
-   $ sudo docker-compose up
+   $ sudo docker-compose up -d
    Creating volume "my_wordpress_db_data" with default driver
    Pulling db (mysql:5.7)...
    5.7: Pulling from library/mysql
@@ -150,36 +160,130 @@ A modo de ejemplo y para que el ejercicio sea rápido, utilizaremos simplemente 
    faf9da46e0cf: Waiting
    ...
    ...
-   ... ((salida recortada para mayor claridad))
+   ...
+   02243b284270: Pull complete
+   Digest: sha256:e25e2768e910223db3095c1560aa2255371986b24fbebf4b015bae3cc60b9b34
+   Status: Downloaded newer image for mysql:5.7
+   Pulling wordpress (wordpress:latest)...
+   latest: Pulling from library/wordpress
+   be8881be8156: Already exists
+   69a25f7e4930: Pull complete
    ...
    ...
-   wordpress_1  | AH00558: apache2: Could not reliably determine the server's fully qualified domain name, using 172.21.0.2. Set the 'ServerName' directive globally to suppress this message
-   wordpress_1  | AH00558: apache2: Could not reliably determine the server's fully qualified domain name, using 172.21.0.2. Set the 'ServerName' directive globally to suppress this message
-   wordpress_1  | [Fri Aug 17 15:13:37.378027 2018] [mpm_prefork:notice] [pid 1] AH00163: Apache/2.4.25 (Debian) PHP/7.2.8 configured -- resuming normal operations
-   wordpress_1  | [Fri Aug 17 15:13:37.378089 2018] [core:notice] [pid 1] AH00094: Command line: 'apache2 -D FOREGROUND'
-
+   ...
+   61b17faecc30: Pull complete
+   c85ae8a39ff7: Pull complete
+   Digest: sha256:d92a0d4e9aae885789af8538bb8afe8624c23cb5d763dcc1d3a2e4ac57531d21
+   Status: Downloaded newer image for wordpress:latest
+   Creating my_wordpress_db_1 ... done
+   Creating my_wordpress_wordpress_1 ... done
    ```
 
+   
 
+   La opción `-d` hace que el deploy corra en segundo plano, ejcutando como servicio. Si no ponemos esta opción el comando quedará en primer plano, y si lo cortamos (ctrl-c) detendrá la ejecución de todos los contenedores generados. El no utilizar la opción  `-d` puede ser útil en algunos casos, dado que nos muestra al momento de ejecutar el comando la salida de stderr, que podría indicarnos mensajes de error o warnings derivados del proceso de levante de los propios containers.
 
-​	Ejecutando de esta forma, el comando *docker-compose up* queda en *foreground* con el comando ejecutndo. Si cortamos
-
-
+   
 
 4. Una vez finalizado el despliegue, podemos verificar si los dos contenedores están corriendo:
 
    ```bash
    $ sudo docker ps
    CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                  NAMES
-   f596ee8de0a0        wordpress:latest    "docker-entrypoint..."   7  minutes ago       Up 7 minutes        0.0.0.0:8000->80/tcp   my_wordpress_wordpress_1
-   2adcf925aa40        mysql:5.7           "docker-entrypoint..."   8 minutes ago       Up 8 minutes        3306/tcp, 33060/tcp    my_wordpress_db_1
+   8e8771bccefe        wordpress:latest    "docker-entrypoint..."   5 minutes ago       Up 5 minutes        0.0.0.0:8000->80/tcp   my_wordpress_wordpress_1
+   8724f78e61a0        mysql:5.7           "docker-entrypoint..."   5 minutes ago       Up 5 minutes        3306/tcp, 33060/tcp    my_wordpress_db_1
    ```
 
 
 
-
 ​	Y además podemos acceder al servicio wordpress desde un navegador:
-   ![alt text](Imagenes/wordpress.png)
+
+**DUDA: ESTO FUNCIONA DESDE AWS ???**
+
+
+
+![alt text](Imagenes/wordpress.png)
+
+
+
+Y también podemos ver que tenemos las nuevas imagenes que fueron descargadas en forma local:
+
+```bash
+$ sudo docker images
+REPOSITORY            TAG                 IMAGE ID            CREATED             SIZE
+wordpress             latest              e2c4085bbc2b        2 days ago          408MB
+mysql                 5.7                 43b029b6b640        2 days ago          372MB
+...
+...
+```
+
+
+
+5. Para detener los contenedores en forma ordenada, lo hacemos mediante el comando  `docker-compose down` desde el directorio que creamos, que contiene el archivo *docker-compose.yml*.
+
+   ```bash
+   $ sudo docker-compose down
+   Stopping my_wordpress_wordpress_1 ... done
+   Stopping my_wordpress_db_1        ... done
+   Removing my_wordpress_wordpress_1 ... done
+   Removing my_wordpress_db_1        ... done
+   Removing network my_wordpress_default
+   ```
+
+   
+
+   Podemos ver que los contenedores ya no se encuentra corriendo:
+
+   ```bash
+   $ sudo docker ps
+   CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
+   
+   ```
+
+   
+
+   Y las imagenes que fueron descargadas durante el proces de despliegue, siguen estando almacenadas localmente:
+
+   ```bash
+   $ sudo docker images 
+   REPOSITORY            TAG                 IMAGE ID            CREATED             SIZE
+   wordpress             latest              e2c4085bbc2b        2 days ago          408MB
+   mysql                 5.7                 43b029b6b640        2 days ago          372MB
+   ...
+   ```
+
+   
+
+   Por lo tanto si realizaramos el despliegue nuevamente con  `docker-compose up -d` , el proceso será muy rápido:
+
+   ```bash
+   $ sudo docker-compose up -d
+   Creating network "my_wordpress_default" with the default driver
+   Creating my_wordpress_db_1 ... done
+   Creating my_wordpress_wordpress_1 ... done
+   
+   
+   $ sudo docker ps -a
+   CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                  NAMES
+   a4e556375891        wordpress:latest    "docker-entrypoint..."   3 seconds ago       Up 2 seconds        0.0.0.0:8000->80/tcp   my_wordpress_wordpress_1
+   83fb7904980c        mysql:5.7           "docker-entrypoint..."   4 seconds ago       Up 3 seconds        3306/tcp, 33060/tcp    my_wordpress_db_1
+   
+   
+   $ sudo docker-compose down
+   Stopping my_wordpress_wordpress_1 ... done
+   Stopping my_wordpress_db_1        ... done
+   Removing my_wordpress_wordpress_1 ... done
+   Removing my_wordpress_db_1        ... done
+   Removing network my_wordpress_default
+   ```
+
+   
+
+   
+
+**falta networking y explicar un poco mas el archivo**
+
+
 
 
 
@@ -192,3 +296,10 @@ xxxxxx
 $ docker-compose --version
 docker-compose version 1.21.2, build 1719ceb
 ```
+
+
+
+
+
+fff
+
