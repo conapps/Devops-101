@@ -104,7 +104,7 @@ En el mismo vamos a crear un ambiente con dos contenedores, uno con *wordpress* 
 
    ```bash
    version: '3.3'
-   
+
    services:
       db:
         image: mysql:latest
@@ -116,7 +116,7 @@ En el mismo vamos a crear un ambiente con dos contenedores, uno con *wordpress* 
           MYSQL_DATABASE: wordpress
           MYSQL_USER: wordpress
           MYSQL_PASSWORD: wordpress
-   
+
       wordpress:
         image: wordpress:latest
         container_name: "wordpress"
@@ -129,12 +129,12 @@ En el mismo vamos a crear un ambiente con dos contenedores, uno con *wordpress* 
           WORDPRESS_DB_PASSWORD: wordpress
    volumes:
        db_data:
-   
+
    ```
 
 
 
-***DUDA: Ya incluimos los volumenes en este ejemplo? o lo dejamos para que lo descubran solos en el desafío final???**
+**DUDA: Ya incluimos los volumenes en este ejemplo? o lo dejamos para que lo descubran solos en el desafío final???**
 
 
 
@@ -142,7 +142,7 @@ En el mismo vamos a crear un ambiente con dos contenedores, uno con *wordpress* 
 
    Como ya hemos visto, si no tenemos las imagenes almacenadas localmente, las descargará del repositorio desde [dockerhub](https://hub.docker.com/).
 
-   
+
 
    ```bash
    $ sudo docker-compose up -d
@@ -178,11 +178,11 @@ En el mismo vamos a crear un ambiente con dos contenedores, uno con *wordpress* 
    Creating my_wordpress_wordpress_1 ... done
    ```
 
-   
+
 
    La opción `-d` hace que el deploy corra en segundo plano, ejcutando como servicio. Si no ponemos esta opción el comando quedará en primer plano, y si lo cortamos (ctrl-c) detendrá la ejecución de todos los contenedores generados. El no utilizar la opción  `-d` puede ser útil en algunos casos, dado que nos muestra al momento de ejecutar el comando la salida de stderr, que podría indicarnos mensajes de error o warnings derivados del proceso de levante de los propios containers.
 
-   
+
 
 4. Una vez finalizado el despliegue, podemos verificar si los dos contenedores están corriendo:
 
@@ -229,45 +229,45 @@ mysql                 latest              29e0ae3b69b9        2 days ago        
    Removing network my_wordpress_default
    ```
 
-   
+
 
    Podemos ver que los contenedores ya no se encuentra corriendo:
 
    ```bash
    $ sudo docker ps
    CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
-   
+
    ```
 
-   
 
-   Y las imagenes que fueron descargadas durante el proces de despliegue, siguen estando almacenadas localmente:
+
+   Y las imágenes que fueron descargadas durante el proceso de despliegue, siguen estando almacenadas localmente:
 
    ```bash
-   $ sudo docker images 
+   $ sudo docker images
    REPOSITORY            TAG                 IMAGE ID            CREATED             SIZE
    wordpress             latest              e2c4085bbc2b        2 days ago          408MB
    mysql                 latest              29e0ae3b69b9        2 days ago          372MB
    ...
    ```
 
-   
 
-   Por lo tanto si realizaramos el despliegue nuevamente con  `docker-compose up -d` , el proceso será muy rápido:
+
+   Por lo tanto si realizáramos el despliegue nuevamente con  `docker-compose up -d` , el proceso será muy rápido:
 
    ```bash
    $ sudo docker-compose up -d
    Creating network "my_wordpress_default" with the default driver
    Creating my_wordpress_db_1 ... done
    Creating my_wordpress_wordpress_1 ... done
-   
-   
+
+
    $ sudo docker ps -a
    CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                  NAMES
    a4e556375891        wordpress:latest    "docker-entrypoint..."   3 seconds ago       Up 2 seconds        0.0.0.0:8000->80/tcp   my_wordpress_wordpress_1
    83fb7904980c        mysql:5.7           "docker-entrypoint..."   4 seconds ago       Up 3 seconds        3306/tcp, 33060/tcp    my_wordpress_db_1
-   
-   
+
+
    $ sudo docker-compose down
    Stopping my_wordpress_wordpress_1 ... done
    Stopping my_wordpress_db_1        ... done
@@ -276,11 +276,11 @@ mysql                 latest              29e0ae3b69b9        2 days ago        
    Removing network my_wordpress_default
    ```
 
-   
 
-   
 
-**falta networking y explicar un poco mas el archivo**
+
+
+**falta networking y explicar el archivo**
 
 
 
@@ -301,4 +301,3 @@ docker-compose version 1.21.2, build 1719ceb
 
 
 fff
-
