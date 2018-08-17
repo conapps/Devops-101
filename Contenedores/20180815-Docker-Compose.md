@@ -107,10 +107,10 @@ En el mismo vamos a crear un ambiente con dos contenedores, uno con *wordpress* 
    
    services:
       db:
-        image: mysql:5.7
+        image: mysql:latest
+        container_name: "db"
         volumes:
           - db_data:/var/lib/mysql
-        restart: always
         environment:
           MYSQL_ROOT_PASSWORD: somewordpress
           MYSQL_DATABASE: wordpress
@@ -118,12 +118,11 @@ En el mismo vamos a crear un ambiente con dos contenedores, uno con *wordpress* 
           MYSQL_PASSWORD: wordpress
    
       wordpress:
-        depends_on:
-          - db
         image: wordpress:latest
+        container_name: "wordpress"
+        depends_on: [db]
         ports:
           - "8000:80"
-        restart: always
         environment:
           WORDPRESS_DB_HOST: db:3306
           WORDPRESS_DB_USER: wordpress
@@ -148,8 +147,8 @@ En el mismo vamos a crear un ambiente con dos contenedores, uno con *wordpress* 
    ```bash
    $ sudo docker-compose up -d
    Creating volume "my_wordpress_db_data" with default driver
-   Pulling db (mysql:5.7)...
-   5.7: Pulling from library/mysql
+   Pulling db (mysql:latest)...
+   latest: Pulling from library/mysql
    be8881be8156: Already exists
    c3995dabd1d7: Pull complete
    9931fdda3586: Downloading [================>                                  ]  1.522MB/4.499MB
@@ -163,7 +162,7 @@ En el mismo vamos a crear un ambiente con dos contenedores, uno con *wordpress* 
    ...
    02243b284270: Pull complete
    Digest: sha256:e25e2768e910223db3095c1560aa2255371986b24fbebf4b015bae3cc60b9b34
-   Status: Downloaded newer image for mysql:5.7
+   Status: Downloaded newer image for mysql:latest
    Pulling wordpress (wordpress:latest)...
    latest: Pulling from library/wordpress
    be8881be8156: Already exists
@@ -191,7 +190,7 @@ En el mismo vamos a crear un ambiente con dos contenedores, uno con *wordpress* 
    $ sudo docker ps
    CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                  NAMES
    8e8771bccefe        wordpress:latest    "docker-entrypoint..."   5 minutes ago       Up 5 minutes        0.0.0.0:8000->80/tcp   my_wordpress_wordpress_1
-   8724f78e61a0        mysql:5.7           "docker-entrypoint..."   5 minutes ago       Up 5 minutes        3306/tcp, 33060/tcp    my_wordpress_db_1
+   8724f78e61a0        mysql:latest        "docker-entrypoint..."   5 minutes ago       Up 5 minutes        3306/tcp, 33060/tcp    my_wordpress_db_1
    ```
 
 
@@ -212,7 +211,7 @@ Y también podemos ver que tenemos las nuevas imagenes que fueron descargadas en
 $ sudo docker images
 REPOSITORY            TAG                 IMAGE ID            CREATED             SIZE
 wordpress             latest              e2c4085bbc2b        2 days ago          408MB
-mysql                 5.7                 43b029b6b640        2 days ago          372MB
+mysql                 latest              29e0ae3b69b9        2 days ago          372MB
 ...
 ...
 ```
@@ -248,7 +247,7 @@ mysql                 5.7                 43b029b6b640        2 days ago        
    $ sudo docker images 
    REPOSITORY            TAG                 IMAGE ID            CREATED             SIZE
    wordpress             latest              e2c4085bbc2b        2 days ago          408MB
-   mysql                 5.7                 43b029b6b640        2 days ago          372MB
+   mysql                 latest              29e0ae3b69b9        2 days ago          372MB
    ...
    ```
 
