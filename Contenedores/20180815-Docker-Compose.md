@@ -79,6 +79,111 @@ Ref.: [Compose file version 3 reference](https://docs.docker.com/compose/compose
 
 
 
+Este archivo contiene 3 secciones principales, las cuales son: 
+
+- [Service Configuration:](https://docs.docker.com/compose/compose-file/#service-configuration-reference) contiene la configuración de cada uno de los contenedores que vamos a crear para nuestro servicio. 
+- [Volume Configuration:](https://docs.docker.com/compose/compose-file/#volume-configuration-reference) contiene la configuración de los volumenes de disco que vamos a utilizar. Si bien es posible declarar los volumenes de cada contenedor dentro de la sección de *Service*, hacerlo en esta sección nos permite crear volumenes que nombres, que pueden ser reutilizados y facilmente referenciados desde múltiples contenedores.  
+- [Network Configuration:](https://docs.docker.com/compose/compose-file/#netowrk-configuration-reference) contiene la configuración de las redes que vamos a utilizar para los contenedores dentro de este servicio. Si no definimos esta sección, se utilizará una red por defecto para todos los contenedores creados en el servicio.
+
+	
+
+#### Service Configuration:
+
+***service-name***: es un nombre que permite identificar el el servicio que vamos a correr en este contenedor, Es un nombre arbitrario que seleccionamos nosotros, que nos permite diferenciar cada uno de los contenedores que vamos a levantar en nuestro ambiente, por ejemplo: *web-server*, *db-server*. 
+
+**container_name:** nombre del contenedor, si no lo indicamos va a utilizar el nombre generado por defecto.
+
+**image:** es la imagen que vamos a utilizar para crear el contenedor. En caso de no encontrarla localmente al hacer el deploy bajará la imagen del repositorio de github, como lo hace habitualmente.
+
+**build:** si en lugar de utilizar una imagen existente, queremos crear nuestra propia imagen a partir de un *Dockerfile*, es aquí donde colocamos el camino relativo (*./directorio*) a donde se encuentra nuestro archivo  *Dockerfile*.
+
+**command:** comando que le pasamos al contenedor para que corra al momento de ejecución.
+
+**ports:** permite mapear puertos al contenedor en formato ```host_port:container_port ``` 
+
+**environment:** variables de entorno que le pasamos al contendor ```VARIABLE=valor ``` o ```VARIABLE:valor ```. Por ejemplo, en un contendor con MySQL le pasaríamos la base de datos a crear y las credenciales.
+
+**depends_on:** indica dependencia con otro(s) contenedor(es). Este contenedor no va a levanta si los contenedores de los cuales depende ya se encuentran corriendo. Los contenedores son iniciados siguiendo el orden necesario de acuerdo a las dependencias establecidas.
+
+**volumes:** indica los volumenes de disco que vamos a montar en el contenedor. Podemos montar un directorio del host directamente utilizando esta sentencia, la cual aplica únicamente para este servicio. 
+
+```bash
+version: '3.3'
+
+services:
+  web-server:
+    build: .
+    volumes:
+      - ./online_app:/app
+```
+
+En este ejemplo, definimos un volumen para el servicio `web-server`, el cual monta el directorio local `./online_app` del host, en el direcotrio `/app` dentro del contenedor. 
+
+Podemos hacer todas las definiciones de esta forma, dentro de cada servicio. Pero si quisieramos hacerlo de forma un poco mas ordenada, y además poder reutilizar volumenes para accederlos desde múltiples servicios, es preferible definirlos utilizando la sección de *Volume Configuration*, tal como lo veremos un poco mas adelante.
+
+**network**: indica que redes va a utilizar el servicio, haciendo referencia a las redes definidas en la sección de *Network Configuration*, como veremos mas adelante.
+
+En esta definición, podemos indicar parametros de red, tales como la dirección ip, default gateway, etc. 
+
+```bash
+version: '3.3'
+
+services:
+  web-server:
+    build: .
+    volumes:
+      - ./online_app:/app
+```
+
+
+
+
+
+#### Volume Configuration:
+
+En el siguiente ejemplo, tenemos dos servicios que utilizan el mismo volumen, el cual se define en la sección de *volumes:*
+
+Here’s an example of a two-service setup where a database’s data directory is shared with another service as a volume so that it can be periodically backed up:
+
+```
+version: "3"
+
+services:
+  db:
+    image: db
+    volumes:
+      - data-volume:/var/lib/db
+  backup:
+    image: backup-service
+    volumes:
+      - data-volume:/var/lib/backup/data
+
+volumes:
+  data-volume:
+```
+
+An entry under the top-level `volumes` key can be empty, in which case it uses the default driver configured by the Engine (in most cases, this is the `local` driver). Optionally, you can configure it with the following keys:
+
+
+
+
+
+Podemos montar un directorio del host (*bind mount*), un volumen (*volumes*) con . También podemos montar volumenes con drivers creados por los usuarios (ej. *sshFS*, *REX-Ray*).
+
+
+
+#### Network Configuration:
+
+
+
+
+
+
+
+
+
+
+
 ## Desplegando nuestro ambiente
 
 Para entender como se realiza el despliegue de los contonedores, realizaremos el siguiente ejercicio.
@@ -91,7 +196,7 @@ En el mismo vamos a crear un ambiente con dos contenedores, uno con *wordpress* 
 
 1. Crear un directorio para nuestro proyecto.
 
-   Este directorio debería contar únicamente con los elementos necesarios para el ambiente que vamos a crear. Si bien en este caso tendría unicamente el archivo *docker-compse.yml* podríamos incluir aquí dentro cualquier otro recurso necesario (ej. dockerfiles). Esto nos permite tener toda la documentación específica de nuestro proyecto, y actualizada.
+   Este directorio debería contar únicamente con los elementos necesarios para el ambiente que vamos a crear. Si bien en este caso tendría unicamente el archivo *docker-compse.yml* podríamos incluir aquí dentro cualquier otro recurso necesario (ej. Dockerfiles). Esto nos permite mantener ordenada y actualizada toda la documentación específica de nuestro proyecto.
 
    ```bash
    $ mkdir my_wordpress
@@ -107,7 +212,7 @@ En el mismo vamos a crear un ambiente con dos contenedores, uno con *wordpress* 
 
    services:
       db:
-        image: mysql:latest
+        image: mysql
         container_name: "db"
         volumes:
           - db_data:/var/lib/mysql
@@ -118,7 +223,7 @@ En el mismo vamos a crear un ambiente con dos contenedores, uno con *wordpress* 
           MYSQL_PASSWORD: wordpress
 
       wordpress:
-        image: wordpress:latest
+        image: wordpress
         container_name: "wordpress"
         depends_on: [db]
         ports:
@@ -131,10 +236,6 @@ En el mismo vamos a crear un ambiente con dos contenedores, uno con *wordpress* 
        db_data:
 
    ```
-
-
-
-**DUDA: Ya incluimos los volumenes en este ejemplo? o lo dejamos para que lo descubran solos en el desafío final???**
 
 
 
@@ -195,9 +296,9 @@ En el mismo vamos a crear un ambiente con dos contenedores, uno con *wordpress* 
 
 
 
-​	Y además podemos acceder al servicio wordpress desde un navegador:
+	Y además podemos acceder al servicio wordpress desde un navegador:
 
-**DUDA: ESTO FUNCIONA DESDE AWS ???**
+**ABRIR EL PUERTO 8080 EN AWS PARA QUE ESTO FUNCIONE**
 
 
 
@@ -280,12 +381,6 @@ mysql                 latest              29e0ae3b69b9        2 days ago        
 
 
 
-**falta networking y explicar el archivo**
-
-
-
-
-
 
 
 xxxxxx
@@ -300,4 +395,74 @@ docker-compose version 1.21.2, build 1719ceb
 
 
 
-fff
+
+
+```
+version: "3"
+services:
+  appserver1:
+    image: "conatel/appserver1"
+    container_name: "appserver1"
+    depends_on: [dbserver1]
+    environment:
+      - MYSQL_DATABASE=grupo1
+      - DMZ_IP=172.18.0.3
+      - BACKEND_IP=172.18.1.3
+    networks:
+      dmz:
+        ipv4_address: ${DMZ_IP}
+      backend:
+        ipv4_address: ${BACKEND_IP}
+  appserver2:
+    image: "conatel/appserver2"
+    container_name: "appserver2"
+    networks:
+      dmz:
+        ipv4_address: 172.18.0.4
+  webserver1:
+    image: "conatel/webserver1"
+    container_name: "webserver1"
+    environment:
+      - DMZ_IP=172.18.0.2
+    ports:
+      - "80:80"
+    networks:
+      dmz:
+        ipv4_address: ${DMZ_IP}
+  webserver2:
+    image: "conatel/webserver2"
+    container_name: "webserver2"
+    ports:
+      - "8080:8080"
+    networks:
+      dmz:
+        ipv4_address: 172.18.0.5
+      backend:
+        ipv4_address: 172.18.1.5
+  dbserver1:
+    image: "mysql"
+    container_name: "dbserver1"
+    environment:
+      - MYSQL_DATABASE=grupo1
+      - MYSQL_ROOT_PASSWORD=password
+      - BACKEND_IP=172.18.1.2
+    networks:
+      backend:
+        ipv4_address: ${BACKEND_IP}
+
+networks:
+  dmz:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.18.0.0/24
+  backend:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.18.1.0/24
+
+```
+
