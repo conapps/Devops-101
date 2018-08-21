@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Home page</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+{#    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>#}
+{#    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>#}
+{#    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>#}
+</head>
+<body>
+    <div class="col-md-4 col-lg-4 col-xl-4 offset-md-4 offset-lg-4 offset-xl-4">
+        <form action="/send-data" method="post">
+            {% csrf_token %}
+            <label>Ingrese su token de webex:</label>
+            <input class="form-control input-lg" placeholder="ingrese su token" name="token"/>
+            <label>Ingrese nombre de la sala:</label>
+            <input class="form-control input-lg" placeholder="ingrese el nombre de la sala" name="sala"/>
+            <label>Ingrese el mensaje:</label>
+            <textarea class="form-control" placeholder="Ingresar datos aquí" name="mensaje"></textarea>
+            <button class="btn btn-lg btn-primary" style="margin-top: 5px">Enviar datos</button>
+        </form>
+    </div>
+</body>
+</html>
