@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.views.decorators.csrf import csrf_exempt
 
 import requests
 import json
@@ -10,6 +11,7 @@ def home(request, template_name):
     context = {}
     return render(request, template_name, context)
 
+@csrf_exempt
 def data(request, template_name, fail_template_name):
     context = {}
     token = request.POST.get('token')

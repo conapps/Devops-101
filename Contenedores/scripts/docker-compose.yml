@@ -6,16 +6,17 @@ services:
     depends_on: [dbserver1]
     environment:
       - MYSQL_DATABASE=grupo1
-      - DMZ_IP=172.18.0.3
       - BACKEND_IP=172.18.1.3
     networks:
       dmz:
-        ipv4_address: ${DMZ_IP}
+        ipv4_address: 172.18.0.3
       backend:
         ipv4_address: ${BACKEND_IP}
   appserver2:
     image: "conatel/appserver2"
     container_name: "appserver2"
+    environment:
+      - GRUPO=grupo1
     networks:
       dmz:
         ipv4_address: 172.18.0.4
@@ -26,6 +27,8 @@ services:
       - DMZ_IP=172.18.0.2
     ports:
       - "80:80"
+    volumes:
+      - docker-static-content:/data
     networks:
       dmz:
         ipv4_address: ${DMZ_IP}
@@ -49,7 +52,9 @@ services:
     networks:
       backend:
         ipv4_address: ${BACKEND_IP}
-
+volumes:
+  docker-static-content:
+    external: true
 networks:
   dmz:
     driver: bridge

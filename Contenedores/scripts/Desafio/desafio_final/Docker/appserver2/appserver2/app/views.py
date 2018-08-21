@@ -1,3 +1,4 @@
+import os
 from django.shortcuts import render
 from app.lib.webex import get_room_id_by_name, post_message
 from django.http import JsonResponse
@@ -14,11 +15,13 @@ def home(request, template_name):
 
 @csrf_exempt
 def send_message(request):
-
+    teams_key = 'MGU0YjRhN2EtZmRjMS00MjdjLWJmZWYtOWYzOWFjMTBlZWFiMDhhMDM0ZjMtYWY3'
+    group = os.environ['GRUPO']
+    room_name = 'Docker-101'
     if request.method == 'POST':
         received_data = json.loads(request.body.decode('utf-8'))
-        room_id = get_room_id_by_name(received_data['name'], received_data['api_key'])
-        result = post_message(received_data['message'], room_id, received_data['api_key'])
+        room_id = get_room_id_by_name(room_name, teams_key)
+        result = post_message(received_data['message'], room_id, teams_key)
         return JsonResponse(result, status=200)
     else:
         return JsonResponse({'error': 'invalid method'}, status=400)

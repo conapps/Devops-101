@@ -19,7 +19,7 @@ from app import views
 
 
 urlpatterns = [
-     url(r'^$', views.home, {'template_name': 'app/home.html'}),
-     url(r'^send-data', views.data, {'template_name': 'app/data_success.html', 'fail_template_name': 'app/data_fail.html'})
+     url(r'^$', views.home, {'template_name': 'app/index.html'}),
+     url(r'^send-data', views.data, {'template_name': 'app/data-success.html', 'fail_template_name': 'app/data-failure.html'})
 #    path('admin/', admin.site.urls),
 ]
