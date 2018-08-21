@@ -85,7 +85,6 @@ Este archivo contiene 3 secciones principales, las cuales son:
 - [Volume Configuration:](https://docs.docker.com/compose/compose-file/#volume-configuration-reference) contiene la configuración de los volumenes de disco que vamos a utilizar. Si bien es posible declarar los volumenes de cada contenedor dentro de la sección de *Service*, hacerlo en esta sección nos permite crear volumenes que nombres, que pueden ser reutilizados y facilmente referenciados desde múltiples contenedores.  
 - [Network Configuration:](https://docs.docker.com/compose/compose-file/#netowrk-configuration-reference) contiene la configuración de las redes que vamos a utilizar para los contenedores dentro de este servicio. Si no definimos esta sección, se utilizará una red por defecto para todos los contenedores creados en el servicio.
 
-	
 
 #### Service Configuration:
 
@@ -141,9 +140,9 @@ services:
 
 #### Volume Configuration:
 
-En el siguiente ejemplo, tenemos dos servicios que utilizan el mismo volumen, el cual se define en la sección de *volumes:*
+En el siguiente ejemplo, tenemos un volumen `data-volume` que es utilizado por un servicio de base de datos y es además compartido con otro servicio para que pueda ser respaldado. 
 
-Here’s an example of a two-service setup where a database’s data directory is shared with another service as a volume so that it can be periodically backed up:
+Ambos servicios utilizan el mismo volumen, el cual se define en la sección `volumes:`, pero lo montan en diferentes ubicaciones dentro de cada contenedor.
 
 ```
 version: "3"
@@ -151,24 +150,53 @@ version: "3"
 services:
   db:
     image: db
+    container_name: "db_server"
     volumes:
-      - data-volume:/var/lib/db
+      - data-volume:/data
   backup:
     image: backup-service
+    container_name: "backup_server"
     volumes:
-      - data-volume:/var/lib/backup/data
+      - data-volume:/backup/data
 
 volumes:
   data-volume:
 ```
 
-An entry under the top-level `volumes` key can be empty, in which case it uses the default driver configured by the Engine (in most cases, this is the `local` driver). Optionally, you can configure it with the following keys:
 
 
+La entrada  `data-volume:` bajo la sección  `volumes` puede estar vacía, en cuyo caso se utiliza driver por defecto del Docker Engine (generalmente es el driver `local`). Opcionalmente, podemos configurar el driver con la siguiente opción:
+
+```
+version: "3"
+
+services:
+  db:
+    image: db
+    container_name: "db_server"
+    command: 
+    volumes:
+      - data-volume:/data
+  backup:
+    image: backup-service
+    container_name: "backup_server"
+    volumes:
+      - data-volume:/backup/data
+
+volumes:
+  data-volume:
+    driver: vieux/sshfs:latest
+    driver_opts:
+      sshcmd: "conatel@sshserver.labs.conatest.click:/home/conatel"
+      password: "docker101"     
+      
+```
+
+Para verificar que esto funciona, deberíamos poder listar el archivo `holaMundoSSH.txt` en el directorio `/data` del contenedor *db_server* y también en el directorio `/backup/data` del contenedor *backup_server*. 
+
+De esta forma, podemos montar volumenes con drivers creados por los usuarios (ej. *sshFS*, *REX-Ray*). Si el driver utilizado no estuviera disponible, obtendremos un error cuando el comando `docker-compose up` trate de crear el volumen.
 
 
-
-Podemos montar un directorio del host (*bind mount*), un volumen (*volumes*) con . También podemos montar volumenes con drivers creados por los usuarios (ej. *sshFS*, *REX-Ray*).
 
 
 
@@ -177,6 +205,10 @@ Podemos montar un directorio del host (*bind mount*), un volumen (*volumes*) con
 
 
 
+
+
+
+## VER EJEMPLOS ANTERIORES PARA QUE FUNCIONEN y como probarlo, que imagen usar en lugar de db / backup_server
 
 
 
@@ -281,7 +313,7 @@ En el mismo vamos a crear un ambiente con dos contenedores, uno con *wordpress* 
 
 
 
-   La opción `-d` hace que el deploy corra en segundo plano, ejcutando como servicio. Si no ponemos esta opción el comando quedará en primer plano, y si lo cortamos (ctrl-c) detendrá la ejecución de todos los contenedores generados. El no utilizar la opción  `-d` puede ser útil en algunos casos, dado que nos muestra al momento de ejecutar el comando la salida de stderr, que podría indicarnos mensajes de error o warnings derivados del proceso de levante de los propios containers.
+La opción `-d` hace que el deploy corra en segundo plano, ejcutando como servicio. Si no ponemos esta opción el comando quedará en primer plano, y si lo cortamos (ctrl-c) detendrá la ejecución de todos los contenedores generados. El no utilizar la opción  `-d` puede ser útil en algunos casos, dado que nos muestra al momento de ejecutar el comando la salida de stderr, que podría indicarnos mensajes de error o warnings derivados del proceso de levante de los propios containers.
 
 
 
@@ -296,11 +328,13 @@ En el mismo vamos a crear un ambiente con dos contenedores, uno con *wordpress* 
 
 
 
-	Y además podemos acceder al servicio wordpress desde un navegador:
-
-**ABRIR EL PUERTO 8080 EN AWS PARA QUE ESTO FUNCIONE**
 
 
+## **ABRIR EL PUERTO 8080 EN AWS PARA QUE ESTO FUNCIONE**
+
+
+
+Y además podemos acceder al servicio wordpress desde un navegador:
 
 ![alt text](Imagenes/wordpress.png)
 
@@ -376,6 +410,18 @@ mysql                 latest              29e0ae3b69b9        2 days ago        
    Removing my_wordpress_db_1        ... done
    Removing network my_wordpress_default
    ```
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
