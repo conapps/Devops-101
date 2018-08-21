@@ -33,7 +33,7 @@ def post_message(message, room_id, api_key):
 
     payload = {
         "roomId": room_id,
-        "text": message
+        "markdown": message
     }
 
     response = requests.post(url, headers=headers, data=json.dumps(payload))

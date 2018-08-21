@@ -18,10 +18,12 @@ def send_message(request):
     teams_key = 'MGU0YjRhN2EtZmRjMS00MjdjLWJmZWYtOWYzOWFjMTBlZWFiMDhhMDM0ZjMtYWY3'
     group = os.environ['GRUPO']
     room_name = 'Docker-101'
+    message = '## Mensaje de ' + group + '\n'
     if request.method == 'POST':
         received_data = json.loads(request.body.decode('utf-8'))
+        message += received_data['message']
         room_id = get_room_id_by_name(room_name, teams_key)
-        result = post_message(received_data['message'], room_id, teams_key)
+        result = post_message(message, room_id, teams_key)
         return JsonResponse(result, status=200)
     else:
         return JsonResponse({'error': 'invalid method'}, status=400)
