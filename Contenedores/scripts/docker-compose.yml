@@ -28,7 +28,7 @@ services:
     ports:
       - "80:80"
     volumes:
-      - docker-static-content:/data
+      - docker-static-content:/data2
     networks:
       dmz:
         ipv4_address: ${DMZ_IP}
