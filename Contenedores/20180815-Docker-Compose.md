@@ -1,3 +1,7 @@
+| [<-- Volver](20170807-Networking.md) |
+
+
+
 Docker Compose
 ===
 
@@ -538,321 +542,287 @@ Como se puede ver los volumenes definidos como externos no son eliminados desde 
 
 
 
+### Definición de Networks:
 
-
-
-
-#### Definición de Networks:
-
-xxx
+Por defecto, cuando desplegamos nuestro ambiente, el comando `docker-compose up`crea una única network, y agrega cada contenedor de un servicio a esta *default network*. Como consecuencia, todos los contenedores pueden conectarse entre ellos y además pueden descubrirse mediante su *hostname*.
 
 ```bash
-$ volumes:
-      - ./data:/mnt/data
+$ docker-compose up -d
+...
+...
+
+$ docker network ls
+NETWORK ID          NAME                DRIVER              SCOPE
+ecdf172b3adf        bridge              bridge              local
+db68a213cd9c        compose01_default   bridge              local
+4b6f37984b56        host                host                local
+b9b7a573b4d0        none                null                local
+
+
+$ docker attach backupserver 
+root@03c3f705f7d1:/# 
+root@03c3f705f7d1:/# apt-get update; apt-get install -y iputils-ping dnsutils
+...
+...
+
+root@03c3f705f7d1:/# ping -c4 dbserver01
+PING dbserver01 (172.26.0.2) 56(84) bytes of data.
+64 bytes from dbserver01.compose01_default (172.26.0.2): icmp_seq=1 ttl=64 time=0.047 ms
+64 bytes from dbserver01.compose01_default (172.26.0.2): icmp_seq=2 ttl=64 time=0.055 ms
+64 bytes from dbserver01.compose01_default (172.26.0.2): icmp_seq=3 ttl=64 time=0.056 ms
+64 bytes from dbserver01.compose01_default (172.26.0.2): icmp_seq=4 ttl=64 time=0.061 ms
+
+--- dbserver01 ping statistics ---
+4 packets transmitted, 4 received, 0% packet loss, time 2997ms
+rtt min/avg/max/mdev = 0.047/0.054/0.061/0.010 ms
+
+root@03c3f705f7d1:/# 
+root@03c3f705f7d1:/# 
+root@03c3f705f7d1:/# ping -c4 webserver01
+PING web-server (172.26.0.4) 56(84) bytes of data.
+64 bytes from webserver01.compose01_default (172.26.0.4): icmp_seq=1 ttl=64 time=0.071 ms
+64 bytes from webserver01.compose01_default (172.26.0.4): icmp_seq=2 ttl=64 time=0.068 ms
+64 bytes from webserver01.compose01_default (172.26.0.4): icmp_seq=3 ttl=64 time=0.058 ms
+64 bytes from webserver01.compose01_default (172.26.0.4): icmp_seq=4 ttl=64 time=0.067 ms
+
+--- web-server ping statistics ---
+4 packets transmitted, 4 received, 0% packet loss, time 2998ms
+rtt min/avg/max/mdev = 0.058/0.066/0.071/0.004 ms
 ```
 
-xxx
+
+
+Si bien esto puede ser útil en un ambiente de prueba, en una ambiente en producción podría interesarnos restringir o segmentar esta conectividad, de modo que los contenedores puedan comunicarse únicamente con los que sea extrictamente necesario.
+
+Dentro de la sección **networks:** del archivo *docker-compose.yml*, podemos modificar la red por defecto `default:`o bien crear nuestras propias redes, que es lo que vamos a hacer a continuación mediante los siguientes ejercicios.
+
+Como vimos antes, nuestro *docker-compose.yml* crea los servicios *db-server*, *web-server*, y *backup-server*.  Supongamos que queremos que *db-server* se pueda comunicar con *web-server* y con *backup-server*, pero no queremos que *web-server* y *backup-server* se comuniquen entre si. Para esto vamos a crear dos redes en forma manual (*custom networks*) dentro del archivo *docker-compose.yml*. 
 
 
 
+**Ejercicio 21:**
+
+1. Primero bajemos nuestros servicios con `docker-compose down`. Si bien podemos dejarlos arriba y luego actualizarlos, será mas claro si lo hacemos de este modo, dado que de esta forma eliminamos la *default network*:
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#### Ejercicio 20:
-
-1. Crear un directorio para nuestro proyecto.
-
-   Este directorio debería contar únicamente con los elementos necesarios para el ambiente que vamos a crear. Si bien en este caso tendría unicamente el archivo *docker-compse.yml* podríamos incluir aquí dentro cualquier otro recurso necesario (ej. Dockerfiles). Esto nos permite mantener ordenada y actualizada toda la documentación específica de nuestro proyecto.
 
    ```bash
-   $ mkdir my_wordpress
-   $ cd my_wordpress
+   $ docker network ls
+   NETWORK ID          NAME                DRIVER              SCOPE
+   ecdf172b3adf        bridge              bridge              local
+   db68a213cd9c        compose01_default   bridge              local
+   4b6f37984b56        host                host                local
+   b9b7a573b4d0        none                null                local
+   
+   $ docker-compose down
+   Stopping webserver01  ... done
+   Stopping dbserver01   ... done
+   Stopping backupserver ... done
+   Removing webserver01  ... done
+   Removing dbserver01   ... done
+   Removing backupserver ... done
+   Removing network compose01_default
+   
+   $ docker network ls
+   NETWORK ID          NAME                DRIVER              SCOPE
+   ecdf172b3adf        bridge              bridge              local
+   4b6f37984b56        host                host                local
+   b9b7a573b4d0        none                null                local
+   
    ```
 
 
 
-2. Crear el archivo *docker-compose.yml* con el siguiente contenido:
+
+2. Editamos el *docker-compose.yml* y agregamos dos redes `prod-network` y `backup-network`. 
 
    ```bash
-   version: '3.3'
+   version: '3'
    
    services:
-      db:
-        image: mysql
-        container_name: "db"
-        volumes:
-          - db_data:/var/lib/mysql
-        environment:
-          MYSQL_ROOT_PASSWORD: somewordpress
-          MYSQL_DATABASE: wordpress
-          MYSQL_USER: wordpress
-          MYSQL_PASSWORD: wordpress
+     db-server:
+       image: ubuntu
+       container_name: "dbserver01"
+       command: /bin/bash
+       stdin_open: true
+       tty: true
+       volumes:
+         - db-volume:/base
+       networks:
+         - prod-network
+         - backup-network
    
-      wordpress:
-        image: wordpress
-        container_name: "wordpress"
-        depends_on: [db]
-        ports:
-          - "8000:80"
-        environment:
-          WORDPRESS_DB_HOST: db:3306
-          WORDPRESS_DB_USER: wordpress
-          WORDPRESS_DB_PASSWORD: wordpress
+     web-server:
+       image: ubuntu
+       container_name: "webserver01"
+       command: /bin/bash
+       depends_on:
+         - db-server
+       stdin_open: true
+       tty: true
+       volumes:
+         - ./data:/mnt/data
+       networks:
+         - prod-network
+   
+     backup-server:
+       image: ubuntu
+       container_name: "backupserver"
+       command: /bin/bash
+       stdin_open: true
+       tty: true
+       restart: always
+       volumes:
+         - db-volume:/backup/base
+         - mi-volumen-externo:/mi-volumen
+       networks:
+         - backup-network
+   
    volumes:
-       db_data:
+     db-volume:
+     mi-volumen-externo:
+       external: true
+   
+   networks:
+     prod-network:
+       driver: bridge
+     backup-network:
+       driver: bridge
    
    ```
 
 
 
-3. Realizar el despliegue, mediante el comando  `docker-compose up -d` desde el directorio que creamos, que contiene el archivo *docker-compose.yml*.
-
-   La opción `-d` hace que el deploy corra en segundo plano (*detached*), ejcutando como servicio. Si no ponemos esta opción el comando quedará en primer plano, y de veremos los logs de todos los contenedores. Esto puede ser útil para diagnosticar algún problema, como contra, si lo cortamos (ctrl-c) detendrá la ejecución de todos los contenedores generados.
-
-   Por otro lado, y como ya hemos visto, si no tenemos las imagenes almacenadas localmente, las descargará del repositorio desde [dockerhub](https://hub.docker.com/).
+   De esta forma, la red `prod-network` conecta a los servicios *db-server* y *web-server*, mientras que `backup-network` conecta a *backup-server* y *db-server*; pero no hay ninguna red que conecte a *web-server* con *backup-server*.
 
 
+
+3. Ahora despleguemos nuestro ambiente y veamos la comunicación entre los servicios:
 
    ```bash
-   $ sudo docker-compose up -d
-   Creating volume "my_wordpress_db_data" with default driver
-   Pulling db (mysql:latest)...
-   latest: Pulling from library/mysql
-   be8881be8156: Already exists
-   c3995dabd1d7: Pull complete
-   9931fdda3586: Downloading [================>                                  ]  1.522MB/4.499MB
-   bb1b6b6eff6a: Download complete
-   a65f125fa718: Download complete
-   2d9f8dd09be2: Downloading [=====>                                             ]  1.293MB/12.09MB
-   37b912cb2afe: Waiting
-   faf9da46e0cf: Waiting
-   ...
-   ...
-   ...
-   02243b284270: Pull complete
-   Digest: sha256:e25e2768e910223db3095c1560aa2255371986b24fbebf4b015bae3cc60b9b34
-   Status: Downloaded newer image for mysql:latest
-   Pulling wordpress (wordpress:latest)...
-   latest: Pulling from library/wordpress
-   be8881be8156: Already exists
-   69a25f7e4930: Pull complete
-   ...
-   ...
-   ...
-   61b17faecc30: Pull complete
-   c85ae8a39ff7: Pull complete
-   Digest: sha256:d92a0d4e9aae885789af8538bb8afe8624c23cb5d763dcc1d3a2e4ac57531d21
-   Status: Downloaded newer image for wordpress:latest
-   Creating my_wordpress_db_1 ... done
-   Creating my_wordpress_wordpress_1 ... done
+   $ docker-compose up -d
+   Creating network "compose01_prod-network" with driver "bridge"
+   Creating network "compose01_backup-network" with driver "bridge"
+   Creating backupserver ... done
+   Creating dbserver01   ... done
+   Creating webserver01  ... done
+   
+   ubuntu@serverNum1:~/compose01$ docker network ls
+   NETWORK ID          NAME                       DRIVER              SCOPE
+   ecdf172b3adf        bridge                     bridge              local
+   e62e9a0d6427        compose01_backup-network   bridge              local
+   ef19fff25231        compose01_prod-network     bridge              local
+   4b6f37984b56        host                       host                local
+   b9b7a573b4d0        none                       null                local
    ```
 
 
 
-4. Una vez finalizado el despliegue, podemos verificar si los dos contenedores están corriendo:
+   Podemos ver el detalle de cada una de las redes mediante el comando `docker network inspect`, por ejemplo para ver que contenedor se encuentra conectado a cada red.
+
+   También podemos conectarnos a los contenedores y probar la comunicación entre ellos:
 
    ```bash
-   $ sudo docker ps
-   CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                  NAMES
-   8e8771bccefe        wordpress:latest    "docker-entrypoint..."   5 minutes ago       Up 5 minutes        0.0.0.0:8000->80/tcp   my_wordpress_wordpress_1
-   8724f78e61a0        mysql:latest        "docker-entrypoint..."   5 minutes ago       Up 5 minutes        3306/tcp, 33060/tcp    my_wordpress_db_1
-   ```
-
-
-
-
-
-## **ABRIR EL PUERTO 8080 EN AWS PARA QUE ESTO FUNCIONE**
-
-
-
-Y además podemos acceder al servicio wordpress desde un navegador:
-
-![alt text](Imagenes/wordpress.png)
-
-
-
-Y también podemos ver que tenemos las nuevas imagenes que fueron descargadas en forma local:
-
-```bash
-$ sudo docker images
-REPOSITORY            TAG                 IMAGE ID            CREATED             SIZE
-wordpress             latest              e2c4085bbc2b        2 days ago          408MB
-mysql                 latest              29e0ae3b69b9        2 days ago          372MB
-...
-...
-```
-
-
-
-5. Para detener los contenedores en forma ordenada, lo hacemos mediante el comando  `docker-compose down` desde el directorio que creamos, que contiene el archivo *docker-compose.yml*.
-
-   ```bash
-   $ sudo docker-compose down
-   Stopping my_wordpress_wordpress_1 ... done
-   Stopping my_wordpress_db_1        ... done
-   Removing my_wordpress_wordpress_1 ... done
-   Removing my_wordpress_db_1        ... done
-   Removing network my_wordpress_default
-   ```
-
-
-
-   Podemos ver que los contenedores ya no se encuentra corriendo:
-
-   ```bash
-   $ sudo docker ps
-   CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
-
-   ```
-
-
-
-   Y las imágenes que fueron descargadas durante el proceso de despliegue, siguen estando almacenadas localmente:
-
-   ```bash
-   $ sudo docker images
-   REPOSITORY            TAG                 IMAGE ID            CREATED             SIZE
-   wordpress             latest              e2c4085bbc2b        2 days ago          408MB
-   mysql                 latest              29e0ae3b69b9        2 days ago          372MB
+   $ docker attach backupserver 
+   root@03c3f705f7d1:/# 
+   root@03c3f705f7d1:/# apt-get update; apt-get install -y iputils-ping dnsutils
    ...
+   ...
+   
+   root@f7397251a392:/# ping -c4 dbserver01
+   PING dbserver01 (192.168.0.3) 56(84) bytes of data.
+   64 bytes from dbserver01.compose01_backup-network (192.168.0.3): icmp_seq=1 ttl=64 time=0.056 ms
+   64 bytes from dbserver01.compose01_backup-network (192.168.0.3): icmp_seq=2 ttl=64 time=0.054 ms
+   64 bytes from dbserver01.compose01_backup-network (192.168.0.3): icmp_seq=3 ttl=64 time=0.055 ms
+   64 bytes from dbserver01.compose01_backup-network (192.168.0.3): icmp_seq=4 ttl=64 time=0.058 ms
+   
+   --- dbserver01 ping statistics ---
+   4 packets transmitted, 4 received, 0% packet loss, time 2997ms
+   rtt min/avg/max/mdev = 0.054/0.055/0.058/0.009 ms
+   
+   root@f7397251a392:/# ping -c4 webserver01
+   ping: webserver01: Name or service not known
+   
    ```
 
 
 
-   Por lo tanto si realizáramos el despliegue nuevamente con  `docker-compose up -d` , el proceso será muy rápido:
+Para terminar, en el ejemplo anterior si bien definimos las redes nosotros, dejamos que sea el engine de docker quien asigne la configuración de cada red, esto es, rango de direcciones ip, default gateway, dirección ip de cada servicio, etc. 
 
-   ```bash
-   $ sudo docker-compose up -d
-   Creating network "my_wordpress_default" with the default driver
-   Creating my_wordpress_db_1 ... done
-   Creating my_wordpress_wordpress_1 ... done
+Si queremos, podemos indicar estos valores a mano en el archivo *docker-compose.yml*. También podemos utilizar redes externas, que se encuentren previamente definidas, con `external:  `.
 
+```bash:
+version: '3'
 
-   $ sudo docker ps -a
-   CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                  NAMES
-   a4e556375891        wordpress:latest    "docker-entrypoint..."   3 seconds ago       Up 2 seconds        0.0.0.0:8000->80/tcp   my_wordpress_wordpress_1
-   83fb7904980c        mysql:5.7           "docker-entrypoint..."   4 seconds ago       Up 3 seconds        3306/tcp, 33060/tcp    my_wordpress_db_1
-
-
-   $ sudo docker-compose down
-   Stopping my_wordpress_wordpress_1 ... done
-   Stopping my_wordpress_db_1        ... done
-   Removing my_wordpress_wordpress_1 ... done
-   Removing my_wordpress_db_1        ... done
-   Removing network my_wordpress_default
-   ```
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-xxxxxx
-
-
-```bash
-$ docker-compose --version
-docker-compose version 1.21.2, build 1719ceb
-```
-
-
-
-
-
-
-
-```
-version: "3"
 services:
-  appserver1:
-    image: "conatel/appserver1"
-    container_name: "appserver1"
-    depends_on: [dbserver1]
-    environment:
-      - MYSQL_DATABASE=grupo1
-      - DMZ_IP=172.18.0.3
-      - BACKEND_IP=172.18.1.3
+  db-server:
+    image: ubuntu
+    container_name: "dbserver01"
+    command: /bin/bash
+    stdin_open: true
+    tty: true
+    volumes:
+      - db-volume:/base
     networks:
-      dmz:
-        ipv4_address: ${DMZ_IP}
-      backend:
-        ipv4_address: ${BACKEND_IP}
-  appserver2:
-    image: "conatel/appserver2"
-    container_name: "appserver2"
+      prod-network:
+        ipv4_address: 172.16.0.3
+      backup-network:
+
+  web-server:
+    image: ubuntu
+    container_name: "webserver01"
+    command: /bin/bash
+    depends_on:
+      - db-server
+    stdin_open: true
+    tty: true
+    volumes:
+      - ./data:/mnt/data
     networks:
-      dmz:
-        ipv4_address: 172.18.0.4
-  webserver1:
-    image: "conatel/webserver1"
-    container_name: "webserver1"
-    environment:
-      - DMZ_IP=172.18.0.2
-    ports:
-      - "80:80"
+      prod-network:
+        ipv4_address: 172.16.0.4
+
+  backup-server:
+    image: ubuntu
+    container_name: "backupserver"
+    command: /bin/bash
+    stdin_open: true
+    tty: true
+    restart: always
+    volumes:
+      - db-volume:/backup/base
+      - mi-volumen-externo:/mi-volumen
     networks:
-      dmz:
-        ipv4_address: ${DMZ_IP}
-  webserver2:
-    image: "conatel/webserver2"
-    container_name: "webserver2"
-    ports:
-      - "8080:8080"
-    networks:
-      dmz:
-        ipv4_address: 172.18.0.5
-      backend:
-        ipv4_address: 172.18.1.5
-  dbserver1:
-    image: "mysql"
-    container_name: "dbserver1"
-    environment:
-      - MYSQL_DATABASE=grupo1
-      - MYSQL_ROOT_PASSWORD=password
-      - BACKEND_IP=172.18.1.2
-    networks:
-      backend:
-        ipv4_address: ${BACKEND_IP}
+      - backup-network
+      - mi-red-externa
+
+volumes:
+  db-volume:
+  mi-volumen-externo:
+    external: true
 
 networks:
-  dmz:
+  prod-network:
     driver: bridge
     ipam:
       driver: default
       config:
-        - subnet: 172.18.0.0/24
-  backend:
+        - subnet: 172.16.0.0/24
+  backup-network:
     driver: bridge
-    ipam:
-      driver: default
-      config:
-        - subnet: 172.18.1.0/24
-
+  mi-red-externa:
+    external: true
 ```
+
+
+
+---
+
+
+
+| [<-- Volver](20170807-Networking.md) |
+
+
+
+# 
+
