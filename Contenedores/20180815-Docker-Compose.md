@@ -17,12 +17,11 @@ Introducción
 ---
 *Docker Compose* es una herramienta que permite definir y correr aplicaciones Docker multi-contentedor.
 
-A medida que las aplicaciones son mas complejas, es razonable distribuirlas en múltiples contenedores. Por ej. aplicaciones basadas en microservicios son apropiadas para usar múltiples contenedores, un contenedor con una base de datos, otro con un servidor web, un sistema de mensajería en otro, etc., etc.
-Crear estos contenedores en forma manual (*docker run*) resultará poco práctico y no es la mejor opción.
+A medida que las aplicaciones son mas complejas, resulta necesario distribuirlas en múltiples contenedores. Por ej. aplicaciones basadas en microservicios son apropiadas para usar múltiples contenedores, un contenedor con una base de datos, otro con un servidor web, un sistema de mensajería en otro, etc., etc. Crear estos contenedores en forma manual (*docker run*) resultará poco práctico, y si tuvieramos que crear un ambiente con decenas de contenedores, ciertamente no es la mejor opción.
 
-Con Docker Compose podemos definir nuestra aplicación multicontenedor utilizando un archivo de configuración, que contiene las definiciones de todos los contenedores que necesitamos, y con **un único comando podemos iniciar todos los contenedores**, con las relaciones entre ellos y en el orden indicado.
+Con Docker Compose podemos definir nuestra aplicación multicontenedor utilizando un único archivo de configuración, que contiene las definiciones de todos los servicios (contenedores) que necesitamos, y con un único comando podemos iniciar todos los servicios, o bajarlos.
 
-Este archivo de configuración, en formato *yaml*, no solo nos sirve para poder iniciar los contenedores, sino que también es útil como documentación de la aplicación, dado que incluye toda la información sobre sus contenedores, imágenes, volúmenes, networking, y el resto de las características.
+Este archivo de configuración, en formato *yaml*, no solo nos sirve para poder desplegar y eliminar todo nuestro ambiente, sino que también es útil como documentación del mismo, dado que incluye toda la información sobre sus contenedores, imágenes, volúmenes, networking, y el resto de las características.
 
 
 
@@ -91,7 +90,7 @@ En este ejercicio vamos a crear dos servicios simples, llamados *db-server* y *w
 
 1. Crear un directorio para nuestro proyecto.
 
-   Este directorio debería contar únicamente con los elementos necesarios para el ambiente que vamos a crear. Si bien en este caso tendrá unicamente el archivo *docker-compse.yml* podríamos incluir aquí dentro cualquier otro recurso necesario (ej. Dockerfiles). Esto nos permite mantener ordenada y actualizada toda la documentación específica de nuestro proyecto.
+   Este directorio debe contener únicamente los elementos necesarios para el ambiente que vamos a desplegar. Aquí incluiremos el archivo *docker-compse.yml*, así como los Dockerfiles, etc. Esto nos permite contar con toda la documentación específica de nuestro proyecto.
 
    ```bash
    $ mkdir compose01
@@ -100,57 +99,95 @@ En este ejercicio vamos a crear dos servicios simples, llamados *db-server* y *w
 
 
 
-2. Crear el archivo *docker-compose.yml* con el siguiente contenido:
+2. Crear un archivo *Dockerfile* que utilizaremos para construir las imagenes a utilizar para los servicios:
+
+   ```bash
+   FROM ubuntu
+   LABEL maintainer="fagis@conatel.com.uy"
+   RUN apt-get update
+   RUN apt-get install -y net-tools
+   RUN apt-get install -y dnsutils
+   RUN apt-get install -y iputils-ping
+   CMD bash
+   ```
+
+   Este *Dockerfile* simplemente crea una imagen a partir de *ubuntu* a la cuál le instala un par de paquetes, y ejecuta el shell `bash`.
+
+3. Crear el archivo *docker-compose.yml* con el siguiente contenido:
 
    ```bash
    version: '3'
-
+   
    services:
      db-server:
-       image: ubuntu
+       build: .
        container_name: "dbserver01"
-       command: /bin/bash
        stdin_open: true
        tty: true
-
+   
      web-server:
-       image: ubuntu
+       build: .
        container_name: "webserver01"
-       command: /bin/bash
        depends_on:
          - db-server
        stdin_open: true
        tty: true
+   
    ```
-
-   En este caso para hacer un ejemplo sencillo, simplemente estamos utilizando una imagen de *ubuntu* para nuestros dos servicios.
 
    Las opciones `stdin_open: true` y `tty: true` permiten dejar abierta la stdin y la terminal conectada, de forma que el comando `/bin/bash` quede ejecutando. Si no hacemos esto, el `bash` se ejecuta, termina inmediatamente, y el contenedor se apaga. Esto es análogo a correr a mano el comando `docker run -it` que vimos anteriormente.
 
-3. Realizar el despliegue de los servicios, mediante el comando  `docker-compose up -d` desde el directorio que contiene el archivo *docker-compose.yml*.
+4. Realizar el despliegue de los servicios, mediante el comando  `docker-compose up -d` desde el directorio del proyecto:
 
    ```bash
    $ docker-compose up -d
    Creating network "compose01_default" with the default driver
+   Building db-server
+   Step 1/7 : FROM ubuntu
+   latest: Pulling from library/ubuntu
+   Digest: sha256:586519e288b47ac3585061b424956418a0435e6469d9c02d6e9dc4ab03eed286
+   Status: Downloaded newer image for ubuntu:latest
+    ---> 16508e5c265d
+   Step 2/7 : LABEL maintainer="fagis@conatel.com.uy"
+    ---> Using cache
+    ---> 7b6a16db23b6
+   Step 3/7 : RUN apt-get update
+    ---> Using cache
+    ---> 565e7ab19a74
+   Step 4/7 : RUN apt-get install -y net-tools
+    ---> Running in 951f508c0fc7
+   Reading package lists...
+   ...
+   ...
+   ...
+   Step 7/7 : CMD bash
+    ---> Using cache
+    ---> 3cb72a988a69
+   Successfully built 3cb72a988a69
+   Successfully tagged compose01_web-server:latest
+   WARNING: Image for service web-server was built because it did not already exist. To rebuild this image you must use `docker-compose build` or `docker-compose up --build`.
    Creating dbserver01 ... done
    Creating webserver01 ... done
-   $
+   
    ```
 
-   La opción `-d` hace que el deploy corra en segundo plano (*detached*), ejcutando como servicio. 
+
+
+   La opción `-d` hace que el deploy corra en segundo plano (*detached*), ejecutando como servicio. 
 
    Si no ponemos esta opción el comando quedará en primer plano, y de veremos los logs de todos los contenedores. Esto puede ser útil para diagnosticar algún problema, como contra, si lo cortamos (ctrl-c) detendrá la ejecución de todos los contenedores generados.
 
-   En este caso el despliegue es muy rapido, dado que utilizamos la imagen de *ubuntu* que se encuentra almacenada localmente. Si la imagen no estuviera local la descargará del repositorio de [dockerhub](https://hub.docker.com/).
+   Como es la primera vez que generamos nuestra imagen, el deploy va a mostrar todo el proceso de creación de la misma. La próxima vez el deploy será mucho mas rápido.
+
 
 
 4. Una vez finalizado el despliegue, podemos verificar si los dos contenedores están corriendo:
 
    ```bash
    $ docker ps
-   CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
-   ffce08dd859c        ubuntu              "/bin/bash"         7 seconds ago       Up 6 seconds                            webserver01
-   c7743be062e6        ubuntu              "/bin/bash"         8 seconds ago       Up 7 seconds                            dbserver01
+   CONTAINER ID        IMAGE                  COMMAND             CREATED             STATUS              PORTS               NAMES
+   5b1ccbd47029        compose01_web-server   "/bin/sh -c bash"   5 seconds ago       Up 4 seconds                            webserver01
+   e2c909735c87        compose01_db-server    "/bin/sh -c bash"   6 seconds ago       Up 5 seconds                            dbserver01
    ```
 
 
@@ -195,11 +232,11 @@ En la sección **services:** es donde definimos todos los servicios que vamos a 
 
 **container_name:** es el nombre que le va a dar al contenedor cuando levante el servicio. Es opcional, si no lo indicamos va a utilizar un nombre generado por defecto.
 
-**image:** es la imagen que vamos a utilizar para crear el contenedor. En caso de no encontrarla localmente la itentará bajar del repositorio de github.
+**build:** si vamos a construir nuestra imagen, aquí indicamos el directorio donde se encuentra el archivo *Dockerfile* para crear la misma (camino relativo).
 
-**build:** si en lugar de utilizar una imagen existente queremos crear nuestra propia imagen a partir de un *Dockerfile*, es aquí donde le indicamos el directorio donde se encuentra el mismo.
+**image:** si vamos a utilizar una imagen existente, aquí le indicamos cual es esa imagen. En caso de no encontrarla localmente la itentará bajar del repositorio de github.
 
-**command:** comando que le pasamos al contenedor para que corra al momento de ejecución.
+**command:** comando que le pasamos a la imagen para que corra al momento de ejecutar el contenedor.
 
 **ports:** permite mapear puertos al contenedor en formato `host_port:container_port `
 
@@ -207,7 +244,7 @@ En la sección **services:** es donde definimos todos los servicios que vamos a 
 
 **depends_on:** indica dependencia con otro(s) contenedor(es). El contenedor no va a levanta si los contenedores de los cuales depende no se encuentran corriendo. Los contenedores son iniciados/bajados siguiendo el orden necesario de acuerdo a las dependencias establecidas.
 
-**network**: indica las redes va a utilizar el servicio.
+**network**: indica las redes va a utilizar el servicio (lo veremos mas adelante).
 
 **volumes:** indica los volumenes de disco que vamos a acceder desde el servicio.
 
