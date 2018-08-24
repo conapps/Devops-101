@@ -412,7 +412,7 @@ local               compose01_db-volume
 Nuevamente, podemos conectarnos a ambos contenedores y acceder al volumen en el punto de montaje correspondiente: 
 
 ```bash
-$ sudo docker attach dbserver01
+$ docker attach dbserver01
 root@6dae219d5ac6:/# 
 root@6dae219d5ac6:/# cd /base
 root@6dae219d5ac6:/base# touch archivo1.txt
@@ -423,7 +423,7 @@ root@6dae219d5ac6:/base#
 <ctrl-pq>
 
 
-$ sudo docker attach backupserver
+$ docker attach backupserver
 root@94f5d5cb6abb:/# 
 root@94f5d5cb6abb:/# ls -l /backup/base/
 total 0
@@ -465,62 +465,15 @@ volumes:
 
 En todos los casos anteriores, el comando `docker-compose up` se encarga de crear el volumen que estamos definiendo dentro de la sección `volumes:` del archivo *docker-compose.yml*. Esto lo verificamos al hacer un `docker volume ls`. Pero si ya tuvieramos un volumen definido previamente e intentamos accederlo de esta forma, vamos a obtener un error.
 
-Para esto, podemos acceder a **volumenes externos** que hayan sido definidos previamente. En este caso, el comando `docker-compose up` no intentará crear el volumen, sino que buscará el volumen ya creado. Claro que, en caso de que el volumen no exista, el comando terminará con error.
+Para esto, podemos acceder a volumenes externos que hayan sido definidos previamente. En este caso, el comando `docker-compose up` no intentará crear el volumen, sino que buscará el volumen ya creado y lo montará en el servicio. Claro que, en caso de que el volumen no exista, el deploy terminará con error.
 
-Veamos esto con el siguiente ejercicio. Primero creamos un volumen:
-
-```bash
-$ docker volume create mi-volumen-externo
-mi-volumen-externo
-
-$ docker volume ls
-DRIVER              VOLUME NAME
-local               mi-volumen-externo
-```
-
-
-
-Y en el archivo *docker-compose.yml* agregamos este volumen como externo, al servicio *db-server*:
+Para definir un volumen externo le agregamos la opción `external: true` al mismo:
 
 ```bash
-version: '3'
-
-services:
-  db-server:
-    build: .
-    container_name: "dbserver01"
-    stdin_open: true
-    tty: true
-    volumes:
-      - db-volume:/base
-
-  web-server:
-    build: .
-    container_name: "webserver01"
-    depends_on:
-      - db-server
-    stdin_open: true
-    tty: true
-    volumes:
-      - ./data:/mnt/data
-
-  backup-server:
-    build: .
-    container_name: "backupserver"
-    stdin_open: true
-    tty: true
-    restart: always
-    volumes:
-      - db-volume:/backup/base
-      - mi-volumen-externo:/mi-volumen
-
 volumes:
-  db-volume:
   mi-volumen-externo: 
     external: true
 ```
-
-Nuevamente, podemos conectarnos al *backupserver* y verificar que podemos acceder al volumen externos que hemos montado en `/mi_volumen`. 
 
 
 
@@ -540,16 +493,13 @@ Removing network compose01_default
 
 $ docker volume ls
 DRIVER              VOLUME NAME
-...
 local               compose01_db-volume
-...
 local               mi-volumen-externo
-...
 ```
 
 
 
-Para eliminar los volumenes debemos agregarle `-v` o `--volumes`. De todas formas, los volumenes definidos como externos nunca son eliminados desde docker compose ( y tampoco las redes externas).
+Para eliminar los volumenes debemos agregarle `-v` o `--volumes`. De todas formas, los volumenes definidos como externos nunca son eliminados desde docker compose (y tampoco las redes externas).
 
 ```bash
 $ docker-compose up -d
@@ -578,7 +528,7 @@ local               mi-volumen-externo
 
 ### Definición de Networks:
 
-Por defecto, cuando desplegamos nuestro ambiente, el comando `docker-compose up`crea una única network, y agrega cada contenedor de un servicio a esta *default network*. Como consecuencia, todos los contenedores pueden conectarse entre ellos y además pueden descubrirse mediante su *hostname*.
+Por defecto, cuando desplegamos nuestro ambiente, el comando `docker-compose up`crea una única network, y agrega cada contenedor de cada servicio a esta *default network*. Como consecuencia, todos los contenedores pueden conectarse entre ellos y además pueden descubrirse mediante su *hostname*.
 
 ```bash
 $ docker-compose up -d
@@ -813,7 +763,6 @@ Como vimos antes, nuestro *docker-compose.yml* crea los servicios *db-server*, *
      mi-red-externa:
        external: true
    ```
-
 
 ---
 
