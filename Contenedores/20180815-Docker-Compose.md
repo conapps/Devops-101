@@ -402,9 +402,7 @@ Podemos ver que además de crear el nuevo servicio *backupserver*, se crea tambi
 ```bash
 $ docker volume ls
 DRIVER              VOLUME NAME
-...
 local               compose01_db-volume
-...
 ```
 
 
@@ -467,13 +465,26 @@ En todos los casos anteriores, el comando `docker-compose up` se encarga de crea
 
 Para esto, podemos acceder a volumenes externos que hayan sido definidos previamente. En este caso, el comando `docker-compose up` no intentará crear el volumen, sino que buscará el volumen ya creado y lo montará en el servicio. Claro que, en caso de que el volumen no exista, el deploy terminará con error.
 
-Para definir un volumen externo le agregamos la opción `external: true` al mismo:
+Para definir un volumen externo le agregamos la opción `external: true`:
 
 ```bash
 volumes:
   mi-volumen-externo: 
     external: true
 ```
+
+En este caso, buscará un volumen ya definido con nombre *mi-volumen-externo*.
+
+Si queremos, podemos especificar cuál es el nombre del volumen externo (definido en docker) por separado a la referencia que estamos utilizando para el volumen en el *docker-compose.yml* 
+
+```bash
+volumes:
+  db-volume:
+    external:
+      name: mi-volumen-externo
+```
+
+La diferencia en este caso es que, si bien el volumen externo sigue siendo el mismo (*mi-volumen-externo*) y debe estar definido previamente, a dicho volumen se lo referencia con el nombre *db-volume* dentro del *docker-compose.yml*, y con ese mismo nombre es que debemos asignarlo a cada uno de los servicios que lo utilicen.
 
 
 
@@ -519,7 +530,6 @@ Volume mi-volumen-externo is external, skipping
 $ docker volume ls
 DRIVER              VOLUME NAME
 local               mi-volumen-externo
-
 ```
 
 
@@ -528,7 +538,7 @@ local               mi-volumen-externo
 
 ### Definición de Networks:
 
-Por defecto, cuando desplegamos nuestro ambiente, el comando `docker-compose up`crea una única network, y agrega cada contenedor de cada servicio a esta *default network*. Como consecuencia, todos los contenedores pueden conectarse entre ellos y además pueden descubrirse mediante su *hostname*.
+Por defecto, cuando desplegamos nuestro ambiente el comando `docker-compose up`crea una única network, y agrega cada contenedor de cada servicio a esta *default network*. Como consecuencia, todos los contenedores pueden conectarse entre ellos y además pueden descubrirse mediante su *hostname*.
 
 ```bash
 $ docker-compose up -d
