@@ -473,49 +473,15 @@ volumes:
     external: true
 ```
 
-En este caso, buscará un volumen ya definido con nombre *mi-volumen-externo*.
-
-Si queremos, podemos especificar cuál es el nombre del volumen externo (definido en docker) por separado a la referencia que estamos utilizando para el volumen en el *docker-compose.yml* 
-
-```bash
-volumes:
-  db-volume:
-    external:
-      name: mi-volumen-externo
-```
-
-La diferencia en este caso es que, si bien el volumen externo sigue siendo el mismo (*mi-volumen-externo*) y debe estar definido previamente, a dicho volumen se lo referencia con el nombre *db-volume* dentro del *docker-compose.yml*, y con ese mismo nombre es que debemos asignarlo a cada uno de los servicios que lo utilicen.
+En este caso, buscará un volumen ya definido en docker, con nombre *mi-volumen-externo*.
 
 
 
 ##### Eliminación de volumenes
 
-Si bajamos el ambiente, los volumenes creados en la sección *volumes:* por defecto no son eliminados:
+Si bajamos el ambiente con `docker-compose down`, por defecto los volumenes creados en la sección *volumes:* no son eliminados. Para eliminarlos debemos agregarle la opción  `-v` o `--volumes`
 
 ```bash
-$ docker-compose down
-Stopping webserver01  ... done
-Stopping backupserver ... done
-Stopping dbserver01   ... done
-Removing webserver01  ... done
-Removing backupserver ... done
-Removing dbserver01   ... done
-Removing network compose01_default
-
-$ docker volume ls
-DRIVER              VOLUME NAME
-local               compose01_db-volume
-local               mi-volumen-externo
-```
-
-
-
-Para eliminar los volumenes debemos agregarle `-v` o `--volumes`. De todas formas, los volumenes definidos como externos nunca son eliminados desde docker compose (y tampoco las redes externas).
-
-```bash
-$ docker-compose up -d
-...
-
 $ docker-compose down -v
 Stopping webserver01  ... done
 Stopping backupserver ... done
@@ -532,18 +498,18 @@ DRIVER              VOLUME NAME
 local               mi-volumen-externo
 ```
 
-
+Los volumenes definidos como externos nunca son eliminados desde docker compose (y tampoco las redes externas).
 
 
 
 ### Definición de Networks:
 
-Por defecto, cuando desplegamos nuestro ambiente el comando `docker-compose up`crea una única network, y agrega cada contenedor de cada servicio a esta *default network*. Como consecuencia, todos los contenedores pueden conectarse entre ellos y además pueden descubrirse mediante su *hostname*.
+Por defecto, cuando desplegamos nuestro ambiente el comando `docker-compose up` crea una única network, y agrega cada contenedor de cada servicio a esta *default network*. Como consecuencia, todos los contenedores pueden conectarse entre ellos y además pueden descubrirse mediante su *hostname*:
 
 ```bash
 $ docker-compose up -d
 ...
-...
+
 
 $ docker network ls
 NETWORK ID          NAME                DRIVER              SCOPE
@@ -581,15 +547,15 @@ rtt min/avg/max/mdev = 0.058/0.066/0.071/0.004 ms
 
 
 
-Si bien esto puede ser útil en un ambiente de prueba, en una ambiente en producción podría interesarnos restringir o segmentar esta conectividad, de modo que los contenedores puedan comunicarse únicamente con los que sea extrictamente necesario.
-
-Dentro de la sección **networks:** del archivo *docker-compose.yml*, podemos modificar la red por defecto `default:`o bien crear nuestras propias redes, que es lo que vamos a hacer a continuación mediante los siguientes ejercicios.
-
-Como vimos antes, nuestro *docker-compose.yml* crea los servicios *db-server*, *web-server*, y *backup-server*.  Supongamos que queremos que *db-server* se pueda comunicar con *web-server* y con *backup-server*, pero no queremos que *web-server* y *backup-server* se comuniquen entre si. Para esto vamos a crear dos redes en forma manual (*custom networks*) dentro del archivo *docker-compose.yml*. 
+Si bien esto puede ser útil en un ambiente de prueba, en una ambiente en producción podría interesarnos restringir o segmentar esta conectividad, de modo que cada servicio pueda comunicarse únicamente con aquellos otros servicios que sea extrictamente necesario. Dentro de la sección **networks:** del archivo *docker-compose.yml*, podemos crear nuestras propias redes y definir la comunicaciones entre los servicios.
 
 
 
 **Ejercicio 21:**
+
+Como vimos antes, nuestro *docker-compose.yml* crea los servicios *db-server*, *web-server*, y *backup-server*.  Supongamos que queremos que *db-server* se pueda comunicar con *web-server* y con *backup-server*, pero no queremos que *web-server* y *backup-server* se comuniquen entre si. Para esto vamos a crear dos redes en forma manual (*custom networks*):
+
+
 
 1. Primero bajemos nuestros servicios con `docker-compose down`. Si bien podemos dejarlos arriba y luego actualizarlos, será mas claro si lo hacemos de este modo, dado que de esta forma eliminamos la *default network*:
 
@@ -660,11 +626,12 @@ Como vimos antes, nuestro *docker-compose.yml* crea los servicios *db-server*, *
 
 
 
-   De esta forma, la red `prod-network` conecta a los servicios *db-server* y *web-server*, mientras que `backup-network` conecta a *backup-server* y *db-server*; pero no hay ninguna red que conecte a *web-server* con *backup-server*.
+   Ambas redes las definimos con el driver `bridge`, y dado que no indicamos ninguna configuración adicional, es el engine de docker quien asignará los rangos de IP a las redes y las IP a los servicios.
+
+   De esta forma, la red `prod-network` conecta a los servicios *db-server* y *web-server*, mientras que `backup-network` conecta a *backup-server* y *db-server*; pero no hay ninguna red que conecte a *web-server* con *backup-server* por lo cual estos dos servicios no podrán comunicarse entre si.
 
 
-
-3. Ahora despleguemos nuestro ambiente y veamos la comunicación entre los servicios:
+3. Ahora despleguemos nuestro ambiente, y verifiquemos la comunicación entre los servicios:
 
    ```bash
    $ docker-compose up -d
@@ -687,7 +654,7 @@ Como vimos antes, nuestro *docker-compose.yml* crea los servicios *db-server*, *
 
    Podemos ver el detalle de cada una de las redes mediante el comando `docker network inspect`, por ejemplo para ver que contenedor se encuentra conectado a cada red.
 
-   También podemos conectarnos a los contenedores y probar la comunicación entre ellos:
+   En este caso también podemos conectarnos a los contenedores y probar la comunicación entre ellos:
 
    ```bash
    $ docker attach backupserver
@@ -697,82 +664,97 @@ Como vimos antes, nuestro *docker-compose.yml* crea los servicios *db-server*, *
    64 bytes from dbserver01.compose01_backup-network (192.168.0.3): icmp_seq=2 ttl=64 time=0.054 ms
    64 bytes from dbserver01.compose01_backup-network (192.168.0.3): icmp_seq=3 ttl=64 time=0.055 ms
    64 bytes from dbserver01.compose01_backup-network (192.168.0.3): icmp_seq=4 ttl=64 time=0.058 ms
-      
+         
    --- dbserver01 ping statistics ---
    4 packets transmitted, 4 received, 0% packet loss, time 2997ms
    rtt min/avg/max/mdev = 0.054/0.055/0.058/0.009 ms
-      
+         
+   
    root@f7397251a392:/# ping -c4 webserver01
    ping: webserver01: Name or service not known
-      
+         
    ```
 
 
+##### Estableciendo configuración de red a las custom networks
 
-   En el ejemplo anterior si bien definimos las redes nosotros, dejamos que sea el engine de docker quien asigne la configuración de cada red, esto es, rango de direcciones ip, default gateway, dirección ip de cada servicio, etc. 
+Podemos establecer la configuración de cada una de nuestras *custom networks*, indicando por ej. que rangos de IP queremos utilizar para cada una de ellas. 
 
-   Si queremos especificar la configuración de la red, podemos incluirla en el *docker-compose.yml*. También podemos utilizar redes externas, que se encuentren previamente definidas, con `external:  `.
-
-
+Esto lo hacemos en la sección **networks:** del *docker-compose.yml*:
 
    ```bash
-   version: '3'
-   
-   services:
-     db-server:
-       build: .
-       container_name: "dbserver01"
-       stdin_open: true
-       tty: true
-       volumes:
-         - db-volume:/base
-       networks:
-         prod-network:
-           ipv4_address: 172.16.0.3
-         backup-network:
-   
-     web-server:
-       build: .
-       container_name: "webserver01"
-       depends_on:
-         - db-server
-       stdin_open: true
-       tty: true
-       volumes:
-         - ./data:/mnt/data
-       networks:
-         prod-network:
-           ipv4_address: 172.16.0.4
-       
-     backup-server:
-       build: .
-       container_name: "backupserver"
-       stdin_open: true
-       tty: true
-       volumes:
-         - db-volume:/backup/base
-         - mi-volumen-externo:/mi-volumen
-       networks:
-         - backup-network
-         - mi-red-externa
-   
-   volumes:
-     db-volume:
-     mi-volumen-externo: 
-       external: true
-   
-   networks:
-     prod-network:
-       driver: bridge
-       ipam:
-         driver: default
-         config:
-           - subnet: 172.16.0.0/24
-     backup-network:
-       driver: bridge
-     mi-red-externa:
-       external: true
+networks:
+  prod-network:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.16.0.0/24   
    ```
+
+
+
+Y podemos también configurar las opciones de red de los servicios, por ej. asignandoles una dirección IP específica, lo cuál hacemos en la sección **services:** del *docker-compose.yml*:
+
+```bash
+services:
+  db-server:
+    build: .
+    container_name: "dbserver01"
+    stdin_open: true
+    tty: true
+    volumes:
+      - db-volume:/base
+    networks:
+      prod-network:
+        ipv4_address: 172.16.0.3
+```
+
+
+
+##### Accediendo a redes externas
+
+Si ya tenemos una red previamente definida en docker, y queremos utilizarla para nuestros servicios, podemos referenciarla de la siguiente manera:
+
+```bash
+networks:
+  mi-red-externa: 
+    external: true
+```
+
+Como indicamos antes, ni las redes externas, ni los volúmenes externos son eliminados cuando bajamos nuestros servicios con `docker-compose down`.
+
+
+
+##### Eliminación de *custom networks:*
+
+Si bajamos el ambiente con `docker-compose down`, por defecto las redes serán eliminadas:
+
+```bash
+$ docker-compose down -v
+Stopping webserver01  ... done
+Stopping backupserver ... done
+Stopping dbserver01   ... done
+Removing webserver01  ... done
+Removing backupserver ... done
+Removing dbserver01   ... done
+Removing network compose01_prod-network
+Removing network compose01_backup-network
+Network mi-red-externa is external, skipping
+Removing volume compose01_db-volume
+Volume mi-volumen-externo is external, skipping
+
+$ docker network ls
+NETWORK ID          NAME                DRIVER              SCOPE
+241e4c4be1e6        bridge              bridge              local
+f9a3c9feaf96        host                host                local
+9166adfed0fa        mi-red-externa      bridge              local
+a8fd98b4fcd6        none                null                local
+```
+
+Las redes definidas como externas nunca son eliminados desde docker compose.
+
+
 
 ---
 
