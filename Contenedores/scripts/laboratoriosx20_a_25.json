@@ -1,0 +1,264 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "Primer template de prueba",
+  "Resources": {
+    "serverNum20": {
+      "Type": "AWS::EC2::Instance",
+      "Properties": {
+        "ImageId": "ami-03d292eb4bc597178",
+        "InstanceType": "t2.micro",
+        "KeyName": "containers2",
+        "SecurityGroupIds": ["sg-012ed60d267c38f6f"],
+        "UserData": {
+          "Fn::Base64": {
+            "Fn::Join": [
+              "",
+              [
+                "#!/bin/bash -xe\n",
+                "# Change the hostname to serverNum20\n",
+                "hostnamectl set-hostname serverNum20\n",
+                "hostnamectl\n",
+                "\n"
+              ]
+            ]
+          }
+        },
+        "BlockDeviceMappings": [
+          {
+            "DeviceName": "/dev/sdm",
+            "Ebs": {
+              "VolumeType": "gp2",
+              "DeleteOnTermination": "true",
+              "VolumeSize": "8"
+            }
+          }
+        ]
+      }
+    },
+    "dnsNum20": {
+      "Type": "AWS::Route53::RecordSet",
+      "Properties": {
+        "HostedZoneId": "Z3GEKPUSP8P6T5",
+        "Name": "serverNum20.labs.conatest.click.",
+        "ResourceRecords": [{ "Fn::GetAtt": ["serverNum20", "PublicDnsName"] }],
+        "TTL": "60",
+        "Type": "CNAME"
+      }
+    },
+    "serverNum21": {
+      "Type": "AWS::EC2::Instance",
+      "Properties": {
+        "ImageId": "ami-03d292eb4bc597178",
+        "InstanceType": "t2.micro",
+        "KeyName": "containers2",
+        "SecurityGroupIds": ["sg-012ed60d267c38f6f"],
+        "UserData": {
+          "Fn::Base64": {
+            "Fn::Join": [
+              "",
+              [
+                "#!/bin/bash -xe\n",
+                "# Change the hostname to serverNum21\n",
+                "hostnamectl set-hostname serverNum21\n",
+                "hostnamectl\n",
+                "\n"
+              ]
+            ]
+          }
+        },
+        "BlockDeviceMappings": [
+          {
+            "DeviceName": "/dev/sdm",
+            "Ebs": {
+              "VolumeType": "gp2",
+              "DeleteOnTermination": "true",
+              "VolumeSize": "8"
+            }
+          }
+        ]
+      }
+    },
+    "dnsNum21": {
+      "Type": "AWS::Route53::RecordSet",
+      "Properties": {
+        "HostedZoneId": "Z3GEKPUSP8P6T5",
+        "Name": "serverNum21.labs.conatest.click.",
+        "ResourceRecords": [{ "Fn::GetAtt": ["serverNum21", "PublicDnsName"] }],
+        "TTL": "60",
+        "Type": "CNAME"
+      }
+    },
+    "serverNum22": {
+      "Type": "AWS::EC2::Instance",
+      "Properties": {
+        "ImageId": "ami-03d292eb4bc597178",
+        "InstanceType": "t2.micro",
+        "KeyName": "containers2",
+        "SecurityGroupIds": ["sg-012ed60d267c38f6f"],
+        "UserData": {
+          "Fn::Base64": {
+            "Fn::Join": [
+              "",
+              [
+                "#!/bin/bash -xe\n",
+                "# Change the hostname to serverNum22\n",
+                "hostnamectl set-hostname serverNum22\n",
+                "hostnamectl\n",
+                "\n"
+              ]
+            ]
+          }
+        },
+        "BlockDeviceMappings": [
+          {
+            "DeviceName": "/dev/sdm",
+            "Ebs": {
+              "VolumeType": "gp2",
+              "DeleteOnTermination": "true",
+              "VolumeSize": "8"
+            }
+          }
+        ]
+      }
+    },
+    "dnsNum22": {
+      "Type": "AWS::Route53::RecordSet",
+      "Properties": {
+        "HostedZoneId": "Z3GEKPUSP8P6T5",
+        "Name": "serverNum22.labs.conatest.click.",
+        "ResourceRecords": [{ "Fn::GetAtt": ["serverNum22", "PublicDnsName"] }],
+        "TTL": "60",
+        "Type": "CNAME"
+      }
+    },
+    "serverNum23": {
+      "Type": "AWS::EC2::Instance",
+      "Properties": {
+        "ImageId": "ami-03d292eb4bc597178",
+        "InstanceType": "t2.micro",
+        "KeyName": "containers2",
+        "SecurityGroupIds": ["sg-012ed60d267c38f6f"],
+        "UserData": {
+          "Fn::Base64": {
+            "Fn::Join": [
+              "",
+              [
+                "#!/bin/bash -xe\n",
+                "# Change the hostname to serverNum23\n",
+                "hostnamectl set-hostname serverNum23\n",
+                "hostnamectl\n",
+                "\n"
+              ]
+            ]
+          }
+        },
+        "BlockDeviceMappings": [
+          {
+            "DeviceName": "/dev/sdm",
+            "Ebs": {
+              "VolumeType": "gp2",
+              "DeleteOnTermination": "true",
+              "VolumeSize": "8"
+            }
+          }
+        ]
+      }
+    },
+    "dnsNum23": {
+      "Type": "AWS::Route53::RecordSet",
+      "Properties": {
+        "HostedZoneId": "Z3GEKPUSP8P6T5",
+        "Name": "serverNum23.labs.conatest.click.",
+        "ResourceRecords": [{ "Fn::GetAtt": ["serverNum23", "PublicDnsName"] }],
+        "TTL": "60",
+        "Type": "CNAME"
+      }
+    },
+    "serverNum24": {
+      "Type": "AWS::EC2::Instance",
+      "Properties": {
+        "ImageId": "ami-03d292eb4bc597178",
+        "InstanceType": "t2.micro",
+        "KeyName": "containers2",
+        "SecurityGroupIds": ["sg-012ed60d267c38f6f"],
+        "UserData": {
+          "Fn::Base64": {
+            "Fn::Join": [
+              "",
+              [
+                "#!/bin/bash -xe\n",
+                "# Change the hostname to serverNum24\n",
+                "hostnamectl set-hostname serverNum24\n",
+                "hostnamectl\n",
+                "\n"
+              ]
+            ]
+          }
+        },
+        "BlockDeviceMappings": [
+          {
+            "DeviceName": "/dev/sdm",
+            "Ebs": {
+              "VolumeType": "gp2",
+              "DeleteOnTermination": "true",
+              "VolumeSize": "8"
+            }
+          }
+        ]
+      }
+    },
+    "dnsNum24": {
+      "Type": "AWS::Route53::RecordSet",
+      "Properties": {
+        "HostedZoneId": "Z3GEKPUSP8P6T5",
+        "Name": "serverNum24.labs.conatest.click.",
+        "ResourceRecords": [{ "Fn::GetAtt": ["serverNum24", "PublicDnsName"] }],
+        "TTL": "60",
+        "Type": "CNAME"
+      }
+    },
+    "serverNum25": {
+      "Type": "AWS::EC2::Instance",
+      "Properties": {
+        "ImageId": "ami-03d292eb4bc597178",
+        "InstanceType": "t2.micro",
+        "KeyName": "containers2",
+        "SecurityGroupIds": ["sg-012ed60d267c38f6f"],
+        "UserData": {
+          "Fn::Base64": {
+            "Fn::Join": [
+              "",
+              [
+                "#!/bin/bash -xe\n",
+                "# Change the hostname to serverNum25\n",
+                "hostnamectl set-hostname serverNum25\n",
+                "hostnamectl\n",
+                "\n"
+              ]
+            ]
+          }
+        },
+        "BlockDeviceMappings": [
+          {
+            "DeviceName": "/dev/sdm",
+            "Ebs": {
+              "VolumeType": "gp2",
+              "DeleteOnTermination": "true",
+              "VolumeSize": "8"
+            }
+          }
+        ]
+      }
+    },
+    "dnsNum25": {
+      "Type": "AWS::Route53::RecordSet",
+      "Properties": {
+        "HostedZoneId": "Z3GEKPUSP8P6T5",
+        "Name": "serverNum25.labs.conatest.click.",
+        "ResourceRecords": [{ "Fn::GetAtt": ["serverNum25", "PublicDnsName"] }],
+        "TTL": "60",
+        "Type": "CNAME"
+      }
+    }
+  }
+}
