@@ -6,7 +6,7 @@
 
 ## Objetivo
 
-El objetivo del desafío final es elaborar la topología que se muestra en a figura mas arriba utilizando `docker-compose` y ponerla a correr en el servidor utilizado para los laboratorios.
+El objetivo del desafío final es elaborar la topología que se muestra en la figura mas arriba utilizando `docker-compose` y ponerla a correr en el servidor utilizado para los laboratorios.
 
 Una vez que esta topología esté corriendo, se debe acceder mediante un navegador web a la url del servidor: http://servernumx.labs.conatest.click. Esto desplegará una página como sigue:
 
