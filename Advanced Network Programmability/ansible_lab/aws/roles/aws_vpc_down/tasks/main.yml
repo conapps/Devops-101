@@ -1,0 +1,102 @@
+- name: Gather VPC facts
+  ec2_vpc_net_facts:
+    filters:
+      'tag:Name': '{{aws_vpc_name}}'
+  register: vpc_facts
+
+- name: Set VPC fact
+  set_fact:
+    net: '{{vpc_facts.vpcs[0]}}'
+  when: vpc_facts.vpcs[0] is defined
+
+- name: Gather Security Group facts
+  ec2_group_facts:
+    filters:
+      vpc-id: '{{ net.vpc_id }}'
+  register: security_group_facts
+
+- name: Set Security Group fact
+  set_fact:
+    sg: '{{security_group_facts.security_groups[0]}}'
+  when: security_group_facts.security_groups[0] is defined
+
+- name: Delete the Security Group
+  ec2_group:
+    group_id: '{{sg.group_id}}'
+    state: absent
+
+- name: Delete the key pair
+  ec2_key:
+    name: '{{aws_key_pair_name}}'
+    state: absent
+
+- name: Delete the management subnet
+  ec2_vpc_subnet:
+    state: absent
+    vpc_id: '{{ net.vpc_id }}'
+    cidr: '{{aws_management_subnet_cidr}}'
+  when: net is defined
+
+- name: Delete the IGW
+  ec2_vpc_igw:
+    vpc_id: '{{ net.vpc_id }}'
+    state: absent
+    region: '{{aws_region}}'
+  register: igw
+  when: net is defined
+
+- name: Delete the VPC
+  ec2_vpc_net:
+    cidr_block: '{{aws_vpc_cidr}}'
+    name: '{{ aws_vpc_name }}'
+    region: '{{aws_region}}'
+    state: absent
+
+# - name: Tag the Internet Gateway
+#   ec2_tag:
+#     resource: '{{vpc.igw_id}}'
+#     region: '{{aws_region}}'
+#     state: present
+#     tags:
+#       Name: '{{aws_igw_name}}'
+#       Pod: '{{lab_pod}}'
+#   register: igw
+
+# - name: Set up public subnets route table
+#   ec2_vpc_route_table:
+#     vpc_id: '{{vpc.vpc_id}}'
+#     region: '{{aws_region}}'
+#     state: present
+#     tags:
+#       Name: '{{aws_route_table_name}}'
+#       Pod: '{{lab_pod}}'
+#     subnets: '{{vpc.subnets | get_public_subnets_ids("Type", "Public")'
+#     routes:
+#       - dest: '0.0.0.0/0'
+#         gateway_id: '{{vpc.igw_id}}'
+#   register: rt
+
+# - name: 'Create {{ aws_vpc_name }}.yml file inside the secret_vars directory'
+#   lineinfile:
+#     dest: 'secret_vars/{{aws_vpc_name}}.yml'
+#     line: '---'
+#     create: yes
+
+# - name: 'Write vpc info to {{aws_vpc_name}}.yml file inside the secret_vars directory'
+#   lineinfile:
+#     dest: 'secret_vars/{{aws_vpc_name}}.yml'
+#     regexp: '^{{ item.regexp | upper }}'
+#     line: "{{ item.regexp | upper }}: {{ '\"' + item.line + '\"' }}"
+#   with_items:
+#     - { regexp: 'vpc_id', line: '{{ vpc.vpc_id }}' }
+#     - { regexp: 'igw', line: '{{ vpc.igw_id }}' }
+#     - { regexp: 'route_table_id', line: '{{ rt.route_table.id }}' }
+
+# - name: 'Write public subnets ids to {{aws_vpc_name}}.yml file inside the secret_vars directory'
+#   lineinfile:
+#     dest: 'secret_vars/{{aws_vpc_name}}.yml'
+#     regexp: "^{{ item.resource_tags.Alias | upper }}"
+#     line: "{{ item.resource_tags.Alias | upper }}: {{ '\"' + item.id + '\"' }}"
+#   with_items: "{{ vpc.subnets }}"
+
+# - include_vars: "secret_vars/{{ vpc_name }}.yml"

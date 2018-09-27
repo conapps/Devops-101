@@ -1,0 +1,9 @@
+---
+VPC_ID: "vpc-089ef37a0686cbcb3"
+IGW: "igw-02176e6e4d822a10d"
+ROUTE_TABLE_ID: "rtb-03ac574509d355bba"
+KEY_PAIR: "key_pair_1"
+SECURITY_GROUP: "sg-078b567e2dfe47cd8"
+MANAGEMENT_SUBNET: "subnet-07a5b1be288816ba5"
+MASTER_PUBLIC_IP: "18.209.111.42"
+MASTER_PUBLIC_DNS: "master-1.conatest.click"

@@ -1,0 +1,8 @@
+---
+- hosts: master
+  become: true
+  roles:
+    - role: configure_master 
+      include_vars:
+        file: 'secret_vars/pod_1.yml'
+    - geerlingguy.docker
