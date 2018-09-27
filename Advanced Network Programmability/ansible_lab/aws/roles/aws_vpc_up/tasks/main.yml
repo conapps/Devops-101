@@ -1,0 +1,108 @@
+- name: Create the VPC
+  ec2_vpc_net:
+    cidr_block: '{{aws_vpc_cidr}}'
+    name: '{{ aws_vpc_name }}'
+    purge_cidrs: yes
+    region: '{{aws_region}}'
+    state: present
+    tags:
+      Name: '{{ aws_vpc_name }}'
+      Pod: '{{ lab_pod }}'
+  register: net
+
+- name: Create the IGW
+  ec2_vpc_igw:
+    vpc_id: '{{ net.vpc.id }}'
+    state: present
+    region: '{{aws_region}}'
+    tags:
+      Name: '{{aws_igw_name}}'
+      Pod: '{{lab_pod | string}}'
+  register: igw
+
+- name: Create the management subnet
+  ec2_vpc_subnet:
+    state: present
+    vpc_id: '{{net.vpc.id}}'
+    cidr: '{{aws_management_subnet_cidr}}'
+    tags:
+      Name: '{{aws_management_subnet_name}}'
+      Pod: '{{lab_pod | string}}'
+  register: management
+
+- name: Get Route Tables facts
+  ec2_vpc_route_table_facts:
+    region: '{{aws_region}}'
+    filters:
+      vpc-id: '{{net.vpc.id}}'
+  register: route_tables_facts
+
+- name: Set Route Tables fact
+  set_fact:
+    rt: '{{route_tables_facts.route_tables[0]}}'
+
+- name: Update the route table
+  ec2_vpc_route_table:
+    route_table_id: '{{rt.id}}'
+    vpc_id: '{{net.vpc.id}}'
+    region: '{{aws_region}}'
+    lookup: id
+    tags:
+      Name: '{{aws_route_table_name}}'
+      Pod: '{{lab_pod | string}}'
+    subnets:
+      - '{{ management.subnet.id }}'
+    routes:
+      - dest: '0.0.0.0/0'
+        gateway_id: '{{igw.gateway_id}}'
+  register: rt
+
+- name: create a new ec2 key pair, returns generated private key
+  ec2_key:
+    name: '{{aws_key_pair_name}}'
+  register: pair
+
+- name: 'Create the {{ aws_key_pair_name }}.yml file inside the secret_vars directory'
+  copy:
+    content: '{{pair.key.private_key}}'
+    dest: 'secret_vars/{{aws_key_pair_name}}'
+
+- name: 'Change permissions of the key file'
+  file:
+    path: 'secret_vars/{{aws_key_pair_name}}'
+    mode: 0600
+
+- name: example ec2 group
+  ec2_group:
+    name: '{{aws_security_group_name}}'
+    description: 'Security Group for Pod #{{lab_pod}}'
+    vpc_id: '{{net.vpc.id}}'
+    region: '{{aws_region}}'
+    rules:
+      - proto: all
+        cidr_ip: 0.0.0.0/0
+    rules_egress:
+      - proto: all
+        cidr_ip: 0.0.0.0/0
+  register: sg
+
+- name: 'Create {{ secret_vars_file_name }}.yml file inside the secret_vars directory'
+  lineinfile:
+    dest: 'secret_vars/{{secret_vars_file_name}}.yml'
+    line: '---'
+    create: yes
+
+- name: 'Write vpc info to {{secret_vars_file_name}}.yml file inside the secret_vars directory'
+  lineinfile:
+    dest: 'secret_vars/{{secret_vars_file_name}}.yml'
+    regexp: '^{{ item.regexp | upper }}'
+    line: "{{ item.regexp | upper }}: {{ '\"' + item.line + '\"' }}"
+  with_items:
+    - { regexp: 'vpc_id', line: '{{ net.vpc.id }}' }
+    - { regexp: 'igw', line: '{{ igw.gateway_id }}' }
+    - { regexp: 'route_table_id', line: '{{rt.route_table.route_table_id}}' }
+    - { regexp: 'key_pair', line: '{{aws_key_pair_name}}' }
+    - { regexp: 'security_group', line: '{{sg.group_id}}' }
+    - { regexp: 'management_subnet', line: '{{management.subnet.id}}' }
+
+- include_vars: "secret_vars/{{ secret_vars_file_name }}.yml"

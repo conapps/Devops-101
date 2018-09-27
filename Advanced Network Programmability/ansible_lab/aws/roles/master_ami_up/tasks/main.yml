@@ -1,0 +1,52 @@
+- name: Launch an instance on EC2
+  ec2:
+    group_id: '{{ SECURITY_GROUP }}'
+    count: 1
+    instance_type: 't2.medium'
+    image: 'ami-0ac019f4fcb7cb7e6'
+    wait: yes
+    region: '{{ aws_region }}'
+    keypair: '{{ KEY_PAIR }}'
+    vpc_subnet_id: '{{ MANAGEMENT_SUBNET }}'
+    assign_public_ip: yes
+    instance_tags:
+      Name: '{{ ec2_server_name }}'
+      Pod: '{{lab_pod | string}}'
+  register: ec2
+
+- name: Set EC2 fact
+  set_fact:
+    ec2: '{{ec2.instances[0]}}'
+
+- name: Set DNS records
+  route53:
+    state: present
+    zone: conatest.click
+    record: 'master-{{ lab_pod }}.conatest.click'
+    type: A
+    value: '{{ ec2.public_ip }}'
+    wait: yes
+    overwrite: true
+  register: dns
+
+- name: Add new instance to host group
+  add_host:
+    hostname: '{{ ec2.public_ip }}'
+    groupname: 'Pod #{{lab_pod | string}}'
+
+- name: 'Create {{ secret_vars_file_name }}.yml file inside the secret_vars directory'
+  lineinfile:
+    dest: 'secret_vars/{{secret_vars_file_name}}.yml'
+    line: '---'
+    create: yes
+
+- name: 'Write vpc info to {{secret_vars_file_name}}.yml file inside the secret_vars directory'
+  lineinfile:
+    dest: 'secret_vars/{{secret_vars_file_name}}.yml'
+    regexp: '^{{ item.regexp | upper }}'
+    line: "{{ item.regexp | upper }}: {{ '\"' + item.line + '\"' }}"
+  with_items:
+    - { regexp: 'master_public_ip', line: '{{ ec2.public_ip }}' }
+    - { regexp: 'master_public_dns', line: 'master-{{ lab_pod }}.conatest.click' }
+
+- include_vars: "secret_vars/{{ secret_vars_file_name }}.yml"
