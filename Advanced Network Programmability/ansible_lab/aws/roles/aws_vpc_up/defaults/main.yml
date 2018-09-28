@@ -8,7 +8,8 @@ aws_vpc_name: 'VPC #{{ lab_pod }}'
 aws_vpc_cidr: '10.{{lab_pod}}.0.0/16'
 aws_vpc_class_default: '10.{{lab_pod}}'
 
-aws_management_subnet_cidr: '{{aws_vpc_class_default}}.254.0/24'
+aws_management_subnet_class_default: '{{ aws_vpn_class_default }}.254'
+aws_management_subnet_cidr: '{{aws_management_subnet_class_default}}.0/24'
 aws_management_subnet_az: '{{aws_region}}a'
 aws_management_subnet_name: 'Management Subnet #{{ lab_pod }}'
 

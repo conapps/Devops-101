@@ -72,12 +72,28 @@
     path: 'secret_vars/{{aws_key_pair_name}}'
     mode: 0600
 
-- name: example ec2 group
+- name: Gather Security Group facts
+  ec2_group_facts:
+    filters:
+      vpc-id: '{{net.vpc.id}}'
+  register: security_group_facts
+
+- name: Set Security Group fact
+  set_fact:
+    sg: '{{security_group_facts.security_groups[0]}}'
+
+- name: Create the Security Group
   ec2_group:
-    name: '{{aws_security_group_name}}'
+    name: '{{sg.group_name}}'
+    group_id: '{{sg.group_id}}'
+    purge_rules: true
+    purge_rules_egress: true
     description: 'Security Group for Pod #{{lab_pod}}'
     vpc_id: '{{net.vpc.id}}'
     region: '{{aws_region}}'
+    tags:
+      Name: '{{aws_security_group_name}}'
+      Pod: '{{lab_pod | string}}'
     rules:
       - proto: all
         cidr_ip: 0.0.0.0/0
@@ -104,5 +120,8 @@
     - { regexp: 'key_pair', line: '{{aws_key_pair_name}}' }
     - { regexp: 'security_group', line: '{{sg.group_id}}' }
     - { regexp: 'management_subnet', line: '{{management.subnet.id}}' }
+    - { regexp: 'pod', line: '{{lab_pod | string}}' }
+    - { regexp: 'management_subnet_cidr', line: '{{aws_management_subnet_cidr}}' }
+    - { regexp: 'management_subnet_class_default', line: '{{aws_management_subnet_class_default}}' }
 
 - include_vars: "secret_vars/{{ secret_vars_file_name }}.yml"

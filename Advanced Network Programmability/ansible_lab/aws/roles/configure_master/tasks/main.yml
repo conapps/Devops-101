@@ -49,13 +49,45 @@
 - name: Install Python 2.7
   apt:
     update_cache: true
-    name: python
+    name: "{{ packages }}"
     state: present
-- name: Install PIP
+  vars:
+    packages:
+      - python
+
+- name: Sets the python version to 2.7
+  set_fact:
+    ansible_python_interpreter: /usr/bin/python
+
+- name: Pip, and Git
   apt:
-    name: python-pip
+    name: "{{ packages }}"
     state: present
-- name: Install docker-py
+  vars:
+    packages:
+      - python
+      - python-pip
+      - git
+
+- name: Install docker-compose
   pip:
-    name: docker-py
+    name: docker-compose
     executable: /usr/bin/pip
+
+- name: Clone Devops 101 repo
+  git:
+    repo: 'https://github.com/conapps/Devops-101.git'
+    dest: /home/ubuntu/devops_101
+
+- name: Symlink the ansible_lab folder to the user home
+  file:
+    src: '/home/ubuntu/devops_101/Advanced Network Programmability/ansible_lab'
+    dest: '/home/ubuntu/ansible_lab'
+    state: link
+
+- name: Run the lab
+  docker_service:
+    project_src: '/home/ubuntu/ansible_lab/docker'
+    build: yes
+    project_name: Ansible Lab
+  register: lab
