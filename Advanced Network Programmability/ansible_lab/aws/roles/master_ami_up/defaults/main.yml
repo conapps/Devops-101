@@ -9,3 +9,4 @@ ec2_server_ansible_ssh_port: 22
 ec2_server_ansible_python_interpreter: /usr/bin/python3
 ec2_server_group_name: 'ec2_ansible'
 ec2_server_name: 'Management Server #{{ lab_pod }}'
+ec2_server_group: 'master'
