@@ -10,6 +10,8 @@
     src: '{{ KEY_PAIR_PATH }}'
     dest: '/home/ubuntu/.ssh'
     mode: 0600
+    owner: ubuntu
+    group: ubuntu
 
 - name: Change hostname
   hostname:

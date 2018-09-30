@@ -453,7 +453,7 @@ volumes:
   db-volume:
     driver: vieux/sshfs:latest
     driver_opts:
-      sshcmd: "conatel@sshserver.labs.conatest.click:/home/conatel"
+      sshcmd: "conatel@sshserver.labs.labs.conatest.click:/home/conatel"
       password: "docker101"
 ```
 

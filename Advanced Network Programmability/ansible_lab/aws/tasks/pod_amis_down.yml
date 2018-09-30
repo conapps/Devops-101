@@ -1,0 +1,19 @@
+- name: Get Pod #{{lab_pod}} instance facts
+  ec2_instance_facts:
+    region: '{{aws_region}}'
+    filters:
+      'tag:Pod': '{{lab_pod | string}}'
+  register: amis
+
+- name: Echo instance ids
+  debug:
+    msg: '{{ item.instance_id }}'
+  with_items: '{{ amis.instances }}'
+
+- name: Kill Pod #{{lab_pod}} EC2 Instances
+  ec2:
+    instance_ids: '{{ item.instance_id }}'
+    state: absent
+    region: us-east-1
+    wait: yes
+  with_items: '{{ amis.instances }}'

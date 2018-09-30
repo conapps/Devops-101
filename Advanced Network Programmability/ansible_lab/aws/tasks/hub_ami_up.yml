@@ -21,7 +21,7 @@
 - name: Set DNS records
   route53:
     state: present
-    zone: conatest.click
+    zone: labs.conatest.click
     record: '{{ hub_dns_record }}'
     type: A
     value: '{{ hub.private_ip }}'
@@ -60,14 +60,20 @@
   ec2_eni:
     instance_id: '{{ hub.id }}'
     device_index: 1
-    private_ip_address: '{{aws_tunnel1_subnet_class_default}}.1'
+    private_ip_address: '{{aws_tunnel1_subnet_class_default}}.254'
     subnet_id: '{{TUNNEL1_SUBNET}}'
     region: '{{aws_region}}'
     security_groups: 
       - '{{SECURITY_GROUP}}'
     state: present
     attached: yes
-    delete_on_termination: yes
     description: 'Tunnel 01 interface'
+  register: tunnel1
+
+- name: Update the ENI to allow delete on termination
+  ec2_eni:
+    region: '{{aws_region}}'
+    eni_id: '{{tunnel1.interface.id}}'
+    delete_on_termination: true
 
 - include_vars: "secret_vars/{{ secret_vars_file_name }}.yml"

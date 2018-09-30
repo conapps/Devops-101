@@ -1,0 +1,4 @@
+- hosts: master
+  become: true
+  roles:
+    - geerlingguy.ansible
