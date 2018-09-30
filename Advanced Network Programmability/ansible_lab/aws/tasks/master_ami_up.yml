@@ -21,8 +21,8 @@
 - name: Set DNS records
   route53:
     state: present
-    zone: conatest.click
-    record: 'master-{{ lab_pod }}.conatest.click'
+    zone: labs.conatest.click
+    record: 'master-{{ lab_pod }}.labs.conatest.click'
     type: A
     value: '{{ ec2.public_ip }}'
     wait: yes
@@ -42,7 +42,7 @@
     line: "{{ item.regexp | upper }}: {{ '\"' + item.line + '\"' }}"
   with_items:
     - { regexp: 'master_public_ip', line: '{{ ec2.public_ip }}' }
-    - { regexp: 'master_public_dns', line: 'master-{{ lab_pod }}.conatest.click' }
+    - { regexp: 'master_public_dns', line: 'master-{{ lab_pod }}.labs.conatest.click' }
 
 - include_vars: "secret_vars/{{ secret_vars_file_name }}.yml"
 

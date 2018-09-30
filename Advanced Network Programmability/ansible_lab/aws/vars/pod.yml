@@ -17,14 +17,24 @@ aws_management_subnet_az: '{{aws_region}}a'
 aws_management_subnet_name: 'Management Subnet #{{ lab_pod }}'
 
 aws_tunnel1_subnet_class_default: '{{ aws_vpc_class_default }}.201'
-aws_tunnel1_subnet_cidr: '{{aws_tunnel1_subnet_class_default}}.0/30'
+aws_tunnel1_subnet_cidr: '{{aws_tunnel1_subnet_class_default}}.0/24'
 aws_tunnel1_subnet_az: '{{aws_region}}a'
 aws_tunnel1_subnet_name: 'Tunnel 1 Subnet #{{ lab_pod }}'
 
 aws_tunnel2_subnet_class_default: '{{ aws_vpc_class_default }}.202'
-aws_tunnel2_subnet_cidr: '{{aws_tunnel2_subnet_class_default}}.0/30'
+aws_tunnel2_subnet_cidr: '{{aws_tunnel2_subnet_class_default}}.0/24'
 aws_tunnel2_subnet_az: '{{aws_region}}a'
 aws_tunnel2_subnet_name: 'Tunnel 2 Subnet #{{ lab_pod }}'
+
+aws_spoke1_subnet_class_default: '{{ aws_vpc_class_default }}.1'
+aws_spoke1_subnet_cidr: '{{aws_spoke1_subnet_class_default}}.0/24'
+aws_spoke1_subnet_az: '{{aws_region}}a'
+aws_spoke1_subnet_name: 'Spoke 1 Subnet #{{ lab_pod }}'
+
+aws_spoke2_subnet_class_default: '{{ aws_vpc_class_default }}.2'
+aws_spoke2_subnet_cidr: '{{aws_spoke2_subnet_class_default}}.0/24'
+aws_spoke2_subnet_az: '{{aws_region}}a'
+aws_spoke2_subnet_name: 'Spoke 2 Subnet #{{ lab_pod }}'
 
 aws_igw_name: 'IGW #{{ lab_pod }}'
 aws_route_table_name: 'Route Table #{{ lab_pod }}'
@@ -40,14 +50,8 @@ ec2_server_group: 'master'
 
 hub_server_name: 'Hub Router #{{ lab_pod }}'
 hub_server_private_ip: 
-hub_dns_record: 'hub-{{ lab_pod }}.conatest.click'
+hub_dns_record: 'hub-{{ lab_pod }}.labs.conatest.click'
 
-spoke_server_number: 1
-spoke_server_name: 'Spoke{{spoke_server_number}} Router #{{ lab_pod }}'
-spoke_server_private_ip: 
-spoke_dns_record: 'spoke{{spoke_server_number}}-{{ lab_pod }}.conatest.click'
-
-aws_spoke_subnet_class_default: '{{ aws_vpc_class_default }}.{{spoke_server_number}}'
-aws_spoke_subnet_cidr: '{{aws_spoke_subnet_class_default}}.0/24'
-aws_spoke_subnet_az: '{{aws_region}}a'
-aws_spoke_subnet_name: 'Spoke {{spoke_server_number}} Subnet #{{ lab_pod }}'
+spoke1_server_name: 'Spoke 1 Router #{{ lab_pod }}'
+spoke1_server_private_ip: 
+spoke1_dns_record: 'spoke1-{{ lab_pod }}.labs.conatest.click'

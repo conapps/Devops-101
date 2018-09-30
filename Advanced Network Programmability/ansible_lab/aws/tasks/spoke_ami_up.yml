@@ -1,16 +1,17 @@
-- name: Launch the HUB router
+- name: Launch the Spoke 1 router
   ec2:
     group_id: '{{ SECURITY_GROUP }}'
     count: 1
+    private_ip: '{{aws_tunnel1_subnet_class_default}}.253'
     instance_type: 't2.medium'
     image: 'ami-062f4179'
     wait: yes
     region: '{{ aws_region }}'
     keypair: '{{ KEY_PAIR }}'
-    vpc_subnet_id: '{{ MANAGEMENT_SUBNET }}'
+    vpc_subnet_id: '{{ TUNNEL1_SUBNET }}'
     assign_public_ip: no
     instance_tags:
-      Name: '{{ spoke_server_name }}'
+      Name: '{{ spoke1_server_name }}'
       Pod: '{{lab_pod | string}}'
   register: spoke
 
@@ -21,8 +22,8 @@
 - name: Set DNS records
   route53:
     state: present
-    zone: conatest.click
-    record: '{{ spoke_dns_record }}'
+    zone: labs.conatest.click
+    record: '{{ spoke1_dns_record }}'
     type: A
     value: '{{ spoke.private_ip }}'
     wait: yes
@@ -41,21 +42,40 @@
     regexp: '^{{ item.regexp | upper }}'
     line: "{{ item.regexp | upper }}: {{ '\"' + item.line + '\"' }}"
   with_items:
-    - { regexp: 'spoke{{spoke_server_number}}_public_ip', line: '{{ spoke.public_ip }}' }
-    - { regexp: 'spoke{{spoke_server_number}}_public_dns', line: '{{ spoke_dns_record }}' }
+    - { regexp: 'spoke_private_ip', line: '{{ spoke.private_ip }}' }
+    - { regexp: 'spoke_public_dns', line: '{{ spoke1_dns_record }}' }
 
-- name: Attach ENI to tunnel1 subnet
+- name: add host to group '{{networking_server_group}}'
+  add_host:
+    name: '{{ spoke.private_ip }}'
+    groups: '{{networking_server_group}}'
+    ansible_ssh_private_key_file: secret_vars/key_pair_{{ lab_pod | string }}
+    ansible_user: '{{ networking_server_ansible_ssh_user }}'
+    ansible_network_os: ios
+    ansible_become: yes
+    ansible_become_method: enable
+    ansible_connection: network_cli
+    ansible_become_pass:
+
+- name: Attach ENI to spoke1 subnet
   ec2_eni:
     instance_id: '{{ spoke.id }}'
     device_index: 1
-    private_ip_address: '{{aws_spoke1_subnet_class_default}}.1'
-    subnet_id: '{{TUNNEL1_SUBNET}}'
+    private_ip_address: '{{aws_spoke1_subnet_class_default}}.254'
+    subnet_id: '{{SPOKE1_SUBNET}}'
     region: '{{aws_region}}'
     security_groups: 
       - '{{SECURITY_GROUP}}'
     state: present
     attached: yes
     delete_on_termination: yes
-    description: 'Tunnel 1 interface'
+    description: 'Spoke 01 interface'
+  register: spoke1
+
+- name: Update the ENI to allow delete on termination
+  ec2_eni:
+    region: '{{aws_region}}'
+    eni_id: '{{spoke1.interface.id}}'
+    delete_on_termination: true
 
 - include_vars: "secret_vars/{{ secret_vars_file_name }}.yml"

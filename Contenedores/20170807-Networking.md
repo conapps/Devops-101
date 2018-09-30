@@ -528,7 +528,7 @@ $ docker run -d --rm --name prueba-web-server -p 80:2368 ghost
 ```
 De esta forma el puerto `2368` del contenedor queda mapeado al puerto `80` de la máquina host.
 
-Para comprobar que esto funciona intente navegar a la url ```http://serverx.labs.conatest.click```.
+Para comprobar que esto funciona intente navegar a la url ```http://serverx.labs.labs.conatest.click```.
 Si quisieramos además del puerto, poder controlar sobre que IP de la máquina host publicamos el servicio podríamos ejecutar:
 
 ```bash

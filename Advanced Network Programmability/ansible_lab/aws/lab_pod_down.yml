@@ -1,7 +1,0 @@
-- hosts: localhost
-  connection: local
-  gather_facts: no
-  roles:
-    - hub_ami_down
-    - master_ami_down
-    - aws_vpc_down

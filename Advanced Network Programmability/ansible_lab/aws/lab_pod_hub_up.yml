@@ -1,6 +1,0 @@
----
-- hosts: localhost
-  connection: local
-  gather_facts: no
-  roles:
-    - hub_ami_up

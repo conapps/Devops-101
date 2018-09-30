@@ -44,11 +44,11 @@
   ec2_vpc_subnet:
     state: present
     vpc_id: '{{net.vpc.id}}'
-    cidr: '{{aws_tunnel1_subnet_cidr}}'
+    cidr: '{{aws_spoke1_subnet_cidr}}'
     tags:
-      Name: '{{aws_tunnel1_subnet_name}}'
+      Name: '{{aws_spoke1_subnet_name}}'
       Pod: '{{lab_pod | string}}'
-  register: tunnel1
+  register: spoke1
 
 - name: Get Route Tables facts
   ec2_vpc_route_table_facts:
@@ -146,6 +146,7 @@
     - { regexp: 'management_subnet_cidr', line: '{{aws_management_subnet_cidr}}' }
     - { regexp: 'management_subnet_class_default', line: '{{aws_management_subnet_class_default}}' }
     - { regexp: 'tunnel1_subnet', line: '{{tunnel1.subnet.id}}' }
+    - { regexp: 'spoke1_subnet', line: '{{spoke1.subnet.id}}' }
 
 
 - include_vars: "secret_vars/{{ secret_vars_file_name }}.yml"
