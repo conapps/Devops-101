@@ -8,9 +8,9 @@
     region: '{{ aws_region }}'
     keypair: '{{ KEY_PAIR }}'
     vpc_subnet_id: '{{ MANAGEMENT_SUBNET }}'
-    assign_public_ip: no
+    assign_public_ip: yes
     instance_tags:
-      Name: '{{ ec2_server_name }}'
+      Name: '{{ hub_server_name }}'
       Pod: '{{lab_pod | string}}'
   register: hub
 
@@ -41,19 +41,33 @@
     regexp: '^{{ item.regexp | upper }}'
     line: "{{ item.regexp | upper }}: {{ '\"' + item.line + '\"' }}"
   with_items:
-    - { regexp: 'hub_private_ip', line: '{{ hub.public_ip }}' }
+    - { regexp: 'hub_public_ip', line: '{{ hub.public_ip }}' }
     - { regexp: 'hub_public_dns', line: '{{ hub_dns_record }}' }
 
-- include_vars: "secret_vars/{{ secret_vars_file_name }}.yml"
-
-- name: add host to group 'master'
+- name: add host to group '{{networking_server_group}}'
   add_host:
     name: '{{ hub.public_ip }}'
-    groups: '{{ec2_server_group}}'
+    groups: '{{networking_server_group}}'
     ansible_ssh_private_key_file: secret_vars/key_pair_{{ lab_pod | string }}
-    ansible_user: '{{ ec2_server_ansible_ssh_user }}'
+    ansible_user: '{{ networking_server_ansible_ssh_user }}'
     ansible_network_os: ios
     ansible_become: yes
     ansible_become_method: enable
     ansible_connection: network_cli
     ansible_become_pass:
+
+- name: Attach ENI to tunnel1 subnet
+  ec2_eni:
+    instance_id: '{{ hub.id }}'
+    device_index: 1
+    private_ip_address: '{{aws_tunnel1_subnet_class_default}}.1'
+    subnet_id: '{{TUNNEL1_SUBNET}}'
+    region: '{{aws_region}}'
+    security_groups: 
+      - '{{SECURITY_GROUP}}'
+    state: present
+    attached: yes
+    delete_on_termination: yes
+    description: 'Tunnel 01 interface'
+
+- include_vars: "secret_vars/{{ secret_vars_file_name }}.yml"

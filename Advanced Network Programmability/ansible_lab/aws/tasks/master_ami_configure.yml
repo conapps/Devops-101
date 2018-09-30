@@ -1,3 +1,16 @@
+- include_vars: 'secret_vars/{{ secret_vars_file_name }}.yml'
+
+- name: Ensures the key destination folder exists
+  file: 
+    path: '/home/ubuntu/.ssh'
+    state: directory
+
+- name: Copy the key
+  copy:
+    src: '{{ KEY_PAIR_PATH }}'
+    dest: '/home/ubuntu/.ssh'
+    mode: 0600
+
 - name: Change hostname
   hostname:
     name: '{{ ec2_server_name | to_snake_case | replace("#", "") }}'

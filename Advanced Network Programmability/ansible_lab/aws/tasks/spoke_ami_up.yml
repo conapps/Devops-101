@@ -1,30 +1,30 @@
-- name: Launch an instance on EC2
+- name: Launch the HUB router
   ec2:
     group_id: '{{ SECURITY_GROUP }}'
     count: 1
     instance_type: 't2.medium'
-    image: 'ami-0ac019f4fcb7cb7e6'
+    image: 'ami-062f4179'
     wait: yes
     region: '{{ aws_region }}'
     keypair: '{{ KEY_PAIR }}'
     vpc_subnet_id: '{{ MANAGEMENT_SUBNET }}'
-    assign_public_ip: yes
+    assign_public_ip: no
     instance_tags:
-      Name: '{{ ec2_server_name }}'
+      Name: '{{ spoke_server_name }}'
       Pod: '{{lab_pod | string}}'
-  register: ec2
+  register: spoke
 
 - name: Set EC2 fact
   set_fact:
-    ec2: '{{ec2.instances[0]}}'
+    spoke: '{{spoke.instances[0]}}'
 
 - name: Set DNS records
   route53:
     state: present
     zone: conatest.click
-    record: 'master-{{ lab_pod }}.conatest.click'
+    record: '{{ spoke_dns_record }}'
     type: A
-    value: '{{ ec2.public_ip }}'
+    value: '{{ spoke.private_ip }}'
     wait: yes
     overwrite: true
   register: dns
@@ -41,15 +41,21 @@
     regexp: '^{{ item.regexp | upper }}'
     line: "{{ item.regexp | upper }}: {{ '\"' + item.line + '\"' }}"
   with_items:
-    - { regexp: 'master_public_ip', line: '{{ ec2.public_ip }}' }
-    - { regexp: 'master_public_dns', line: 'master-{{ lab_pod }}.conatest.click' }
+    - { regexp: 'spoke{{spoke_server_number}}_public_ip', line: '{{ spoke.public_ip }}' }
+    - { regexp: 'spoke{{spoke_server_number}}_public_dns', line: '{{ spoke_dns_record }}' }
+
+- name: Attach ENI to tunnel1 subnet
+  ec2_eni:
+    instance_id: '{{ spoke.id }}'
+    device_index: 1
+    private_ip_address: '{{aws_spoke1_subnet_class_default}}.1'
+    subnet_id: '{{TUNNEL1_SUBNET}}'
+    region: '{{aws_region}}'
+    security_groups: 
+      - '{{SECURITY_GROUP}}'
+    state: present
+    attached: yes
+    delete_on_termination: yes
+    description: 'Tunnel 1 interface'
 
 - include_vars: "secret_vars/{{ secret_vars_file_name }}.yml"
-
-- name: add host to group 'master'
-  add_host:
-    name: '{{ ec2.public_ip }}'
-    groups: '{{ec2_server_group}}'
-    ansible_ssh_private_key_file: secret_vars/key_pair_{{ lab_pod | string }}
-    ansible_user: '{{ ec2_server_ansible_ssh_user }}'
-    ansible_python_interpreter: '{{ ec2_server_ansible_python_interpreter }}'
