@@ -1,0 +1,19 @@
+---
+- hosts: localhost
+  connection: local
+  gather_facts: no
+  tasks:
+    - include_tasks: ./tasks/aws_vpc_up.yml
+    - include_tasks: ./tasks/master_ami_up.yml
+    - include_tasks: ./tasks/hub_ami_up.yml
+  vars_files:
+    - ./vars/pod.yml
+
+- hosts: master
+  become: true
+  roles:
+    - geerlingguy.docker
+  tasks:
+    - include_tasks: ./tasks/master_ami_configure.yml
+  vars_files:
+    - ./vars/pod.yml

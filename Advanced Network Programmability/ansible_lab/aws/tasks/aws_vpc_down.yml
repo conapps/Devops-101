@@ -9,25 +9,6 @@
     net: '{{vpc_facts.vpcs[0]}}'
   when: vpc_facts is defined and vpc_facts.vpcs[0] is defined
 
-# - name: Gather Security Group facts
-#   ec2_group_facts:
-#     filters:
-#       vpc-id: '{{ net.vpc_id }}'
-#   register: security_group_facts
-#   when: net is defined
-
-# - name: Set Security Group fact
-#   set_fact:
-#     sg: '{{security_group_facts.security_groups[0]}}'
-#   when: item is defined and item.security_groups[0] is defined
-#   with_items: '{{security_group_facts.security_groups}}'
-
-# - name: Delete the Security Group
-#   ec2_group:
-#     group_id: '{{sg.group_id}}'
-#     state: absent
-#   when: sg is defined
-
 - name: Delete the key pair
   ec2_key:
     name: '{{aws_key_pair_name}}'
@@ -38,6 +19,20 @@
     state: absent
     vpc_id: '{{ net.vpc_id }}'
     cidr: '{{aws_management_subnet_cidr}}'
+  when: net is defined
+
+- name: Delete the tunnel 01 subnet
+  ec2_vpc_subnet:
+    state: absent
+    vpc_id: '{{net.vpc.id}}'
+    cidr: '{{aws_tunnel1_subnet_cidr}}'
+  when: net is defined
+
+- name: Delete the spoke 01 subnet
+  ec2_vpc_subnet:
+    state: absent
+    vpc_id: '{{net.vpc.id}}'
+    cidr: '{{aws_spoke1_subnet_cidr}}'
   when: net is defined
 
 - name: Delete the IGW
@@ -54,3 +49,13 @@
     name: '{{ aws_vpc_name }}'
     region: '{{aws_region}}'
     state: absent
+
+- name: Clean Pod data file
+  shell: '/bin/rm -rf secret_vars/{{ secret_vars_file_name }}.yml'
+  args:
+    warn: False
+    
+- name: Clean Pod Key Pair
+  shell: '/bin/rm -rf secret_vars/{{aws_key_pair_name}}'
+  args:
+    warn: False

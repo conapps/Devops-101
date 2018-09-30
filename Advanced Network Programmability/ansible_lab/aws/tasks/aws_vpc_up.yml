@@ -30,6 +30,26 @@
       Pod: '{{lab_pod | string}}'
   register: management
 
+- name: Create the tunnel 01 subnet
+  ec2_vpc_subnet:
+    state: present
+    vpc_id: '{{net.vpc.id}}'
+    cidr: '{{aws_tunnel1_subnet_cidr}}'
+    tags:
+      Name: '{{aws_tunnel1_subnet_name}}'
+      Pod: '{{lab_pod | string}}'
+  register: tunnel1
+
+- name: Create the spoke 01 subnet
+  ec2_vpc_subnet:
+    state: present
+    vpc_id: '{{net.vpc.id}}'
+    cidr: '{{aws_tunnel1_subnet_cidr}}'
+    tags:
+      Name: '{{aws_tunnel1_subnet_name}}'
+      Pod: '{{lab_pod | string}}'
+  register: tunnel1
+
 - name: Get Route Tables facts
   ec2_vpc_route_table_facts:
     region: '{{aws_region}}'
@@ -62,10 +82,11 @@
     name: '{{aws_key_pair_name}}'
   register: pair
 
-- name: 'Create the {{ aws_key_pair_name }}.yml file inside the secret_vars directory'
-  copy:
-    content: '{{pair.key.private_key}}'
+- name: 'Create {{ aws_key_pair_name }} file inside the secret_vars directory'
+  lineinfile:
     dest: 'secret_vars/{{aws_key_pair_name}}'
+    line: '{{pair.key.private_key}}'
+    create: yes
 
 - name: 'Change permissions of the key file'
   file:
@@ -114,14 +135,17 @@
     regexp: '^{{ item.regexp | upper }}'
     line: "{{ item.regexp | upper }}: {{ '\"' + item.line + '\"' }}"
   with_items:
+    - { regexp: 'pod', line: '{{lab_pod | string}}' }
     - { regexp: 'vpc_id', line: '{{ net.vpc.id }}' }
     - { regexp: 'igw', line: '{{ igw.gateway_id }}' }
     - { regexp: 'route_table_id', line: '{{rt.route_table.route_table_id}}' }
     - { regexp: 'key_pair', line: '{{aws_key_pair_name}}' }
+    - { regexp: 'key_pair_path', line: 'secret_vars/{{aws_key_pair_name}}' }
     - { regexp: 'security_group', line: '{{sg.group_id}}' }
     - { regexp: 'management_subnet', line: '{{management.subnet.id}}' }
-    - { regexp: 'pod', line: '{{lab_pod | string}}' }
     - { regexp: 'management_subnet_cidr', line: '{{aws_management_subnet_cidr}}' }
     - { regexp: 'management_subnet_class_default', line: '{{aws_management_subnet_class_default}}' }
+    - { regexp: 'tunnel1_subnet', line: '{{tunnel1.subnet.id}}' }
+
 
 - include_vars: "secret_vars/{{ secret_vars_file_name }}.yml"

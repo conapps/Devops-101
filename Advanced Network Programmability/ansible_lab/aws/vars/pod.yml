@@ -1,0 +1,53 @@
+lab_pod: 1
+aws_region: 'us-east-1'
+secret_vars_file_name: 'pod_{{lab_pod}}'
+
+networking_server_group: 'networking'
+networking_server_ansible_ssh_user: 'ec2-user'
+networking_server_ansible_ssh_port: 22
+networking_server_group_name: 'ec2_ansible'
+
+aws_vpc_name: 'VPC #{{ lab_pod }}'
+aws_vpc_cidr: '10.{{lab_pod}}.0.0/16'
+aws_vpc_class_default: '10.{{lab_pod}}'
+
+aws_management_subnet_class_default: '{{ aws_vpc_class_default }}.254'
+aws_management_subnet_cidr: '{{aws_management_subnet_class_default}}.0/24'
+aws_management_subnet_az: '{{aws_region}}a'
+aws_management_subnet_name: 'Management Subnet #{{ lab_pod }}'
+
+aws_tunnel1_subnet_class_default: '{{ aws_vpc_class_default }}.201'
+aws_tunnel1_subnet_cidr: '{{aws_tunnel1_subnet_class_default}}.0/30'
+aws_tunnel1_subnet_az: '{{aws_region}}a'
+aws_tunnel1_subnet_name: 'Tunnel 1 Subnet #{{ lab_pod }}'
+
+aws_tunnel2_subnet_class_default: '{{ aws_vpc_class_default }}.202'
+aws_tunnel2_subnet_cidr: '{{aws_tunnel2_subnet_class_default}}.0/30'
+aws_tunnel2_subnet_az: '{{aws_region}}a'
+aws_tunnel2_subnet_name: 'Tunnel 2 Subnet #{{ lab_pod }}'
+
+aws_igw_name: 'IGW #{{ lab_pod }}'
+aws_route_table_name: 'Route Table #{{ lab_pod }}'
+aws_key_pair_name: 'key_pair_{{lab_pod}}'
+aws_security_group_name: 'Security Group #{{lab_pod}}'
+
+ec2_server_ansible_ssh_user: 'ubuntu'
+ec2_server_ansible_ssh_port: 22
+ec2_server_ansible_python_interpreter: /usr/bin/python3
+ec2_server_group_name: 'ec2_ansible'
+ec2_server_name: 'Management Server #{{ lab_pod }}'
+ec2_server_group: 'master'
+
+hub_server_name: 'Hub Router #{{ lab_pod }}'
+hub_server_private_ip: 
+hub_dns_record: 'hub-{{ lab_pod }}.conatest.click'
+
+spoke_server_number: 1
+spoke_server_name: 'Spoke{{spoke_server_number}} Router #{{ lab_pod }}'
+spoke_server_private_ip: 
+spoke_dns_record: 'spoke{{spoke_server_number}}-{{ lab_pod }}.conatest.click'
+
+aws_spoke_subnet_class_default: '{{ aws_vpc_class_default }}.{{spoke_server_number}}'
+aws_spoke_subnet_cidr: '{{aws_spoke_subnet_class_default}}.0/24'
+aws_spoke_subnet_az: '{{aws_region}}a'
+aws_spoke_subnet_name: 'Spoke {{spoke_server_number}} Subnet #{{ lab_pod }}'
