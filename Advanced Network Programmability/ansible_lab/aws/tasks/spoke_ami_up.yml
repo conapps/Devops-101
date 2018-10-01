@@ -2,10 +2,11 @@
   ec2:
     group_id: '{{ SECURITY_GROUP }}'
     count: 1
-    private_ip: '{{aws_tunnel1_subnet_class_default}}.253'
+    private_ip: '{{aws_tunnel1_subnet_class_default}}.254'
     instance_type: 't2.medium'
     image: 'ami-062f4179'
     wait: yes
+    source_dest_check: no
     region: '{{ aws_region }}'
     keypair: '{{ KEY_PAIR }}'
     vpc_subnet_id: '{{ TUNNEL1_SUBNET }}'

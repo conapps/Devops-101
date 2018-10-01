@@ -48,6 +48,11 @@ ec2_server_group_name: 'ec2_ansible'
 ec2_server_name: 'Management Server #{{ lab_pod }}'
 ec2_server_group: 'master'
 
+ec2_slave_server1_name: 'Slave Server 1 #{{ lab_pod }}'
+ec2_server_slave1_dns_record: 'slave-1-{{ lab_pod }}.labs.conatest.click'
+
+ec2_slave_servers_group: 'slaves'
+
 hub_server_name: 'Hub Router #{{ lab_pod }}'
 hub_server_private_ip: 
 hub_dns_record: 'hub-{{ lab_pod }}.labs.conatest.click'
