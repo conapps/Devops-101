@@ -3,12 +3,14 @@
     group_id: '{{ SECURITY_GROUP }}'
     count: 1
     instance_type: 't2.medium'
+    private_ip: '{{aws_management_subnet_class_default}}.253'
     image: 'ami-062f4179'
     wait: yes
     region: '{{ aws_region }}'
     keypair: '{{ KEY_PAIR }}'
     vpc_subnet_id: '{{ MANAGEMENT_SUBNET }}'
     assign_public_ip: yes
+    source_dest_check: no
     instance_tags:
       Name: '{{ hub_server_name }}'
       Pod: '{{lab_pod | string}}'

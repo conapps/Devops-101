@@ -6,6 +6,7 @@
     - include_tasks: ./tasks/aws_vpc_up.yml
     - include_tasks: ./tasks/hub_ami_up.yml
     - include_tasks: ./tasks/spoke_ami_up.yml
+    - include_tasks: ./tasks/slave_ami_up.yml
     - include_tasks: ./tasks/master_ami_up.yml
   vars_files:
     - ./vars/pod.yml

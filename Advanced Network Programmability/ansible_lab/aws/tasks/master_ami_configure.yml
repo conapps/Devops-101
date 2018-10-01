@@ -13,6 +13,14 @@
     owner: ubuntu
     group: ubuntu
 
+- name: Copy the .vimrc file
+  copy:
+    src: ./files/.vimrc
+    dest: '/home/ubuntu'
+    mode: 0644
+    owner: ubuntu
+    group: ubuntu
+
 - name: Change hostname
   hostname:
     name: '{{ ec2_server_name | to_snake_case | replace("#", "") }}'
@@ -21,7 +29,7 @@
     path: /etc/hosts
     regexp: '^127.0.0.1'
     line: '127.0.0.1  {{ ec2_server_name | to_snake_case | replace("#", "")}}'
-- name: Fix locale issue
+- name: Add static route for network '{{aws_vpc_cidr}}'
   blockinfile:
     path: /etc/environment
     insertafter: EOF

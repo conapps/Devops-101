@@ -2,3 +2,11 @@
   become: true
   roles:
     - geerlingguy.ansible
+  tasks:
+    - name: Copy the .vimrc file
+      copy:
+        src: ./files/.vimrc
+        dest: '/home/ubuntu'
+        mode: 0644
+        owner: ubuntu
+        group: ubuntu
