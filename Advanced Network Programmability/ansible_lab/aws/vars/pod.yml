@@ -1,5 +1,8 @@
 lab_pod: 1
+lab_domain: labs.conatest.click
+
 aws_region: 'us-east-1'
+
 secret_vars_file_name: 'pod_{{lab_pod}}'
 
 networking_server_group: 'networking'
@@ -49,14 +52,21 @@ ec2_server_name: 'Management Server #{{ lab_pod }}'
 ec2_server_group: 'master'
 
 ec2_slave_server1_name: 'Slave Server 1 #{{ lab_pod }}'
-ec2_server_slave1_dns_record: 'slave-1-{{ lab_pod }}.labs.conatest.click'
+ec2_server_slave1_dns_record: 'slave-1-{{ lab_pod }}.{{lab_domain}}'
+
+ec2_slave_server2_name: 'Slave Server 2 #{{ lab_pod }}'
+ec2_server_slave2_dns_record: 'slave-2-{{ lab_pod }}.{{lab_domain}}'
 
 ec2_slave_servers_group: 'slaves'
 
 hub_server_name: 'Hub Router #{{ lab_pod }}'
 hub_server_private_ip: 
-hub_dns_record: 'hub-{{ lab_pod }}.labs.conatest.click'
+hub_dns_record: 'hub-{{ lab_pod }}.{{lab_domain}}'
 
 spoke1_server_name: 'Spoke 1 Router #{{ lab_pod }}'
 spoke1_server_private_ip: 
-spoke1_dns_record: 'spoke1-{{ lab_pod }}.labs.conatest.click'
+spoke1_dns_record: 'spoke1-{{ lab_pod }}.{{lab_domain}}'
+
+spoke2_server_name: 'Spoke 2 Router #{{ lab_pod }}'
+spoke2_server_private_ip: 
+spoke2_dns_record: 'spoke2-{{ lab_pod }}.{{lab_domain}}'

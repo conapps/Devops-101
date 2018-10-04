@@ -1,0 +1,31 @@
+---
+all:
+  children:
+    networking:
+      vars:
+        ansible_user: ec2-user
+        ansible_network_os: ios
+        ansible_become: yes
+        ansible_become_method: enable
+        ansible_connection: network_cli
+      children:
+        hub:
+          hosts:
+            10.1.254.254:
+        spokes:
+          hosts:
+            10.1.201.253:
+    servers:
+      children:
+        master:
+          hosts:
+            10.1.254.100:
+        slaves:
+          hosts:
+            10.1.1.100:
+      vars:
+        ansible_user: ubuntu
+        ansible_python_interpreter: /usr/bin/python3
+  vars:
+    ansible_ssh_private_key_file: key_pair_1
+    ansible_ssh_common_args: '-o ProxyCommand="ssh -W %h:%p -i key_pair_1 -q ubuntu@34.207.166.246"'
