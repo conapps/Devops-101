@@ -23,19 +23,22 @@
 
 - name: Change hostname
   hostname:
-    name: '{{ ec2_server_name | to_snake_case | replace("#", "") }}'
+    name: 'slave_{{ slave }}'
+
 - name: Change hosts file
   lineinfile:
     path: /etc/hosts
     regexp: '^127.0.0.1'
-    line: '127.0.0.1  {{ ec2_server_name | to_snake_case | replace("#", "")}}'
-- name: Fix locale issue
+    line: '127.0.0.1  slave_{{ slave }}'
+
+- name: Add static route for network '{{aws_vpc_cidr}}'
   blockinfile:
     path: /etc/environment
     insertafter: EOF
     content: |
       LC_ALL=en_US.UTF-8
       LANG=en_US.UTF-8
+
 - name: Add custom .bashrc
   blockinfile:
     path: /home/ubuntu/.bashrc
@@ -69,50 +72,3 @@
       }
 
       prompt
-- name: Install Python 2.7
-  apt:
-    update_cache: true
-    name: '{{ packages }}'
-    state: present
-  vars:
-    packages:
-      - python
-
-- name: Sets the python version to 2.7
-  set_fact:
-    ansible_python_interpreter: /usr/bin/python
-
-- name: Pip, and Git
-  apt:
-    name: '{{ packages }}'
-    state: present
-  vars:
-    packages:
-      - python
-      - python-pip
-      - git
-
-- name: Install docker-compose
-  pip:
-    name: docker-compose
-    executable: /usr/bin/pip
-
-- name: Clone Devops 101 repo
-  git:
-    repo: 'https://github.com/conapps/Devops-101.git'
-    dest: /home/ubuntu/devops_101
-
-- name: Symlink the ansible_lab folder to the user home
-  file:
-    src: '/home/ubuntu/devops_101/Advanced Network Programmability/ansible_lab'
-    dest: '/home/ubuntu/ansible_lab'
-    state: link
-    owner: '{{ ec2_server_ansible_ssh_user }}'
-    group: '{{ ec2_server_ansible_ssh_user }}'
-
-- name: Run the lab
-  docker_service:
-    project_src: '/home/ubuntu/ansible_lab/docker'
-    build: yes
-    project_name: Ansible Lab
-  register: lab

@@ -2,7 +2,7 @@
   ec2:
     group_id: '{{ SECURITY_GROUP }}'
     count: 1
-    private_ip: '{{aws_tunnel1_subnet_class_default}}.254'
+    private_ip: '{{aws_tunnel1_subnet_class_default}}.253'
     instance_type: 't2.medium'
     image: 'ami-062f4179'
     wait: yes
@@ -14,19 +14,19 @@
     instance_tags:
       Name: '{{ spoke1_server_name }}'
       Pod: '{{lab_pod | string}}'
-  register: spoke
+  register: spoke1
 
 - name: Set EC2 fact
   set_fact:
-    spoke: '{{spoke.instances[0]}}'
+    spoke1: '{{spoke1.instances[0]}}'
 
 - name: Set DNS records
   route53:
     state: present
-    zone: labs.conatest.click
+    zone: '{{lab_domain}}'
     record: '{{ spoke1_dns_record }}'
     type: A
-    value: '{{ spoke.private_ip }}'
+    value: '{{ spoke1.private_ip }}'
     wait: yes
     overwrite: true
   register: dns
@@ -43,12 +43,12 @@
     regexp: '^{{ item.regexp | upper }}'
     line: "{{ item.regexp | upper }}: {{ '\"' + item.line + '\"' }}"
   with_items:
-    - { regexp: 'spoke_private_ip', line: '{{ spoke.private_ip }}' }
-    - { regexp: 'spoke_public_dns', line: '{{ spoke1_dns_record }}' }
+    - { regexp: 'spoke1_private_ip', line: '{{ spoke1.private_ip }}' }
+    - { regexp: 'spoke1_public_dns', line: '{{ spoke1_dns_record }}' }
 
 - name: add host to group '{{networking_server_group}}'
   add_host:
-    name: '{{ spoke.private_ip }}'
+    name: '{{ spoke1.private_ip }}'
     groups: '{{networking_server_group}}'
     ansible_ssh_private_key_file: secret_vars/key_pair_{{ lab_pod | string }}
     ansible_user: '{{ networking_server_ansible_ssh_user }}'
@@ -60,7 +60,7 @@
 
 - name: Attach ENI to spoke1 subnet
   ec2_eni:
-    instance_id: '{{ spoke.id }}'
+    instance_id: '{{ spoke1.id }}'
     device_index: 1
     private_ip_address: '{{aws_spoke1_subnet_class_default}}.254'
     subnet_id: '{{SPOKE1_SUBNET}}'
@@ -71,12 +71,13 @@
     attached: yes
     delete_on_termination: yes
     description: 'Spoke 01 interface'
-  register: spoke1
+  register: spoke1_eni
 
 - name: Update the ENI to allow delete on termination
   ec2_eni:
     region: '{{aws_region}}'
-    eni_id: '{{spoke1.interface.id}}'
+    eni_id: '{{spoke1_eni.interface.id}}'
     delete_on_termination: true
+    source_dest_check: no
 
-- include_vars: "secret_vars/{{ secret_vars_file_name }}.yml"
+- include_vars: 'secret_vars/{{ secret_vars_file_name }}.yml'

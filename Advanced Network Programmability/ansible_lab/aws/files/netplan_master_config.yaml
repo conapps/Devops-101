@@ -1,0 +1,17 @@
+network:
+  version: 2
+  ethernets:
+    eth0:
+      routes:
+        - to: 10.1.1.0/24
+          via: 10.1.254.254
+          on-link: true
+        - to: 10.1.2.0/24
+          via: 10.1.254.254
+          on-link: true
+        - to: 10.1.201.0/24
+          via: 10.1.254.254
+          on-link: true
+        - to: 10.1.202.0/24
+          via: 10.1.254.254
+          on-link: true

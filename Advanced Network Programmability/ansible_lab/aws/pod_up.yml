@@ -1,22 +1,47 @@
----
-- hosts: localhost
+- name: Initialize AWS Infrastructure
+  hosts: localhost
   connection: local
   gather_facts: no
   tasks:
     - include_tasks: ./tasks/aws_vpc_up.yml
     - include_tasks: ./tasks/hub_ami_up.yml
     - include_tasks: ./tasks/spoke_ami_up.yml
-    - include_tasks: ./tasks/slave_ami_up.yml
     - include_tasks: ./tasks/master_ami_up.yml
+    - include_tasks: ./tasks/slave_ami_up.yml
   vars_files:
     - ./vars/pod.yml
 
-- hosts: master
+- name: Configure the Master AMI
+  hosts: master
   become: true
   roles:
     - geerlingguy.docker
     - geerlingguy.ansible
   tasks:
     - include_tasks: ./tasks/master_ami_configure.yml
+  vars_files:
+    - ./vars/pod.yml
+
+- name: Configure the Slaves AMI
+  hosts: slaves
+  become: true
+  tasks:
+    - include_tasks: ./tasks/slaves_ami_configure.yml
+  vars_files:
+    - ./vars/pod.yml
+
+- name: Modify the Slaves networking configuration
+  hosts: slaves
+  become: true
+  tasks:
+    - include_tasks: ./tasks/slaves_ami_networking.yml
+  vars_files:
+    - ./vars/pod.yml
+
+- name: Modify the Master networking configuration
+  hosts: master
+  become: true
+  tasks:
+    - include_tasks: ./tasks/master_ami_networking.yml
   vars_files:
     - ./vars/pod.yml

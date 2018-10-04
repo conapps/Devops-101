@@ -4,6 +4,7 @@
     count: 1
     instance_type: 't2.medium'
     image: 'ami-0ac019f4fcb7cb7e6'
+    private_ip: '{{aws_management_subnet_class_default}}.100'
     wait: yes
     region: '{{ aws_region }}'
     keypair: '{{ KEY_PAIR }}'
@@ -21,8 +22,8 @@
 - name: Set DNS records
   route53:
     state: present
-    zone: labs.conatest.click
-    record: 'master-{{ lab_pod }}.labs.conatest.click'
+    zone: '{{lab_domain}}'
+    record: 'master-{{ lab_pod }}.{{lab_domain}}'
     type: A
     value: '{{ ec2.public_ip }}'
     wait: yes
@@ -42,9 +43,9 @@
     line: "{{ item.regexp | upper }}: {{ '\"' + item.line + '\"' }}"
   with_items:
     - { regexp: 'master_public_ip', line: '{{ ec2.public_ip }}' }
-    - { regexp: 'master_public_dns', line: 'master-{{ lab_pod }}.labs.conatest.click' }
+    - { regexp: 'master_public_dns', line: 'master-{{ lab_pod }}.{{lab_domain}}'}
 
-- include_vars: "secret_vars/{{ secret_vars_file_name }}.yml"
+- include_vars: 'secret_vars/{{ secret_vars_file_name }}.yml'
 
 - name: add host to group '{{ec2_server_group}}'
   add_host:

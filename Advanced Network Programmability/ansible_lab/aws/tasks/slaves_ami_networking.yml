@@ -1,0 +1,21 @@
+- include_vars: 'secret_vars/{{ secret_vars_file_name }}.yml'
+
+- name: Copy the netplan config
+  copy:
+    src: 'files/netplan_slave{{slave}}_config.yaml'
+    dest: '/etc/netplan'
+    mode: 0644
+    owner: root
+    group: root
+
+- name: Reboot immediately if there was a change.
+  shell: "sleep 5 && reboot"
+  async: 1
+  poll: 0
+  ignore_errors: true
+
+#- name: Applying Netplan Configuration
+#  command: netplan apply
+#  async: 1
+#  poll: 0
+#  ignore_errors: true
