@@ -27,5 +27,4 @@ all:
         ansible_user: ubuntu
         ansible_python_interpreter: /usr/bin/python3
   vars:
-    ansible_ssh_private_key_file: key_pair_1
-    ansible_ssh_common_args: '-o ProxyCommand="ssh -W %h:%p -i key_pair_1 -q ubuntu@34.207.166.246"'
+    ansible_ssh_private_key_file: key_pair
