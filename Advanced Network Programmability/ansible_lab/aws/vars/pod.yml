@@ -5,7 +5,6 @@ aws_region: 'us-east-1'
 
 secret_vars_file_name: 'pod_{{lab_pod}}'
 
-networking_server_group: 'networking'
 networking_server_ansible_ssh_user: 'ec2-user'
 networking_server_ansible_ssh_port: 22
 networking_server_group_name: 'ec2_ansible'
