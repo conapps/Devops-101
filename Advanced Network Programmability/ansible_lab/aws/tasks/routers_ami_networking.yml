@@ -1,0 +1,7 @@
+- include_vars: 'secret_vars/{{ secret_vars_file_name }}.yml'
+
+- name: Activate RESTCONF on the Hub Router
+  ios_config:
+    lines:
+      - restconf
+      - ip http secure-server

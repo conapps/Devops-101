@@ -45,3 +45,11 @@
     - include_tasks: ./tasks/master_ami_networking.yml
   vars_files:
     - ./vars/pod.yml
+
+- name: Modify the Hub networking configuration
+  hosts: networking
+  become: true
+  tasks:
+    - include_tasks: ./tasks/routers_ami_networking.yml
+  vars_files:
+    - ./vars/pod.yml

@@ -21,12 +21,13 @@
         body_format: json
         return_content: no
       register: output
-    - set_fact:
+    - name: Determinación de room
+      set_fact:
         room: '{{item}}'
         message: "{{ lookup('template', 'example.j2') }}"
       loop: '{{output.json["items"]}}'
       when: item.title == room_name
-    - name: Envío de mensaje
+    - name: Envío del mensaje
       uri:
         url: 'https://api.ciscospark.com/v1/messages'
         method: POST

@@ -1,0 +1,34 @@
+# ---
+# running_vs_startup_diff.yml
+#
+# Creates a backup of all the router configuraions.
+# ---
+
+- name: Running VS. Startup Diff
+  hosts: networking
+  connection: local
+  tasks:
+    - name: Comando para hallar las diferencias
+      ios_config:
+        diff_against: startup
+      register: output
+    - debug:
+        msg: "{{output}}"
+    - name: 'Cargar el estado anterior en una variable llamada: `before`'
+      set_fact:
+        before: "{{ output['diff']['before'].split('\n') }}"
+    - name: 'Cargar el estado posterior en una variable llamada: `after`'
+      set_fact:
+        after: "{{ output['diff']['after'].split('\n') }}"
+    - name: 'Cargar una salida linea a linea de las diferencias en una variable llamada: `diference`'
+      set_fact:
+        difference: "{{ after | difference(before) }}"
+    - name: Configuramos el nombre del reporte
+      set_fact:
+        report_name: "{{hostname | default(ansible_hostname)}} - Running Config VS. Startup Config Diff"
+    - name: 'Guardamos la diferencia en un archivo'
+      lineinfile:
+        create: yes
+        state: present
+        path: "./diffs/{{hostname | default(ansible_hostname)}}_{{ ansible_date_time.epoch }}_diff.md"
+        line: "{{ lookup('template', 'templates/diffs.j2') }}"

@@ -46,10 +46,10 @@
     - { regexp: 'hub_public_ip', line: '{{ hub.public_ip }}' }
     - { regexp: 'hub_public_dns', line: '{{ hub_dns_record }}' }
 
-- name: add host to group '{{networking_server_group}}'
+- name: add host to group networking
   add_host:
-    name: '{{ hub.public_ip }}'
-    groups: '{{networking_server_group}}'
+    name: hub
+    groups: networking
     ansible_ssh_private_key_file: secret_vars/key_pair_{{ lab_pod | string }}
     ansible_user: '{{ networking_server_ansible_ssh_user }}'
     ansible_network_os: ios
