@@ -80,4 +80,86 @@
     delete_on_termination: true
     source_dest_check: no
 
+- name: Launch the Spoke 2 router
+  ec2:
+    group_id: '{{ SECURITY_GROUP }}'
+    count: 1
+    private_ip: '{{aws_tunnel2_subnet_class_default}}.253'
+    instance_type: 't2.medium'
+    image: 'ami-062f4179'
+    wait: yes
+    source_dest_check: no
+    region: '{{ aws_region }}'
+    keypair: '{{ KEY_PAIR }}'
+    vpc_subnet_id: '{{ TUNNEL2_SUBNET }}'
+    assign_public_ip: no
+    instance_tags:
+      Name: '{{ spoke2_server_name }}'
+      Pod: '{{lab_pod | string}}'
+  register: spoke2
+
+- name: Set EC2 fact
+  set_fact:
+    spoke2: '{{spoke2.instances[0]}}'
+
+- name: Set DNS records
+  route53:
+    state: present
+    zone: '{{lab_domain}}'
+    record: '{{ spoke2_dns_record }}'
+    type: A
+    value: '{{ spoke2.private_ip }}'
+    wait: yes
+    overwrite: true
+  register: dns
+
+- name: 'Create {{ secret_vars_file_name }}.yml file inside the secret_vars directory'
+  lineinfile:
+    dest: 'secret_vars/{{secret_vars_file_name}}.yml'
+    line: '---'
+    create: yes
+
+- name: 'Write vpc info to {{secret_vars_file_name}}.yml file inside the secret_vars directory'
+  lineinfile:
+    dest: 'secret_vars/{{secret_vars_file_name}}.yml'
+    regexp: '^{{ item.regexp | upper }}'
+    line: "{{ item.regexp | upper }}: {{ '\"' + item.line + '\"' }}"
+  with_items:
+    - { regexp: 'spoke2_private_ip', line: '{{ spoke2.private_ip }}' }
+    - { regexp: 'spoke2_public_dns', line: '{{ spoke2_dns_record }}' }
+
+- name: add host to group '{{networking_server_group}}'
+  add_host:
+    name: '{{ spoke2.private_ip }}'
+    groups: '{{networking_server_group}}'
+    ansible_ssh_private_key_file: secret_vars/key_pair_{{ lab_pod | string }}
+    ansible_user: '{{ networking_server_ansible_ssh_user }}'
+    ansible_network_os: ios
+    ansible_become: yes
+    ansible_become_method: enable
+    ansible_connection: network_cli
+    ansible_become_pass:
+
+- name: Attach ENI to spoke2 subnet
+  ec2_eni:
+    instance_id: '{{ spoke2.id }}'
+    device_index: 1
+    private_ip_address: '{{aws_spoke2_subnet_class_default}}.254'
+    subnet_id: '{{SPOKE2_SUBNET}}'
+    region: '{{aws_region}}'
+    security_groups: 
+      - '{{SECURITY_GROUP}}'
+    state: present
+    attached: yes
+    delete_on_termination: yes
+    description: 'Spoke 02 interface'
+  register: spoke2_eni
+
+- name: Update the ENI to allow delete on termination
+  ec2_eni:
+    region: '{{aws_region}}'
+    eni_id: '{{spoke2_eni.interface.id}}'
+    delete_on_termination: true
+    source_dest_check: no
+
 - include_vars: 'secret_vars/{{ secret_vars_file_name }}.yml'

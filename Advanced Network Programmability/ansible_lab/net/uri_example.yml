@@ -1,0 +1,28 @@
+# ---
+# hello_sparky.yml
+#
+# Envía un mensaje a Sparky utilizando la API de Webex Teams
+# ---
+
+- name: Ejemplo de uso del modulo `uri`.
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  vars_files:
+    - encrypted_vars.yml
+    - vars.yml
+  tasks:
+    - name: Envío de mensaje a través del módulo uri
+      uri:
+        url: 'https://api.ciscospark.com/v1/messages'
+        method: POST
+        headers:
+          Authorization: 'Bearer {{webex_teams_token}}'
+        body:
+          toPersonId: '{{person_id}}'
+          text: Hola Sparky
+        body_format: json
+        return_content: yes
+      register: output
+    - debug:
+        msg: '{{output}}'

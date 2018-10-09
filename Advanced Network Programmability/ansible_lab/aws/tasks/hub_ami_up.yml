@@ -56,7 +56,6 @@
     ansible_become: yes
     ansible_become_method: enable
     ansible_connection: network_cli
-    ? ansible_become_pass
 
 - name: Attach ENI to tunnel1 subnet
   ec2_eni:
@@ -76,6 +75,27 @@
   ec2_eni:
     region: '{{aws_region}}'
     eni_id: '{{tunnel1.interface.id}}'
+    delete_on_termination: true
+    source_dest_check: no
+
+- name: Attach ENI to tunnel2 subnet
+  ec2_eni:
+    instance_id: '{{ hub.id }}'
+    device_index: 2
+    private_ip_address: '{{aws_tunnel2_subnet_class_default}}.254'
+    subnet_id: '{{TUNNEL2_SUBNET}}'
+    region: '{{aws_region}}'
+    security_groups: 
+      - '{{SECURITY_GROUP}}'
+    state: present
+    attached: yes
+    description: 'Tunnel 02 interface'
+  register: tunnel2
+
+- name: Update the ENI to allow delete on termination
+  ec2_eni:
+    region: '{{aws_region}}'
+    eni_id: '{{tunnel2.interface.id}}'
     delete_on_termination: true
     source_dest_check: no
 

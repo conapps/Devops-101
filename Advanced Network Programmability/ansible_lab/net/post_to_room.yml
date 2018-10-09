@@ -1,0 +1,40 @@
+# ---
+# post_to_room.yml
+#
+# Envía un mensaje al grupo cuyo nombre esta configurado en la variable
+# `room_name`.
+# ---
+
+- hosts: localhost
+  connection: local
+  gather_facts: no
+  vars_files:
+    - encrypted_vars.yml
+    - vars.yml
+  tasks:
+    - name: Obtención de la lista de rooms
+      uri:
+        url: 'https://api.ciscospark.com/v1/rooms'
+        method: GET
+        headers:
+          Authorization: 'Bearer {{webex_teams_token}}'
+        body_format: json
+        return_content: no
+      register: output
+    - set_fact:
+        room: '{{item}}'
+        message: "{{ lookup('template', 'example.j2') }}"
+      loop: '{{output.json["items"]}}'
+      when: item.title == room_name
+    - name: Envío de mensaje
+      uri:
+        url: 'https://api.ciscospark.com/v1/messages'
+        method: POST
+        headers:
+          Authorization: 'Bearer {{webex_teams_token}}'
+        body_format: json
+        body:
+          roomId: '{{room.id}}'
+          markdown: '{{message}}'
+        return_content: no
+      register: output

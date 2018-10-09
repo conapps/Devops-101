@@ -1,0 +1,45 @@
+- hosts: hub
+  connection: local
+  gather_facts: no
+  vars:
+    filename: schema
+  tasks:
+    - name: GET method (running configuration)
+      uri:
+        url: 'https://10.1.254.254:443/restconf/tailf/modules/ietf-interfaces/2014-05-08'
+        force_basic_auth: yes
+        body_format: json
+        headers:
+          Accept: 'application/yang-data+json,application/yang-data.errors+json'
+          Accept-Encoding: 'gzip,deflate'
+          Content-Type: 'application/yang-data+json'
+        method: GET
+        user: ansible
+        password: conatel
+        return_content: yes
+        validate_certs: no
+      register: output
+    - name: Check output
+      debug:
+        msg: '{{output}}'
+
+    - name: 'Delete the {{filename}}.json file'
+      shell: '/bin/rm -rf outputs/{{filename}}.json'
+      args:
+        warn: False
+    - name: 'Delete the {{filename}} file'
+      shell: '/bin/rm -rf outputs/{{filename}}'
+      args:
+        warn: False
+    - name: 'Update {{filename}}.json file'
+      lineinfile:
+        dest: 'outputs/{{filename}}.json'
+        line: '{{output.json | to_json}}'
+        create: yes
+      when: output.json is defined
+    - name: 'Update the {{filename}} file'
+      lineinfile:
+        dest: 'outputs/{{filename}}'
+        line: '{{output.content}}'
+        create: yes
+      when: output.json is not defined and output.content is defined

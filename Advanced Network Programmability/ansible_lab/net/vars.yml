@@ -1,0 +1,11 @@
+person_id: Y2lzY29zcGFyazovL3VzL1BFT1BMRS83MjJiYjI3MS1kN2NhLTRiY2UtYTllMy00NzFlNDQxMmZhNzc
+room_name: 'Nuevo room creado desde Spark'
+message: |
+  # Este es un mensaje escrito en Markdown
+  _Fecha: 08/10/2028_
+  <details>
+    <summary>Secreto!</summary>
+    Oculto
+  </details>
+  ## Participantes
+  - Guzmán Monné
