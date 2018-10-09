@@ -1,0 +1,117 @@
+- name: Launch the Slave01 AMI
+  ec2:
+    group_id: '{{ SECURITY_GROUP }}'
+    count: 1
+    instance_type: 't2.medium'
+    image: 'ami-0ac019f4fcb7cb7e6'
+    private_ip: '{{aws_spoke1_subnet_class_default}}.100'
+    wait: yes
+    region: '{{ aws_region }}'
+    keypair: '{{ KEY_PAIR }}'
+    vpc_subnet_id: '{{ SPOKE1_SUBNET }}'
+    assign_public_ip: no
+    instance_tags:
+      Name: '{{ ec2_slave_server1_name }}'
+      Pod: '{{lab_pod | string}}'
+  register: slave1
+
+- name: Set EC2 fact
+  set_fact:
+    slave1: '{{slave1.instances[0]}}'
+
+- name: Set DNS records
+  route53:
+    state: present
+    zone: '{{lab_domain}}'
+    record: '{{ec2_server_slave1_dns_record}}'
+    type: A
+    value: '{{ slave1.private_ip }}'
+    wait: yes
+    overwrite: true
+  register: dns
+
+- name: 'Create {{ secret_vars_file_name }}.yml file inside the secret_vars directory'
+  lineinfile:
+    dest: 'secret_vars/{{secret_vars_file_name}}.yml'
+    line: '---'
+    create: yes
+
+- name: 'Write vpc info to {{secret_vars_file_name}}.yml file inside the secret_vars directory'
+  lineinfile:
+    dest: 'secret_vars/{{secret_vars_file_name}}.yml'
+    regexp: '^{{ item.regexp | upper }}'
+    line: "{{ item.regexp | upper }}: {{ '\"' + item.line + '\"' }}"
+  with_items:
+    - { regexp: 'slave1_private_ip', line: '{{ slave1.private_ip }}' }
+    - { regexp: 'slave1_public_dns', line: '{{ ec2_server_slave1_dns_record }}'}
+
+- include_vars: "secret_vars/{{ secret_vars_file_name }}.yml"
+
+- name: add slave1 to group slaves
+  add_host:
+    name: '{{ slave1.private_ip }}'
+    groups: slaves
+    slave: 1
+    ansible_ssh_private_key_file: secret_vars/key_pair_{{ lab_pod | string }}
+    ansible_user: '{{ ec2_server_ansible_ssh_user }}'
+    ansible_python_interpreter: '{{ ec2_server_ansible_python_interpreter }}'
+    ansible_ssh_common_args: '-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o ProxyCommand="ssh -W %h:%p -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i secret_vars/key_pair_{{ lab_pod | string }} -q {{ec2_server_ansible_ssh_user}}@{{MASTER_PUBLIC_IP}}"'
+
+- name: Launch the Slave02 AMI
+  ec2:
+    group_id: '{{ SECURITY_GROUP }}'
+    count: 1
+    instance_type: 't2.medium'
+    image: 'ami-0ac019f4fcb7cb7e6'
+    private_ip: '{{aws_spoke2_subnet_class_default}}.100'
+    wait: yes
+    region: '{{ aws_region }}'
+    keypair: '{{ KEY_PAIR }}'
+    vpc_subnet_id: '{{ SPOKE2_SUBNET }}'
+    assign_public_ip: no
+    instance_tags:
+      Name: '{{ ec2_slave_server2_name }}'
+      Pod: '{{lab_pod | string}}'
+  register: slave2
+
+- name: Set EC2 fact
+  set_fact:
+    slave2: '{{slave2.instances[0]}}'
+
+- name: Set DNS records
+  route53:
+    state: present
+    zone: '{{lab_domain}}'
+    record: '{{ec2_server_slave2_dns_record}}'
+    type: A
+    value: '{{ slave2.private_ip }}'
+    wait: yes
+    overwrite: true
+  register: dns
+
+- name: 'Create {{ secret_vars_file_name }}.yml file inside the secret_vars directory'
+  lineinfile:
+    dest: 'secret_vars/{{secret_vars_file_name}}.yml'
+    line: '---'
+    create: yes
+
+- name: 'Write vpc info to {{secret_vars_file_name}}.yml file inside the secret_vars directory'
+  lineinfile:
+    dest: 'secret_vars/{{secret_vars_file_name}}.yml'
+    regexp: '^{{ item.regexp | upper }}'
+    line: "{{ item.regexp | upper }}: {{ '\"' + item.line + '\"' }}"
+  with_items:
+    - { regexp: 'slave2_private_ip', line: '{{ slave2.private_ip }}' }
+    - { regexp: 'slave2_public_dns', line: '{{ ec2_server_slave2_dns_record }}'}
+
+- include_vars: "secret_vars/{{ secret_vars_file_name }}.yml"
+
+- name: add slave2 to group slaves
+  add_host:
+    name: '{{ slave2.private_ip }}'
+    groups: slaves
+    slave: 2
+    ansible_ssh_private_key_file: secret_vars/key_pair_{{ lab_pod | string }}
+    ansible_user: '{{ ec2_server_ansible_ssh_user }}'
+    ansible_python_interpreter: '{{ ec2_server_ansible_python_interpreter }}'
+    ansible_ssh_common_args: '-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o ProxyCommand="ssh -W %h:%p -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i secret_vars/key_pair_{{ lab_pod | string }} -q {{ec2_server_ansible_ssh_user}}@{{MASTER_PUBLIC_IP}}"'

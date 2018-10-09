@@ -28,11 +28,25 @@
     cidr: '{{aws_tunnel1_subnet_cidr}}'
   when: net is defined and net.vpc_id is defined
 
+- name: Delete the tunnel2 subnet
+  ec2_vpc_subnet:
+    state: absent
+    vpc_id: '{{net.vpc_id}}'
+    cidr: '{{aws_tunnel2_subnet_cidr}}'
+  when: net is defined and net.vpc_id is defined
+
 - name: Delete the spoke 01 subnet
   ec2_vpc_subnet:
     state: absent
     vpc_id: '{{net.vpc_id}}'
     cidr: '{{aws_spoke1_subnet_cidr}}'
+  when: net is defined and net.vpc_id is defined
+
+- name: Delete the spoke 02 subnet
+  ec2_vpc_subnet:
+    state: absent
+    vpc_id: '{{net.vpc_id}}'
+    cidr: '{{aws_spoke2_subnet_cidr}}'
   when: net is defined and net.vpc_id is defined
 
 - name: Delete the IGW

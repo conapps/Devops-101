@@ -40,6 +40,16 @@
       Pod: '{{lab_pod | string}}'
   register: tunnel1
 
+- name: Create the tunnel 02 subnet
+  ec2_vpc_subnet:
+    state: present
+    vpc_id: '{{net.vpc.id}}'
+    cidr: '{{aws_tunnel2_subnet_cidr}}'
+    tags:
+      Name: '{{aws_tunnel2_subnet_name}}'
+      Pod: '{{lab_pod | string}}'
+  register: tunnel2
+
 - name: Create the spoke 01 subnet
   ec2_vpc_subnet:
     state: present
@@ -49,6 +59,16 @@
       Name: '{{aws_spoke1_subnet_name}}'
       Pod: '{{lab_pod | string}}'
   register: spoke1
+
+- name: Create the spoke 02 subnet
+  ec2_vpc_subnet:
+    state: present
+    vpc_id: '{{net.vpc.id}}'
+    cidr: '{{aws_spoke2_subnet_cidr}}'
+    tags:
+      Name: '{{aws_spoke2_subnet_name}}'
+      Pod: '{{lab_pod | string}}'
+  register: spoke2
 
 - name: Get Route Tables facts
   ec2_vpc_route_table_facts:
@@ -146,7 +166,9 @@
     - { regexp: 'management_subnet_cidr', line: '{{aws_management_subnet_cidr}}' }
     - { regexp: 'management_subnet_class_default', line: '{{aws_management_subnet_class_default}}' }
     - { regexp: 'tunnel1_subnet', line: '{{tunnel1.subnet.id}}' }
+    - { regexp: 'tunnel2_subnet', line: '{{tunnel2.subnet.id}}' }
     - { regexp: 'spoke1_subnet', line: '{{spoke1.subnet.id}}' }
+    - { regexp: 'spoke2_subnet', line: '{{spoke2.subnet.id}}' }
 
 
 - include_vars: "secret_vars/{{ secret_vars_file_name }}.yml"
