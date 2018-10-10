@@ -1,0 +1,23 @@
+- include_vars: 'secret_vars/{{ secret_vars_file_name }}.yml'
+
+- name: Activate RESTCONF on the routers
+  ios_config:
+    lines:
+      - restconf
+      - ip http secure-server
+
+- name: Configure interface GigabitEthernet2
+  ios_config:
+    lines:
+      - description Conexión con Red Spoke1
+      - ip address 10.1.201.254 255.255.255.0
+      - no shutdown
+    parents: interface GigabitEthernet2
+
+- name: Configure interface GigabitEthernet3
+  ios_config:
+    lines:
+      - description Conexión con Red Spoke1
+      - ip address 10.1.202.254 255.255.255.0
+      - no shutdown
+    parents: interface GigabitEthernet3
