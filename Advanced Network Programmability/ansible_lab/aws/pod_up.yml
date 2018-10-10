@@ -4,10 +4,10 @@
   gather_facts: no
   tasks:
     - include_tasks: ./tasks/aws_vpc_up.yml
-    - include_tasks: ./tasks/hub_ami_up.yml
-    - include_tasks: ./tasks/spoke_ami_up.yml
     - include_tasks: ./tasks/master_ami_up.yml
     - include_tasks: ./tasks/slaves_ami_up.yml
+    - include_tasks: ./tasks/hub_ami_up.yml
+    - include_tasks: ./tasks/spoke_ami_up.yml
   vars_files:
     - ./vars/pod.yml
 
@@ -47,8 +47,9 @@
     - ./vars/pod.yml
 
 - name: Modify the Hub networking configuration
-  hosts: networking
+  hosts: hub
   become: true
+  gather_facts: no
   tasks:
     - include_tasks: ./tasks/routers_ami_networking.yml
   vars_files:

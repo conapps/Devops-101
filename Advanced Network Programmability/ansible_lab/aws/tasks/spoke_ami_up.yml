@@ -48,7 +48,7 @@
 
 - name: add host to group networking
   add_host:
-    name: spoke1
+    name: '{{spoke1.private_ip}}'
     groups: networking
     ansible_ssh_private_key_file: secret_vars/key_pair_{{ lab_pod | string }}
     ansible_user: '{{ networking_server_ansible_ssh_user }}'
@@ -56,7 +56,7 @@
     ansible_become: yes
     ansible_become_method: enable
     ansible_connection: network_cli
-    ansible_become_pass:
+    ansible_ssh_common_args: '-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o ProxyCommand="ssh -W %h:%p -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i secret_vars/key_pair_{{ lab_pod | string }} -q {{ec2_server_ansible_ssh_user}}@{{MASTER_PUBLIC_IP}}"'
 
 - name: Attach ENI to spoke1 subnet
   ec2_eni:
@@ -130,7 +130,7 @@
 
 - name: add host to group networking
   add_host:
-    name: spoke2
+    name: '{{spoke2.private_ip}}'
     groups: networking
     ansible_ssh_private_key_file: secret_vars/key_pair_{{ lab_pod | string }}
     ansible_user: '{{ networking_server_ansible_ssh_user }}'
@@ -138,7 +138,7 @@
     ansible_become: yes
     ansible_become_method: enable
     ansible_connection: network_cli
-    ansible_become_pass:
+    ansible_ssh_common_args: '-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o ProxyCommand="ssh -W %h:%p -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i secret_vars/key_pair_{{ lab_pod | string }} -q {{networking_server_ansible_ssh_user}}@{{MASTER_PUBLIC_IP}}"'
 
 - name: Attach ENI to spoke2 subnet
   ec2_eni:
