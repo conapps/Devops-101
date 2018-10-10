@@ -21,3 +21,12 @@
       - ip address 10.1.202.254 255.255.255.0
       - no shutdown
     parents: interface GigabitEthernet3
+
+- name: Create the conatel user
+  ios_user:
+    configured_password: conatel
+    name: conatel
+    privilege: 15
+    state: present
+    update_password: always
+    nopasword: no
