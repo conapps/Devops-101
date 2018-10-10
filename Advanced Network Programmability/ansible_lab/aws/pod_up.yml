@@ -51,6 +51,6 @@
   become: true
   gather_facts: no
   tasks:
-    - include_tasks: ./tasks/routers_ami_networking.yml
+    - include_tasks: ./tasks/hub_ami_networking.yml
   vars_files:
     - ./vars/pod.yml
