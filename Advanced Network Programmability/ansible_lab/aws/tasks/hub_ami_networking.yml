@@ -29,4 +29,4 @@
     privilege: 15
     state: present
     update_password: always
-    nopasword: no
+    nopassword: no

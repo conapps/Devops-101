@@ -1,5 +1,5 @@
 # ---
-# post_to_room.yml
+# post_message_to_room.yml
 #
 # Envía un mensaje al grupo cuyo nombre esta configurado en la variable
 # `room_name`.

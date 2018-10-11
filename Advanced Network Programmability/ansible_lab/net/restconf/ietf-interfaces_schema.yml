@@ -1,0 +1,25 @@
+- hosts: hub
+  connection: local
+  gather_facts: no
+  vars:
+    filename: schema
+  tasks:
+    - name: GET method (running configuration)
+      uri:
+        url: 'https://10.1.254.254:443/restconf/tailf/modules/ietf-interfaces/2014-05-08'
+        force_basic_auth: yes
+        body_format: json
+        headers:
+          'Accept': 'application/yang-data+json,application/yang-data.errors+json'
+          'Accept-Encoding': 'gzip,deflate'
+          'Content-Type': 'application/yang-data+json'
+        method: GET
+        user: conatel
+        password: conatel
+        return_content: yes
+        validate_certs: no
+      register: output
+    - name: Almacena los resultados en un archivo
+      role: ../roles/store_uri_output
+      vars:
+        output_filename: ietf-interfaces_schema.yang

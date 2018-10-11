@@ -1,7 +1,8 @@
 # ---
 # running_vs_startup_diff.yml
 #
-# Creates a backup of all the router configuraions.
+# Crea un archivo donde se almacenan las diferencias entre la Running config y
+# la Startup config.
 # ---
 
 - name: Running VS. Startup Diff
