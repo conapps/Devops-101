@@ -1,0 +1,20 @@
+# ---
+# reading_json.yml
+# 
+# Playbook capaz de leer un documento de texto que contenga JSON
+# OBS: Estamos utilizando 
+#   - el filtro 'to_json'.
+#   - el plugin 'lookup'
+# ---
+
+- name: Ejemplos de manipulación de JSON con Ansible
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  tasks:
+    - name: Cargamos el contenido de 'example.json' en una variable
+      set_fact:
+        json: "{{ lookup('file', 'example.json') | to_json }}"
+    - name: Imprimimos el JSON en la consola
+      debug:
+        var: json

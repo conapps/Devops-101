@@ -1,0 +1,15 @@
+# ---
+# update_hostnames.yml
+#
+# Modifica el hostname de los equipos de acuerdo al valor definido
+# en la variable `hostname` del inventario.
+# ---
+- name: Modificar el hostname
+  hosts: routers
+  connection: local
+  gather_facts: no
+  tasks:
+    - name: Modificar el hostname
+      ios_config:
+        lines: 'hostname {{hostname}}'
+      when: hostname is defined

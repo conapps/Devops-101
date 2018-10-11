@@ -1,12 +1,15 @@
 - hosts: master
   become: true
-  roles:
-    - geerlingguy.ansible
   tasks:
-    - name: Copy the .vimrc file
-      copy:
-        src: ./files/.vimrc
-        dest: '/home/ubuntu'
-        mode: 0644
-        owner: ubuntu
-        group: ubuntu
+    - name: Sets the python version to 2.7
+      set_fact:
+        ansible_python_interpreter: /usr/bin/python
+
+    - name: Install docker-compose
+      pip:
+        name: '{{item}}'
+        executable: /usr/bin/pip
+      loop:
+        - grip
+        - markdown
+        - jinja2

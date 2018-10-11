@@ -1,0 +1,14 @@
+# ---
+# backup_config.yml
+#
+# Crea un respaldo de las configuraciones de los equipos
+# ---
+
+- name: Respaldo de configuraciones
+  hosts: routers
+  connection: local
+  gather_facts: no
+  tasks:
+    - name: Comandos para respaldar las configuraciones
+      ios_config:
+        backup: yes

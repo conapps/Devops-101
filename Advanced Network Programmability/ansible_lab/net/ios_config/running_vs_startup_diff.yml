@@ -6,7 +6,7 @@
 # ---
 
 - name: Running VS. Startup Diff
-  hosts: networking
+  hosts: routers
   connection: local
   tasks:
     - name: Comando para hallar las diferencias
@@ -32,4 +32,4 @@
         create: yes
         state: present
         path: "./diffs/{{hostname | default(ansible_hostname)}}_{{ ansible_date_time.epoch }}_diff.md"
-        line: "{{ lookup('template', 'templates/diffs.j2') }}"
+        line: "{{ lookup('template', 'diffs.j2') }}"

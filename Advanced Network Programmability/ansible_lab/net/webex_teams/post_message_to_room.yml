@@ -7,9 +7,9 @@
 
 - hosts: localhost
   connection: local
-  gather_facts: no
+  gather_facts: 
   vars_files:
-    - encrypted_vars.yml
+    - ../secret/vars.yml
     - vars.yml
   tasks:
     - name: Obtención de la lista de rooms
@@ -24,7 +24,7 @@
     - name: Determinación de room
       set_fact:
         room: '{{item}}'
-        message: "{{ lookup('template', 'example.j2') }}"
+        message: "{{ lookup('template', 'message.j2') }}"
       loop: '{{output.json["items"]}}'
       when: item.title == room_name
     - name: Envío del mensaje

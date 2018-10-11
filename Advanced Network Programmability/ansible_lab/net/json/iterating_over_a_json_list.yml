@@ -1,0 +1,20 @@
+# ---
+# iterating_over_a_json_list.yml
+#
+# Playbook capaz de iterar sobre una lista almacenada en un documento
+# JSON.
+# OBS: La lista se encuentra definida en la llave 'data'.
+# ---
+
+- name: Ejemplos de manipulación de JSON con Ansible
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  tasks:
+    - name: Cargamos el contenido de 'example.json' en una variable
+      set_fact:
+        json: "{{ lookup('file', 'example.json') | from_json }}"
+    - name: Imprimimos solo el email de las personas
+      debug:
+        msg: "{{ item['email'] }}"
+      loop: "{{ json['data'] }}"
