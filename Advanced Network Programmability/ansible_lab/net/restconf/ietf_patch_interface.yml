@@ -1,0 +1,43 @@
+# ---
+# ietf_patch_interfaces.yml
+#
+# Configura una interfaz utilizando el módulo generíco de la ietf para
+# configurar interfaces, "ietf-interfaces", con RESTCONF.
+# ---
+- hosts: localhost
+  connection: local
+  gather_facts: no
+  vars:
+    filename: ietf_interfaces
+  tasks:
+    - name: PATCH method (running configuration)
+      uri:
+        url: 'https://hub-X.labs.conatest.click/restconf/data/ietf-interfaces:interfaces'
+        force_basic_auth: yes
+        body_format: json
+        body: {
+          "ietf-interfaces:interfaces": {
+            "interface": [{
+              "enabled": true,
+              "ietf-ip:ipv4": {},
+              "ietf-ip:ipv6": {},
+              "name": "GigabitEthernet2",
+              "type": "iana-if-type:ethernetCsmacd"
+            }]
+          }
+        }
+        headers:
+          'Accept': 'application/yang-data+json,application/yang-data.errors+json'
+          'Accept-Encoding': 'gzip,deflate'
+          'Content-Type': 'application/yang-data+json'
+        method: GET
+        user: conatel
+        password: conatel
+        return_content: yes
+        validate_certs: no
+      register: output
+      failed_when: false
+    - name: Almacena los resultados en un archivo de json
+      role: ../roles/store_uri_output
+      vars:
+        output_filename: ietf_patch_interface

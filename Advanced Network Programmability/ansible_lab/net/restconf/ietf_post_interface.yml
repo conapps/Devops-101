@@ -1,0 +1,42 @@
+# ---
+# ietf_post_interfaces.yml
+#
+# Crea una nueva interfaz utilizando el módulo generíco de la ietf para
+# configurar interfaces, "ietf-interfaces", con RESTCONF.
+# ---
+- hosts: hub
+  connection: local
+  gather_facts: no
+  vars:
+    filename: ietf_interfaces
+  tasks:
+    - name: POST method
+      uri:
+        url: 'https://10.1.254.254/restconf/data/ietf-interfaces:interfaces'
+        force_basic_auth: yes
+        body_format: json
+        body:
+          "ietf-interfaces:interface":
+            name: "Loopback100"
+            description: "Added with RESTCONF"
+            type: "iana-if-type:softwareLoopback"
+            enabled: true
+            ietf-ip:ipv4:
+              address:
+                ip: 172.16.100.1
+                netmask: 255.255.255.255
+        headers:
+          'Accept': 'application/yang-data+json,application/yang-data.errors+json'
+          'Accept-Encoding': 'gzip,deflate'
+          'Content-Type': 'application/yang-data+json'
+        method: POST
+        user: conatel
+        password: conatel
+        return_content: yes
+        validate_certs: no
+      register: output
+      failed_when: false
+    - name: Almacena los resultados en un archivo de json
+      role: ../roles/store_uri_output
+      vars:
+        output_filename: ietf_post_interface

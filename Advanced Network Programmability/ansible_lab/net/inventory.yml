@@ -11,18 +11,53 @@ all:
       children:
         hub:
           hosts:
-            10.1.254.254:
+            10.X.254.254:
+              hostname: hub
+              interfacecs:
+                - interface: GigabitEthernet1
+                  ip_address: 10.X.254.254
+                  netmask: 255.255.255.0
+                  description: Conexion con red Hub
+                - interface: GigabitEthernet2
+                  ip_address: 10.X.201.254
+                  netmask: 255.255.255.0
+                  description: Conexión con red de tránsito 1
+                - interface: GigabitEthernet3
+                  ip_address: 10.X.202.254
+                  netmask: 255.255.255.0
+                  description: Conexión con red de tránsito 2
         spokes:
           hosts:
-            10.1.201.253:
+            10.X.201.253:
+              hostname: spoke01
+              interfaces:
+                - interface: GigabitEthernet1
+                  ip_address: 10.X.201.253
+                  netmask: 255.255.255.0
+                  description: Conexión con red de tránsito 1
+                - interface: GigabitEthernet2
+                  ip_address: 10.X.1.254
+                  netmask: 255.255.255.0
+                  description: Conexión con red Spoke 1
+            10.X.202.253:
+              hostname: spoke02
+              interfaces:
+                - interface: GigabitEthernet1
+                  ip_address: 10.X.202.253
+                  netmask: 255.255.255.0
+                  description: Conexión con red de tránsito 2
+                - interface: GigabitEthernet2
+                  ip_address: 10.X.2.254
+                  netmask: 255.255.255.0
+                  description: Conexión con red Spoke 2
     servers:
       children:
         master:
           hosts:
-            10.1.254.100:
+            10.X.254.100:
         slaves:
           hosts:
-            10.1.1.100:
+            10.X.1.100:
       vars:
         ansible_user: ubuntu
         ansible_python_interpreter: /usr/bin/python3
