@@ -1,0 +1,15 @@
+# ---
+# simple_running_vs_startup_diff.yml
+#
+# Muestra las diferencias entre la running y startup config.
+# Obs: Este playbook debe ser ejecutado con el flag `--diff` levantado.
+# ---
+
+- name: Running Vs. Startup diff (simple)
+  hosts: routers
+  connection: local
+  gather_facts: no
+  tasks:
+    - name: Comando para hallar las diferencias
+      ios_config:
+        diff_against: startup

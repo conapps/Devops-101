@@ -1,0 +1,23 @@
+# ---
+# json_filtering.yml
+#
+# Playbook capaz hallar un valor dentro de una lista de elementos
+# almacenados en un documento de JSON.
+# ---
+
+- name: Ejemplos de manipulación de JSON con Ansible
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  tasks:
+    - name: Cargamos el contenido de 'example.json' en una variable
+      set_fact:
+        json: "{{ lookup('file', 'example.json') | from_json }}"
+    - name: Registramos una variable con el mail de "Alston"
+      set_fact:
+        email: "{{ item['email'] }}"
+      loop: "{{ json['data'] }}"
+      when: item['name']['first'] == 'Alston'
+    - name: Imprimimos el mail almacenado en la variable 'email'
+      debug:
+        var: email

@@ -9,8 +9,7 @@
   connection: local
   gather_facts: no
   vars_files:
-    - encrypted_vars.yml
-    - vars.yml
+    - ../secret/vars.yml
   tasks:
     - name: Envío de mensaje a través del módulo uri
       uri:
@@ -19,8 +18,8 @@
         headers:
           Authorization: 'Bearer {{webex_teams_token}}'
         body:
-          toPersonId: '{{person_id}}'
-          text: Hola Sparky
+          toPersonId: '{{ sparky_id }}'
+          text: 'Hola Sparky!!!'
         body_format: json
         return_content: yes
       register: output

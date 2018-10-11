@@ -24,11 +24,13 @@
 - name: Change hostname
   hostname:
     name: '{{ ec2_server_name | to_snake_case | replace("#", "") }}'
+
 - name: Change hosts file
   lineinfile:
     path: /etc/hosts
     regexp: '^127.0.0.1'
     line: '127.0.0.1  {{ ec2_server_name | to_snake_case | replace("#", "")}}'
+
 - name: Fix locale issue
   blockinfile:
     path: /etc/environment
@@ -36,6 +38,7 @@
     content: |
       LC_ALL=en_US.UTF-8
       LANG=en_US.UTF-8
+
 - name: Add custom .bashrc
   blockinfile:
     path: /home/ubuntu/.bashrc
@@ -69,6 +72,7 @@
       }
 
       prompt
+
 - name: Install Python 2.7
   apt:
     update_cache: true
@@ -92,15 +96,21 @@
       - python-pip
       - git
 
-- name: Install docker-compose
+- name: Install Pip packages
   pip:
-    name: docker-compose
+    name: '{{item}}'
     executable: /usr/bin/pip
+  loop:
+    - docker-compose
+    - grip
 
 - name: Clone Devops 101 repo
   git:
     repo: 'https://github.com/conapps/Devops-101.git'
     dest: /home/ubuntu/devops_101
+
+- name: Change the owner back to ubuntu
+  shell: /bin/chown ubuntu -R /home/ubuntu/devops_101
 
 - name: Symlink the ansible_lab folder to the user home
   file:

@@ -1,0 +1,17 @@
+# Running Config Vs. Startup Config Diff
+
+Para ejecutar el servidor ejeute el siguiente comando:
+
+```bash
+grip . 0.0.0.0
+```
+
+Si se dirige a la página `master-X.labs.conatest.click` sera recibido por esta
+página. Para acceder a sus archivos de configuración, debe ingresar el nombre
+del archivo correspondiente.
+
+Actualmente usted cuenta con estos archivos disponibles:
+
+# Lista de archivos
+{% for item in file_list %}- [{{item}}](http://master-1.labs.conatest.click:6419/{{item}})
+{% endfor %}
