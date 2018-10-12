@@ -1,0 +1,31 @@
+# ---
+# capabilities.yml
+#
+# Obtiene las capabilities de todos los equipos y los almacena en un archivo
+# de texto distinto para cada equipo.
+# ---
+- hosts: routers
+  connection: local
+  gather_facts: yes
+  tasks:
+    - name: Obtenemos las capabilities de la interfaz RESTCONF para cada equipo
+      uri:
+        url: 'https://{{inventory_hostname}}/restconf/data/ietf-yang-library:modules-state'
+        force_basic_auth: yes
+        body_format: json
+        headers:
+          'Accept': 'application/yang-data+json,application/yang-data.errors+json'
+          'Accept-Encoding': 'gzip,deflate'
+          'Content-Type': 'application/yang-data+json'
+        method: GET
+        user: conatel
+        password: conatel
+        return_content: yes
+        validate_certs: no
+      register: output
+      failed_when: false
+    - name: Guardar los datos en un archivo de texto
+      lineinfile:
+        dest: 'outputs/{{inventory_hostname}}_capabilities.json'
+        line: '{{output.json | to_json}}'
+        create: yes

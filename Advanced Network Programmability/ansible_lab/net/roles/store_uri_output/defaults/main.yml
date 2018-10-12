@@ -5,3 +5,4 @@
 # ---
 outputs_directory: outputs
 output_filename: output
+output_append: False
