@@ -17,4 +17,7 @@
   connection: local
   gather_facts: no
   roles:
-    - role: ../roles/configure_interfaces
+    - role: ../roles/restconf_interfaces
+  tasks:
+    - debug:
+        var: restconf_output

@@ -1,8 +1,7 @@
-# filtered_capabilities.yml
+# ---
+# native_hostname.yml
 #
-# Obtiene las capabilities de todos los equipos filtradas segun el valor de la
-# variable filter y los almacena en un archivo de texto distinto para cada
-# equipo.
+# Consulta al módulo Cisco-IOS-XE-native por su información principal.
 # ---
 - hosts: routers
   connection: local
@@ -10,30 +9,35 @@
   vars:
     filter: interface
   tasks:
-    - name: Obtenemos las capabilities de la interfaz RESTCONF para cada equipo
+    - name: Consulta RESTCONF
       uri:
-        url: 'https://{{inventory_hostname}}/restconf/data/ietf-yang-library:modules-state'
+        url: 'https://{{inventory_hostname}}/restconf/data/Cisco-IOS-XE-native:native/hostname'
         force_basic_auth: yes
         body_format: json
+        body:
+          "Cisco-IOS-XE-native:hostname": "{{hostname}}-RC"
         headers:
           'Accept': 'application/yang-data+json,application/yang-data.errors+json'
           'Accept-Encoding': 'gzip,deflate'
           'Content-Type': 'application/yang-data+json'
-        method: GET
+        method: "{{method | default('GET')}}"
         user: conatel
         password: conatel
         return_content: yes
         validate_certs: no
       register: output
       failed_when: False
+    - debug:
+        var: output['json']
+      when: output['json'] is defined
     - name: Eliminar la version anterior del archivo
       file:
-        path: 'outputs/{{inventory_hostname}}_filtered_capabilities.json'
+        path: 'outputs/{{inventory_hostname}}_native.json'
         state: absent
+      when: output["json"] is defined
     - name: Guardar los datos en un archivo de texto
       lineinfile:
-        dest: 'outputs/{{inventory_hostname}}_filtered_capabilities.json'
-        line: '{{item | to_json}}'
+        dest: 'outputs/{{inventory_hostname}}_hostname.json'
+        line: '{{output["json"] | to_nice_json}}'
         create: yes
-      loop: '{{output.json["ietf-yang-library:modules-state"]["module"]}}'
-      when: filter in item.name
+      when: output["json"] is defined
