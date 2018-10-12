@@ -1,0 +1,30 @@
+# ---
+# host_meta.yml
+#
+# Obtiene metadatos de la interfaz RESTCONF
+# ---
+- hosts: routers
+  connection: local
+  gather_facts: yes
+  tasks:
+    - name: Obtenemos la información META de la interfaz RESTCONF
+      uri:
+        url: 'https://{{inventory_hostname}}/.well-known/host-meta'
+        force_basic_auth: yes
+        body_format: json
+        headers:
+          'Accept': 'application/yang-data+json,application/yang-data.errors+json'
+          'Accept-Encoding': 'gzip,deflate'
+          'Content-Type': 'application/yang-data+json'
+        method: GET
+        user: conatel
+        password: conatel
+        return_content: yes
+        validate_certs: no
+      register: output
+      failed_when: false
+    - name: Almacena los resultados en un archivo de json
+      include_role:
+        name: ../roles/store_uri_output
+      vars:
+        output_filename: host-meta
