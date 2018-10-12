@@ -9,13 +9,13 @@
   shell: '/bin/rm -rf {{outputs_directory}}/{{output_filename}}.json'
   args:
     warn: False
-  when: append == False
+  when: output_append == False
 
 - name: 'Delete the {{output_filename}} file'
   shell: '/bin/rm -rf {{outputs_directory}}/{{output_filename}}'
   args:
     warn: False
-  when: append == False
+  when: output_append == False
 
 - name: 'Add the inventory host name'
   lineinfile:

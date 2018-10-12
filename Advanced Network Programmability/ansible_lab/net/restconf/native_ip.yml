@@ -1,0 +1,57 @@
+# ---
+# native_ip.yml
+#
+# Consulta al módulo Cisco-IOS-XE-native por su información principal.
+# ---
+- hosts: routers
+  connection: local
+  gather_facts: yes
+  tasks:
+    - name: Verificamos que existan rutas para configurar.
+      set_fact:
+        # Si no existen rutas estáticas a configurar, cargamos una lista vacia.
+        # Esto simplifica el mensaje de error que devuelve Ansible.
+        routes: '{{routes["static"] | default([])}}'
+      when: routes is defined
+    - name: Consulta RESTCONF
+      uri:
+        url: 'https://{{inventory_hostname}}/restconf/data/Cisco-IOS-XE-native:native/ip/route'
+        force_basic_auth: yes
+        body_format: json
+        body:
+          "Cisco-IOS-XE-native:route":
+            ip-route-interface-forwarding-list:
+              - prefix: '{{item.prefix}}'
+                mask: '{{item.netmask}}'
+                fwd-list:
+                  fwd: '{{item.interface}}'
+                  interface-next-hop:
+                    - ip-address: '{{item.ip_address}}'
+        headers:
+          'Accept': 'application/yang-data+json,application/yang-data.errors+json'
+          'Accept-Encoding': 'gzip,deflate'
+          'Content-Type': 'application/yang-data+json'
+        # Modificando el método HTTP podemos indicarle a Ansible si queremos 
+        # editar las rutas, o leer el estado actual. Por defecto utilizamos GET.
+        method: "{{method | default('GET')}}"
+        user: conatel
+        password: conatel
+        return_content: yes
+        validate_certs: no
+      register: output
+      failed_when: False
+      # Veríficamos que solamente se pueda llamar a este `playbook` con un 
+      # metodo GET o con un metodo PATCH.
+      when: method == 'GET' or ( method == 'PATCH' and routes is defined )
+      loop: '{{routes}}'
+    - name: Eliminar la version anterior del archivo
+      file:
+        path: 'outputs/{{inventory_hostname}}_ip.json'
+        state: absent
+      when: output['results'] is defined
+    - name: Guardar los datos en un archivo de texto
+      lineinfile:
+        dest: 'outputs/{{inventory_hostname}}_ip.json'
+        line: '{{output["results"] | to_nice_json}}'
+        create: yes
+      when: output['results'] is defined

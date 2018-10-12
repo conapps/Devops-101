@@ -13,19 +13,33 @@ all:
           hosts:
             10.X.254.254:
               hostname: hub
-              interfacecs:
+              interfaces:
                 - interface: GigabitEthernet1
                   ip_address: 10.X.254.254
                   netmask: 255.255.255.0
-                  description: Conexion con red Hub
+                  description: Red de Management
                 - interface: GigabitEthernet2
                   ip_address: 10.X.201.254
                   netmask: 255.255.255.0
-                  description: Conexión con red de tránsito 1
+                  description: Red de Transito 1
                 - interface: GigabitEthernet3
                   ip_address: 10.X.202.254
                   netmask: 255.255.255.0
-                  description: Conexión con red de tránsito 2
+                  description: Red de Transito 2
+              routes:
+                static:
+                  - prefix: 0.0.0.0
+                    netmask: 0.0.0.0
+                    interface: GigabitEthernet1
+                    ip_address: 10.X.254.1
+                  - prefix: 10.X.1.0
+                    netmask: 255.255.255.0
+                    interface: GigabitEthernet2
+                    ip_address: 10.X.201.253
+                  - prefix: 10.X.2.0
+                    netmask: 255.255.255.0
+                    interface: GigabitEthernet3
+                    ip_address: 10.X.202.253
         spokes:
           hosts:
             10.X.201.253:
@@ -34,22 +48,34 @@ all:
                 - interface: GigabitEthernet1
                   ip_address: 10.X.201.253
                   netmask: 255.255.255.0
-                  description: Conexión con red de tránsito 1
+                  description: Red de Transito 1
                 - interface: GigabitEthernet2
                   ip_address: 10.X.1.254
                   netmask: 255.255.255.0
-                  description: Conexión con red Spoke 1
+                  description: Red Local 1
+              routes:
+                static:
+                  - prefix: 0.0.0.0
+                    netmask: 0.0.0.0
+                    interface: GigabitEthernet1
+                    ip_address: 10.X.201.254
             10.X.202.253:
               hostname: spoke02
               interfaces:
                 - interface: GigabitEthernet1
                   ip_address: 10.X.202.253
                   netmask: 255.255.255.0
-                  description: Conexión con red de tránsito 2
+                  description: Red de Transito 2
                 - interface: GigabitEthernet2
                   ip_address: 10.X.2.254
                   netmask: 255.255.255.0
-                  description: Conexión con red Spoke 2
+                  description: Red Local 2
+              routes:
+                static:
+                  - prefix: 0.0.0.0
+                    netmask: 0.0.0.0
+                    interface: GigabitEthernet1
+                    ip_address: 10.X.202.254
     servers:
       children:
         master:

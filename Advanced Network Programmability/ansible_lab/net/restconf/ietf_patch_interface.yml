@@ -12,7 +12,7 @@
   tasks:
     - name: PATCH method (running configuration)
       uri:
-        url: 'https://{{inventory_hostname}}/restconf/data/ietf-interfaces:interfaces'
+        url: 'https://10.X.254.254/restconf/data/ietf-interfaces:interfaces'
         force_basic_auth: yes
         body_format: json
         body: {

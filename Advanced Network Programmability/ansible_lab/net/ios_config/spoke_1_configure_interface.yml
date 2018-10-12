@@ -1,5 +1,5 @@
 # ---
-# configure_interface_on_spoke_01.yml
+# spoke_1_configure_interface.yml
 #
 # Configura la interface GigabitEthernet2 del router Spoke01
 # ...
