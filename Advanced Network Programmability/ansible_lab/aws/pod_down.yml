@@ -1,9 +1,0 @@
----
-- hosts: localhost
-  connection: local
-  gather_facts: no
-  tasks:
-    - include_tasks: ./tasks/pod_amis_down.yml
-    - include_tasks: ./tasks/aws_vpc_down.yml
-  vars_files:
-    - ./vars/pod.yml
