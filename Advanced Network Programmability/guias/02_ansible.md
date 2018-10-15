@@ -165,7 +165,7 @@ Ansible es capaz de tomar hosts de múltiples inventarios al mismo tiempo, y pue
 
 El laboratorio consiste en un set contenedores que simularán una granja de servidores. Los mismos correrán en una maquina virtual en la nube de AWS. Las indicaciones para conectarse a su maquina virtual serán entregadas durante el workshop.
 
-![Diagrama de Lab en Docker](../Imagenes/ansible_012.png)
+![Diagrama de Lab en Docker](../imagenes/ansible_012.png)
 
 Una vez conectados a su VM, debemos levantar todos los contenedores, y luego debemos pasarnos al contenedor `master` desde donde correremos todos los comandos de Ansible. Los pasos a realizar son los siguientes:
 
@@ -776,7 +776,7 @@ Nosotros solamente nos concentraremos en los módulos para IOS.
 
 ### DEMO Lab #3 - Configurar el ambiente de desarrollo
 
-![Diagrama de Lab](../Imagenes/ansible_013.png)
+![Diagrama de Lab](../imagenes/ansible_013.png)
 
 Cada Pod cuenta con 3 routers configurados como Hub & Spoke. El Hub, se encuentra en la red de `management` y es el único que puede ser accedido a través de Internet, aunque se recomienda acceder a el desde la maquina de control a través de la IP privada `10.X.254.254`. Los demás se encuentran en redes privadas, y conseguiremos acceder a ellos a medida que avanzamos con el laboratorio. 
 
@@ -1052,7 +1052,9 @@ Dentro de los filtros más comunes tenemos:
 
 La lista completa de filtros se encuentra en el siguiente [link](https://docs.ansible.com/ansible/latest/user_guide/playbooks_filters.html).
 
-Por último, Ansible expone Plugins. Los Plugins, son también scripts de Python pero que exponen una función, capaz de realizar tareas más complejas, y no tienen porque trabajar necesariamente sobre variables. Ansible provee varios filtros, y también permite la creación de nuevos plugins. Tampoco indicaremos en este curso como desarrollar nuestros propios plugins, simplemente utilizaremos algunos de los que Ansible provee por defecto, en particular el plugin `lookup`. El mismo permite buscar dentro del `filesystem` del host por archivos, que podemos cargar luego en una variable para interactuar con sus contenidos.
+Por último, Ansible nos brinda Plugins. Los Plugins, son también scripts de Python pero que exponen una función capaz de realizar tareas más complejas que no tienen porque trabajar necesariamente sobre variables. Ansible provee varios filtros, y también permite la creación de nuevos plugins. 
+
+Tampoco indicaremos en este curso como desarrollar nuestros propios plugins, simplemente utilizaremos algunos de los que Ansible provee por defecto, en particular el plugin `lookup`. El mismo permite buscar dentro del `filesystem` del host por archivos, que podemos cargar luego en una variable para interactuar con sus contenidos.
 
 Veamos como podemos manipular un documento JSON utilizando todos estos componentes.
 
