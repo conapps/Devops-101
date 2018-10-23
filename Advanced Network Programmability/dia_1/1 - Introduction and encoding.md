@@ -644,7 +644,7 @@ JSON schema definition es extremadamente útil para definir estructuras de datos
 
 
 
-##### Ejercicio X
+#### Ejercicio 3
 
 La siguiente URL:
 
@@ -713,7 +713,7 @@ Corresponde a una API que devuelve datos sobre la historia de los mundiales de f
 
 
 
-###### X.1
+##### 3.1
 
 Basado en la información del JSON schema definition construya un script de Python que liste el año del mundial, el organizador y el nombre del campeón para todos los mundiales. El formato de salida debe ser el siguiente: 
 
@@ -727,7 +727,7 @@ Mundial 1934
 ...
 ```
 
-###### X.2
+##### 3.2
 
 Liste todos mundiales que hayan sido ganados por paises que a su vez hayan ganado al menos dos mundiales. El formato de salida debe ser el siguiente:
 
@@ -743,7 +743,7 @@ Mundial 1934
 ...
 ```
 
-###### X.3
+##### 3.3
 
 Despliegue año y pais de cada mundial donde los datos indiquen que el organizador fue el campeón. La selección de los mundiales a desplegar debe hacerse en base al campo `organizador_campeon` y **no comparando los nombres del organizador y el campeón**. El formato de salida debe ser el siguiente:
 
@@ -848,7 +848,7 @@ Del mismo modo en que el modelo de datos se puede especificar utilizando JSD, ta
 
 Si bien tanto JSD como XSD son perfectamente válidos para modelar cualquier estructura de datos, en lo que refiere a dispositivos de comunicaciones, (routers, switches, firewalls, etc), se está tendiendo a utilizar YANG para modelar dichas estructuras. En este curso seguiremos esta tendencia, explorando YANG de forma extensiva, por lo que no profundizaremos mas de lo ya visto sobre JSD y XSD.
 
-##### Ejercicio Z
+#### Ejercicio 4
 
 En la URL:
 
@@ -856,13 +856,13 @@ En la URL:
 
 Encontraremos la misma información sobre la historia de los mundiales de fútbol que en los ejercicios anteriores sólo que ahora en formato XML.
 
-###### Z.1
+##### 4.1
 
 Construya un script de Python que imprima en pantalla el XML completo que devuelve dicha URL.
 
-###### Z.2
+##### 4.2
 
-Utilice ahora la siguiente función para que su script anterior de un formato mas legible a la salida:
+Utilice ahora la siguiente función para que su script anterior entregue un formato mas legible a la salida:
 
 ``` python
 def pretty_print_xml(xml_string):
@@ -876,11 +876,11 @@ def pretty_print_xml(xml_string):
     print(xml.toprettyxml())
 ```
 
-###### Z.3
+##### 4.3
 
 Utilizando la librería `xmltodict` imprima ahora la misma infomación pero en formato JSON.
 
-###### Z.4
+##### 4.4
 
 Imprima la información de todos los mundiales ganados por Brasil con el siguiente formato:
 
