@@ -507,20 +507,12 @@ router# show runninng-config | include <expresion regular>
 
 <code>
 
-show running-config | include username g[^_]+[0-9]_
+`show running-config | include username g[^_]+[0-9]_`
 
 </code>
 
 </details>
 
-
-
-<details> 
-	<summary>Solución</summary> 
-	<code>
-		
-​	</code> 
-</details>
 
 ## Encoding formats
 
