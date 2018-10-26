@@ -1,5 +1,7 @@
 # Netconf - 2006 - RFC 4741 (updated in 2011)
 
+## Introducción
+
 Netconf es un protocolo IETF pensado como una evolución de SNMP. Usa ssh, SOAP, o TLS como transporte. En este curso utilizaremos únicamente ssh.
 
 La arquitectura es cliente-servidor, donde el router es el servidor y la notebook (o sistema de gestión) es el cliente.
@@ -39,7 +41,7 @@ Dado que Netconf es orientado a transacciones, cada mensaje RPC tiene un identif
 
 
 
-Cómo se mencionó anteriormente, de forma muy similar a como lo hace HTTP con sus métodos, Netconf define una serie de operaciones que le indican al servidor la naturaleza del pedido realizado. La lista a continuación muestra algunas de las operaciones existentes y su significado.
+Cómo se mencionó anteriormente, de forma muy similar a como lo hace HTTP con sus métodos, Netconf define una serie de operaciones, llamadas RPC o "Remote Procedure Call" que le indican al servidor la naturaleza del pedido realizado. La lista a continuación muestra algunas de las operaciones existentes y su significado. Una lista completa de las operaciones puede encontrarse [aquí](http://www.netconfcentral.org/rpclist).
 
 
 
@@ -52,14 +54,53 @@ Dado que Netconf utiliza ssh como transporte, en teoría podríamos realizar cua
 Antes de poder trabajar con NetConf es necesaro habilitar dicha funcionalidad en los equipos.
 Para ello, el procedimiento es el siguiente:
 
+**Habilitar un usuario con privilegios de nivel 15**
 
+``` bash
+router(config)# username conatel privilege 15 secret conatel
+router(config)# aaa new-model
+router(config)# aaa authentication login default local
+router(config)# aaa authorization exec default local 
+```
 
-## Ejercicio 7
+*Verificación:*
+
+````bash
+$ ssh conatel@hostname
+Password:
+router#
+````
+
+**Habilitar Netconf**
+
+``` bash
+router(config)# netconf-yang
+```
+
+Esto por defecto habilita YANG mediante `ssh` en el puerto `830`
+
+*verficiación:*
+
+``` bash
+router#show platform software yang-management process 
+confd            : Running 
+nesd             : Running 
+syncfd           : Running 
+ncsshd           : Running 
+dmiauthd         : Running 
+nginx            : Running 
+ndbmand          : Running 
+pubd             : Running
+```
+
+> Nota: para que Netconf funcione correctamente no es necesario que el proceso `nginx` esté corriendo. Este proceso corre cuando ejecutamos `ip http server` o `ip http secure server` y sólo es necesario para correr RESTConf
+
+### Ejercicio 7
 
 Ejectuar el siguiente comando para conectarnos al router:
 
 ```bash
-$ ssh -i cert.pem -p 830 usuario@hostname 
+$ ssh -p 830 conatel@hostname 
 ```
 
 Una vez conecados deberíamos poder ver el mensaje de `<hello>` del router donde comunica sus capabilites. El mensaje debería ser algo parecido al siguiente:
@@ -108,62 +149,123 @@ Ahora estamos listos para enviar pedidos (RPCs) al router. Enviaremos un RPC con
 
 > Nota: al enviar los mensajes no olvidar incluir el `]]>]]>` esto es lo que indica el fin del mensaje.
 
-### Netconf ncclient
+## Netconf ncclient
 
-ACA EXPLICAMOS ncclient Y HACEMOS ALGUNOS EJERCICIOS.
+Como vimos anteriormente, si bien es totalmente posible interactuar con un router mediante Netconf a través de la consola, esto no es práctico ni escalable.
 
-Ej 1) Mostrar Netconf capabilities exchange.
+Python dispone de una librería llamada `ncclient` (Netconf client), que nos abstrae gran parte de la complejidad y nos permite trabajar con mayor comodidad. Veremos a continuación como utilizarla para interactuar con los routers de forma programática.
 
-```xml
-cisco@cisco:~$ ssh cisco@nxosv -s netconf
-User Access Verification
-cisco@nxosv's password: 
-<?xml version="1.0" encoding="ISO-8859-1"?>
-<hello xmlns="urn:ietf:params:xml:ns:netconf:base:1.0">
-  <capabilities>
-    <capability>urn:ietf:params:xml:ns:netconf:base:1.0</capability>
-    <capability>urn:ietf:params:netconf:base:1.0</capability>
-    <capability>urn:ietf:params:netconf:capability:validate:1.0</capability>
-    <capability>urn:ietf:params:netconf:capability:writable-running:1.0</capability>
-    <capability>urn:ietf:params:netconf:capability:url:1.0?scheme=file</capability>
-    <capability>urn:ietf:params:netconf:capability:rollback-on-error:1.0</capability>
-    <capability>urn:ietf:params:netconf:capability:candidate:1.0</capability>
-    <capability>urn:ietf:params:netconf:capability:confirmed-commit:1.0</capability>
-  </capabilities>
-  <session-id>21992</session-id>
-</hello>
-]]>]]><?xml version="1.0" encoding="ISO-8859-1"?>
-<hello xmlns="urn:ietf:params:xml:ns:netconf:base:1.0">
-  <capabilities>
-    <capability>urn:ietf:params:xml:ns:netconf:base:1.0</capability>
-    <capability>urn:ietf:params:netconf:base:1.0</capability>
-    <capability>urn:ietf:params:netconf:capability:validate:1.0</capability>
-    <capability>urn:ietf:params:netconf:capability:writable-running:1.0</capability>
-    <capability>urn:ietf:params:netconf:capability:url:1.0?scheme=file</capability>
-    <capability>urn:ietf:params:netconf:capability:rollback-on-error:1.0</capability>
-    <capability>urn:ietf:params:netconf:capability:candidate:1.0</capability>
-    <capability>urn:ietf:params:netconf:capability:confirmed-commit:1.0</capability>
-  </capabilities>
-</hello>
-]]>]]>
+``` python
+from ncclient import manager
+
+with manager.connect(host=host, port=port, username=username, password=password, hostkey_verify=False) as router:
+    for capability in router.server_capabilities:
+        print(capability)
 ```
 
-Estas capabilities muestran las versiones de Netconf soportadas, hoy en día las dos versiones disponibles son `1.0` y `1.1`
+---
 
-`urn:ietf:params:netconf:base:1.0`
+### Ejercicio 8
 
-`urn:ietf:params:netconf:base:1.1`
+Escribir una función llamada `print_capabilities`que imprima en pantalla todas las "capabilites" de un equipo **que contengan un cierto string**. En caso de que el usuario no ingrese el campo `filter` se deben mostrar todas las capabilities.
 
-Para entender las capabilities que se devuelven:
+---
+
+## Capabilites
+
+Ahora, exploraremos con mayor profundidad la sintáxis con la que el router devuelve sus "capabilities".
+Lo primero que hay que entender es que hoy en día hay dos versiones de Netconf disponibles: la `1.0` y la `1.1`. Los routers informan cual/cuales veriones soportan durante el intercambio de "capabilities".
+
+---
+
+### Ejercicio 9
+
+Utilizar la función elaborada en el ejercicio 8 filtrando con lo siguiente `filter='params:netconf:base'` para obtener las versiones de Netconf soportadas por el router.
+
+---
+
+Cómo se comentó anteriormente, las "capabilities" se corresponden con los módulos de YANG soportados. La figura a continuación muestra como interpretar lo que devuelve el router.
+
+
 
 ![alt understand_netconf_capabilities](imagenes/netconf_understand_capabilites.png)
 
 
 
+## Descarga de modelos
 
+Ahora que sabemos como identificar qué modelos de YANG soporta el equipo, veremos como descargarlos para poder trabajar con ellos.
 
-## 
+Netconf soporta un `RPC` llamado `get-schema` que solicita al equipo que devuelva un `schema` determinado por su nombre. Dado que en el caso del CSR1000V  los `schemas` están implementados mediante módulos de YANG; esto será lo que el router devolverá como respuesta a un `RPC get-schema`.
 
+La librería `ncclient` implementa esta funcionalidad lo que nos permite descargar cualqueir módulo de YANG que necesitemos.
 
+``` python
+import xmltodict
+from ncclient import manager
 
-## 
+def get_schema(schema, host, username, password, port='830'):
+    with manager.connect(host=host, port=port, username=username, password=password, hostkey_verify=False) as router:
+        netconf_reply = router.get_schema(schema)
+        print(xmltodict.parse(netconf_reply.xml)['rpc-reply']['data']['#text'])
+```
+
+---
+
+### Ejercicio 10
+
+* Utilizar la función mostrada en el snippet anterior para descargar el módulo `ietf-interfaces`.
+* Copiar el contenido de la respuesta y crear un archivo llamado `ìetf-interfaces.yang`
+* Utilizar `pyang` para analizar la estructura del módulo.
+
+<details>
+
+<summary>Solucion</summary>
+
+<code>
+
+``` bash
+$ pyang -f tree ietf-interfaces.yang 
+module: ietf-interfaces
+  +--rw interfaces
+  |  +--rw interface* [name]
+  |     +--rw name                        string
+  |     +--rw description?                string
+  |     +--rw type                        identityref
+  |     +--rw enabled?                    boolean
+  |     +--rw link-up-down-trap-enable?   enumeration {if-mib}?
+  +--ro interfaces-state
+     +--ro interface* [name]
+        +--ro name               string
+        +--ro type               identityref
+        +--ro admin-status       enumeration {if-mib}?
+        +--ro oper-status        enumeration
+        +--ro last-change?       yang:date-and-time
+        +--ro if-index           int32 {if-mib}?
+        +--ro phys-address?      yang:phys-address
+        +--ro higher-layer-if*   interface-state-ref
+        +--ro lower-layer-if*    interface-state-ref
+        +--ro speed?             yang:gauge64
+        +--ro statistics
+           +--ro discontinuity-time    yang:date-and-time
+           +--ro in-octets?            yang:counter64
+           +--ro in-unicast-pkts?      yang:counter64
+           +--ro in-broadcast-pkts?    yang:counter64
+           +--ro in-multicast-pkts?    yang:counter64
+           +--ro in-discards?          yang:counter32
+           +--ro in-errors?            yang:counter32
+           +--ro in-unknown-protos?    yang:counter32
+           +--ro out-octets?           yang:counter64
+           +--ro out-unicast-pkts?     yang:counter64
+           +--ro out-broadcast-pkts?   yang:counter64
+           +--ro out-multicast-pkts?   yang:counter64
+           +--ro out-discards?         yang:counter32
+           +--ro out-errors?           yang:counter32
+```
+
+</code>
+
+</details>
+
+---
+
