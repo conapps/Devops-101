@@ -269,3 +269,151 @@ module: ietf-interfaces
 
 ---
 
+## Obteniendo información
+
+Ahora que sabemos identificar que modelos de YANG soporta el equipo, que podemos descargarlos y analizar su estructura utilizando `pyang`, es hora de comenzar a obtener datos útiles.
+
+A continuación vamos a analizar el módulo `Cisco-IOS-XE-native`. Comencemos por descubrirlo dentro de las "capabilites" utilizando nuestra función `print_capabilities`.
+
+```` python
+>>> print_capabilities(filter='native')
+http://cisco.com/ns/yang/Cisco-IOS-XE-native
+    ?module=Cisco-IOS-XE-native
+    &revision=2018-02-01
+````
+
+Ahora vamos a descargar el modelo de YANG utilizando nuestra función `get_schema` 
+
+``` python
+>>> get_schema('Cisco-IOS-XE-native')
+
+module Cisco-IOS-XE-native {
+  namespace "http://cisco.com/ns/yang/Cisco-IOS-XE-native";
+  prefix ios;
+  import ietf-inet-types {
+    prefix inet;
+  }
+  ...
+  --> Salida omitida para mayor claridad <--
+```
+
+Lo salvamos en un archivo llamado `Cisco-IOS-XE-native.yang` y a analizarlo utilizando `pyang`
+
+``` bash
+ialmandos$ pyang -f tree Cisco-IOS-XE-native.yang 
+
+--> omitimos errores por no tener descargadas las dependencias <--
+
+module: Cisco-IOS-XE-native
+  +--rw native
+     +--rw default
+     |  +--rw crypto
+     |     +--rw ikev2
+     |        +--rw proposal?   empty
+     |        +--rw policy?     empty
+     +--rw bfd
+     +--rw version?                 string
+     
+--> Salida omitida para mayor claridad <--     
+     
+     +--rw hostname?                string
+     +--rw enable
+     |  +--rw password
+     
+--> Salida omitida para mayor claridad <--     
+```
+
+Ahora utilizaremos la función `get(filter)` del módulo `ncclient` para obtener el hostname del equipo.
+El parámetro filter se debe definir mediante XML utilizando la estructura del módulo YANG como base, para ello generaremos un archivo `hostname.xml` con el siguiente contenido.
+
+``` xml
+<filter>
+    <native xmlns="http://cisco.com/ns/yang/Cisco-IOS-XE-native">
+        <hostname></hostname>
+    </native>
+</filter>
+```
+
+Ya tenemos todo lo necesario para crear nuestra función `get_hostname()`
+
+> Nota: aquí usamos además lo aprendido en la primera parte del curso para trabajar con estructuras XML en Python
+
+``` python
+def get_hostname(host, username, password, port='830'):
+    filter = open('./hostname.xml').read()
+
+    with manager.connect(host=host, port=port, username=username, password=password, hostkey_verify=False) as router:
+        netconf_reply = router.get(filter)
+        print('Printing output as XML:')
+        pretty_print_xml(netconf_reply.xml)
+        dict = xmltodict.parse(netconf_reply.xml)
+        print('Printing output as JSON:')
+        print(json.dumps(dict, indent=2))
+```
+
+
+
+``` python
+>>> get_hostname('router.labs.conatest.click', 'conatel', 'conatel')
+
+Printing output as XML:
+
+<?xml version="1.0" ?>
+<rpc-reply message-id="urn:uuid:1b8aab10-d9c8-4dd2-a59b-e88a8bf71bb5" xmlns="urn:ietf:params:xml:ns:netconf:base:1.0" xmlns:nc="urn:ietf:params:xml:ns:netconf:base:1.0">
+	<data>
+		<native xmlns="http://cisco.com/ns/yang/Cisco-IOS-XE-native">
+			<hostname>ip-172-31-39-33</hostname>
+		</native>
+	</data>
+</rpc-reply>
+
+Printing output as JSON:
+
+{
+  "rpc-reply": {
+    "@xmlns": "urn:ietf:params:xml:ns:netconf:base:1.0",
+    "@message-id": "urn:uuid:1b8aab10-d9c8-4dd2-a59b-e88a8bf71bb5",
+    "@xmlns:nc": "urn:ietf:params:xml:ns:netconf:base:1.0",
+    "data": {
+      "native": {
+        "@xmlns": "http://cisco.com/ns/yang/Cisco-IOS-XE-native",
+        "hostname": "ip-172-31-39-33"
+      }
+    }
+  }
+}
+```
+
+
+
+---
+
+### Ejercicio 11
+
+Utilizar el procedimiento explicado anteriormente para, partiendo del módulo `ietf-interfaces` elaborar una función `print_interfaces()` que imprima en pantalla el nombre de las interfaces.
+
+A continuación presentamos un ejemplo de como debería ser la salida de su script:
+
+``` python
+>>> print_interfaces(host=HOST, username=USERNAME, password=PASSWORD)
+GigabitEthernet1
+VirtualPortGroup0
+```
+
+### Ejercicio 12
+
+Modificar el script para que imprima además del nombre de la interface, su estado operacional.
+La salida debería ser algo así.
+
+``` python
+>>> print_interfaces(host=HOST, username=USERNAME, password=PASSWORD)
+GigabitEthernet1
+	 up
+VirtualPortGroup0
+	 up
+```
+
+
+
+## Configurando el equipo
+
