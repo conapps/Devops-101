@@ -1,72 +1,16 @@
-# Network programmability
+# Setup del ambiente
 
-## Setup del ambiente
-
+* instalar `pycharm`
+* instalar `postman`
+* instalar `WinScp` (sólo en caso de ambientes Windows)
+* instalar `git`
 * instalar `requests`
 * instalar `nccclient`
 * instalar `xmltodict`
 * instalar `pyang`
-* instalar `pybind`
+* instalar `pyangbind`
 
-## Introducción a network programmability
-
-Hasta ahora el principal protocolo utilizado para la administración de redes empresariales es SNMP, (en alguna de sus variantes). Si bien SNMP ha hecho un buen trabajo desde su estandarización en 1990, hoy en día muestra una serie de limitantes que hacen que en muchas ocaciones ya no sea el mecanismo mas adecuado para gestionar redes de datos. Las principales limitantes que muestra este protocolo hoy en día son:
-
-* Falta de MIBs con posibilidad de escritura.
-* Es difícil hacer un rollback de configuración.
-* Falta de librerías adecuadas para varios lenguajes de programación.
-
-En cuanto a la configuración y "troubleshooting" de los equipos de red, el principal método utilizado en la actualidad es la línea de comandos (CLI), en general accedida a través de protocolos como telnet o ssh. Este tipo de interacción con los dispositivos para su configuración tiene algunas desventajas:
-
-* La CLI está pensada para ser utilizada por seres humanos, por lo que es dificil generar automatizaciones.
-* No presenta un modelo de datos (no hay una estructura bien definida).
-* No es modularizable o re-utilizable.
-
-De acuerdo a lo visto anteriormente, podemos resumir gráficamente como sería el modelo de gestión de red utilizado hasta ahora. Notemos que en este modelo, la verficación se realiza **manualmente y en tiempo de ejecución**. 
-
-![alt history of network management](imagenes/history_of_network_device_management.png)
-
-
-
-Por el contrario, la disciplina a la que llamamos **network programmability**, utiliza un enfoque basado en modelos de datos, APIs abiertas, protocolos abiertos y formatos de datos optimizados para la comunicación machine-to-machine. La figura a continuación presenta un resumen gráfico del modelo que exploraremos en este curso.
-
-
-
-![alt network programmability model](imagenes/model_driven_netowrk_programmability.png)
-
-
-
-Las capas de este modelo están compuestas por un ecosistema de protocolos, lenguajes y formatos que han cobrado mucha popularidad en los últimos años y sobre los cuales nos enfocaremos en este curso.
-
-En el primer día de curso, comenzaremos explorando la posibilidad que brindan los equipos de red de correr aplicaciones dentro de los mismos. Una tecnología comunmente denominada como "FOG computing". En particular, como administradores de infraestructura que somos, nos centraremos un caso de uso específico de esta tecnología que es cómo correr scripts de "Python" para automatizar tareas de configuración y troubleshooting. 
-
-
-
-![alt IOx arquitecture](imagenes/IOx.png)
-
-
-
-A continuación, veremos las dificultades y limitantes que presenta este modelo de trabajo, e introduciremos el concepto de "Model Driven Programmability", que busca resolver los problemas que plantea el hecho de interactuar con un dispositivo de red mediante interfaces diseñadas para el uso por parte de seres humanos.
-
-Dentro del paradigma de "Model Driven Programmability", entenderemos como modelar los datos mediante un lenguaje de modelado llamado `YANG` y cual es la utilidad de hacer esto. Veremos como codificar la información del modelo de datos definido para poder ser transmitida. En particular exploraremos dos tipos de codificación diferentes: `XML` y `JSON`. Luego trabajaremos con los dos principales protocolos disponibles hoy en día `Netconf` y `RestConf`.
-
-
-
-![alt model driven programmability](/home/ialmandos/Dropbox/CodeProjects/network_programmability/imagenes/para_incluir_1.png)
-
-
-
-
-
-
-
-![alt network programmability protocols](imagenes/model_driven_programmability_stack.png)
-
-
-
-En el segundo día de curso, daremos un paso mas al explorar herramientas que hacen uso de las técnicas vistas anteriormente para escalar y profesionalizar el trabajo. En particular, estudiaremos Ansible en profundidad, una aplicación que nos permitirá tratar a la infraestructura como código ("Infrastructure as Code"); paso indispensable para llegar al objetivo la automatización total de la misma.
-
-
+# Programabilidad tradicional
 
 ## Repaso de Python
 
@@ -514,6 +458,65 @@ router# show runninng-config | include <expresion regular>
 
 </details>
 
+# Programación orientada a modelos
+
+## Introducción
+
+Hasta ahora el principal protocolo utilizado para la administración de redes empresariales es SNMP, (en alguna de sus variantes). Si bien SNMP ha hecho un buen trabajo desde su estandarización en 1990, hoy en día muestra una serie de limitantes que hacen que en muchas ocaciones ya no sea el mecanismo mas adecuado para gestionar redes de datos. Las principales limitantes que muestra este protocolo hoy en día son:
+
+- Falta de MIBs con posibilidad de escritura.
+- Es difícil hacer un rollback de configuración.
+- Falta de librerías adecuadas para varios lenguajes de programación.
+
+En cuanto a la configuración y "troubleshooting" de los equipos de red, el principal método utilizado en la actualidad es la línea de comandos (CLI), en general accedida a través de protocolos como telnet o ssh. Este tipo de interacción con los dispositivos para su configuración tiene algunas desventajas:
+
+- La CLI está pensada para ser utilizada por seres humanos, por lo que es dificil generar automatizaciones.
+- No presenta un modelo de datos (no hay una estructura bien definida).
+- No es modularizable o re-utilizable.
+
+De acuerdo a lo visto anteriormente, podemos resumir gráficamente como sería el modelo de gestión de red utilizado hasta ahora. Notemos que en este modelo, la verficación se realiza **manualmente y en tiempo de ejecución**. 
+
+![alt history of network management](/home/ialmandos/Dropbox/CodeProjects/Devops-101/Advanced%20Network%20Programmability/dia_1/imagenes/history_of_network_device_management.png)
+
+
+
+Por el contrario, la disciplina a la que llamamos **network programmability**, utiliza un enfoque basado en modelos de datos, APIs abiertas, protocolos abiertos y formatos de datos optimizados para la comunicación machine-to-machine. La figura a continuación presenta un resumen gráfico del modelo que exploraremos en este curso.
+
+
+
+![alt network programmability model](/home/ialmandos/Dropbox/CodeProjects/Devops-101/Advanced%20Network%20Programmability/dia_1/imagenes/model_driven_netowrk_programmability.png)
+
+
+
+Las capas de este modelo están compuestas por un ecosistema de protocolos, lenguajes y formatos que han cobrado mucha popularidad en los últimos años y sobre los cuales nos enfocaremos en este curso.
+
+En el primer día de curso, comenzaremos explorando la posibilidad que brindan los equipos de red de correr aplicaciones dentro de los mismos. Una tecnología comunmente denominada como "FOG computing". En particular, como administradores de infraestructura que somos, nos centraremos un caso de uso específico de esta tecnología que es cómo correr scripts de "Python" para automatizar tareas de configuración y troubleshooting. 
+
+
+
+![alt IOx arquitecture](/home/ialmandos/Dropbox/CodeProjects/Devops-101/Advanced%20Network%20Programmability/dia_1/imagenes/IOx.png)
+
+
+
+A continuación, veremos las dificultades y limitantes que presenta este modelo de trabajo, e introduciremos el concepto de "Model Driven Programmability", que busca resolver los problemas que plantea el hecho de interactuar con un dispositivo de red mediante interfaces diseñadas para el uso por parte de seres humanos.
+
+Dentro del paradigma de "Model Driven Programmability", entenderemos como modelar los datos mediante un lenguaje de modelado llamado `YANG` y cual es la utilidad de hacer esto. Veremos como codificar la información del modelo de datos definido para poder ser transmitida. En particular exploraremos dos tipos de codificación diferentes: `XML` y `JSON`. Luego trabajaremos con los dos principales protocolos disponibles hoy en día `Netconf` y `RestConf`.
+
+
+
+![alt model driven programmability](/home/ialmandos/Dropbox/CodeProjects/Devops-101/Advanced%20Network%20Programmability/dia_1/imagenes/para_incluir_1.png)
+
+
+
+
+
+
+
+![alt network programmability protocols](/home/ialmandos/Dropbox/CodeProjects/Devops-101/Advanced%20Network%20Programmability/dia_1/imagenes/model_driven_programmability_stack.png)
+
+
+
+En el segundo día de curso, daremos un paso mas al explorar herramientas que hacen uso de las técnicas vistas anteriormente para escalar y profesionalizar el trabajo. En particular, estudiaremos Ansible en profundidad, una aplicación que nos permitirá tratar a la infraestructura como código ("Infrastructure as Code"); paso indispensable para llegar al objetivo la automatización total de la misma.
 
 ## Encoding formats
 
@@ -947,123 +950,20 @@ Algunos de los principales contribuyentes a Openconfig son:
 * Telefónica
 * Yahoo!
 
-
-
-### YANG - 2010 - RFC 6020
-
-Definido en la RFC 6020, originalmente diseñado para NETCONF (esto quiere decir que fue inicialmente diseñado para modelar equipos de networking). Ahora también lo utiliza RESTCONF. 
-Como se comentó anteriormente, sirve para modelar configuración e información de estado. Provee sintáxis y semántica. Utiliza estructuras de datos re-utilizables.
-
-Tipos de YANG modules en dispositivos Cisco:
-
-- Industry strandard
-- Cisco common
-- Cisco platform specific
-
-Para comenzar, veámos YANG en acción con un ejemplo sencillo. En este ejemplo vamos a modelar a la población de Uruguay. Lo que generaremos en nuestro modelo es una lista de personas con una serie de atributos que las definen. En este ejemplo, los atributos serán el nombre, la edad y de que equipo de fútbol es hincha la persona.
-
-``` yang
-// module name
-module personas-uruguay {
-
-    yang-version "1";
-    namespace "https://conatel.cloud/personas-uruguay";
-
-    prefix "personas-uruguay";
-
-    identity EQUIPO {
-        description "De que equipo es hincha";
-    }
-
-    identity NACIONAL {
-        base EQUIPO;
-        description "Hincha de Nacional";
-    }
-
-    identity PENAROL {
-        base EQUIPO;
-        description "Hincha de Penarol";
-    }
-
-    // nuevo tipo de datos
-    typedef edad {
-        type uint16 {
-            range 1..100;
-        }
-    }
-
-    // este agrupamiento de datos contiene todos los datos de una persona
-    grouping datos-personales {
-        leaf nombre {
-            type string;
-        }
-        leaf edad {
-            type edad;
-        }
-        leaf EQUIPO {
-            type identityref {
-                base personas-uruguay:EQUIPO;
-            }
-        }
-    }
-
-    // objeto raiz definido en el modelo
-    container poblacion {
-        list persona {
-            // identificador unico de cada individuo
-            key "nombre";
-
-            // los datos correspondientes a cada individuo seran los definidos en el grouping datos-personales
-            uses datos-personales;
-        }
-    }
-}
-```
-
-Como se puede ver, cuando modelamos utilizando YANG lo hacemos a través de módulos, por lo que, en este caso,  la población de Uruguay será un módulo definido mediente la sentencia `module <nombre-del-modulo>`.
-
-Una de las potencias del lenguaje es que permite definir tipos de datos arbitrarios, esto se hace a través de la sentencia `typedef`, en este caso definimos un tipo de datos llamado `edad` a la que restringimos a tomar valores de entre 0 y 100. Si bien esto es algo bastante simple, el lenguaje permite definir estructuras arbitrarias, tan complejas como se quiera. Por ejemplo se puede definir un tipo de datos que restrinja sus posibles valores a direcciones IP válidas.
-
-Utilizando los distintos tipos de datos, ya sea nativos del lenguaje o definidos por el usuario, se pueden armar agrupaciones lógicas utilizando la sentencia `grouping`. En el ejemplo, se definió un `grouping` llamado `datos-personales` que contiene la información de `edad`, `nombre` y `EQUIPO`.
-
-Hasta ahora hemos definido tipos de datos y agrupaciones de campos de información con sus respectivos tipos de datos (groupings), ahora avanzaremos con el modelado de la población. Para hacer esto, YANG dispone de la sentencia `container`  dentro de la cual, en el ejemplo definimos que habrá una lista de personas a la que llamamos `persona`. Cada elemento de esta lista será una persona, representada por sus datos personales, con la particularidad de que no podrá haber personas repetidas dentro de dicha lista. Se consideran como repetidas a todas aquellas personas con el mismo nombre. Esto se logra mediante la definición de un identificador único a través de la sentencia `key` , que en este caso define al `nombre` como dicho identificador.
-
-#### Pyang
-
-Una de las principales utilidades de modelar la información, es que los desarrolladores podemos conocer de antemano la estructura de los datos y por tanto escribir código que los procese con facilidad. Si bien YANG es un lenguaje muy potente para realizar el modelado, la realidad es que no es nada sencillo de leer cuando nuestro objetivo es, de un vistazo, entender la estructura con la que tendrá que trabajar nuestro código. Para ello, en Python existe una herramienta muy útil llamada `pyang`. 
-
-`pyang` permite partir de uno o varios módulos de YANG y generar una representación del modelo de datos en forma de árbol que es muy sencilla de leer.
-
-A continuación podemos ver como con `pyang` generamos una visualización en formato de árbol (`-f tree`) del modelo de datos `personas-uruguay.yang`
-
-``` bash
-$ pyang -f tree personas-uruguay.yang
-module: personas-uruguay
-  +--rw poblacion
-     +--rw persona* [nombre]
-        +--rw nombre    string
-        +--rw edad?     edad
-        +--rw EQUIPO?   identityref
-```
-
-Allí podemos ver rápidamente como los campos dependen jerárquicamente unos de otros y cuales son de lectura y/o escritura.
-
-#### Como extender los modelos
-
-Una posibiliad que ofrece YANG es la de extender los modelos de datos para agregar información o funcionalidades que no estaban previstas en el modelo original. Una particularidad de como funciona este proceso con YANG es que no es necesario modificar (ni ser el autor) del módulo original para poder extenderlo. Dicho en otras palabras, no es necesario hacer un "fork" de un módulo para para poder extenderlo. Esto nos permite partir de un módulo de un tercero, aumentarlo, y si en un futuro el tercero realiza una actualización del mismo poder seguir adelante de forma transparente.
-
-Veremos a continuación como podemos extender el modelo anterior `personas-uruguay.yang` para agregar información adicional mismo.
-
 ## Protocolos
 
-### Netconf
+Hasta ahora vimos como modelar los datos y codificar la información de dichos modelos para poder ser intercambiada entre dispositivos. Este intercambio se producirá típicamente entre una estación de gestión y un dispositivo de comunicaciones. Lo que nos resta explorar son los protocolos de capa de aplicación utilizados para realizar este intercambio intercambio.
 
-Introducción a Netconf, lo vamos a ver en detalle mas adelante
+Existen tres protocolos principales hoy en día para el intercambio de información entre dispositivos de red:
 
-### Restconf
+### Netconf - 2006 - RFC 4741 (updated in 2011)
 
-Introducción a Restconf, lo vamos a ver en detalle mas adelante
+Netconf es el mas antiguo de los protocolos y el que tiene mayor grado de adopción. Como veremos mas adelante presenta algunas desventajas frente a otros protocolos como Restconf en cuanto a su facilidad de uso. Sin embargo, su alto nivel de adopción hace que el mismo sea una herramienta imprescindible a la hora de automatizar infraestructura.
+
+### RESTConf - 2017 - RFC 8040
+
+RESTConf es el mas nuevo de los protocolos disponibles y muy probablemente será el protocolo hacia el cual tenderán los principales fabricantes. RESTConf permite interactuar con los dispositivos de red de la misma forma que lo hacemos con el resto del software, mediante APIs REST. Lo cual lo hace muy simple de uilizar y le permite tomar ventaja de un ecosistema de software (el de las APIs REST) que está hiper desarrollado.
 
 ### gRPC - 2015 - OpenSource by Google
 
-Solo mencionar que existe, no lo vamos a ver
+gRPC es un protocolo similar a los anteriores, desarrollado por Google y liberado como OpenSource en 2015. Su nivel de adopción es bajo, por lo que en este curso no profundizaremos mas allá de lo mencionado en esta introducción. Sin embargo, hay un movimiento creciente alrededor del mismo, por lo que vale la pena mencionarlo y tenerlo presente dado que es muy probable que gane mayor tracción en el futuro cercano.

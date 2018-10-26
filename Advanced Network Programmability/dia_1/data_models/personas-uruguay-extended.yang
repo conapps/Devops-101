@@ -1,0 +1,39 @@
+module personas-uruguay-extended {
+
+    yang-version "1";
+    namespace "https://conatel.cloud/personas-uruguay-extended";
+
+    prefix "personas-uruguay-extended";
+
+    // Importamos el modelo anterior
+    import personas-uruguay { prefix personas-uruguay; }
+
+    // Nuevo equipo de futbol
+    identity BARCELONA {
+        base personas-uruguay:EQUIPO;
+        description "Para los hijos de la globalizacion";
+    }
+
+    // Este grouping contiene nueva informacion para extender el modelo anterior
+    grouping datos-personales-extendidos {
+        leaf ocupacion {
+            type enumeration {
+                enum ACTIVO {
+                    description "Activo en el mercado laboral";
+                }
+                enum DESOCUPADO {
+                    description "En búsqueda activa de una ocupacion";
+                }
+                enum RETIRADO {
+                    description "Retirado del mercado laboral";
+                }
+
+            }
+        }
+    }
+
+    // Aqui es donde especificamos que parte del modelo anterior queremos extender
+    augment "/personas-uruguay:poblacion/personas-uruguay:persona" {
+        uses datos-personales-extendidos;
+    }
+}
