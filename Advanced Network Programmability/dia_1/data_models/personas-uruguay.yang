@@ -1,0 +1,56 @@
+
+// module name
+module personas-uruguay {
+
+    yang-version "1";
+    namespace "https://conatel.cloud/personas-uruguay";
+
+    prefix "personas-uruguay";
+
+    identity EQUIPO {
+        description "De que equipo es hincha";
+    }
+
+    identity NACIONAL {
+        base EQUIPO;
+        description "Hincha de Nacional";
+    }
+
+    identity PENAROL {
+        base EQUIPO;
+        description "Hincha de Penarol";
+    }
+
+    // nuevo tipo de datos
+    typedef edad {
+        type uint16 {
+            range 1..100;
+        }
+    }
+
+    // este agrupamiento de datos contiene todos los datos de una persona
+    grouping datos-personales {
+        leaf nombre {
+            type string;
+        }
+        leaf edad {
+            type edad;
+        }
+        leaf EQUIPO {
+            type identityref {
+                base personas-uruguay:EQUIPO;
+            }
+        }
+    }
+
+    // objeto raiz definido en el modelo
+    container poblacion {
+        list persona {
+            // identificador unico de cada individuo
+            key "nombre";
+
+            // los datos correspondientes a cada individuo seran los definidos en el grouping datos-personales
+            uses datos-personales;
+        }
+    }
+}

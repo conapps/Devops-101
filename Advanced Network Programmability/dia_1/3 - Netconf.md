@@ -1,9 +1,10 @@
-## Netconf - 2006 - RFC 4741 (updated in 2011)
+# Netconf - 2006 - RFC 4741 (updated in 2011)
 
 Netconf es un protocolo IETF pensado como una evolución de SNMP. Usa ssh, SOAP, o TLS como transporte. En este curso utilizaremos únicamente ssh.
 
 La arquitectura es cliente-servidor, donde el router es el servidor y la notebook (o sistema de gestión) es el cliente.
-A diferencia de REST (que es stateless), Netconf es basado en transacciones.
+
+**A diferencia de REST (que es stateless), Netconf es basado en transacciones.**
 
 Las configuraciones de los equipos se guardan en "datastores".
 NetConf prevee que los equipos puedan soportar tres tipos de datastore:
@@ -18,7 +19,7 @@ Cuando un cliente establece una conexión con un servidor, este le responde envi
 
 
 
-![alt netconf handshake](/home/ialmandos/Dropbox/CodeProjects/network_programmability/imagenes/netconf_handshake.png)
+![alt netconf handshake](imagenes/netconf_handshake.png)
 
 
 
@@ -26,7 +27,7 @@ Si analizamos Netconf mas en profundidad podremos ver que dentro de los mensajes
 
 
 
-![alt netconf overview](/home/ialmandos/Dropbox/CodeProjects/network_programmability/imagenes/para_agregar_2.png)
+![alt netconf overview](imagenes/para_agregar_2.png)
 
 
 
@@ -34,7 +35,7 @@ Dado que Netconf es orientado a transacciones, cada mensaje RPC tiene un identif
 
 
 
-![alt rpc](/home/ialmandos/Dropbox/CodeProjects/network_programmability/imagenes/para_agregar_3.png)
+![alt rpc](imagenes/para_agregar_3.png)
 
 
 
@@ -42,13 +43,18 @@ Cómo se mencionó anteriormente, de forma muy similar a como lo hace HTTP con s
 
 
 
-![alt netconf actions](/home/ialmandos/Dropbox/CodeProjects/network_programmability/imagenes/netconf_actions.png)
+![alt netconf actions](imagenes/netconf_actions.png)
 
 
 
 Dado que Netconf utiliza ssh como transporte, en teoría podríamos realizar cualquier operación únicamente con una consola (aunque obviamente no sería demasiado práctico). De cualquier forma, como una primera aproximación al protocolo, veremos como funciona el intercambio de capabilites de esta manera para introducir luego una metodología mas práctica de acceso. 
 
-#### Ejercicio Y
+Antes de poder trabajar con NetConf es necesaro habilitar dicha funcionalidad en los equipos.
+Para ello, el procedimiento es el siguiente:
+
+
+
+## Ejercicio 7
 
 Ejectuar el siguiente comando para conectarnos al router:
 
@@ -144,15 +150,13 @@ cisco@nxosv's password:
 
 Estas capabilities muestran las versiones de Netconf soportadas, hoy en día las dos versiones disponibles son `1.0` y `1.1`
 
-
-
 `urn:ietf:params:netconf:base:1.0`
 
 `urn:ietf:params:netconf:base:1.1`
 
 Para entender las capabilities que se devuelven:
 
-![alt understand_netconf_capabilities](/home/ialmandos/Dropbox/CodeProjects/network_programmability/imagenes/netconf_understand_capabilites.png)
+![alt understand_netconf_capabilities](imagenes/netconf_understand_capabilites.png)
 
 
 
