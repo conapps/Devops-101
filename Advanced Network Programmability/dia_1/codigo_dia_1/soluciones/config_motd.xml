@@ -1,0 +1,9 @@
+<config>
+    <native xmlns="http://cisco.com/ns/yang/Cisco-IOS-XE-native">
+        <banner>
+            <motd>
+                <banner>{message}</banner>
+            </motd>
+        </banner>
+    </native>
+</config>

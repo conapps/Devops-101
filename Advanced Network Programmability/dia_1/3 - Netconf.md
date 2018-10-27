@@ -460,7 +460,7 @@ Como se puede ver en la siguiente imágen, el hostname está en el primer nivel 
 
 ![alt native_hostname](imagenes/native_hostname.png)
 
-Por tal motivo, nuestro filtro de configuración, que siempre debe comenzar con el tag `<config></config>` será el siguiente:
+Por tal motivo, nuestro filtro de configuración, que siempre debe comenzar con el tag `<config></config>` , será el siguiente:
 
 ````xml
 <config>
@@ -483,4 +483,49 @@ def config_hostname(hostname, host, username, password, port='830'):
         netconf_reply = router.edit_config(config, target='running')
         pretty_print_xml(netconf_reply.xml)
 ```
+
+---
+
+### Ejercicio 13
+
+En este ejercicio vamos a darle vida a una funcionalidad algo olvidada en los routers, el "message of the day" (`motd`). Este servicio nunca se utilizó como tal debido a que alquien debía tomarse el trabajo de configurar un nuevo mensaje cada día en cada uno de los routers de la empresa. Pero ahora que sabemos configurar los equipos mediante Netconf, podemos hacer un script que haga el trabajo por nosotros.
+
+#### 13.1
+
+Implementar una función llamada `get_motd()` que devuelva un nuevo mensaje del día utilizando el siguiente servicio `GET https://talaikis.com/api/quotes/random/`
+
+#### 13.2
+
+Ahora que tenemos el mensaje del día solo resta configurarlo en el router. Tengamos presente que la forma de configurarlo por consola es:
+
+``` cisco
+router(config)# banner motd <caracter-delimitador><mensaje><caracter-delimitador>
+```
+
+> Nota: El caracter delimitador es cualquier caracter que indique el comienzo y el fin del mensaje. (obviamente este caracter no se puede utilizar dentro del mensaje o el mismo se cortaría). Una buena elección sería por ejemplo `^`.
+
+Utizando como referencia la página `running.html`, elaborar un filtro XML llamado `config_motd.xml` para poder configurar el `motd` mediante Netconf.
+
+#### 13.3
+
+Crear una función `change_motd(host, username, password, message, port='830')` que reciba el mensaje como parámetro y lo configure en el router a través de Netconf utilizando el filtro XML elaborado en el punto anterior. Probarla con con una frase obtenida a través de `get_motd()`.
+
+---
+
+### Ejercicio 14
+
+Hacer una función para cada cosa que se quiera configurar en un equipo está bien para comenzar pero a la larga no es práctico. Para facilitarnos un poco la vida, vamos a introducir una función genérica que nos permitirá configurar cualquier cosa.
+
+``` python
+def generic_conf(host, username, password, port='830', **kwargs):
+    template = open(kwargs['template']).read()
+    config = template.format(**kwargs)
+    with manager.connect(host=host, port=port, username=username, password=password, hostkey_verify=False) as router:
+        netconf_reply = router.edit_config(config, target='running')
+        pretty_print_xml(netconf_reply.xml)
+```
+
+#### 14.1
+
+Luego de analizar detenidamente la función anterior para entender su funcionamiento, elabore un filtro llamado `interface_description.xml` y configure una descripción de su agrado en la interface `GigabitEthernet1`
 
