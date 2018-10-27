@@ -269,7 +269,7 @@ module: ietf-interfaces
 
 ---
 
-## Obteniendo información
+## Obteniendo información del equipo
 
 Ahora que sabemos identificar que modelos de YANG soporta el equipo, que podemos descargarlos y analizar su estructura utilizando `pyang`, es hora de comenzar a obtener datos útiles.
 
@@ -297,7 +297,9 @@ module Cisco-IOS-XE-native {
   --> Salida omitida para mayor claridad <--
 ```
 
-Lo salvamos en un archivo llamado `Cisco-IOS-XE-native.yang` y a analizarlo utilizando `pyang`
+> Nota: tomar nota del campo `namespace` porque lo vamos a necesitar mas adelante
+
+Lo salvamos en un archivo llamado `Cisco-IOS-XE-native.yang` y lo analizamos utilizando `pyang`
 
 ``` bash
 ialmandos$ pyang -f tree Cisco-IOS-XE-native.yang 
@@ -324,7 +326,7 @@ module: Cisco-IOS-XE-native
 ```
 
 Ahora utilizaremos la función `get(filter)` del módulo `ncclient` para obtener el hostname del equipo.
-El parámetro filter se debe definir mediante XML utilizando la estructura del módulo YANG como base, para ello generaremos un archivo `hostname.xml` con el siguiente contenido.
+El parámetro filter se debe definir mediante XML utilizando la estructura del módulo YANG como base. Para ello partimos de una etiqueta `<filter></filter>` y dentro colocamos todas las etiquetas en la jerarquía hasta llegar a la parte del modelo que queremos modificar. En resumen, el archivo `hostname.xml` debería tener el siguiente contenido:
 
 ``` xml
 <filter>
@@ -345,6 +347,7 @@ def get_hostname(host, username, password, port='830'):
     with manager.connect(host=host, port=port, username=username, password=password, hostkey_verify=False) as router:
         netconf_reply = router.get(filter)
         print('Printing output as XML:')
+        # Esta función la hicimos en la introducción
         pretty_print_xml(netconf_reply.xml)
         dict = xmltodict.parse(netconf_reply.xml)
         print('Printing output as JSON:')
@@ -413,7 +416,71 @@ VirtualPortGroup0
 	 up
 ```
 
+<details>
 
+<summary>Pista</summary>
+
+<code>
+
+​	El estado de las interfaces se encuentra en el `container` llamado `interfaces-state`
+
+</code>
+
+</details>
 
 ## Configurando el equipo
+
+Ahora vamos a modificar la configuración del equipo. Para ellos nos vamos a basar en el modelo `Cisco-IOS-XE-native` que contiene la configuración completa del mismo.
+
+Podríamos seguir el mismo proceso que en los ejemplos anteriores descargando el modelo con nuestra función `get_schema`, generando un archivo `.yang` y analizándolo con `pyang`, pero dado que el modelo  `Cisco-IOS-XE-native` tiene muchas dependencias, esto sería un proceso muy tedioso. En su lugar vamos a recurrir al repositorio de Github `https://github.com/YangModels/yang.git` donde se encuentran todos los modelos soportados por las distintas versiones de IOS-XE en un único lugar.
+
+Lo primero que vamos a hacer es clonar el repositorio completo a nuestra máquina.
+
+``` bash
+$ mkdir modelos
+$ cd modelos
+$ git clone https://github.com/YangModels/yang.git .
+```
+
+Ahora navegamos hasta el directorio correspondiente a la version de IOS correspondiente, en nuestro caso `16.8.1`.
+
+``` bash
+$ cd vendor/cisco/xe/1681
+```
+
+Finalmente, creamos un archivo `html` con la estructura completa de la `running-config`.
+
+``` bash
+$ pyang -f jstree Cisco-IOS-XE-native.yang -o running.html
+```
+
+En este momento estamos listos para generar filtros XML que nos permitirán configurar distintos parámetros y funcionalidades. Comencemos cambiando el `hostname` del equipo.
+
+Como se puede ver en la siguiente imágen, el hostname está en el primer nivel dentro del contenedor `<native></native>`.
+
+![alt native_hostname](imagenes/native_hostname.png)
+
+Por tal motivo, nuestro filtro de configuración, que siempre debe comenzar con el tag `<config></config>` será el siguiente:
+
+````xml
+<config>
+    <native xmlns="http://cisco.com/ns/yang/Cisco-IOS-XE-native">
+        <hostname>{hostname}</hostname>
+    </native>
+</config>
+````
+
+La expresión `{hostname}` será sustituída luego por el `hostname` que querramos configurar.
+Por último, podemos elaborar nuestra función `config_hostname(hostname)`.
+
+``` python
+def config_hostname(hostname, host, username, password, port='830'):
+    template = open('config_hostname.xml').read()
+    # aqui sustituimos {hostname} por el hostname seleccionado
+    config = template.format(hostname=hostname)
+    with manager.connect(host=host, port=port, username=username, password=password, hostkey_verify=False) as router:
+        # notar que usamos el metodo edit_config y apuntamos a la running-config
+        netconf_reply = router.edit_config(config, target='running')
+        pretty_print_xml(netconf_reply.xml)
+```
 
