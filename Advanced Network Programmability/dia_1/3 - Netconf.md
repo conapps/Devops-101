@@ -41,13 +41,15 @@ Dado que Netconf es orientado a transacciones, cada mensaje RPC tiene un identif
 
 
 
-Cómo se mencionó anteriormente, de forma muy similar a como lo hace HTTP con sus métodos, Netconf define una serie de operaciones, llamadas RPC o "Remote Procedure Call" que le indican al servidor la naturaleza del pedido realizado. La lista a continuación muestra algunas de las operaciones existentes y su significado. Una lista completa de las operaciones puede encontrarse [aquí](http://www.netconfcentral.org/rpclist).
+Cómo se mencionó anteriormente, de forma muy similar a como lo hace HTTP con sus métodos, Netconf define una serie de operaciones que le indican al servidor la naturaleza del pedido realizado. La lista a continuación muestra algunas de las operaciones existentes y su significado. Una lista completa de las operaciones puede encontrarse [aquí](http://www.netconfcentral.org/rpclist).
 
 
 
 ![alt netconf actions](imagenes/netconf_actions.png)
 
 
+
+> Nota: vale la pena destacar que ademas de las operaciones nativas de Netconf, los fabricantes pueden definir acciones propias especificandolas mediante, por ejemplo, modelos de YANG.
 
 Dado que Netconf utiliza ssh como transporte, en teoría podríamos realizar cualquier operación únicamente con una consola (aunque obviamente no sería demasiado práctico). De cualquier forma, como una primera aproximación al protocolo, veremos como funciona el intercambio de capabilites de esta manera para introducir luego una metodología mas práctica de acceso. 
 
@@ -529,3 +531,43 @@ def generic_conf(host, username, password, port='830', **kwargs):
 
 Luego de analizar detenidamente la función anterior para entender su funcionamiento, elabore un filtro llamado `interface_description.xml` y configure una descripción de su agrado en la interface `GigabitEthernet1`
 
+---
+
+Para finalizar apredenderemos como salvar la configuración. Para ello es necesario enviar el siguiente mensaje RPC al router.
+
+``` xml
+<?xml version="1.0" encoding="utf-8"?> 
+ <rpc xmlns="urn:ietf:params:xml:ns:netconf:base:1.0" message-id=""> 
+   <cisco-ia:save-config xmlns:cisco-ia="http://cisco.com/yang/cisco-ia"/> 
+ </rpc>
+```
+
+Como podemos ver al analizar el modelo `cisco-ia` mediante `pyang`, `save-config` es una operación no nativa en Netconf definida por Cisco en dicho modelo.
+
+![alt save_config](imagenes/save-config.png)
+
+Una forma de enviar mensajes RPC con operaciones arbitrarias es utilizar el método `dispatch()`  de `ncclient.manager`. El ejemplo a continuación muestra la forma correcta de utilizarlo junto con el template `save_config.xml` que le indica al router la operación a realizar.
+
+```python
+def save_config(host, username, password, port='830'):
+    from ncclient.xml_ import to_ele
+    RPC = open('./save_config.xml', 'r').read()
+    with manager.connect(host=host, port=port, username=username, password=password, hostkey_verify=False) as router:
+        netconf_reply = router.dispatch(to_ele(RPC))
+        pretty_print_xml(netconf_reply.xml)
+```
+
+
+
+``` xml
+// template save_config.xml
+<cisco-ia:save-config xmlns:cisco-ia="http://cisco.com/yang/cisco-ia"/>
+```
+
+---
+
+### Ejercicio 15
+
+Salvar la configuración del router utilizando el método descripto anteriormente 
+
+---

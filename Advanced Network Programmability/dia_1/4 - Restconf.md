@@ -1,9 +1,9 @@
 ## RESTConf - 2017 - RFC 8040
 
 Soporta tanto XML como JSON.
-![alt restconf_operations](/home/ialmandos/Dropbox/CodeProjects/network_programmability/imagenes/restconf_operations.png)
+![alt restconf_operations](imagenes/restconf_operations.png)
 
-![alt restconf vs netconf](/home/ialmandos/Dropbox/CodeProjects/network_programmability/imagenes/restconf_vs_netconf_operations.png)
+![alt restconf vs netconf](imagenes/restconf_vs_netconf_operations.png)
 
 
 
