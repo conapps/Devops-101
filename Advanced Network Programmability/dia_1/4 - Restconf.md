@@ -70,7 +70,7 @@ router(config)# username conatel privilege 15 secret conatel
 router(config)# restconf
 ```
 
-### Verficiar la configuración
+### Verificiar la configuración
 
 En los equipos que corren IOS-XE, Cisco implementa el servidor HTTP mediante un servidor [nginx](https://www.nginx.com/). Para verficar que dicho servidor esté levantado y funcionado:
 
@@ -154,15 +154,15 @@ Utilizando la función mostrada en el ejemplo anterior listar todas los módulos
 
 
 
-Un  caso de uso muy común es el partir de la lista de módulos soportados y, dado que son muchos para poder buscar "a mano", filtrar en base a un texto específico. Esto nos permitirá responder preguntas del estilo: 
-
-¿soportará este equipo el módulo de YANG `Cisco-IOS-XE-native`?
-¿qué módulos desarrollados por `ietf` soporta?
-¿qué módulos tengo disponibles para configurar `interfaces`?
-
 ---
 
 ### Ejercicio 17
+
+Un  caso de uso muy común es el partir de la lista de módulos soportados y, dado que son muchos para poder buscar "a mano", filtrar en base a un texto específico. Esto nos permitirá responder preguntas del estilo: 
+
+- ¿soportará este equipo el módulo de YANG `Cisco-IOS-XE-native`?
+- ¿qué módulos desarrollados por `ietf` soporta?
+- ¿qué módulos tengo disponibles para configurar `interfaces`?
 
 Utilizando la función `get_yang_modules` del ejercicio anterior, escribir una funcion filtre la salida para mostrar solamente los módulos cuyo nombre (`name`) contenga el criterio de filtrado. Parta del script `17.py` donde hay un esqueleto básico sobre el cual trabajar.
 
@@ -171,12 +171,6 @@ Utilizando la función `get_yang_modules` del ejercicio anterior, escribir una f
 
 
 
-
-## Para identificar que modulos de YANG soporta el equipo
-
-`GET https://hostname/restconf/data/ietf-yang-library:modules-state`
-
-## 
 
 ### Para traer la running completa
 
