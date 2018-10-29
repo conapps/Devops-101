@@ -70,7 +70,7 @@ def send_message(message, key):
         'Authorization': 'Bearer ' + key,
         'Content-Type': 'application/json'
     }
-    ROOM_ID = 'Y2lzY29zcGFyazovL3VzL1JPT00vMmE0NzBkODAtOWRkMy0xMWU4LTkzNjctMWQ4OWM1ZDI3ZTA5'
+    ROOM_ID = 'Y2lzY29zcGFyazovL3VzL1JPT00vZjE2MTZmNTAtOWZiZC0xMWU4LWFhNzEtZTlkMjFkNTdiOGFh'
     BODY = {
         'roomId': ROOM_ID,
         'text': message
@@ -79,4 +79,3 @@ def send_message(message, key):
     response = requests.post(URL, data=json.dumps(BODY), headers=HEADERS, timeout=2, verify=False)
     if response.status_code not in range(200, 301):
         raise RuntimeError('Error al enviar mensaje. Respuesta del Servidor Teams:', str(response.text))
-
