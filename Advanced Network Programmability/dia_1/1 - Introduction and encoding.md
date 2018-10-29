@@ -476,7 +476,7 @@ En cuanto a la configuración y "troubleshooting" de los equipos de red, el prin
 
 De acuerdo a lo visto anteriormente, podemos resumir gráficamente como sería el modelo de gestión de red utilizado hasta ahora. Notemos que en este modelo, la verficación se realiza **manualmente y en tiempo de ejecución**. 
 
-![alt history of network management](/home/ialmandos/Dropbox/CodeProjects/Devops-101/Advanced%20Network%20Programmability/dia_1/imagenes/history_of_network_device_management.png)
+![alt history of network management](imagenes/history_of_network_device_management.png)
 
 
 
@@ -484,17 +484,17 @@ Por el contrario, la disciplina a la que llamamos **network programmability**, u
 
 
 
-![alt network programmability model](/home/ialmandos/Dropbox/CodeProjects/Devops-101/Advanced%20Network%20Programmability/dia_1/imagenes/model_driven_netowrk_programmability.png)
+![alt network programmability model](imagenes/model_driven_netowrk_programmability.png)
 
 
 
 Las capas de este modelo están compuestas por un ecosistema de protocolos, lenguajes y formatos que han cobrado mucha popularidad en los últimos años y sobre los cuales nos enfocaremos en este curso.
 
-En el primer día de curso, comenzaremos explorando la posibilidad que brindan los equipos de red de correr aplicaciones dentro de los mismos. Una tecnología comunmente denominada como "FOG computing". En particular, como administradores de infraestructura que somos, nos centraremos un caso de uso específico de esta tecnología que es cómo correr scripts de "Python" para automatizar tareas de configuración y troubleshooting. 
+Ya comenzamos explorando la posibilidad que brindan los equipos de red de correr aplicaciones dentro de los mismos. Una tecnología comunmente denominada como "FOG computing". En particular, como administradores de infraestructura que somos, nos centramos un caso de uso específico de esta tecnología que es cómo correr scripts de "Python" para automatizar tareas de configuración y troubleshooting. 
 
 
 
-![alt IOx arquitecture](/home/ialmandos/Dropbox/CodeProjects/Devops-101/Advanced%20Network%20Programmability/dia_1/imagenes/IOx.png)
+![alt IOx arquitecture](imagenes/IOx.png)
 
 
 
@@ -504,7 +504,7 @@ Dentro del paradigma de "Model Driven Programmability", entenderemos como modela
 
 
 
-![alt model driven programmability](/home/ialmandos/Dropbox/CodeProjects/Devops-101/Advanced%20Network%20Programmability/dia_1/imagenes/para_incluir_1.png)
+![alt model driven programmability](imagenes/para_incluir_1.png)
 
 
 
@@ -512,7 +512,7 @@ Dentro del paradigma de "Model Driven Programmability", entenderemos como modela
 
 
 
-![alt network programmability protocols](/home/ialmandos/Dropbox/CodeProjects/Devops-101/Advanced%20Network%20Programmability/dia_1/imagenes/model_driven_programmability_stack.png)
+![alt network programmability protocols](imagenes/model_driven_programmability_stack.png)
 
 
 
