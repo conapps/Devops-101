@@ -6,7 +6,7 @@
 * instalar `WinScp` (sólo en caso de ambientes Windows)
 * instalar `git`
 * instalar `requests`
-* instalar `nccclient`
+* instalar `ncclient`
 * instalar `xmltodict`
 * instalar `pyang`
 * instalar `pyangbind`
