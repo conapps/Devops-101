@@ -9,8 +9,6 @@
 * instalar `ncclient`
 * instalar `xmltodict`
 * instalar `pyang`
-* instalar `pyangbind`
-  * instalar `Microsoft visual C++ 14.0 o later`
 
 # Programabilidad tradicional
 
