@@ -45,7 +45,6 @@ def delete_usernames(usuarios):
         except Exception as error:
             raise ValueError('Error al borrar usuario: ' + str(error))
 
-
 def delete_users():
     delete_usernames(get_usernames())
 
