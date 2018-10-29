@@ -1,5 +1,6 @@
 # Setup del ambiente
 
+* grupo de `Webex Teams`
 * instalar `pycharm`
 * instalar `postman`
 * instalar `WinScp` (sólo en caso de ambientes Windows)
