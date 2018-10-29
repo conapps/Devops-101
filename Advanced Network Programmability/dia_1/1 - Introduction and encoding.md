@@ -378,12 +378,23 @@ Para ello, crearemos un script que se asegure, cada vez que corre, que los usuar
 
 #### 2.1
 
-Para apoyarnos en este ejercicio, utilizaremos una librería de utilidades que implementa algunas funciones útiles llamada `conatel.py`. La misma está ubicada en el repositorio en `Devops-101/Advanced Network Programmability/dia_1/codigo_dia_1/lib`.
+Para apoyarnos en este ejercicio, utilizaremos una librería de utilidades que implementa algunas funciones útiles llamada `conatel.py`. La misma está ubicada en el repositorio en `Devops-101/Advanced Network Programmability/dia_1/codigo_dia_1/ejercicios`.
+
 Lo primero que haremos será copiar `conatel.py` a la `flash` del router:
 
-``` bash
-scp -i cert_enviado_por_mail.pem conatel.py ec2-user@url_recibida_por_correo:/conatel.py
+En el router:
+
+``` cisco
+router(config)# username conatel privilege 15 secret conatel
 ```
+
+En la máquina local
+
+``` bash
+$ scp conatel.py conatel@url_recibida_por_correo:/conatel.py
+```
+
+> Nota: en caso de que se esté trabajando con Windows, el siguiente comando se puede instalar desde la consola de GIT
 
 #### 2.2
 
@@ -395,7 +406,7 @@ scp -i cert_enviado_por_mail.pem conatel.py ec2-user@url_recibida_por_correo:/co
 
 #### 2.4
 
-**En su máquina local** utilice la función `get_users()` desarrollada en el ejercicio pasado y la función `send_message(message, key)` para enviar al grupo del curso en Teams los datos completos de los 3 primeros usuarios.
+**En su máquina local** utilice la función `get_users()` desarrollada en el ejercicio pasado y la función `send_message(message, key)` para enviar al grupo del curso en Webex Teams los datos completos de los 3 primeros usuarios.
 
 La función `send_message(message, key)`  de la librería `conatel.py`, toma como parámetros un mensaje y la clave de desarrollador individual de Webex Teams para enviar dicho mensaje al grupo del curso.
 
@@ -423,7 +434,7 @@ Complete el script 2.5 **que está pensado para ser corrido en el router** para 
 Copiar el script al router con el nombre `script.py`:
 
 ``` bash
-scp -i restconf.pem 2.6.py ec2-user@rx.labs.conatest.click:/script.py
+$ scp 2.6.py conatel@url_recibida_por_correo:/conatel.py
 ```
 
 Entrar al router y verficiar que el script funciona de acuerdo a lo esperado:
