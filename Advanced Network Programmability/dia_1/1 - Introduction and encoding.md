@@ -378,7 +378,7 @@ Para ello, crearemos un script que se asegure, cada vez que corre, que los usuar
 
 #### 2.1
 
-Para apoyarnos en este ejercicio, utilizaremos una librería de utilidades que implementa algunas funciones útiles llamada `conatel.py`. La misma está ubicada en el repositorio en `repo/codigo_dia_1/lib`.
+Para apoyarnos en este ejercicio, utilizaremos una librería de utilidades que implementa algunas funciones útiles llamada `conatel.py`. La misma está ubicada en el repositorio en `Devops-101/Advanced Network Programmability/dia_1/codigo_dia_1/lib`.
 Lo primero que haremos será copiar `conatel.py` a la `flash` del router:
 
 ``` bash
