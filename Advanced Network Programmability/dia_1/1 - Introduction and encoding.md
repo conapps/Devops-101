@@ -382,7 +382,7 @@ Para apoyarnos en este ejercicio, utilizaremos una librería de utilidades que i
 Lo primero que haremos será copiar `conatel.py` a la `flash` del router:
 
 ``` bash
-scp -i restconf.pem conatel.py ec2-user@url_recibida_por_correo:/conatel.py
+scp -i cert_enviado_por_mail.pem conatel.py ec2-user@url_recibida_por_correo:/conatel.py
 ```
 
 #### 2.2
