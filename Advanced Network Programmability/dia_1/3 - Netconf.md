@@ -209,7 +209,12 @@ from ncclient import manager
 def get_schema(schema, host, username, password, port='830'):
     with manager.connect(host=host, port=port, username=username, password=password, hostkey_verify=False) as router:
         netconf_reply = router.get_schema(schema)
-        print(xmltodict.parse(netconf_reply.xml)['rpc-reply']['data']['#text'])
+        model_text = xmltodict.parse(netconf_reply.xml)['rpc-reply']['data']['#text']
+        print(model_text)
+        filename = './' + schema + '.yang'
+        model_file = open(filename, 'w')
+        model_file.write(model_text)
+        model_file.close()
 ```
 
 ---
@@ -217,7 +222,6 @@ def get_schema(schema, host, username, password, port='830'):
 ### Ejercicio 10
 
 * Utilizar la función mostrada en el snippet anterior para descargar el módulo `ietf-interfaces`.
-* Copiar el contenido de la respuesta y crear un archivo llamado `ìetf-interfaces.yang`
 * Utilizar `pyang` para analizar la estructura del módulo.
 
 <details>
@@ -301,7 +305,7 @@ module Cisco-IOS-XE-native {
 
 > Nota: tomar nota del campo `namespace` porque lo vamos a necesitar mas adelante
 
-Lo salvamos en un archivo llamado `Cisco-IOS-XE-native.yang` y lo analizamos utilizando `pyang`
+Utilizando el archivo generado llamado `Cisco-IOS-XE-native.yang`, lo analizamos utilizando `pyang`
 
 ``` bash
 ialmandos$ pyang -f tree Cisco-IOS-XE-native.yang 
@@ -327,7 +331,8 @@ module: Cisco-IOS-XE-native
 --> Salida omitida para mayor claridad <--  
 ```
 
-Como se puede ver, la salida de este modelo utilizando el formato `tree` es demasiado larga para poder ser analizada por lo que, para este tipo de casos conviene utilizar la versión `html`. Una copia de la misma se pueden encontrar [aquí](<https://s3.amazonaws.com/adv-network-programmability/Cisco-IOS-XE-native.html>) 
+Como se puede ver, la salida de este modelo utilizando el formato `tree` es demasiado larga para poder ser analizada, por lo que, para este tipo de casos conviene utilizar la versión `html`. 
+Una copia de la misma se pueden encontrar [aquí](<https://s3.amazonaws.com/adv-network-programmability/Cisco-IOS-XE-native.html>) 
 
 Ahora utilizaremos la función `get(filter)` del módulo `ncclient` para obtener el hostname del equipo.
 El parámetro filter se debe definir mediante XML utilizando la estructura del módulo YANG como base. Para ello partimos de una etiqueta `<filter></filter>` y dentro colocamos todas las etiquetas en la jerarquía hasta llegar a la parte del modelo que queremos modificar. En resumen, el archivo `hostname.xml` debería tener el siguiente contenido:
