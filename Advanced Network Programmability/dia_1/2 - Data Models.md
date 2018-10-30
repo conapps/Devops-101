@@ -167,7 +167,7 @@ Allí podemos ver rápidamente como los campos dependen jerárquicamente unos de
 
 ### Ejercicio 5
 
-Buscar dentro del repositorio `https://github.com/YangModels/yang` el modelo `ietf-interfaces@2014-05-08.yang` . Descargarlo y analizar su estructura utilizando `pyang`
+Buscar dentro del repositorio `https://github.com/YangModels/yang/tree/master/vendor/cisco/xe/1681` el modelo `ietf-interfaces.yang` . Descargarlo y analizar su estructura utilizando `pyang`
 
 ### Como extender los modelos
 
