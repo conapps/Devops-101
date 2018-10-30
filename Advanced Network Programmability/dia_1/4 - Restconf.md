@@ -319,9 +319,58 @@ Utilizando el método propuesto en 2) podemos ver que la estructura es la siguie
 
 ```
 
-En ese ejercicio vamos a estar interactuando con el recurso `ìp` dentro de `Cisco-IOS-XE-native:native` por lo que el body del mensaje debe replicar la etructura que sigue luego de `ip` de la siguiente manera (suponiendo que no vamos a configurar rutas de VRFs):
 
-``` json
+
+Comenzemos viendo como ejecutar un `PATCH`. En ese caso vamos a estar interactuando con el endpoint `Cisco-IOS-XE-native:native` por lo que el body del mensaje debe replicar la etructura que sigue:
+
+```json
+body = {
+        'Cisco-IOS-XE-native:native': {
+            'ip': {
+                'route': {
+                    'ip-route-interface-forwarding-list': [
+                        {
+                            "fwd-list": [
+                                {
+                                    "interface-next-hop": [
+                                        {
+                                            "ip-address": <ip address> <--completar aquí
+                                        }
+                                    ],
+                                    "fwd": <interface-name> <--completar aquí
+                                }
+                            ],
+                            "prefix": <prefix> <--completar aquí,
+                            "mask": <mask> <--completar aquí
+                        }
+                    ]
+                }                
+            }
+        }
+    }
+```
+
+
+
+---
+
+### Ejercicio 19
+
+1) Conectarse al router y tomar nota de la tabla de rutas del equipo.
+
+2) Completar el script `19.py` para que agregue mediante `PATCH` la siguiente ruta:
+
+``` cisco
+ip route 9.9.9.9 255.255.255.255 Null0 1.2.3.4
+```
+
+---
+
+
+
+En el siguiente ejercicio vamos a estar interactuando con el recurso `ìp` dentro de `Cisco-IOS-XE-native:native` por lo que el body del mensaje debe replicar la etructura que sigue luego de `ip` de la siguiente manera (suponiendo que no vamos a configurar rutas de VRFs):
+
+```json
 body = {
         'Cisco-IOS-XE-native:ip': {
             'route': {
@@ -350,19 +399,9 @@ body = {
 
 > Notar que la llave principal no es `Cisco-IOS-XE-native:native` sino `Cisco-IOS-XE-native:ip`
 
----
+### 
 
-### Ejercicio 19
 
-1) Conectarse al router y tomar nota de la tabla de rutas del equipo.
-
-2) Completar el script `19.py` para que agregue mediante `PATCH` la siguiente ruta:
-
-``` cisco
-ip route 9.9.9.9 255.255.255.255 Null0 1.2.3.4
-```
-
----
 
 
 
