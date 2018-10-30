@@ -1,5 +1,11 @@
 # Modelos de datos
 
+## Links de utilidad
+
+[Modelo Cisco-IOS-XE-native](<https://s3.amazonaws.com/adv-network-programmability/Cisco-IOS-XE-native.html>)
+[Modeo ietf-interfaces]( https://s3.amazonaws.com/adv-network-programmability/ietf-interfaces.html)
+
+
 ## Introducción
 
 Los modelos de datos son una forma de modelar la información disponible en los dispositivos. A modo de ejemplo, se puede modelar la información de estado de una interface especificando una entidad llamada "interface-state", este proceso de modelado especifíca que datos podemos obtener y en que unidades a partir de dicha entidad. De esta forma, se podría definir que la entidad "interface-state" tendrá los siguientes campos:
