@@ -30,6 +30,8 @@ def get_usernames():
     usuarios = exp.findall(show_command)
     if 'ec2-user' in usuarios:
         usuarios.remove('ec2-user')
+    if 'conatel' in usuarios:
+        usuarios.remove('conatel')
     return usuarios
 
 def delete_usernames(usuarios):
