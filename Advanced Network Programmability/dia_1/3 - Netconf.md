@@ -324,8 +324,10 @@ module: Cisco-IOS-XE-native
      +--rw enable
      |  +--rw password
      
---> Salida omitida para mayor claridad <--     
+--> Salida omitida para mayor claridad <--  
 ```
+
+Como se puede ver, la salida de este modelo utilizando el formato `tree` es demasiado larga para poder ser analizada por lo que, para este tipo de casos conviene utilizar la versión `html`. Una copia de la misma se pueden encontrar [aquí](<https://s3.amazonaws.com/adv-network-programmability/Cisco-IOS-XE-native.html>) 
 
 Ahora utilizaremos la función `get(filter)` del módulo `ncclient` para obtener el hostname del equipo.
 El parámetro filter se debe definir mediante XML utilizando la estructura del módulo YANG como base. Para ello partimos de una etiqueta `<filter></filter>` y dentro colocamos todas las etiquetas en la jerarquía hasta llegar a la parte del modelo que queremos modificar. En resumen, el archivo `hostname.xml` debería tener el siguiente contenido:
