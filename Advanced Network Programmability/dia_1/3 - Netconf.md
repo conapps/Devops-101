@@ -279,7 +279,7 @@ module: ietf-interfaces
 
 Ahora que sabemos identificar que modelos de YANG soporta el equipo, que podemos descargarlos y analizar su estructura utilizando `pyang`, es hora de comenzar a obtener datos útiles.
 
-A continuación vamos a analizar el módulo `Cisco-IOS-XE-native`. Comencemos por descubrirlo dentro de las "capabilites" utilizando nuestra función `print_capabilities`.
+**A continuación vamos a analizar el módulo `Cisco-IOS-XE-native` para obtener el hostname del equipo**. Comencemos por descubrirlo dentro de las "capabilites" utilizando nuestra función `print_capabilities`.
 
 ```` python
 >>> print_capabilities(filter='native')
@@ -439,7 +439,7 @@ VirtualPortGroup0
 
 ## Configurando el equipo
 
-Ahora vamos a modificar la configuración del equipo. Para ellos nos vamos a basar en el modelo `Cisco-IOS-XE-native` que contiene la configuración completa del mismo.
+Ahora vamos a modificar la configuración del equipo, en concreto **vamos a cambiar el hostname del mismo**. Para ellos nos vamos a basar en el modelo `Cisco-IOS-XE-native` que contiene la configuración completa del mismo.
 
 Podríamos seguir el mismo proceso que en los ejemplos anteriores descargando el modelo con nuestra función `get_schema`, generando un archivo `.yang` y analizándolo con `pyang`, pero dado que el modelo  `Cisco-IOS-XE-native` tiene muchas dependencias, esto sería un proceso muy tedioso. En su lugar vamos a recurrir al repositorio de Github `https://github.com/YangModels/yang.git` donde se encuentran todos los modelos soportados por las distintas versiones de IOS-XE en un único lugar.
 
@@ -513,7 +513,29 @@ router(config)# banner motd <caracter-delimitador><mensaje><caracter-delimitador
 
 > Nota: El caracter delimitador es cualquier caracter que indique el comienzo y el fin del mensaje. (obviamente este caracter no se puede utilizar dentro del mensaje o el mismo se cortaría). Una buena elección sería por ejemplo `^`.
 
-Utizando como referencia la página `running.html`, elaborar un filtro XML llamado `config_motd.xml` para poder configurar el `motd` mediante Netconf.
+Utizando como referencia el modelo `Cisco-IOS-XE-native`, elaborar un filtro XML llamado `config_motd.xml` para poder configurar el `motd` mediante Netconf.
+
+<details>
+
+<summary>Solucion</summary>
+
+<code>
+
+```
+<config>
+    <native xmlns="http://cisco.com/ns/yang/Cisco-IOS-XE-native">
+        <banner>
+            <motd>
+                <banner>{message}</banner>
+            </motd>
+        </banner>
+    </native>
+</config>`
+```
+
+</code>
+
+</details>
 
 #### 13.3
 
