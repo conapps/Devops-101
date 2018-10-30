@@ -17,3 +17,4 @@ if __name__ == "__main__":
     USERNAME = 'conatel'
     PASSWORD = 'conatel'
     get_schema('ietf-interfaces', HOST, USERNAME, PASSWORD)
+    
