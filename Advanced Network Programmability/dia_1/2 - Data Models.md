@@ -169,6 +169,55 @@ Allí podemos ver rápidamente como los campos dependen jerárquicamente unos de
 
 Buscar dentro del repositorio `https://github.com/YangModels/yang/tree/master/vendor/cisco/xe/1681` el modelo `ietf-interfaces.yang` . Descargarlo y analizar su estructura utilizando `pyang`
 
+<details>
+
+<summary>Solucion</summary>
+
+<code>
+
+```bash
+$ pyang -f tree ietf-interfaces.yang 
+module: ietf-interfaces
+  +--rw interfaces
+  |  +--rw interface* [name]
+  |     +--rw name                        string
+  |     +--rw description?                string
+  |     +--rw type                        identityref
+  |     +--rw enabled?                    boolean
+  |     +--rw link-up-down-trap-enable?   enumeration {if-mib}?
+  +--ro interfaces-state
+     +--ro interface* [name]
+        +--ro name               string
+        +--ro type               identityref
+        +--ro admin-status       enumeration {if-mib}?
+        +--ro oper-status        enumeration
+        +--ro last-change?       yang:date-and-time
+        +--ro if-index           int32 {if-mib}?
+        +--ro phys-address?      yang:phys-address
+        +--ro higher-layer-if*   interface-state-ref
+        +--ro lower-layer-if*    interface-state-ref
+        +--ro speed?             yang:gauge64
+        +--ro statistics
+           +--ro discontinuity-time    yang:date-and-time
+           +--ro in-octets?            yang:counter64
+           +--ro in-unicast-pkts?      yang:counter64
+           +--ro in-broadcast-pkts?    yang:counter64
+           +--ro in-multicast-pkts?    yang:counter64
+           +--ro in-discards?          yang:counter32
+           +--ro in-errors?            yang:counter32
+           +--ro in-unknown-protos?    yang:counter32
+           +--ro out-octets?           yang:counter64
+           +--ro out-unicast-pkts?     yang:counter64
+           +--ro out-broadcast-pkts?   yang:counter64
+           +--ro out-multicast-pkts?   yang:counter64
+           +--ro out-discards?         yang:counter32
+           +--ro out-errors?           yang:counter32
+```
+
+</code>
+
+</details>
+
 ### Como extender los modelos
 
 Una posibiliad que ofrece YANG es la de extender los modelos de datos para agregar información o funcionalidades que no estaban previstas en el modelo original. Una particularidad de como funciona este proceso con YANG es que no es necesario modificar (ni ser el autor) del módulo original para poder extenderlo. Dicho en otras palabras, no es necesario hacer un "fork" de un módulo para para poder extenderlo. Esto nos permite partir de un módulo de un tercero, aumentarlo, y si en un futuro el tercero realiza una actualización del mismo poder seguir adelante de forma transparente.
@@ -248,13 +297,29 @@ En este ejercicio vamos a explorar como utilizar `pyang` para generar una págin
 
 Para hacerlo, podemos encontrar los modelos presentados en el ejemplo anterior en la carpeta `dia_1/data_models`. 
 
-La sintáxis para generar una generar un archivo html con la documentación de los modelos es la siguiente:
+La sintáxis para generar un archivo `html` con la documentación de los modelos es la siguiente:
 
 ``` bash
 $ pyang -f jstree <modelo-1.yang> --- <modelo-N.yang> -o <nombre-del-archivo.html>
 ```
 
 Generar un archivo HTML con la documentación del modelo extendido `personas-uruguay-extended.yang`
+
+<details>
+
+<summary>Solucion</summary>
+
+<code>
+
+`[link](https://s3.amazonaws.com/adv-network-programmability/personas-uruguay.html)`
+
+</code>
+
+</details>
+
+
+
+
 
 
 
