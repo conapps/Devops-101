@@ -309,11 +309,11 @@ Generar un archivo HTML con la documentación del modelo extendido `personas-uru
 
 <summary>Solucion</summary>
 
-<code>
+<a href='https://s3.amazonaws.com/adv-network-programmability/personas-uruguay.html'>
 
-`[link](https://s3.amazonaws.com/adv-network-programmability/personas-uruguay.html)`
+Link
 
-</code>
+</a>
 
 </details>
 
