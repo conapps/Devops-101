@@ -443,7 +443,28 @@ Donde X es el numero de POD, **esto es muy importante**
 Como puede verse, la operación `PUT` funciona de forma declarativa, configurando dentro del recurso, en este caso todo lo que comienze por`ip` en la configuración,  aquello que viaje en el `body` del mensaje.
 En el ejemplo, dado que enviamos únicamente dos rutas, perdimos las rutas anteriores así como la configuración del servidor web `ip http secure-server`, que también comienza por ip, por lo que no podremos volver utilizar RESTCONF hasta volver a habilitarlo.
 
+Intentaremos a continuación agregar rutas mediante `PUT` in borrar todo lo demas. Para ello, en lugar de escribir a mano en el script toda la estructura que está debajo de `ip`, lo que haremos es traer dicha estructura desde el router, modificar en la misma únicamente las rutas para que se vean como queremos, y luego enviar nuevamente la estructura completa. El siguiente ejercicio muestra un ejemplo de como hacerlo.
 
+---
+
+### Ejercicio 21
+
+1) Conectarse al router, habilitar nuevamente `ip http secure-server`
+
+2) Tomar nota de las rutas
+
+3) Completar el script `21.py` para lograr mediante `PUT` que la tabla de rutas se vea de la siguiente manera (sin borrar el resto de la configuración)
+
+``` cisco
+ip route 0.0.0.0 0.0.0.0 GigabitEthernet1 10.1.254.1
+ip route 1.1.1.1 255.255.255.255 Null0 2.2.2.2
+```
+
+
+
+4) Verificar
+
+---
 
 
 
