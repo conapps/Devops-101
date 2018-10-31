@@ -227,13 +227,13 @@ Una de las variables que es importante tener en cuenta es `ansible_connection`. 
 
 #### Ejercicio #1
 
-Para conseguir realizar la conexión por SSH, debemos configurar la llave privada que debemos utilizar. La misma se encuentra en la ubicación `~/ansible/lab/docker/master_key`.
+Para conseguir realizar la conexión por SSH, debemos configurar la llave privada que debemos utilizar. La misma se encuentra en la ubicación `/var/ans/master_key`.
 
-Configure el inventario para que Ansible utilize el la llave privada almacenada en `./docker/master_key`. 
+Configure el inventario para que Ansible utilize el la llave privada almacenada en `./master_key`. 
 
 <details>
 <summary>Pista #1</summary>
-El nombre de la variable a configurar es <code>ansible_ssh_private_key</code>.
+El nombre de la variable a configurar es <code>ansible_ssh_private_key_file</code>.
 </details>
 
 <details>
@@ -249,6 +249,7 @@ all:
     host03:
     </pre>
 </details>
+
 ---
 
 Para probar que efectivamente tenemos acceso a los hosts definidos en el inventario vamos a utilizar comandos `ad-hoc`. Estos son comandos sencillos, de una sola línea, que no necesitan de un archivo individual para contenerlos, o que no tenemos intención de salvarlos para el futuro. Por ejemplo: `ping`, `echo`, etc.
@@ -260,13 +261,13 @@ Para probar que efectivamente tenemos acceso a los hosts definidos en el inventa
 Los comandos `ad-hoc` se llaman a través del flag `-m` seguidos del módulo que queremos utilizar, o a través del flag `-a` seguidos del comando que queremos lanzar en los hosts remotos.
 
 ```bash
-ansible -i inventory.yml all -m ping
+ansible -i hosts.yml all -m ping
 ```
 
 Utilizando el comando anterior podemos realizar un ping sobre todos los hosts detallados en el inventario.
 
 ```bash
-ansible -i inventory.yml all -a 'echo "Hello, World!"'
+ansible -i hosts.yml all -a 'echo "Hello, World!"'
 ```
 
 Es importante identificar las comillas que envuelven el comando que ejecutara ansible a través del flag `-a`, especialmente si se quieren utilizar variables de entorno dentro del comando (las comillas simples `'` no resuelven variables, solo la hacen las comillas dobles `"`). Otro punto a tener en cuenta es que el flag `-a` no soporta comandos concatenados con un pipe (`|`). Para hacer esto tenemos que utilizar el módulo `shell`.
@@ -318,6 +319,7 @@ all:
         host03:
    	</pre>
 </details>
+
 ---
 
 Utilizando los comandos `ad-hoc` podemos realizar una gran cantidad de tareas sobre múltiples hosts en simultáneo. Por ejemplo, utilizando el módulo `file` podemos compartir archivos, ó, podemos instalar aplicaciones utilizando los módulos `yum` o `apt` según la distribución que utilicemos.
@@ -567,6 +569,8 @@ Por defecto, Ansible buscara el archivo de configuración de la siguiente manera
 
 Nosotros recomendamos acompañar todos los proyectos de Ansible con un archivo de configuración `ansible.cfg` en la raiz del proyecto. De esta manera podemos saber exactamente que configuraciones estamos modificando.
 
+<details>
+	<summary>Reutilización de Playbooks</summary>
 ### Reutilización de `playbooks`
 
 Dada la forma de configuración que provee Ansible, es útil poder reutilizar el codigo de cada tarea o `playbook`. En Ansible hay tres formas de reutilizar codigo: `includes`, `import`, y `roles`. A continuación, mencionaremos como funcionan las tres, pero nos concentraremos en al utilización de roles.
@@ -598,24 +602,16 @@ Existen algunas limitaciones en el uso de `imports` e `include` que es important
 # three_tier_app.yml
 - import_playbook: webservers.yml
 ```
-
+</details>
 ---
 
 ### Ejercicio #3
 
-Cree un playbook para instalar SQLite3 y su paquete de desarrollo en los hosts identificados como `db`. Luego cree otro nuevo playbook capaz de instalar `apache2`  en los servidores `app`. Combine amobos `playbooks` en un único `playbook` para configurar todos los hosts de una sola vez.  
+Cree un playbook para instalar SQLite3 y su paquete de desarrollo en los hosts identificados como `db`.   
 
 <details>
     <summary>Solución</summary>
     <pre>
-# apache_playbook.yml
-- hosts: app
-  tasks:
-    - name: Install Apache2
-      apt:
-        name: apache2
-        state: latest
-        update_cache: yes
 # db_playbook.yml
 - hosts: db
   tasks:
@@ -629,11 +625,9 @@ Cree un playbook para instalar SQLite3 y su paquete de desarrollo en los hosts i
         name: libsqlite3-dev
         state: latest
         update_cache: yes
-# three_tier.yml
-- import_playbook: apache_playbook.yml
-- import_playbook: db_playbook.yml
 </pre>
 </details>
+
 ---
 
 ### Roles

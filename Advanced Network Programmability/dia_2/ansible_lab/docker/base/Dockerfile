@@ -5,7 +5,7 @@ FROM ubuntu:16.04
 # install required packages
 RUN apt-get update \
   && apt-get install --no-install-recommends --no-install-suggests -y \
-  aptitude iputils-ping curl ca-certificates net-tools man vim openssh-server python locales \
+  aptitude iputils-ping curl ca-certificates net-tools man vim openssh-server python locales nano \
   && rm -rf /var/lib/apt/lists/*
 
 # ensure that required directories are created

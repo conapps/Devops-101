@@ -16,6 +16,7 @@ ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
 
 ADD .vimrc /root/.vimrc
+ADD .nanorc /root/.nanorc
 
 # change working directory
 WORKDIR /var/ans
