@@ -177,15 +177,13 @@ Un  caso de uso muy común es el partir de la lista de módulos soportados y, da
 
 Utilizando la función `get_yang_modules` del ejercicio anterior, escribir una funcion filtre la salida para mostrar solamente los módulos cuyo nombre (`name`) contenga el criterio de filtrado. Parta del script `17.py` donde hay un esqueleto básico sobre el cual trabajar.
 
----
+**Pista:** recuerde que la forma de verficiar si un string se encuentra dentro de otro string es:
 
-<details>
-	<summary>Pista</summary>
-	<p>Recuerde que la forma de verificar si un string se encuentra dentro de otro string es:</p>
-    <code> 
-        >>> 'tri' in 'tres tristes tigres comen trigo en un trigal'
-        True
-    </code>
+``` python
+>>> 'tri' in 'tres tristes tigres comen trigo en un trigal'
+True
+```
+
 
 
 ## Cómo leer la configuración
@@ -246,13 +244,13 @@ Los dos métodos que utilizaremos principalmente para modificar la configuració
 
 `PATCH` nos permite hacer una fusión entre lo que enviamos en el `body` del mensaje y lo que está presente en la configuración, lo que lo convierte en un método mucho mas seguro para trabajar, sobre todo cuando estamos comenzando a explorar estas tecnologías.
 
-`PUT` por otro lado, sustituye la porción correspondiente de configuración de forma completa por lo que está en el `body` del mensaje. Esto presenta la ventaja fundamental de que permite ser "declarativo", pero tiene la contra de ser algo peligroso, en el sentido de que podemos borrar parte de la configuración de forma no conciente.
+`PUT` por otro lado, sustituye la porción correspondiente de configuración de forma completa por lo que está en el `body` del mensaje. Esto presenta la ventaja fundamental de que permite ser "declarativo", pero tiene la contra de ser algo peligroso, en el sentido de que podemos borrar parte de la configuración de forma no consciente.
 
 De la misma forma en que definimos funciones genéricas para hacer `GET`, definiremos a continuación funciones genéricas para hacer `PATCH` y `PUT`.
 
 ``` python
 def generic_patch(body, username=USERNAME, password=PASSWORD, **kwargs):
-    url = BASE_DATA + kwargs['endpoint'] + kwargs['resource']
+    url = BASE_DATA + kwargs['endpoint']
     response = requests.patch(url, headers=HEADERS, auth=HTTPBasicAuth(username, password), data=json.dumps(body), timeout=3, verify=False)
     if response.status_code in range(200, 300):
         print('Successful request, status code:', response.status_code)
@@ -272,7 +270,7 @@ def generic_put(body, username=USERNAME, password=PASSWORD, **kwargs):
 
 
 
-Exploraremos las diferencias entre `PATCH` y `PUT` configurando rutas estáticas dentro del equipo.
+Exploraremos las diferencias entre `PATCH` y `PUT` **configurando rutas estáticas dentro del equipo**.
 Para ello, es necesario conocer cuál es la estructura de configuración que soporta esta funcionalidad, dado que es necesario replicar la misma en el `body` de nuestro mensaje. Esto lo podemos averiguar de dos formas:
 
 1) Utilizando `pyang`
@@ -337,7 +335,7 @@ Utilizando el método propuesto en 2) podemos ver que la estructura es la siguie
 
 ```
 
-
+### PATCH
 
 Comenzemos viendo como ejecutar un `PATCH`. En ese caso vamos a estar interactuando con el endpoint `Cisco-IOS-XE-native:native` por lo que el body del mensaje debe replicar la etructura que sigue:
 
@@ -382,11 +380,15 @@ body = {
 ip route 9.9.9.9 255.255.255.255 Null0 1.2.3.4
 ```
 
+3) Verificar que la ruta fue correctamente agregada al equipo
+
 ---
 
+### PUT
 
+Ahora intentaresmo hacer lo mismo utilizando PUT.
 
-En el siguiente ejercicio vamos a estar interactuando con el recurso `ìp` dentro de `Cisco-IOS-XE-native:native` por lo que el body del mensaje debe replicar la etructura que sigue luego de `ip` de la siguiente manera (suponiendo que no vamos a configurar rutas de VRFs):
+Dado que vamos a estar interactuando con el recurso `ìp` dentro de `Cisco-IOS-XE-native:native` , el body del mensaje debe replicar la etructura que sigue luego de `ip` de la siguiente manera (suponiendo que no vamos a configurar rutas de VRFs):
 
 ```json
 body = {
@@ -417,7 +419,29 @@ body = {
 
 > Notar que la llave principal no es `Cisco-IOS-XE-native:native` sino `Cisco-IOS-XE-native:ip`
 
-### 
+
+
+------
+
+### Ejercicio 20
+
+1) Conectarse al router y tomar nota de la tabla de rutas del equipo.
+
+2) Completar el script `20.py` para que agregue mediante `PUT` la siguientes rutas:
+
+```cisco
+ip route 10.10.10.10 255.255.255.255 Null0 1.2.3.4
+ip route 0.0.0.0 0.0.0.0 GigabitEthernet1 10.X.254.1
+```
+
+Donde X es el numero de POD, **esto es muy importante**
+
+3) Verificar que sucedió
+
+------
+
+Como puede verse, la operación `PUT` funciona de forma declarativa, configurando dentro del recurso, en este caso todo lo que comienze por`ip` en la configuración,  aquello que viaje en el `body` del mensaje.
+En el ejemplo, dado que enviamos únicamente dos rutas, perdimos las rutas anteriores así como la configuración del servidor web `ip http secure-server`, que también comienza por ip, por lo que no podremos volver utilizar RESTCONF hasta volver a habilitarlo.
 
 
 

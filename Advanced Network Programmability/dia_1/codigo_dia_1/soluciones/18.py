@@ -8,7 +8,7 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 from requests.auth import HTTPBasicAuth
 
 # default values
-HOST = 'https://r1.labs.conatest.click/'
+HOST = 'https://hostname/'
 USERNAME = 'conatel'
 PASSWORD = 'conatel'
 

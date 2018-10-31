@@ -8,12 +8,13 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 from requests.auth import HTTPBasicAuth
 
 # default values
-HOST = 'https://r1.labs.conatest.click/'
+HOST = 'https://hostname/'
 USERNAME = 'conatel'
 PASSWORD = 'conatel'
 
 # Constants
 BASE_DATA = HOST + 'restconf/data/'
+ENDPOINT = 'Cisco-IOS-XE-native:native'
 HEADERS = {
     'Content-Type': "application/yang-data+json",
     'Accept': "application/yang-data+json",
@@ -58,3 +59,5 @@ def generic_patch(body, username=USERNAME, password=PASSWORD, **kwargs):
         print('Error in the request, status code:', response.status_code)
         print(response.text)
 
+if __name__ == "__main__":
+    generic_patch(body, endpoint=ENDPOINT)
