@@ -7,4 +7,7 @@ down:
 attach:
 	docker exec -it master bash
 
-.PHONY: up down attach
+rm:
+	docker rm `docker ps -a -q`
+
+.PHONY: up down attach rm
