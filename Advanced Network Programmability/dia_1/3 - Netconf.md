@@ -501,7 +501,7 @@ En este ejercicio vamos a darle vida a una funcionalidad algo olvidada en los ro
 
 #### 13.1
 
-Implementar una función llamada `get_motd()` que devuelva un nuevo mensaje del día utilizando el siguiente servicio `GET https://talaikis.com/api/quotes/random/`
+Implementar una función llamada `get_motd()` que devuelva un string con un nuevo mensaje del día utilizando el siguiente servicio `GET https://talaikis.com/api/quotes/random/`
 
 #### 13.2
 
@@ -558,9 +558,13 @@ def generic_conf(host, username, password, port='830', **kwargs):
 
 #### 14.1
 
-Luego de analizar detenidamente la función anterior para entender su funcionamiento, elabore un filtro llamado `interface_description.xml` y configure una descripción de su agrado en la interface `GigabitEthernet1`
+Luego de analizar detenidamente la función anterior para entender su funcionamiento, utilice nuevamente el modelo  `Cisco-IOS-XE-native` como referencia para elaborar un filtro llamado `config_interface_description.xml` y configure una descripción de su agrado en la interface `GigabitEthernet1`.
+
+
 
 ---
+
+## Cómo salvar la configuración
 
 Para finalizar apredenderemos como salvar la configuración. Para ello es necesario enviar el siguiente mensaje RPC al router.
 
