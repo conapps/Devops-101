@@ -209,7 +209,12 @@ from ncclient import manager
 def get_schema(schema, host, username, password, port='830'):
     with manager.connect(host=host, port=port, username=username, password=password, hostkey_verify=False) as router:
         netconf_reply = router.get_schema(schema)
-        print(xmltodict.parse(netconf_reply.xml)['rpc-reply']['data']['#text'])
+        model_text = xmltodict.parse(netconf_reply.xml)['rpc-reply']['data']['#text']
+        print(model_text)
+        filename = './' + schema + '.yang'
+        model_file = open(filename, 'w')
+        model_file.write(model_text)
+        model_file.close()
 ```
 
 ---
@@ -217,7 +222,6 @@ def get_schema(schema, host, username, password, port='830'):
 ### Ejercicio 10
 
 * Utilizar la función mostrada en el snippet anterior para descargar el módulo `ietf-interfaces`.
-* Copiar el contenido de la respuesta y crear un archivo llamado `ìetf-interfaces.yang`
 * Utilizar `pyang` para analizar la estructura del módulo.
 
 <details>
@@ -275,7 +279,7 @@ module: ietf-interfaces
 
 Ahora que sabemos identificar que modelos de YANG soporta el equipo, que podemos descargarlos y analizar su estructura utilizando `pyang`, es hora de comenzar a obtener datos útiles.
 
-A continuación vamos a analizar el módulo `Cisco-IOS-XE-native`. Comencemos por descubrirlo dentro de las "capabilites" utilizando nuestra función `print_capabilities`.
+**A continuación vamos a analizar el módulo `Cisco-IOS-XE-native` para obtener el hostname del equipo**. Comencemos por descubrirlo dentro de las "capabilites" utilizando nuestra función `print_capabilities`.
 
 ```` python
 >>> print_capabilities(filter='native')
@@ -301,7 +305,7 @@ module Cisco-IOS-XE-native {
 
 > Nota: tomar nota del campo `namespace` porque lo vamos a necesitar mas adelante
 
-Lo salvamos en un archivo llamado `Cisco-IOS-XE-native.yang` y lo analizamos utilizando `pyang`
+Utilizando el archivo generado llamado `Cisco-IOS-XE-native.yang`, lo analizamos utilizando `pyang`
 
 ``` bash
 ialmandos$ pyang -f tree Cisco-IOS-XE-native.yang 
@@ -324,8 +328,11 @@ module: Cisco-IOS-XE-native
      +--rw enable
      |  +--rw password
      
---> Salida omitida para mayor claridad <--     
+--> Salida omitida para mayor claridad <--  
 ```
+
+Como se puede ver, la salida de este modelo utilizando el formato `tree` es demasiado larga para poder ser analizada, por lo que, para este tipo de casos conviene utilizar la versión `html`. 
+Una copia de la misma se pueden encontrar [aquí](<https://s3.amazonaws.com/adv-network-programmability/Cisco-IOS-XE-native.html>) 
 
 Ahora utilizaremos la función `get(filter)` del módulo `ncclient` para obtener el hostname del equipo.
 El parámetro filter se debe definir mediante XML utilizando la estructura del módulo YANG como base. Para ello partimos de una etiqueta `<filter></filter>` y dentro colocamos todas las etiquetas en la jerarquía hasta llegar a la parte del modelo que queremos modificar. En resumen, el archivo `hostname.xml` debería tener el siguiente contenido:
@@ -432,7 +439,7 @@ VirtualPortGroup0
 
 ## Configurando el equipo
 
-Ahora vamos a modificar la configuración del equipo. Para ellos nos vamos a basar en el modelo `Cisco-IOS-XE-native` que contiene la configuración completa del mismo.
+Ahora vamos a modificar la configuración del equipo, en concreto **vamos a cambiar el hostname del mismo**. Para ellos nos vamos a basar en el modelo `Cisco-IOS-XE-native` que contiene la configuración completa del mismo.
 
 Podríamos seguir el mismo proceso que en los ejemplos anteriores descargando el modelo con nuestra función `get_schema`, generando un archivo `.yang` y analizándolo con `pyang`, pero dado que el modelo  `Cisco-IOS-XE-native` tiene muchas dependencias, esto sería un proceso muy tedioso. En su lugar vamos a recurrir al repositorio de Github `https://github.com/YangModels/yang.git` donde se encuentran todos los modelos soportados por las distintas versiones de IOS-XE en un único lugar.
 
@@ -506,7 +513,29 @@ router(config)# banner motd <caracter-delimitador><mensaje><caracter-delimitador
 
 > Nota: El caracter delimitador es cualquier caracter que indique el comienzo y el fin del mensaje. (obviamente este caracter no se puede utilizar dentro del mensaje o el mismo se cortaría). Una buena elección sería por ejemplo `^`.
 
-Utizando como referencia la página `running.html`, elaborar un filtro XML llamado `config_motd.xml` para poder configurar el `motd` mediante Netconf.
+Utizando como referencia el modelo `Cisco-IOS-XE-native`, elaborar un filtro XML llamado `config_motd.xml` para poder configurar el `motd` mediante Netconf.
+
+<details>
+
+<summary>Solucion</summary>
+
+<code>
+
+```
+<config>
+    <native xmlns="http://cisco.com/ns/yang/Cisco-IOS-XE-native">
+        <banner>
+            <motd>
+                <banner>{message}</banner>
+            </motd>
+        </banner>
+    </native>
+</config>`
+```
+
+</code>
+
+</details>
 
 #### 13.3
 

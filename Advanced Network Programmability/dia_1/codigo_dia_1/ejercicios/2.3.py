@@ -11,8 +11,8 @@ API_URL = 'https://t35nbzlj21.execute-api.us-east-1.amazonaws.com/produccion/use
 
 def get_users():
     response = # Hacer request aqui
-    status_code = # cargar status code aqui
-    if status_code not in range(200, 301):
+    status_code = response.status_code
+    if status_code not in range(200, 300):
         raise RuntimeError('El codigo de error fue: ' + str(status_code))
 
     return # Devolver el diccionario de usuarios aqui

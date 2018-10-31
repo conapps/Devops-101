@@ -1,5 +1,12 @@
 # Modelos de datos
 
+## Links de utilidad
+
+- [Modelo Cisco-IOS-XE-native](<https://s3.amazonaws.com/adv-network-programmability/Cisco-IOS-XE-native.html>)
+- [Modelo ietf-interfaces]( https://s3.amazonaws.com/adv-network-programmability/ietf-interfaces.html)
+
+
+
 ## Introducción
 
 Los modelos de datos son una forma de modelar la información disponible en los dispositivos. A modo de ejemplo, se puede modelar la información de estado de una interface especificando una entidad llamada "interface-state", este proceso de modelado especifíca que datos podemos obtener y en que unidades a partir de dicha entidad. De esta forma, se podría definir que la entidad "interface-state" tendrá los siguientes campos:
@@ -167,7 +174,56 @@ Allí podemos ver rápidamente como los campos dependen jerárquicamente unos de
 
 ### Ejercicio 5
 
-Buscar dentro del repositorio `https://github.com/YangModels/yang` el modelo `ietf-interfaces@2014-05-08.yang` . Descargarlo y analizar su estructura utilizando `pyang`
+Buscar dentro del repositorio `https://github.com/YangModels/yang/tree/master/vendor/cisco/xe/1681` el modelo `ietf-interfaces.yang` . Descargarlo y analizar su estructura utilizando `pyang`
+
+<details>
+
+<summary>Solucion</summary>
+
+<code>
+
+```bash
+$ pyang -f tree ietf-interfaces.yang 
+module: ietf-interfaces
+  +--rw interfaces
+  |  +--rw interface* [name]
+  |     +--rw name                        string
+  |     +--rw description?                string
+  |     +--rw type                        identityref
+  |     +--rw enabled?                    boolean
+  |     +--rw link-up-down-trap-enable?   enumeration {if-mib}?
+  +--ro interfaces-state
+     +--ro interface* [name]
+        +--ro name               string
+        +--ro type               identityref
+        +--ro admin-status       enumeration {if-mib}?
+        +--ro oper-status        enumeration
+        +--ro last-change?       yang:date-and-time
+        +--ro if-index           int32 {if-mib}?
+        +--ro phys-address?      yang:phys-address
+        +--ro higher-layer-if*   interface-state-ref
+        +--ro lower-layer-if*    interface-state-ref
+        +--ro speed?             yang:gauge64
+        +--ro statistics
+           +--ro discontinuity-time    yang:date-and-time
+           +--ro in-octets?            yang:counter64
+           +--ro in-unicast-pkts?      yang:counter64
+           +--ro in-broadcast-pkts?    yang:counter64
+           +--ro in-multicast-pkts?    yang:counter64
+           +--ro in-discards?          yang:counter32
+           +--ro in-errors?            yang:counter32
+           +--ro in-unknown-protos?    yang:counter32
+           +--ro out-octets?           yang:counter64
+           +--ro out-unicast-pkts?     yang:counter64
+           +--ro out-broadcast-pkts?   yang:counter64
+           +--ro out-multicast-pkts?   yang:counter64
+           +--ro out-discards?         yang:counter32
+           +--ro out-errors?           yang:counter32
+```
+
+</code>
+
+</details>
 
 ### Como extender los modelos
 
@@ -248,13 +304,29 @@ En este ejercicio vamos a explorar como utilizar `pyang` para generar una págin
 
 Para hacerlo, podemos encontrar los modelos presentados en el ejemplo anterior en la carpeta `dia_1/data_models`. 
 
-La sintáxis para generar una generar un archivo html con la documentación de los modelos es la siguiente:
+La sintáxis para generar un archivo `html` con la documentación de los modelos es la siguiente:
 
 ``` bash
 $ pyang -f jstree <modelo-1.yang> --- <modelo-N.yang> -o <nombre-del-archivo.html>
 ```
 
 Generar un archivo HTML con la documentación del modelo extendido `personas-uruguay-extended.yang`
+
+<details>
+
+<summary>Solucion</summary>
+
+<a href='https://s3.amazonaws.com/adv-network-programmability/personas-uruguay.html'>
+
+Link
+
+</a>
+
+</details>
+
+
+
+
 
 
 
