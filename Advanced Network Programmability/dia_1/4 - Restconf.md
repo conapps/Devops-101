@@ -181,7 +181,7 @@ Utilizando la función `get_yang_modules` del ejercicio anterior, escribir una f
 
 <details>
 	<summary>Pista</summary>
-	Recuerde que la forma de verificar si un string se encuentra dentro de otro string es:
+	<p>Recuerde que la forma de verificar si un string se encuentra dentro de otro string es:</p>
 <code> >>> 'tri' in 'tres tristes tigres comen trigo en un trigal'
 
 True
