@@ -242,7 +242,7 @@ El nombre de la variable a configurar es <code>ansible_ssh_private_key</code>.
 all:
   vars:
     ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
-    ansible_ssh_private_key_file: './docker/master_key'
+    ansible_ssh_private_key_file: './master_key'
   hosts:
     host01:
     host02:
