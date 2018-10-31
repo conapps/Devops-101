@@ -13,5 +13,5 @@ Dentro de esta página encontrarán los links hacias las guías de los laborator
 
 ## Día 2 - Ansible
 
-- [Ansible](./guias/dia_2/guias/02_ansible.md)
-- [Lab](./ansible_lab/dia_2/ansible_lab/README.md)
+- [Ansible](./dia_2/guias/02_ansible.md)
+- [Lab](./dia_2/ansible_lab/README.md)
