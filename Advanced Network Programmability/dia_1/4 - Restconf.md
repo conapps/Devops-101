@@ -170,13 +170,238 @@ Utilizando la función `get_yang_modules` del ejercicio anterior, escribir una f
 
 
 
+## Cómo leer la configuración
+
+El módulo de YANG `Cisco-IOS-XE-native` para trabajar con la configuración del equipo ya lo conocemos de nuestro trabajo anterior con Netconf. Lo único que cambia al utilizar Restconf es la forma de consultarlo. De acuerdo a lo visto al principio de esta sección la forma correcta de armar la URL sería: 
+
+`GET https://hostname/restconf/data/Cisco-IOS-XE-native:native`
+
+Si nos fijamos con atención, el código Python que utilizaremos para ejecutar `GET` a los distintos módulos YANG que vayamos a utilizar será practicamente idéntico, cambiando únicamente el `endpoint` de la `URL`, por tal motivo se justifica crear una función que maneje esta tarea:
+
+``` python
+import json
+import requests
+from requests.auth import HTTPBasicAuth
+
+# default values
+HOST = 'https://hostname/'
+USERNAME = 'conatel'
+PASSWORD = 'conatel'
+
+# Constants
+BASE_DATA = HOST + 'restconf/data/'
+HEADERS = {
+    'Content-Type': "application/yang-data+json",
+    'Accept': "application/yang-data+json",
+}
+
+def generic_get(username=USERNAME, password=PASSWORD, show=False, **kwargs):
+    url = BASE_DATA + kwargs['endpoint'] + '?depth=unbounded'
+    response = requests.get(url, headers=HEADERS, auth=HTTPBasicAuth(username, password), timeout=3, verify=False)
+    if response.status_code in range(200, 300):
+        print('Successful request, status code:', response.status_code)
+        if show:
+            print(json.dumps(response.json(), indent=2))
+        return response.json()
+    else:
+        print('Error in the request, status code:', response.status_code)
+        print(response.text)
+```
 
 
-### Para traer la running completa
 
-`https://hostname/restconf/data/Cisco-IOS-XE-native:native`
+---
 
-`https://hostname/restconf/data/Cisco-IOS-XE-native:native/ip`
+### Ejercicio 18
+
+Utilizando la función presentada anteriormente, escribir un script que imprima en pantalla la configuración completa del equipo en formato JSON.
+
+---
+
+
+
+## Cómo modificar la configuración
+
+Los dos métodos que utilizaremos principalmente para modificar la configuración son `PATCH` Y `PUT`. Ambos presentan ventajas y desventajas, las cuales exploraremos a continuación.
+
+### PATCH vs PUT
+
+`PATCH` nos permite hacer una fusión entre lo que enviamos en el `body` del mensaje y lo que está presente en la configuración, lo que lo convierte en un método mucho mas seguro para trabajar, sobre todo cuando estamos comenzando a explorar estas tecnologías.
+
+`PUT` por otro lado, sustituye la porción correspondiente de configuración de forma completa por lo que está en el `body` del mensaje. Esto presenta la ventaja fundamental de que permite ser "declarativo", pero tiene la contra de ser algo peligroso, en el sentido de que podemos borrar parte de la configuración de forma no conciente.
+
+De la misma forma en que definimos funciones genéricas para hacer `GET`, definiremos a continuación funciones genéricas para hacer `PATCH` y `PUT`.
+
+``` python
+def generic_patch(body, username=USERNAME, password=PASSWORD, **kwargs):
+    url = BASE_DATA + kwargs['endpoint'] + kwargs['resource']
+    response = requests.patch(url, headers=HEADERS, auth=HTTPBasicAuth(username, password), data=json.dumps(body), timeout=3, verify=False)
+    if response.status_code in range(200, 300):
+        print('Successful request, status code:', response.status_code)
+    else:
+        print('Error in the request, status code:', response.status_code)
+        print(response.text)
+
+def generic_put(body, username=USERNAME, password=PASSWORD, **kwargs):
+    url = BASE_DATA + kwargs['endpoint'] + kwargs['resource']
+    response = requests.put(url, headers=HEADERS, auth=HTTPBasicAuth(username, password), data=json.dumps(body), timeout=3, verify=False)
+    if response.status_code in range(200, 300):
+        print('Successful request, status code:', response.status_code)
+    else:
+        print('Error in the request, status code:', response.status_code)
+        print(response.text)
+```
+
+
+
+Exploraremos las diferencias entre `PATCH` y `PUT` configurando rutas estáticas dentro del equipo.
+Para ello, es necesario conocer cuál es la estructura de configuración que soporta esta funcionalidad, dado que es necesario replicar la misma en el `body` de nuestro mensaje. Esto lo podemos averiguar de dos formas:
+
+1) Utilizando `pyang`
+2) Utilizando nuestra función `generic_get` para leer la configuración
+
+Utilizando el método propuesto en 2) podemos ver que la estructura es la siguiente:
+
+``` json
+{
+  "Cisco-IOS-XE-native:native": {
+    "hostname": "ip-172-31-47-96",
+    
+    <-- Salida omitida para mayor claridad <--
+      
+    "ip": {
+      "forward-protocol": {
+        "protocol": "nd"
+      },
+      "route": {
+        "vrf": [
+          {
+            "ip-route-interface-forwarding-list": [
+              {
+                "prefix": "0.0.0.0",
+                "mask": "0.0.0.0",
+                "fwd-list": [
+                  {
+                    "interface-next-hop": [
+                      {
+                        "ip-address": "172.31.32.1",
+                        "global": [
+                          null
+                        ]
+                      }
+                    ],
+                    "fwd": "GigabitEthernet1"
+                  }
+                ]
+              }
+            ],
+            "name": "GS"
+          }
+        ],
+        "ip-route-interface-forwarding-list": [
+          {
+            "prefix": "0.0.0.0",
+            "mask": "0.0.0.0",
+            "fwd-list": [
+              {
+                "interface-next-hop": [
+                  {
+                    "ip-address": "172.31.32.1"
+                  }
+                ],
+                "fwd": "GigabitEthernet1"
+              }
+            ]
+          }
+        ]
+      },
+}
+
+```
+
+
+
+Comenzemos viendo como ejecutar un `PATCH`. En ese caso vamos a estar interactuando con el endpoint `Cisco-IOS-XE-native:native` por lo que el body del mensaje debe replicar la etructura que sigue:
+
+```json
+body = {
+        'Cisco-IOS-XE-native:native': {
+            'ip': {
+                'route': {
+                    'ip-route-interface-forwarding-list': [
+                        {
+                            "fwd-list": [
+                                {
+                                    "interface-next-hop": [
+                                        {
+                                            "ip-address": <ip address> <--completar aquí
+                                        }
+                                    ],
+                                    "fwd": <interface-name> <--completar aquí
+                                }
+                            ],
+                            "prefix": <prefix> <--completar aquí,
+                            "mask": <mask> <--completar aquí
+                        }
+                    ]
+                }                
+            }
+        }
+    }
+```
+
+
+
+---
+
+### Ejercicio 19
+
+1) Conectarse al router y tomar nota de la tabla de rutas del equipo.
+
+2) Completar el script `19.py` para que agregue mediante `PATCH` la siguiente ruta:
+
+``` cisco
+ip route 9.9.9.9 255.255.255.255 Null0 1.2.3.4
+```
+
+---
+
+
+
+En el siguiente ejercicio vamos a estar interactuando con el recurso `ìp` dentro de `Cisco-IOS-XE-native:native` por lo que el body del mensaje debe replicar la etructura que sigue luego de `ip` de la siguiente manera (suponiendo que no vamos a configurar rutas de VRFs):
+
+```json
+body = {
+        'Cisco-IOS-XE-native:ip': {
+            'route': {
+                'ip-route-interface-forwarding-list': [
+                    {
+                        "fwd-list": [
+                            {
+                                "interface-next-hop": [
+                                    {
+                                        "ip-address": <ip address> <--completar aquí
+                                    }
+                                ],
+                                "fwd": <interface-name> <--completar aquí
+                            }
+                        ],
+                        "prefix": <prefix> <--completar aquí,
+                        "mask": <mask> <--completar aquí
+                    }
+                ]
+            }
+        }
+    }
+```
+
+
+
+> Notar que la llave principal no es `Cisco-IOS-XE-native:native` sino `Cisco-IOS-XE-native:ip`
+
+### 
+
+
 
 
 
