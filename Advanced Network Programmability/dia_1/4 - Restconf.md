@@ -456,38 +456,29 @@ Intentaremos a continuación agregar rutas mediante `PUT` in borrar todo lo dema
 3) Completar el script `21.py` para lograr mediante `PUT` que la tabla de rutas se vea de la siguiente manera (sin borrar el resto de la configuración)
 
 ``` cisco
-ip route 0.0.0.0 0.0.0.0 GigabitEthernet1 10.1.254.1
+ip route 0.0.0.0 0.0.0.0 GigabitEthernet1 10.X.254.1
 ip route 1.1.1.1 255.255.255.255 Null0 2.2.2.2
 ```
 
-
+**Importante:** Al igual que en el ejercicio anterior X es el número de pod
 
 4) Verificar
 
 ---
 
+Para terminar, a modo de ejemplo, presentamos a continuación como salvar la configuración mediante RESTCONF.
 
 
-## Request methods supported
 
-### GET
+``` python
+def save_config(username=USERNAME, password=PASSWORD):
+    url = BASE_OPERATIONS + ENDPOINT_SAVE_CONFIG
+    response = requests.post(url, headers=HEADERS, auth=HTTPBasicAuth(username, password), verify=False, timeout=3)
+    if response.status_code in range(200, 300):
+        print('Successful request, status code:', response.status_code)
+        print(response.text)
+    else:
+        print('Error in the request, status code:', response.status_code)
+        print(response.text)
+```
 
-### POST
-
-### PUT
-
-Cualquier cosa que pongamos en el body del request va a ser exactamente como se va a ver el objeto después. Declarativo por naturaleza.
-
-Esto es muy poderoso porque me evita todos los `no` en la configuración cuando quiero borrar lo que estaba antes. 
-
-### PATCH
-
-A diferencia del `PUT` el `PATCH` agrega lo que está en el body pero deja lo demás.
-
-### DELETE
-
-Cursos de RESTCONF
-
-<https://learninglabs.cisco.com/lab/lab03-using-restconf-to-interface-with-networking-devices/step/1>
-
-<https://learninglabs.cisco.com/lab/intro-restconf/step/1>
