@@ -4,6 +4,7 @@
 
 - [Modelo Cisco-IOS-XE-native](<https://s3.amazonaws.com/adv-network-programmability/Cisco-IOS-XE-native.html>)
 - [Modelo ietf-interfaces]( https://s3.amazonaws.com/adv-network-programmability/ietf-interfaces.html)
+- [Modelo ietf-yang-libraries](https://s3.amazonaws.com/adv-network-programmability/ietf-yang-library.html)
 
 
 

@@ -1,5 +1,10 @@
 from ncclient import manager
 
+USERNAME = 'conatel'
+PASSWORD = 'conatel'
+HOSTNAME = # escribir hostname aqui
+
+
 def pretty_print_xml(xml_string):
     """
     Funcion que recibe un string XML y lo imprime de forma bonita
@@ -18,4 +23,4 @@ def save_config(host, username, password, port='830'):
         pretty_print_xml(netconf_reply.xml)
 
 if __name__ == '__main__':
-    save_config()
+    # Llamar a save_config, no olvidar el armar previamente el filtro save_config.xml

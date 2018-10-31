@@ -21,7 +21,7 @@ if __name__ == '__main__':
 
     params = {
         'description': 'test description from Netconf',
-        'template': './interface_description.xml'
+        'template': './config_interface_description.xml'
     }
 
     generic_conf('hostname', 'conatel', 'conatel', **params)

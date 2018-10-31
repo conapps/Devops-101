@@ -10,10 +10,21 @@ Restconf es otro protocolo que permite ejecutar las mismas acciones que podemos 
 
 A priori, la ventaja que presenta frente a Netconf, es que la forma de comunicación programática entre dispositivos mediante HTTP, comunmente conocida como APIs REST, está ampliamente difundida y trasciende por mucho al mundo de las redes. Esto hace que el ecosistema de software que se ha desarrollado en torno a esta tecnología sea enorme y muy maduro, existiendo una amplia gama de librerías auxiliares muy bien documentadas (en todos los lenguajes), así como herramientas de debug y troubleshooting, donde POSTMAN es tan sólo un ejemplo.
 
-Otra ventaja, es que RESTCONF, además de XML, soporta la codificación de los mensajes mediante JSON. 
+Otra ventaja es que RESTCONF, además de XML, soporta la codificación de los mensajes mediante JSON. 
 Como vimos en la introducción del presente curso, JSON es un forma de codificar mucho mas sencilla de leer para los seres humanos y presenta además la ventaja que se mapea casi directamente con las estructuras de datos de los distintos lenguajes de programación.
 
-Para que las respuestas de los dispositivos vuelvan en JSON en lugar de XML es necesario setear el HEADER HTTP `Accept: application/yang-data+json`. Para que los dispositivos entiendan nuestro contenido cuando enviamos el mismo codificado en JSON en lugar de XML, es necesario setear el HEADER HTTP `Content-Type: application/yang-data+json`
+Para que las respuestas de los dispositivos vuelvan en JSON en lugar de XML es necesario setear el HEADER HTTP `Accept: application/yang-data+json`. Para que los dispositivos entiendan nuestro contenido cuando enviamos el mismo codificado en JSON en lugar de XML, es necesario setear el HEADER HTTP `Content-Type: application/yang-data+json`.  Si queremos manejarnos siempre con JSON tanto para enviar como para recibir los datos podemos setear los siguientes encabezados para utilizar luego con el módulo `requests`
+
+
+
+``` python
+HEADERS = {
+    'Content-Type': "application/yang-data+json",
+    'Accept': "application/yang-data+json",
+}
+```
+
+
 
 ## Métodos
 
@@ -95,7 +106,7 @@ pubd             : Running
 
 ## Cómo construir la URL
 
-Mientras que en Netconf indicábamos cuál era el modelo de YANG sobre el que queríamos impactar mediante un filtro XML, en RESTCONF brindamos esta información a través de al URL. El siguiente gráfico, muestra como construir la misma en base al módulo de YANG con el que queramos trabajar.
+Mientras que en Netconf indicábamos cuál era el modelo de YANG y sobre que parte del mismo queríamos impactar mediante un filtro XML, en RESTCONF brindamos esta información a través de al URL. El siguiente gráfico, muestra como construir la misma en base al módulo de YANG con el que queramos trabajar.
 
 ![alt URI construction](imagenes/YANG_to_URI.jpg)
 
@@ -139,7 +150,7 @@ def get_yang_modules(username=USERNAME, password=PASSWORD, show=False):
         print('Error in the request, status code:', response.status_code)        
 ```
 
-
+> Nota: observar que en Cisco, la autenticación por defecto es "HTTP Basic Authentication", por lo que es muy importante utilizar HTTPS siempre que querramos correr RESTCONF para uso en producción.
 
 
 
