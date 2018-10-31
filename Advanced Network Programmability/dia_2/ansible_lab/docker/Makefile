@@ -1,8 +1,8 @@
 up:
-	cd devops && docker-compose up -d --build
+	docker-compose up -d --build
 
 down:
-	cd devops && docker-compose down
+	docker-compose down
 
 attach:
 	docker exec -it master bash
