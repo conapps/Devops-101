@@ -471,6 +471,15 @@ Para terminar, a modo de ejemplo, presentamos a continuación como salvar la con
 
 
 ``` python
+# default values
+HOST = 'https://hostname/'
+USERNAME = 'conatel'
+PASSWORD = 'conatel'
+
+# Constants
+BASE_OPERATIONS = HOST + 'restconf/operations/'
+ENDPOINT_SAVE_CONFIG = 'cisco-ia:save-config'
+
 def save_config(username=USERNAME, password=PASSWORD):
     url = BASE_OPERATIONS + ENDPOINT_SAVE_CONFIG
     response = requests.post(url, headers=HEADERS, auth=HTTPBasicAuth(username, password), verify=False, timeout=3)
