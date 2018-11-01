@@ -1,14 +1,14 @@
-# Setup del ambiente
+# Verificación del ambiente
 
-* grupo de `Webex Teams`
-* instalar `pycharm`
-* instalar `postman`
-* instalar `WinScp` (sólo en caso de ambientes Windows)
-* instalar `git`
-* instalar `requests`
-* instalar `ncclient`
-* instalar `xmltodict`
-* instalar `pyang`
+* Grupo de `Webex Teams`
+*  `pycharm`
+*  `git`
+* Repositorio actualizado
+* Librerías Python
+  * `requests`
+  * `ncclient`
+  * `xmltodict`
+  * `pyang`
 
 # Programabilidad tradicional
 
@@ -515,14 +515,6 @@ Dentro del paradigma de "Model Driven Programmability", entenderemos como modela
 
 
 
-![alt model driven programmability](imagenes/para_incluir_1.png)
-
-
-
-
-
-
-
 ![alt network programmability protocols](imagenes/model_driven_programmability_stack.png)
 
 
@@ -937,6 +929,12 @@ La figura a continuación muestra, de izquierda a derecha, como ha sido la evolu
 
 
 El objetivo último detrás del paradigma "model driven programmability" es poder generar abstracciones conceptuales (modelos de datos) que apliquen a todos los dispositivos del mismo tipo, un router por ejemplo, sin importar cual sea su fabricante.
+
+La figura a continuación muesrta como es la arquitectura interna de un equipo preparado para "model driven programmability"
+
+![alt model_driven_programmability](imagenes/model_driven_programmability.png)
+
+
 
 Hoy en día existe una entidad que trabaja en pos de lograr este objetivo. 
 [Openconfig](http://www.openconfig.net/) es una asociación que está desarrollando modelos de datos agnósticos a los fabricantes. Según su propia descripción.
