@@ -603,6 +603,7 @@ Existen algunas limitaciones en el uso de `imports` e `include` que es important
 - import_playbook: webservers.yml
 ```
 </details>
+
 ---
 
 ### Ejercicio #3
@@ -752,6 +753,7 @@ _OBS: para evitar problemas de permisos, configuren la opción `ansible_become` 
 	- manala.sqlite    
   </pre>
 </details>
+
 ---
 
 ## Networking con Ansible
@@ -806,7 +808,7 @@ Empezamos configurando el inventario.
 
 ```yaml
 # ---
-# inventory.yml
+# hosts.yml
 #
 # Lista de equipos de Networking
 # ---
@@ -846,7 +848,7 @@ Para simplificar la escritura de comandos en la consola, también vamos a crear 
 ```Ini
 [defaults]
 
-inventory = /home/ubuntu/net/inventory.yml
+inventory = ./hosts.yml
 host_key_checking = False
 retry_files_enabled = False
 ```
@@ -948,6 +950,7 @@ Cree un `playbook` que le permita modificar el `hostname` del `hub`, solo en el 
         lines: 'hostname {{hostname}}'
       when: hostname is defined</pre>
 </details>
+
 ---
 
 ## Auditoría de configuraciones
@@ -976,7 +979,7 @@ Por ejemplo, si corremos el siguiente `playbook`, veremos las diferencias entre 
 
 - name: Running Vs. Startup diff (simple)
   hosts: all
-  connection: routers
+  connection: local
   gather_facts: no
   tasks:
     - name: Comando para hallar las diferencias
@@ -1074,7 +1077,7 @@ Luego, creamos un nuevo `playbook` con la siguiente información:
   tasks:
   	- name: Cargamos el contenido de 'example.json' en una variable
   	  set_fact:
-  	    json: "{{ lookup('file', 'example.json') | to_json }}"
+  	    json: "{{ lookup('file', 'example.json') | from_json }}"
   	- name: Imprimimos el JSON en la consola
   	  debug:
   	  	var: json
@@ -1201,6 +1204,7 @@ _OBS: Recuerde correr el `playbook` con la opción `—diff`._
     <summary>Pista #6</summary>
     Puede crear nuevos archivos utilizando el módulo <code>lineinfile</code> pasandole las opciones <code>create: yes</code> y <code>state: present</code>.
 </details>
+
 ---
 
 ## Cambios masivos
@@ -1218,14 +1222,14 @@ Primero, veamos como se vería un `playbook` para configurar una interfaz en **s
 # Configura la interface GigabitEthernet2 del router Spoke01
 # ...
 - name: Configuracion de interface GigabitEthernet2
-  hosts: 10.X.201.253
+  hosts: hub
   connection: local
   gather_facts: no
   tasks:
     - ios_config:
         lines:
           - description "Conexión con Red Spoke #1"
-          - ip address 10.1.1.254 255.255.255.0
+          - ip address 10.X.201.254 255.255.255.0
           - no shutdown
         parents: interface GigabitEthernet2
 ```
@@ -1236,7 +1240,7 @@ Básicamente, escribe las líneas que le indicamos en el router, en la ubicació
 
 ---
 
-### Ejercicio #6
+### Ejercicio #7
 
 Cree un nuevo rol llamado `config_interface` que configure una interfaz de un router consumiendo una lista de objetos llamada `interfaces` con las siguientes llaves:
 
@@ -1258,16 +1262,16 @@ El rol luego será llamado a través del siguiente `playbook`
 #	`interfaces` con una lista de interfaces. Por ejemplo:
 #		interfaces:
 # 	  	  - interface: GigabitEthernet2
-# 	    	ip_address: '10.X.201.254'
-# 	    	netmask: '255.255.255.0'
-# 	    	description: Configurado desde el nuevo rol
+# 	    	    ip_address: '10.X.201.254'
+# 	    	    netmask: '255.255.255.0'
+# 	    	    description: Configurado desde el nuevo rol
 # ...
 - name: Configuración de interface
-  hosts: spokes
+  hosts: hub
   connection: local
   gather_facts: no
   roles:
-  	- config_interfaces
+    - configure_interfaces
 ```
 
 <details>
@@ -1286,7 +1290,7 @@ roles
     <summary>Pista #2</summary>
     Recuerde la estructura de carpetas que debe tener un <code>role</code> dentro del directorio <code>roles</code>.
     <pre>
-    \config_interfaces
+    \configure_interfaces
       \tasks
         main.yml
       \defaults
@@ -1298,7 +1302,7 @@ roles
     <summary>Solución</summary>
     <pre>
 # ---
-# ./config_interfaces/tasks/main.yml
+# ./configure_interfaces/tasks/main.yml
 #
 # Tareas para configurar la interfaz de un equipo.
 # ---
@@ -1311,6 +1315,7 @@ roles
       - no shutdown
     parents: 'interface {{ item.interface }}'
 </details>
+
 ---
 
 Ahora que tenemos el rol, podemos configurar estas opciones dentro del archivo de inventario, o pasar las opciones directamente al momento de consumir el `role`.
@@ -1399,7 +1404,7 @@ https://docs.ansible.com/ansible/devel/modules/ios_user_module.html#ios-user-mod
 
 ---
 
-###Ejercicio #7
+### Ejercicio #8
 
 Construya un `playbook` que le permita crear un usuario en todos los routers con las siguientes credenciales:
 
