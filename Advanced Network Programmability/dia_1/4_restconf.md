@@ -123,6 +123,10 @@ Como se puede ver en el árbol generado a partir de `pyang`, este módulo nos br
 A continuación vamos a construir una función que nos permita listar todos los módulos soportados por el equipo.
 
 ``` python
+import requests
+import json
+from requests.auth import HTTPBasicAuth
+
 # default values
 HOST = 'https://hostname/'
 USERNAME = 'conatel'
