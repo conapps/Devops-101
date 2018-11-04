@@ -179,7 +179,7 @@ Un  caso de uso muy común es el partir de la lista de módulos soportados y, da
 - ¿qué módulos desarrollados por `ietf` soporta?
 - ¿qué módulos tengo disponibles para configurar `interfaces`?
 
-Utilizando la función `get_yang_modules` del ejercicio anterior, escribir una funcion filtre la salida para mostrar solamente los módulos cuyo nombre (`name`) contenga el criterio de filtrado. Parta del script `17.py` donde hay un esqueleto básico sobre el cual trabajar.
+Utilizando la función `get_yang_modules` del ejercicio anterior, escribir **otra** funcion filtre la salida para mostrar solamente los módulos cuyo nombre (`name`) contenga el criterio de filtrado. Parta del script `17.py` donde hay un esqueleto básico sobre el cual trabajar.
 
 **Pista:** recuerde que la forma de verficiar si un string se encuentra dentro de otro string es:
 
@@ -244,7 +244,7 @@ Utilizando la función presentada anteriormente, escribir un script que imprima 
 
 Los dos métodos que utilizaremos principalmente para modificar la configuración son `PATCH` Y `PUT`. Ambos presentan ventajas y desventajas, las cuales exploraremos a continuación.
 
-### PATCH vs PUT
+### PATCH vs PUT (follow along)
 
 `PATCH` nos permite hacer una fusión entre lo que enviamos en el `body` del mensaje y lo que está presente en la configuración, lo que lo convierte en un método mucho mas seguro para trabajar, sobre todo cuando estamos comenzando a explorar estas tecnologías.
 
@@ -253,6 +253,22 @@ Los dos métodos que utilizaremos principalmente para modificar la configuració
 De la misma forma en que definimos funciones genéricas para hacer `GET`, definiremos a continuación funciones genéricas para hacer `PATCH` y `PUT`.
 
 ``` python
+import json
+import requests
+from requests.auth import HTTPBasicAuth
+
+# default values
+HOST = 'https://hostname/'
+USERNAME = 'conatel'
+PASSWORD = 'conatel'
+
+# Constants
+BASE_DATA = HOST + 'restconf/data/'
+HEADERS = {
+    'Content-Type': "application/yang-data+json",
+    'Accept': "application/yang-data+json",
+}
+
 def generic_patch(body, username=USERNAME, password=PASSWORD, **kwargs):
     url = BASE_DATA + kwargs['endpoint']
     response = requests.patch(url, headers=HEADERS, auth=HTTPBasicAuth(username, password), data=json.dumps(body), timeout=3, verify=False)
@@ -390,7 +406,7 @@ ip route 9.9.9.9 255.255.255.255 Null0 1.2.3.4
 
 ### PUT
 
-Ahora intentaresmo hacer lo mismo utilizando PUT.
+Ahora intentaremos hacer lo mismo utilizando PUT.
 
 Dado que vamos a estar interactuando con el recurso `ìp` dentro de `Cisco-IOS-XE-native:native` , el body del mensaje debe replicar la etructura que sigue luego de `ip` de la siguiente manera (suponiendo que no vamos a configurar rutas de VRFs):
 
@@ -427,7 +443,7 @@ body = {
 
 ------
 
-### Ejercicio 20
+### Ejercicio 20 (don't follow along)
 
 1) Conectarse al router y tomar nota de la tabla de rutas del equipo.
 
