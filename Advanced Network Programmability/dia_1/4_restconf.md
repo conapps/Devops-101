@@ -38,7 +38,7 @@ La siguiente tabla muestra cómo se mapean los distintos métodos de RESTCONF co
 
 
 
-## Configuración para que los equipos soporten RESTCONF
+## Configuración para que los equipos soporten RESTCONF (follow along)
 
 ### Habilitar el servidor HTTP
 
@@ -81,7 +81,7 @@ router(config)# username conatel privilege 15 secret conatel
 router(config)# restconf
 ```
 
-### Verificiar la configuración
+### Verificar la configuración
 
 En los equipos que corren IOS-XE, Cisco implementa el servidor HTTP mediante un servidor [nginx](https://www.nginx.com/). Para verficar que dicho servidor esté levantado y funcionado:
 
@@ -112,7 +112,7 @@ Mientras que en Netconf indicábamos cuál era el modelo de YANG y sobre que par
 
 
 
-## Cómo identificar los módulos soportados por el equipo
+## Cómo identificar los módulos soportados por el equipo (follow along)
 
 En Netconf, podíamos identificar la lista de módulos soportados por el equipo a través del intercambio inicial de "capabilities". En RESTCONF vamos a utilizar el modelo de YANG llamado `ietf-yang-library` para determinar los módulos soportados.
 

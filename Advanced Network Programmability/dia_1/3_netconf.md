@@ -54,6 +54,8 @@ Dado que Netconf utiliza ssh como transporte, en teoría podríamos realizar cua
 Antes de poder trabajar con NetConf es necesaro habilitar dicha funcionalidad en los equipos.
 Para ello, el procedimiento es el siguiente:
 
+### Procedimiento para configurar el router para Netconf (follow along)
+
 **Habilitar un usuario con privilegios de nivel 15**
 
 ``` bash
