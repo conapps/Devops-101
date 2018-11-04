@@ -29,7 +29,7 @@ Si analizamos Netconf mas en profundidad podremos ver que dentro de los mensajes
 
 
 
-![alt netconf overview](imagenes/para_agregar_2.png)
+![alt netconf_stack](imagenes/netconf_stack.png)
 
 
 
@@ -37,7 +37,11 @@ Dado que Netconf es orientado a transacciones, cada mensaje RPC tiene un identif
 
 
 
+
+
 ![alt rpc](imagenes/RPC.png)
+
+
 
 Cómo se mencionó anteriormente, de forma muy similar a como lo hace HTTP con sus métodos, Netconf define una serie de operaciones que le indican al servidor la naturaleza del pedido realizado. La lista a continuación muestra algunas de las operaciones existentes y su significado. Una lista completa de las operaciones puede encontrarse [aquí](http://www.netconfcentral.org/rpclist).
 
