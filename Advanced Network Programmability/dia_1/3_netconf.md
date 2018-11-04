@@ -523,8 +523,8 @@ router(config)# banner motd <caracter-delimitador><mensaje><caracter-delimitador
 
 Utizando como referencia el modelo `Cisco-IOS-XE-native`, elaborar un filtro XML llamado `config_motd.xml` para poder configurar el `motd` mediante Netconf.
 
-> Consejo: dentro del filtro xml no dejar "enters", "tabuladores", ni ningún caracter especial entre <banner> y el mensaje. Concretamente, esa parte del filtro debería verse así:
-> <banner>{mensaje}</banner>
+> Consejo: dentro del filtro xml no dejar "enters", "tabuladores", ni ningún caracter especial entre \<banner> y el mensaje. Concretamente, esa parte del filtro debería verse así:
+> \<banner>{mensaje}\</banner>
 
 <details>
 
