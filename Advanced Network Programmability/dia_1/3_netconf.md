@@ -184,23 +184,11 @@ Utilizar la función elaborada en el ejercicio 8 filtrando con lo siguiente `fil
 
 ---
 
-Cómo se comentó anteriormente, las "capabilities" se corresponden con los módulos de YANG soportados. La figura a continuación muestra como interpretar lo que devuelve el router.
+Cómo se comentó anteriormente, las "capabilities" se corresponden con los módulos de YANG soportados. El snippet a continuación muestra como interpretar lo que devuelve el router:
 
 
 
-``` pseudocode
-urn:ietf:params:xml:ns:yang:ietf-interfaces                 <-- URI del módulo
-	? module=ietf-interfaces								<-- Nombre del módulo 
-	& revision=2014-05-08									<-- Fecha de revisión
-	& features=pre-provisioning, if-mib, arbitrary-names    <-- Funcionalidades
-	& deviations=ietf-ip-devs								<-- Otro modelo que modifica el actual
-```
-
-
-
-
-
-![alt understand_netconf_capabilities](imagenes/netconf_understand_capabilites.png)
+![alt reading_capabilities](imagenes/reading_capabilities.png)
 
 
 
