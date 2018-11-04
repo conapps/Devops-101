@@ -554,7 +554,7 @@ Crear una función `change_motd(host, username, password, message, port='830')` 
 
 ---
 
-### Ejercicio 14
+### Ejercicio 14 (follow along)
 
 Hacer una función para cada cosa que se quiera configurar en un equipo está bien para comenzar pero a la larga no es práctico. Para facilitarnos un poco la vida, vamos a introducir una función genérica que nos permitirá configurar cualquier cosa.
 
