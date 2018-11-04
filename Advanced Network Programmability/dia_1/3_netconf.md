@@ -273,11 +273,15 @@ module: ietf-interfaces
 
 ---
 
-## Obteniendo información del equipo
+## Obteniendo información del equipo (follow along)
 
 Ahora que sabemos identificar que modelos de YANG soporta el equipo, que podemos descargarlos y analizar su estructura utilizando `pyang`, es hora de comenzar a obtener datos útiles.
 
-**A continuación vamos a analizar el módulo `Cisco-IOS-XE-native` para obtener el hostname del equipo**. Comencemos por descubrirlo dentro de las "capabilites" utilizando nuestra función `print_capabilities`.
+**A continuación vamos a presentar un procedimiento para obtener información del equipo, en el ejemplo vamos a utilizar el módulo `Cisco-IOS-XE-native` para averiguar el hostname**. 
+
+**1) Averigura el nombre del módulo YANG que contiene la información que necesitamos**
+
+Comencemos por descubrirlo dentro de las "capabilites" utilizando nuestra función `print_capabilities`.
 
 ```` python
 >>> print_capabilities(filter='native')
@@ -285,6 +289,8 @@ http://cisco.com/ns/yang/Cisco-IOS-XE-native
     ?module=Cisco-IOS-XE-native
     &revision=2018-02-01
 ````
+
+**2) Descargar el módulo directamente del equipo**
 
 Ahora vamos a descargar el modelo de YANG utilizando nuestra función `get_schema` 
 
@@ -302,6 +308,8 @@ module Cisco-IOS-XE-native {
 ```
 
 > Nota: tomar nota del campo `namespace` porque lo vamos a necesitar mas adelante
+
+**3) Analizar el módulo para entender su estructura**
 
 Utilizando el archivo generado llamado `Cisco-IOS-XE-native.yang`, lo analizamos utilizando `pyang`
 
@@ -331,6 +339,8 @@ module: Cisco-IOS-XE-native
 
 Como se puede ver, la salida de este modelo utilizando el formato `tree` es demasiado larga para poder ser analizada, por lo que, para este tipo de casos conviene utilizar la versión `html`. 
 Una copia de la misma se pueden encontrar [aquí](<https://s3.amazonaws.com/adv-network-programmability/Cisco-IOS-XE-native.html>) 
+
+**4) Realizar un RPC para solicitar la información**
 
 Ahora utilizaremos la función `get(filter)` del módulo `ncclient` para obtener el hostname del equipo.
 El parámetro filter se debe definir mediante XML utilizando la estructura del módulo YANG como base. Para ello partimos de una etiqueta `<filter></filter>` y dentro colocamos todas las etiquetas en la jerarquía hasta llegar a la parte del modelo que queremos modificar. En resumen, el archivo `hostname.xml` debería tener el siguiente contenido:
@@ -435,7 +445,7 @@ VirtualPortGroup0
 
 </details>
 
-## Configurando el equipo
+## Configurando el equipo (follow along)
 
 Ahora vamos a modificar la configuración del equipo, en concreto **vamos a cambiar el hostname del mismo**. Para ellos nos vamos a basar en el modelo `Cisco-IOS-XE-native` que contiene la configuración completa del mismo.
 
@@ -512,6 +522,9 @@ router(config)# banner motd <caracter-delimitador><mensaje><caracter-delimitador
 > Nota: El caracter delimitador es cualquier caracter que indique el comienzo y el fin del mensaje. (obviamente este caracter no se puede utilizar dentro del mensaje o el mismo se cortaría). Una buena elección sería por ejemplo `^`.
 
 Utizando como referencia el modelo `Cisco-IOS-XE-native`, elaborar un filtro XML llamado `config_motd.xml` para poder configurar el `motd` mediante Netconf.
+
+> Consejo: dentro del filtro xml no dejar "enters", "tabuladores", ni ningún caracter especial entre <banner> y el mensaje. Concretamente, esa parte del filtro debería verse así:
+> <banner>{mensaje}</banner>
 
 <details>
 
