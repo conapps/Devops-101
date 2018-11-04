@@ -188,6 +188,18 @@ Cómo se comentó anteriormente, las "capabilities" se corresponden con los mód
 
 
 
+``` pseudocode
+urn:ietf:params:xml:ns:yang:ietf-interfaces                 <-- URI del módulo
+	? module=ietf-interfaces								<-- Nombre del módulo 
+	& revision=2014-05-08									<-- Fecha de revisión
+	& features=pre-provisioning, if-mib, arbitrary-names    <-- Funcionalidades
+	& deviations=ietf-ip-devs								<-- Otro modelo que modifica el actual
+```
+
+
+
+
+
 ![alt understand_netconf_capabilities](imagenes/netconf_understand_capabilites.png)
 
 
