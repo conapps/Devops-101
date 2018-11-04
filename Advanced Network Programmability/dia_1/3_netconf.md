@@ -1,10 +1,10 @@
-# Netconf - 2006 - RFC 4741 (updated in 2011)
+# Netconf - 2006 - RFC 4741 (actualizado en 2011)
 
 ## Introducción
 
 Netconf es un protocolo IETF pensado como una evolución de SNMP. Usa ssh, SOAP, o TLS como transporte. En este curso utilizaremos únicamente ssh.
 
-La arquitectura es cliente-servidor, donde el router es el servidor y la notebook (o sistema de gestión) es el cliente.
+La arquitectura es cliente-servidor, donde el router (o switch, firewall, etc) es el servidor y la notebook (o sistema de gestión) es el cliente.
 
 **A diferencia de REST (que es stateless), Netconf es basado en transacciones.**
 
