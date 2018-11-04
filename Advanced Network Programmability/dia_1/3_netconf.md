@@ -35,11 +35,9 @@ Si analizamos Netconf mas en profundidad podremos ver que dentro de los mensajes
 
 Dado que Netconf es orientado a transacciones, cada mensaje RPC tiene un identificador único que identifica a la transacción. De esta forma, el cliente, o Manager figura en la imágen a continuación, puede distinguir a que RPC corresponde una respuesta determinada.
 
-
-
-
-
-![alt rpc](imagenes/RPC.png)
+<div text-align="center">
+    <img src="imagenes/RPC.png">
+</div>
 
 
 
