@@ -1,14 +1,14 @@
-# Setup del ambiente
+# Verificación del ambiente
 
-* grupo de `Webex Teams`
-* instalar `pycharm`
-* instalar `postman`
-* instalar `WinScp` (sólo en caso de ambientes Windows)
-* instalar `git`
-* instalar `requests`
-* instalar `ncclient`
-* instalar `xmltodict`
-* instalar `pyang`
+* Grupo de `Webex Teams`
+*  `pycharm`
+*  `git`
+* Repositorio actualizado
+* Librerías Python
+  * `requests`
+  * `ncclient`
+  * `xmltodict`
+  * `pyang`
 
 # Programabilidad tradicional
 
@@ -207,7 +207,7 @@ print('El password es:', repr(password))
 
 
 
-## Python nativo en el dispositivo
+## Python nativo en el dispositivo (follow along)
 
 `guestshell` es un ambiente virtualizado, basado en linux, diseñado para correr aplicaciones customizadas dentro del router, incluyendo Python. Este entorno se corre como un Linux Container, completamente desacoplado del router.
 
@@ -367,7 +367,7 @@ cli(command)
 
 
 
-### Ejercicio 2
+### Ejercicio 2 (follow along)
 
 En este ejercicio implementaremos el siguiente caso de uso. 
 Supongamos que queremos actualizar de forma dinámica la base local de usuario y password de los equipos en función de los datos provistos por la siguiente API:
@@ -512,14 +512,6 @@ Ya comenzamos explorando la posibilidad que brindan los equipos de red de correr
 A continuación, veremos las dificultades y limitantes que presenta este modelo de trabajo, e introduciremos el concepto de "Model Driven Programmability", que busca resolver los problemas que plantea el hecho de interactuar con un dispositivo de red mediante interfaces diseñadas para el uso por parte de seres humanos.
 
 Dentro del paradigma de "Model Driven Programmability", entenderemos como modelar los datos mediante un lenguaje de modelado llamado `YANG` y cual es la utilidad de hacer esto. Veremos como codificar la información del modelo de datos definido para poder ser transmitida. En particular exploraremos dos tipos de codificación diferentes: `XML` y `JSON`. Luego trabajaremos con los dos principales protocolos disponibles hoy en día `Netconf` y `RestConf`.
-
-
-
-![alt model driven programmability](imagenes/para_incluir_1.png)
-
-
-
-
 
 
 
@@ -781,11 +773,47 @@ XML es un lenguaje de Markup similar a HTML. Mientras que HTML fue diseñado par
 Mientras que los tags de HTML son estándar, los tags de XML son definidos por el autor de los modelos.
 Esto naturalmente abre la puerta a que se generen conflictos de nombres; para mitigar estos riesgos XML incorpora el concepto de `namespaces`. En el siguiente ejemplo, podemos ver que hay definidos dos elementos con el mismo nombre, uno representa la configuación de una interface y otro el estado operacional, hecho que lógicamente implica un problema. Una forma de resolver este inconveniente es introducir el concepto de `namespace`. En el ejemplo, al `namespace` `http://cisco.com/config/` se le asigna un alias `cfg`. Luego, todos los elementos que sean prependeados con `cfg:` pertenecerán al `namespace` correspondiente. De forma adicional, podría definirse un otro `namespace` `http://cisco.com/oper/`, asignarle el alias `oper`, y hacer lo mismo.
 
-
-
-![alt duplicated object](imagenes/xml_duplicated_object.png)
-
-
+``` xml
+<interface xmlns="http://cisco.com/ns/yang/Cisco-IOS-XE-native">
+    <GigabitEthernet>
+        <name>1</name>
+        <ip>
+            <address>
+                <dhcp/>
+            </address>
+        </ip>
+        <mop>
+            <enabled>false</enabled>
+            <sysid>false</sysid>
+        </mop>
+        <negotiation xmlns="http://cisco.com/ns/yang/Cisco-IOS-XE-ethernet">
+            <auto>true</auto>
+        </negotiation>
+    </GigabitEthernet>
+</interface>
+...
+<interfaces xmlns="urn:ietf:params:xml:ns:yang:ietf-interfaces">
+    <interface>
+        <name>GigabitEthernet1</name>
+        <type xmlns:ianaift="urn:ietf:params:xml:ns:yang:iana-if-type">ianaift:ethernetCsmacd</type>
+        <enabled>true</enabled>
+        <ipv4 xmlns="urn:ietf:params:xml:ns:yang:ietf-ip"/>
+        <ipv6 xmlns="urn:ietf:params:xml:ns:yang:ietf-ip"/>
+    </interface>
+    <interface>
+        <name>VirtualPortGroup0</name>
+        <type xmlns:ianaift="urn:ietf:params:xml:ns:yang:iana-if-type">ianaift:propVirtual</type>
+        <enabled>true</enabled>
+        <ipv4 xmlns="urn:ietf:params:xml:ns:yang:ietf-ip">
+            <address>
+                <ip>192.168.35.101</ip>
+                <netmask>255.255.255.0</netmask>
+            </address>
+        </ipv4>
+        <ipv6 xmlns="urn:ietf:params:xml:ns:yang:ietf-ip"/>
+    </interface>
+</interfaces>
+```
 
 A diferencia de JSON, XML es más verboso y difícil de leer para los seres humanos. Una dificultad adicional que presenta XML respecto a JSON, es que no se mapea directamente a las estructuras de datos de los lenguajes de programación, por lo que, cuando un request nos devuelva datos en XML tendremos que utilizar una librería, no nativa, llamada `xmltodict` que se encargará de transformar el XML a los tipos de datos del lenguage. Veamos esto con el siguiente script a modo de ejemplo:
 
@@ -937,6 +965,12 @@ La figura a continuación muestra, de izquierda a derecha, como ha sido la evolu
 
 
 El objetivo último detrás del paradigma "model driven programmability" es poder generar abstracciones conceptuales (modelos de datos) que apliquen a todos los dispositivos del mismo tipo, un router por ejemplo, sin importar cual sea su fabricante.
+
+La figura a continuación muesrta como es la arquitectura interna de un equipo preparado para "model driven programmability"
+
+![alt model_driven_programmability](imagenes/model_driven_programmability.png)
+
+
 
 Hoy en día existe una entidad que trabaja en pos de lograr este objetivo. 
 [Openconfig](http://www.openconfig.net/) es una asociación que está desarrollando modelos de datos agnósticos a los fabricantes. Según su propia descripción.

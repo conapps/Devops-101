@@ -10,10 +10,21 @@ Restconf es otro protocolo que permite ejecutar las mismas acciones que podemos 
 
 A priori, la ventaja que presenta frente a Netconf, es que la forma de comunicación programática entre dispositivos mediante HTTP, comunmente conocida como APIs REST, está ampliamente difundida y trasciende por mucho al mundo de las redes. Esto hace que el ecosistema de software que se ha desarrollado en torno a esta tecnología sea enorme y muy maduro, existiendo una amplia gama de librerías auxiliares muy bien documentadas (en todos los lenguajes), así como herramientas de debug y troubleshooting, donde POSTMAN es tan sólo un ejemplo.
 
-Otra ventaja, es que RESTCONF, además de XML, soporta la codificación de los mensajes mediante JSON. 
+Otra ventaja es que RESTCONF, además de XML, soporta la codificación de los mensajes mediante JSON. 
 Como vimos en la introducción del presente curso, JSON es un forma de codificar mucho mas sencilla de leer para los seres humanos y presenta además la ventaja que se mapea casi directamente con las estructuras de datos de los distintos lenguajes de programación.
 
-Para que las respuestas de los dispositivos vuelvan en JSON en lugar de XML es necesario setear el HEADER HTTP `Accept: application/yang-data+json`. Para que los dispositivos entiendan nuestro contenido cuando enviamos el mismo codificado en JSON en lugar de XML, es necesario setear el HEADER HTTP `Content-Type: application/yang-data+json`
+Para que las respuestas de los dispositivos vuelvan en JSON en lugar de XML es necesario setear el HEADER HTTP `Accept: application/yang-data+json`. Para que los dispositivos entiendan nuestro contenido cuando enviamos el mismo codificado en JSON en lugar de XML, es necesario setear el HEADER HTTP `Content-Type: application/yang-data+json`.  Si queremos manejarnos siempre con JSON tanto para enviar como para recibir los datos podemos setear los siguientes encabezados para utilizar luego con el módulo `requests`
+
+
+
+``` python
+HEADERS = {
+    'Content-Type': "application/yang-data+json",
+    'Accept': "application/yang-data+json",
+}
+```
+
+
 
 ## Métodos
 
@@ -27,7 +38,7 @@ La siguiente tabla muestra cómo se mapean los distintos métodos de RESTCONF co
 
 
 
-## Configuración para que los equipos soporten RESTCONF
+## Configuración para que los equipos soporten RESTCONF (follow along)
 
 ### Habilitar el servidor HTTP
 
@@ -70,7 +81,7 @@ router(config)# username conatel privilege 15 secret conatel
 router(config)# restconf
 ```
 
-### Verificiar la configuración
+### Verificar la configuración
 
 En los equipos que corren IOS-XE, Cisco implementa el servidor HTTP mediante un servidor [nginx](https://www.nginx.com/). Para verficar que dicho servidor esté levantado y funcionado:
 
@@ -95,13 +106,13 @@ pubd             : Running
 
 ## Cómo construir la URL
 
-Mientras que en Netconf indicábamos cuál era el modelo de YANG sobre el que queríamos impactar mediante un filtro XML, en RESTCONF brindamos esta información a través de al URL. El siguiente gráfico, muestra como construir la misma en base al módulo de YANG con el que queramos trabajar.
+Mientras que en Netconf indicábamos cuál era el modelo de YANG y sobre que parte del mismo queríamos impactar mediante un filtro XML, en RESTCONF brindamos esta información a través de al URL. El siguiente gráfico, muestra como construir la misma en base al módulo de YANG con el que queramos trabajar.
 
 ![alt URI construction](imagenes/YANG_to_URI.jpg)
 
 
 
-## Cómo identificar los módulos soportados por el equipo
+## Cómo identificar los módulos soportados por el equipo (follow along)
 
 En Netconf, podíamos identificar la lista de módulos soportados por el equipo a través del intercambio inicial de "capabilities". En RESTCONF vamos a utilizar el modelo de YANG llamado `ietf-yang-library` para determinar los módulos soportados.
 
@@ -112,6 +123,10 @@ Como se puede ver en el árbol generado a partir de `pyang`, este módulo nos br
 A continuación vamos a construir una función que nos permita listar todos los módulos soportados por el equipo.
 
 ``` python
+import requests
+import json
+from requests.auth import HTTPBasicAuth
+
 # default values
 HOST = 'https://hostname/'
 USERNAME = 'conatel'
@@ -139,7 +154,7 @@ def get_yang_modules(username=USERNAME, password=PASSWORD, show=False):
         print('Error in the request, status code:', response.status_code)        
 ```
 
-
+> Nota: observar que en Cisco, la autenticación por defecto es "HTTP Basic Authentication", por lo que es muy importante utilizar HTTPS siempre que querramos correr RESTCONF para uso en producción.
 
 
 
@@ -164,9 +179,14 @@ Un  caso de uso muy común es el partir de la lista de módulos soportados y, da
 - ¿qué módulos desarrollados por `ietf` soporta?
 - ¿qué módulos tengo disponibles para configurar `interfaces`?
 
-Utilizando la función `get_yang_modules` del ejercicio anterior, escribir una funcion filtre la salida para mostrar solamente los módulos cuyo nombre (`name`) contenga el criterio de filtrado. Parta del script `17.py` donde hay un esqueleto básico sobre el cual trabajar.
+Utilizando la función `get_yang_modules` del ejercicio anterior, escribir **otra** funcion filtre la salida para mostrar solamente los módulos cuyo nombre (`name`) contenga el criterio de filtrado. Parta del script `17.py` donde hay un esqueleto básico sobre el cual trabajar.
 
----
+**Pista:** recuerde que la forma de verficiar si un string se encuentra dentro de otro string es:
+
+``` python
+>>> 'tri' in 'tres tristes tigres comen trigo en un trigal'
+True
+```
 
 
 
@@ -224,17 +244,33 @@ Utilizando la función presentada anteriormente, escribir un script que imprima 
 
 Los dos métodos que utilizaremos principalmente para modificar la configuración son `PATCH` Y `PUT`. Ambos presentan ventajas y desventajas, las cuales exploraremos a continuación.
 
-### PATCH vs PUT
+### PATCH vs PUT (follow along)
 
 `PATCH` nos permite hacer una fusión entre lo que enviamos en el `body` del mensaje y lo que está presente en la configuración, lo que lo convierte en un método mucho mas seguro para trabajar, sobre todo cuando estamos comenzando a explorar estas tecnologías.
 
-`PUT` por otro lado, sustituye la porción correspondiente de configuración de forma completa por lo que está en el `body` del mensaje. Esto presenta la ventaja fundamental de que permite ser "declarativo", pero tiene la contra de ser algo peligroso, en el sentido de que podemos borrar parte de la configuración de forma no conciente.
+`PUT` por otro lado, sustituye la porción correspondiente de configuración de forma completa por lo que está en el `body` del mensaje. Esto presenta la ventaja fundamental de que permite ser "declarativo", pero tiene la contra de ser algo peligroso, en el sentido de que podemos borrar parte de la configuración de forma no consciente.
 
 De la misma forma en que definimos funciones genéricas para hacer `GET`, definiremos a continuación funciones genéricas para hacer `PATCH` y `PUT`.
 
 ``` python
+import json
+import requests
+from requests.auth import HTTPBasicAuth
+
+# default values
+HOST = 'https://hostname/'
+USERNAME = 'conatel'
+PASSWORD = 'conatel'
+
+# Constants
+BASE_DATA = HOST + 'restconf/data/'
+HEADERS = {
+    'Content-Type': "application/yang-data+json",
+    'Accept': "application/yang-data+json",
+}
+
 def generic_patch(body, username=USERNAME, password=PASSWORD, **kwargs):
-    url = BASE_DATA + kwargs['endpoint'] + kwargs['resource']
+    url = BASE_DATA + kwargs['endpoint']
     response = requests.patch(url, headers=HEADERS, auth=HTTPBasicAuth(username, password), data=json.dumps(body), timeout=3, verify=False)
     if response.status_code in range(200, 300):
         print('Successful request, status code:', response.status_code)
@@ -254,7 +290,7 @@ def generic_put(body, username=USERNAME, password=PASSWORD, **kwargs):
 
 
 
-Exploraremos las diferencias entre `PATCH` y `PUT` configurando rutas estáticas dentro del equipo.
+Exploraremos las diferencias entre `PATCH` y `PUT` **configurando rutas estáticas dentro del equipo**.
 Para ello, es necesario conocer cuál es la estructura de configuración que soporta esta funcionalidad, dado que es necesario replicar la misma en el `body` de nuestro mensaje. Esto lo podemos averiguar de dos formas:
 
 1) Utilizando `pyang`
@@ -319,7 +355,7 @@ Utilizando el método propuesto en 2) podemos ver que la estructura es la siguie
 
 ```
 
-
+### PATCH
 
 Comenzemos viendo como ejecutar un `PATCH`. En ese caso vamos a estar interactuando con el endpoint `Cisco-IOS-XE-native:native` por lo que el body del mensaje debe replicar la etructura que sigue:
 
@@ -364,11 +400,15 @@ body = {
 ip route 9.9.9.9 255.255.255.255 Null0 1.2.3.4
 ```
 
+3) Verificar que la ruta fue correctamente agregada al equipo
+
 ---
 
+### PUT
 
+Ahora intentaremos hacer lo mismo utilizando PUT.
 
-En el siguiente ejercicio vamos a estar interactuando con el recurso `ìp` dentro de `Cisco-IOS-XE-native:native` por lo que el body del mensaje debe replicar la etructura que sigue luego de `ip` de la siguiente manera (suponiendo que no vamos a configurar rutas de VRFs):
+Dado que vamos a estar interactuando con el recurso `ìp` dentro de `Cisco-IOS-XE-native:native` , el body del mensaje debe replicar la etructura que sigue luego de `ip` de la siguiente manera (suponiendo que no vamos a configurar rutas de VRFs):
 
 ```json
 body = {
@@ -399,32 +439,75 @@ body = {
 
 > Notar que la llave principal no es `Cisco-IOS-XE-native:native` sino `Cisco-IOS-XE-native:ip`
 
-### 
+
+
+------
+
+### Ejercicio 20 (don't follow along)
+
+1) Conectarse al router y tomar nota de la tabla de rutas del equipo.
+
+2) Completar el script `20.py` para que agregue mediante `PUT` la siguientes rutas:
+
+```cisco
+ip route 10.10.10.10 255.255.255.255 Null0 1.2.3.4
+ip route 0.0.0.0 0.0.0.0 GigabitEthernet1 10.X.254.1
+```
+
+Donde X es el numero de POD, **esto es muy importante**
+
+3) Verificar que sucedió
+
+------
+
+Como puede verse, la operación `PUT` funciona de forma declarativa, configurando dentro del recurso, en este caso todo lo que comienze por`ip` en la configuración,  aquello que viaje en el `body` del mensaje.
+En el ejemplo, dado que enviamos únicamente dos rutas, perdimos las rutas anteriores así como la configuración del servidor web `ip http secure-server`, que también comienza por ip, por lo que no podremos volver utilizar RESTCONF hasta volver a habilitarlo.
+
+Intentaremos a continuación agregar rutas mediante `PUT` in borrar todo lo demas. Para ello, en lugar de escribir a mano en el script toda la estructura que está debajo de `ip`, lo que haremos es traer dicha estructura desde el router, modificar en la misma únicamente las rutas para que se vean como queremos, y luego enviar nuevamente la estructura completa. El siguiente ejercicio muestra un ejemplo de como hacerlo.
+
+---
+
+### Ejercicio 21
+
+1) Conectarse al router, habilitar nuevamente `ip http secure-server`
+
+2) Tomar nota de las rutas
+
+3) Completar el script `21.py` para lograr mediante `PUT` que la tabla de rutas se vea de la siguiente manera (sin borrar el resto de la configuración)
+
+``` cisco
+ip route 0.0.0.0 0.0.0.0 GigabitEthernet1 10.X.254.1
+ip route 1.1.1.1 255.255.255.255 Null0 2.2.2.2
+```
+
+**Importante:** Al igual que en el ejercicio anterior X es el número de pod
+
+4) Verificar
+
+---
+
+Para terminar, a modo de ejemplo, presentamos a continuación como salvar la configuración mediante RESTCONF.
 
 
 
+``` python
+# default values
+HOST = 'https://hostname/'
+USERNAME = 'conatel'
+PASSWORD = 'conatel'
 
+# Constants
+BASE_OPERATIONS = HOST + 'restconf/operations/'
+ENDPOINT_SAVE_CONFIG = 'cisco-ia:save-config'
 
-## Request methods supported
+def save_config(username=USERNAME, password=PASSWORD):
+    url = BASE_OPERATIONS + ENDPOINT_SAVE_CONFIG
+    response = requests.post(url, headers=HEADERS, auth=HTTPBasicAuth(username, password), verify=False, timeout=3)
+    if response.status_code in range(200, 300):
+        print('Successful request, status code:', response.status_code)
+        print(response.text)
+    else:
+        print('Error in the request, status code:', response.status_code)
+        print(response.text)
+```
 
-### GET
-
-### POST
-
-### PUT
-
-Cualquier cosa que pongamos en el body del request va a ser exactamente como se va a ver el objeto después. Declarativo por naturaleza.
-
-Esto es muy poderoso porque me evita todos los `no` en la configuración cuando quiero borrar lo que estaba antes. 
-
-### PATCH
-
-A diferencia del `PUT` el `PATCH` agrega lo que está en el body pero deja lo demás.
-
-### DELETE
-
-Cursos de RESTCONF
-
-<https://learninglabs.cisco.com/lab/lab03-using-restconf-to-interface-with-networking-devices/step/1>
-
-<https://learninglabs.cisco.com/lab/intro-restconf/step/1>

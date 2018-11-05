@@ -20,10 +20,10 @@ HEADERS = {
     'Accept': "application/yang-data+json",
 }
 
-next_hop = '1.2.3.4'
-prefix = '9.9.9.9'
-mask = '255.255.255.255'
-interface = 'Null0'
+next_hop = # completar aqui
+prefix = # completar aqui
+mask = # completar aqui
+interface = # completar aqui
 
 body = {
     'Cisco-IOS-XE-native:native': {

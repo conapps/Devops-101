@@ -4,6 +4,8 @@
 
 - [Modelo Cisco-IOS-XE-native](<https://s3.amazonaws.com/adv-network-programmability/Cisco-IOS-XE-native.html>)
 - [Modelo ietf-interfaces]( https://s3.amazonaws.com/adv-network-programmability/ietf-interfaces.html)
+- [Modelo ietf-yang-libraries](https://s3.amazonaws.com/adv-network-programmability/ietf-yang-library.html)
+- [Modelo cisco-ia](https://s3.amazonaws.com/adv-network-programmability/cisco-ia.html)
 
 
 
@@ -152,7 +154,7 @@ Se sube el modelo de Yang y la página yangvalidator valida la sintaxis. Además
 
 Por detrás se utiliza Pyang.
 
-#### pyang
+#### pyang (follow along)
 
 Una de las principales utilidades de modelar la información, es que los desarrolladores podemos conocer de antemano la estructura de los datos y por tanto escribir código que los procese con facilidad. Si bien YANG es un lenguaje muy potente para realizar el modelado, la realidad es que no es nada sencillo de leer cuando nuestro objetivo es, de un vistazo, entender la estructura con la que tendrá que trabajar nuestro código. Para ello, en Python existe una herramienta muy útil llamada `pyang`. 
 
@@ -172,7 +174,7 @@ module: personas-uruguay
 
 Allí podemos ver rápidamente como los campos dependen jerárquicamente unos de otros y cuales son de lectura y/o escritura.
 
-### Ejercicio 5
+### Ejercicio 5 (follow along)
 
 Buscar dentro del repositorio `https://github.com/YangModels/yang/tree/master/vendor/cisco/xe/1681` el modelo `ietf-interfaces.yang` . Descargarlo y analizar su estructura utilizando `pyang`
 
@@ -298,7 +300,7 @@ module: personas-uruguay
         +--rw personas-uruguay-extended:ocupacion?   enumeration
 ```
 
-### Ejercicio 6
+### Ejercicio 6 (follow along)
 
 En este ejercicio vamos a explorar como utilizar `pyang` para generar una página Web con la documentación del modelo.
 

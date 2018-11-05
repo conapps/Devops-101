@@ -1,10 +1,10 @@
-# Netconf - 2006 - RFC 4741 (updated in 2011)
+# Netconf - 2006 - IETF RFC 4741 (actualizado en 2011)
 
 ## Introducción
 
 Netconf es un protocolo IETF pensado como una evolución de SNMP. Usa ssh, SOAP, o TLS como transporte. En este curso utilizaremos únicamente ssh.
 
-La arquitectura es cliente-servidor, donde el router es el servidor y la notebook (o sistema de gestión) es el cliente.
+La arquitectura es cliente-servidor, donde el router (o switch, firewall, etc) es el servidor y la notebook (o sistema de gestión) es el cliente.
 
 **A diferencia de REST (que es stateless), Netconf es basado en transacciones.**
 
@@ -29,15 +29,13 @@ Si analizamos Netconf mas en profundidad podremos ver que dentro de los mensajes
 
 
 
-![alt netconf overview](imagenes/para_agregar_2.png)
+![alt netconf_stack](imagenes/netconf_stack.png)
 
 
 
 Dado que Netconf es orientado a transacciones, cada mensaje RPC tiene un identificador único que identifica a la transacción. De esta forma, el cliente, o Manager figura en la imágen a continuación, puede distinguir a que RPC corresponde una respuesta determinada.
 
-
-
-![alt rpc](imagenes/para_agregar_3.png)
+<img align="middle" src="imagenes/RPC.png">
 
 
 
@@ -45,7 +43,7 @@ Cómo se mencionó anteriormente, de forma muy similar a como lo hace HTTP con s
 
 
 
-![alt netconf actions](imagenes/netconf_actions.png)
+![alt netconf actions](imagenes/netconf_operations.png)
 
 
 
@@ -55,6 +53,8 @@ Dado que Netconf utiliza ssh como transporte, en teoría podríamos realizar cua
 
 Antes de poder trabajar con NetConf es necesaro habilitar dicha funcionalidad en los equipos.
 Para ello, el procedimiento es el siguiente:
+
+### Procedimiento para configurar el router para Netconf (follow along)
 
 **Habilitar un usuario con privilegios de nivel 15**
 
@@ -186,11 +186,11 @@ Utilizar la función elaborada en el ejercicio 8 filtrando con lo siguiente `fil
 
 ---
 
-Cómo se comentó anteriormente, las "capabilities" se corresponden con los módulos de YANG soportados. La figura a continuación muestra como interpretar lo que devuelve el router.
+Cómo se comentó anteriormente, las "capabilities" se corresponden con los módulos de YANG soportados. El snippet a continuación muestra como interpretar lo que devuelve el router:
 
 
 
-![alt understand_netconf_capabilities](imagenes/netconf_understand_capabilites.png)
+![alt reading_capabilities](imagenes/reading_capabilities.png)
 
 
 
@@ -275,11 +275,15 @@ module: ietf-interfaces
 
 ---
 
-## Obteniendo información del equipo
+## Obteniendo información del equipo (follow along)
 
 Ahora que sabemos identificar que modelos de YANG soporta el equipo, que podemos descargarlos y analizar su estructura utilizando `pyang`, es hora de comenzar a obtener datos útiles.
 
-**A continuación vamos a analizar el módulo `Cisco-IOS-XE-native` para obtener el hostname del equipo**. Comencemos por descubrirlo dentro de las "capabilites" utilizando nuestra función `print_capabilities`.
+**A continuación vamos a presentar un procedimiento para obtener información del equipo, en el ejemplo vamos a utilizar el módulo `Cisco-IOS-XE-native` para averiguar el hostname**. 
+
+**1) Averigura el nombre del módulo YANG que contiene la información que necesitamos**
+
+Comencemos por descubrirlo dentro de las "capabilites" utilizando nuestra función `print_capabilities`.
 
 ```` python
 >>> print_capabilities(filter='native')
@@ -287,6 +291,8 @@ http://cisco.com/ns/yang/Cisco-IOS-XE-native
     ?module=Cisco-IOS-XE-native
     &revision=2018-02-01
 ````
+
+**2) Descargar el módulo directamente del equipo**
 
 Ahora vamos a descargar el modelo de YANG utilizando nuestra función `get_schema` 
 
@@ -304,6 +310,8 @@ module Cisco-IOS-XE-native {
 ```
 
 > Nota: tomar nota del campo `namespace` porque lo vamos a necesitar mas adelante
+
+**3) Analizar el módulo para entender su estructura**
 
 Utilizando el archivo generado llamado `Cisco-IOS-XE-native.yang`, lo analizamos utilizando `pyang`
 
@@ -333,6 +341,8 @@ module: Cisco-IOS-XE-native
 
 Como se puede ver, la salida de este modelo utilizando el formato `tree` es demasiado larga para poder ser analizada, por lo que, para este tipo de casos conviene utilizar la versión `html`. 
 Una copia de la misma se pueden encontrar [aquí](<https://s3.amazonaws.com/adv-network-programmability/Cisco-IOS-XE-native.html>) 
+
+**4) Realizar un RPC para solicitar la información**
 
 Ahora utilizaremos la función `get(filter)` del módulo `ncclient` para obtener el hostname del equipo.
 El parámetro filter se debe definir mediante XML utilizando la estructura del módulo YANG como base. Para ello partimos de una etiqueta `<filter></filter>` y dentro colocamos todas las etiquetas en la jerarquía hasta llegar a la parte del modelo que queremos modificar. En resumen, el archivo `hostname.xml` debería tener el siguiente contenido:
@@ -437,7 +447,7 @@ VirtualPortGroup0
 
 </details>
 
-## Configurando el equipo
+## Configurando el equipo (follow along)
 
 Ahora vamos a modificar la configuración del equipo, en concreto **vamos a cambiar el hostname del mismo**. Para ellos nos vamos a basar en el modelo `Cisco-IOS-XE-native` que contiene la configuración completa del mismo.
 
@@ -501,7 +511,7 @@ En este ejercicio vamos a darle vida a una funcionalidad algo olvidada en los ro
 
 #### 13.1
 
-Implementar una función llamada `get_motd()` que devuelva un nuevo mensaje del día utilizando el siguiente servicio `GET https://talaikis.com/api/quotes/random/`
+Implementar una función llamada `get_motd()` que devuelva un string con un nuevo mensaje del día utilizando el siguiente servicio `GET https://talaikis.com/api/quotes/random/`
 
 #### 13.2
 
@@ -514,6 +524,9 @@ router(config)# banner motd <caracter-delimitador><mensaje><caracter-delimitador
 > Nota: El caracter delimitador es cualquier caracter que indique el comienzo y el fin del mensaje. (obviamente este caracter no se puede utilizar dentro del mensaje o el mismo se cortaría). Una buena elección sería por ejemplo `^`.
 
 Utizando como referencia el modelo `Cisco-IOS-XE-native`, elaborar un filtro XML llamado `config_motd.xml` para poder configurar el `motd` mediante Netconf.
+
+> Consejo: dentro del filtro xml no dejar "enters", "tabuladores", ni ningún caracter especial entre \<banner> y el mensaje. Concretamente, esa parte del filtro debería verse así:
+> \<banner>{mensaje}\</banner>
 
 <details>
 
@@ -543,7 +556,7 @@ Crear una función `change_motd(host, username, password, message, port='830')` 
 
 ---
 
-### Ejercicio 14
+### Ejercicio 14 (follow along)
 
 Hacer una función para cada cosa que se quiera configurar en un equipo está bien para comenzar pero a la larga no es práctico. Para facilitarnos un poco la vida, vamos a introducir una función genérica que nos permitirá configurar cualquier cosa.
 
@@ -558,9 +571,13 @@ def generic_conf(host, username, password, port='830', **kwargs):
 
 #### 14.1
 
-Luego de analizar detenidamente la función anterior para entender su funcionamiento, elabore un filtro llamado `interface_description.xml` y configure una descripción de su agrado en la interface `GigabitEthernet1`
+Luego de analizar detenidamente la función anterior para entender su funcionamiento, utilice nuevamente el modelo  `Cisco-IOS-XE-native` como referencia para elaborar un filtro llamado `config_interface_description.xml` y configure una descripción de su agrado en la interface `GigabitEthernet1`.
+
+
 
 ---
+
+## Cómo salvar la configuración
 
 Para finalizar apredenderemos como salvar la configuración. Para ello es necesario enviar el siguiente mensaje RPC al router.
 
