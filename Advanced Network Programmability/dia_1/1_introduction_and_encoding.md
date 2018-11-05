@@ -207,7 +207,7 @@ print('El password es:', repr(password))
 
 
 
-## Python nativo en el dispositivo
+## Python nativo en el dispositivo (follow along)
 
 `guestshell` es un ambiente virtualizado, basado en linux, diseñado para correr aplicaciones customizadas dentro del router, incluyendo Python. Este entorno se corre como un Linux Container, completamente desacoplado del router.
 
@@ -367,7 +367,7 @@ cli(command)
 
 
 
-### Ejercicio 2
+### Ejercicio 2 (follow along)
 
 En este ejercicio implementaremos el siguiente caso de uso. 
 Supongamos que queremos actualizar de forma dinámica la base local de usuario y password de los equipos en función de los datos provistos por la siguiente API:
