@@ -71,7 +71,7 @@ def send_message(message, key):
         'Authorization': 'Bearer ' + key,
         'Content-Type': 'application/json'
     }
-    ROOM_ID = 'Y2lzY29zcGFyazovL3VzL1JPT00vZjE2MTZmNTAtOWZiZC0xMWU4LWFhNzEtZTlkMjFkNTdiOGFh'
+    ROOM_ID = 'Y2lzY29zcGFyazovL3VzL1JPT00vYzJiYTNhMTAtZTA5YS0xMWU4LWE5OWQtMDc3YWRjYTcxYTVi'
     BODY = {
         'roomId': ROOM_ID,
         'text': message
