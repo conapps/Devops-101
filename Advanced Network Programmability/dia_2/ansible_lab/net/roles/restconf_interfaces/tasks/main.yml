@@ -1,3 +1,8 @@
+# ---
+# roles/restconf_interfaces/tasks/main.yml
+#
+# Tareas para configurar interfaces a traés de RESTCONF con Ansible.
+# ---
 - name: PATCH method (running configuration)
   uri:
     url: 'https://{{inventory_hostname}}/restconf/data/ietf-interfaces:interfaces'
