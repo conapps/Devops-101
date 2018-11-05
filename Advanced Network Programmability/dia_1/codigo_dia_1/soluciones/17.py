@@ -32,8 +32,8 @@ def get_yang_modules(username=USERNAME, password=PASSWORD, show=False):
     else:
         print('Error in the request, status code:', response.status_code)
 
-def get_yang_definition(filter, show=False):
-    modules = get_yang_modules()['ietf-yang-library:modules-state']['module']
+def get_yang_definition(filter, username=USERNAME, password=PASSWORD, show=False):
+    modules = get_yang_modules(username=username, password=password)['ietf-yang-library:modules-state']['module']
     result = []
 
     for module in modules:

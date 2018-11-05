@@ -227,13 +227,13 @@ Una de las variables que es importante tener en cuenta es `ansible_connection`. 
 
 #### Ejercicio #1
 
-Para conseguir realizar la conexión por SSH, debemos configurar la llave privada que debemos utilizar. La misma se encuentra en la ubicación `~/ansible/lab/docker/master_key`.
+Para conseguir realizar la conexión por SSH, debemos configurar la llave privada que debemos utilizar. La misma se encuentra en la ubicación `/var/ans/master_key`.
 
-Configure el inventario para que Ansible utilize el la llave privada almacenada en `./docker/master_key`. 
+Configure el inventario para que Ansible utilize el la llave privada almacenada en `./master_key`. 
 
 <details>
 <summary>Pista #1</summary>
-El nombre de la variable a configurar es <code>ansible_ssh_private_key</code>.
+El nombre de la variable a configurar es <code>ansible_ssh_private_key_file</code>.
 </details>
 
 <details>
@@ -249,6 +249,7 @@ all:
     host03:
     </pre>
 </details>
+
 ---
 
 Para probar que efectivamente tenemos acceso a los hosts definidos en el inventario vamos a utilizar comandos `ad-hoc`. Estos son comandos sencillos, de una sola línea, que no necesitan de un archivo individual para contenerlos, o que no tenemos intención de salvarlos para el futuro. Por ejemplo: `ping`, `echo`, etc.
@@ -260,13 +261,13 @@ Para probar que efectivamente tenemos acceso a los hosts definidos en el inventa
 Los comandos `ad-hoc` se llaman a través del flag `-m` seguidos del módulo que queremos utilizar, o a través del flag `-a` seguidos del comando que queremos lanzar en los hosts remotos.
 
 ```bash
-ansible -i inventory.yml all -m ping
+ansible -i hosts.yml all -m ping
 ```
 
 Utilizando el comando anterior podemos realizar un ping sobre todos los hosts detallados en el inventario.
 
 ```bash
-ansible -i inventory.yml all -a 'echo "Hello, World!"'
+ansible -i hosts.yml all -a 'echo "Hello, World!"'
 ```
 
 Es importante identificar las comillas que envuelven el comando que ejecutara ansible a través del flag `-a`, especialmente si se quieren utilizar variables de entorno dentro del comando (las comillas simples `'` no resuelven variables, solo la hacen las comillas dobles `"`). Otro punto a tener en cuenta es que el flag `-a` no soporta comandos concatenados con un pipe (`|`). Para hacer esto tenemos que utilizar el módulo `shell`.
@@ -318,6 +319,7 @@ all:
         host03:
    	</pre>
 </details>
+
 ---
 
 Utilizando los comandos `ad-hoc` podemos realizar una gran cantidad de tareas sobre múltiples hosts en simultáneo. Por ejemplo, utilizando el módulo `file` podemos compartir archivos, ó, podemos instalar aplicaciones utilizando los módulos `yum` o `apt` según la distribución que utilicemos.
@@ -567,6 +569,8 @@ Por defecto, Ansible buscara el archivo de configuración de la siguiente manera
 
 Nosotros recomendamos acompañar todos los proyectos de Ansible con un archivo de configuración `ansible.cfg` en la raiz del proyecto. De esta manera podemos saber exactamente que configuraciones estamos modificando.
 
+<details>
+	<summary>Reutilización de Playbooks</summary>
 ### Reutilización de `playbooks`
 
 Dada la forma de configuración que provee Ansible, es útil poder reutilizar el codigo de cada tarea o `playbook`. En Ansible hay tres formas de reutilizar codigo: `includes`, `import`, y `roles`. A continuación, mencionaremos como funcionan las tres, pero nos concentraremos en al utilización de roles.
@@ -598,24 +602,17 @@ Existen algunas limitaciones en el uso de `imports` e `include` que es important
 # three_tier_app.yml
 - import_playbook: webservers.yml
 ```
+</details>
 
 ---
 
 ### Ejercicio #3
 
-Cree un playbook para instalar SQLite3 y su paquete de desarrollo en los hosts identificados como `db`. Luego cree otro nuevo playbook capaz de instalar `apache2`  en los servidores `app`. Combine amobos `playbooks` en un único `playbook` para configurar todos los hosts de una sola vez.  
+Cree un playbook para instalar SQLite3 y su paquete de desarrollo en los hosts identificados como `db`.   
 
 <details>
     <summary>Solución</summary>
     <pre>
-# apache_playbook.yml
-- hosts: app
-  tasks:
-    - name: Install Apache2
-      apt:
-        name: apache2
-        state: latest
-        update_cache: yes
 # db_playbook.yml
 - hosts: db
   tasks:
@@ -629,11 +626,9 @@ Cree un playbook para instalar SQLite3 y su paquete de desarrollo en los hosts i
         name: libsqlite3-dev
         state: latest
         update_cache: yes
-# three_tier.yml
-- import_playbook: apache_playbook.yml
-- import_playbook: db_playbook.yml
 </pre>
 </details>
+
 ---
 
 ### Roles
@@ -701,6 +696,7 @@ Cree un rol capaz de instalar `apache2` y otro capaz de instalar `sqlite3`. Lueg
     - sqlite3    
 </pre>
 </details>
+
 ---
 
 _OBS: También se puede correr un rol desde una tarea a través del comando `import_role`_
@@ -714,6 +710,33 @@ Por defecto, cuando indiquemos el rol solo por su nombre, Ansible buscara la car
 ```
 
 Los roles puedes consumir variables definidas dentro del `playbook` a través de la opción `vars`. Las variables definidas de esta manera sobreescribirán los valores por defecto que se hayan configurado dentro del rol.
+
+### Ejercicio #5
+
+Cree dos roles, uno llamado `apache2` y otro `sqlite3`, que instalen `apache` y `sqlite` respectivamente. Luego, cree un `playbook` que aplique el rol `apache2` a los servidores del grupo `app` y el rol `sqlite3` a los servidores del grupo `db`.
+
+<details>
+	<summary>
+		Pista #1
+	</summary>
+	Recuerde que los roles deben ser crados dentro de la carpeta `/roles`.
+</details>
+<details>
+	<summary>
+		Pista #2
+	</summary>
+	Las carpetas activas dentro de los roles, cuentan con un archivo llamado `main.yml`.
+</details>
+<details>
+	<summary>
+		Pista #3
+	</summary>
+	Las tareas dentro del archivo `tasks/main.yml` se definen dentro de una lista.
+</details>
+
+---
+
+### 🚨🚨🚨 Solo de Referencia 🚨🚨🚨 
 
 ### Ansible galaxy
 
@@ -758,6 +781,8 @@ _OBS: para evitar problemas de permisos, configuren la opción `ansible_become` 
 	- manala.sqlite    
   </pre>
 </details>
+
+### 🚨🚨🚨 --- 🚨🚨🚨 
 ---
 
 ## Networking con Ansible
@@ -812,7 +837,7 @@ Empezamos configurando el inventario.
 
 ```yaml
 # ---
-# inventory.yml
+# hosts.yml
 #
 # Lista de equipos de Networking
 # ---
@@ -852,7 +877,7 @@ Para simplificar la escritura de comandos en la consola, también vamos a crear 
 ```Ini
 [defaults]
 
-inventory = /home/ubuntu/net/inventory.yml
+inventory = ./hosts.yml
 host_key_checking = False
 retry_files_enabled = False
 ```
@@ -923,7 +948,7 @@ El primer `playbook` que vamos a crear permitira almacenar un respaldo de las co
 
 ---
 
-### Ejercicio #5
+### Ejercicio #6
 
 Cree un `playbook` que le permita modificar el `hostname` del `hub`, solo en el caso de que la variable `hostname` este definida para cada host.
 
@@ -936,6 +961,12 @@ Cree un `playbook` que le permita modificar el `hostname` del `hub`, solo en el 
     <summary>Pista #2</summary>
     El comando para cambiar el <code>hostname</code> en <code>ios</code> es: <code>hostname nombre_del_host</code>
 </details>
+
+<details>
+    <summary>Pista #3</summary>
+    Recuerde utilizar la opción `when` dentro de una `task` para ejecutarla solo cuando se cumpla una condición. Las condiciones aceptadas son aquellas validas en Python.
+</details>
+
 <details>
     <summary>Solución</summary>
     <pre class="language-yaml" lang="yaml"># ---
@@ -954,6 +985,7 @@ Cree un `playbook` que le permita modificar el `hostname` del `hub`, solo en el 
         lines: 'hostname {{hostname}}'
       when: hostname is defined</pre>
 </details>
+
 ---
 
 ## Auditoría de configuraciones
@@ -982,7 +1014,7 @@ Por ejemplo, si corremos el siguiente `playbook`, veremos las diferencias entre 
 
 - name: Running Vs. Startup diff (simple)
   hosts: all
-  connection: routers
+  connection: local
   gather_facts: no
   tasks:
     - name: Comando para hallar las diferencias
@@ -1080,7 +1112,7 @@ Luego, creamos un nuevo `playbook` con la siguiente información:
   tasks:
   	- name: Cargamos el contenido de 'example.json' en una variable
   	  set_fact:
-  	    json: "{{ lookup('file', 'example.json') | to_json }}"
+  	    json: "{{ lookup('file', 'example.json') | from_json }}"
   	- name: Imprimimos el JSON en la consola
   	  debug:
   	  	var: json
@@ -1172,7 +1204,7 @@ Combinando condicionales y loops con distintos filtros podemos extraer cualquier
 
 ---
 
-## Ejercicio #6
+## Ejercicio #7
 
 Escriba un `playbook` que permita almacenar la diferencia entre la `startup` y `running` config.
 
@@ -1190,12 +1222,12 @@ _OBS: Recuerde correr el `playbook` con la opción `—diff`._
 
 <details>
     <summary>Pista #3</summary>
-    El módulo ios_config retorna un objeto una llave llamada <code>diff</code> la cual contiene dos llaves más: <code>after</code> y <code>before</code>. Ambas contienen la configuración en texto plano.
+    El módulo ios_config retorna un objeto una llave llamada <code>diff</code> la cual contiene dos llaves más: <code>after</code> y <code>before</code>. Ambas contienen la configuración en <b>texto plano</b>.
 </details>
 
 <details>
     <summary>Pista #4</summary>
-    Puede convertir un string en una lista utilizando la función <code></code>split</code>. Por ejemplo: <code>output['diff']['after'].split('\n')</code>
+    Puede convertir un string en una lista utilizando la función <code>split</code>. Por ejemplo: <code>output['diff']['after'].split('\n')</code>
 </details>
 
 <details>
@@ -1207,6 +1239,48 @@ _OBS: Recuerde correr el `playbook` con la opción `—diff`._
     <summary>Pista #6</summary>
     Puede crear nuevos archivos utilizando el módulo <code>lineinfile</code> pasandole las opciones <code>create: yes</code> y <code>state: present</code>.
 </details>
+
+<details>
+	<summary>Solución</summary>
+	<pre>
+	# ---
+# running_vs_startup_diff.yml
+#
+# Crea un archivo donde se almacenan las diferencias entre la Running config y
+# la Startup config.
+# ---
+
+- name: Running VS. Startup Diff
+  hosts: routers
+  connection: local
+  tasks:
+    - name: Comando para hallar las diferencias
+      ios_config:
+        diff_against: startup
+      register: output
+    - debug:
+        msg: "{{output}}"
+    - name: 'Cargar el estado anterior en una variable llamada: `before`'
+      set_fact:
+        before: "{{ output['diff']['before'].split('\n') }}"
+    - name: 'Cargar el estado posterior en una variable llamada: `after`'
+      set_fact:
+        after: "{{ output['diff']['after'].split('\n') }}"
+    - name: 'Cargar una salida linea a linea de las diferencias en una variable llamada: `diference`'
+      set_fact:
+        difference: "{{ after | difference(before) }}"
+    - name: Configuramos el nombre del reporte
+      set_fact:
+        report_name: "{{hostname | default(ansible_hostname)}} - Running Config VS. Startup Config Diff"
+    - name: 'Guardamos la diferencia en un archivo'
+      lineinfile:
+        create: yes
+        state: present
+        path: "./diffs/{{hostname | default(ansible_hostname)}}_{{ ansible_date_time.epoch }}_diff.md"
+        line: "{{ difference }}"
+	</pre>
+</details>
+
 ---
 
 ## Cambios masivos
@@ -1215,7 +1289,11 @@ Utilizando Ansible es sencillo realizar configuraciones en múltiples equipo. Ya
 
 Los routers ya están configurados para poder comunicarse entre sí. Sin embargo, no podemos llegar a las redes `10.X.1.0/24` y `10.X.2.0/24` por que las interfaces de los routers dentro de estas redes no están configuradas. Vamos a ver como podemos realizar estas configuraciones de forma masiva, utilizando Ansible.
 
-Primero, veamos como se vería un `playbook` para configurar una interfaz en **solo uno** de los routers spoke.
+_OBS: La `X` corresponde al número de su POD._
+
+Los routers ya están configurados para poder comunicarse entre sí. Sin embargo, no podemos llegar a las redes `10.X.1.0/24` y `10.X.2.0/24` por que las interfaces de los routers dentro de estas redes no están configuradas. Vamos a ver como podemos realizar estas configuraciones de forma masiva, utilizando Ansible.
+
+Primero, veamos como se vería un `playbook` para configurar una interfaz **solo** en el router **hub**.
 
 ```yaml
 # ---
@@ -1224,14 +1302,14 @@ Primero, veamos como se vería un `playbook` para configurar una interfaz en **s
 # Configura la interface GigabitEthernet2 del router Spoke01
 # ...
 - name: Configuracion de interface GigabitEthernet2
-  hosts: 10.X.201.253
+  hosts: hub
   connection: local
   gather_facts: no
   tasks:
     - ios_config:
         lines:
           - description "Conexión con Red Spoke #1"
-          - ip address 10.1.1.254 255.255.255.0
+          - ip address 10.X.201.254 255.255.255.0
           - no shutdown
         parents: interface GigabitEthernet2
 ```
@@ -1242,9 +1320,9 @@ Básicamente, escribe las líneas que le indicamos en el router, en la ubicació
 
 ---
 
-### Ejercicio #6
+### Ejercicio #8
 
-Cree un nuevo rol llamado `config_interface` que configure una interfaz de un router consumiendo una lista de objetos llamada `interfaces` con las siguientes llaves:
+Cree un nuevo rol llamado `configure_interfaces` que configure una interfaz de un router consumiendo una lista de objetos llamada `interfaces` con las siguientes llaves:
 
 - `interface`
 - `ip_address`
@@ -1260,20 +1338,20 @@ El rol luego será llamado a través del siguiente `playbook`
 # Configura interfaces utilizando un rol
 # 
 # OBS:
-# 	Dentro del inventario, se configurará una variable llamada
-#	`interfaces` con una lista de interfaces. Por ejemplo:
-#		interfaces:
-# 	  	  - interface: GigabitEthernet2
-# 	    	ip_address: '10.X.201.254'
-# 	    	netmask: '255.255.255.0'
-# 	    	description: Configurado desde el nuevo rol
+#   Dentro del inventario, se configurará una variable llamada
+#    `interfaces` con una lista de interfaces. Por ejemplo:
+#   interfaces:
+#     - interface: GigabitEthernet2
+#       ip_address: '10.X.201.254'
+#       netmask: '255.255.255.0'
+#       description: Configurado desde el nuevo rol
 # ...
 - name: Configuración de interface
-  hosts: spokes
+  hosts: hub
   connection: local
   gather_facts: no
   roles:
-  	- config_interfaces
+    - role: ../roles/configure_interfaces
 ```
 
 <details>
@@ -1288,11 +1366,12 @@ roles
 \ ...
     </pre>
 </details>
+
 <details>
     <summary>Pista #2</summary>
     Recuerde la estructura de carpetas que debe tener un <code>role</code> dentro del directorio <code>roles</code>.
     <pre>
-    \config_interfaces
+    \configure_interfaces
       \tasks
         main.yml
       \defaults
@@ -1300,11 +1379,12 @@ roles
       ...
     </pre>
 </details>
-<details>
+
+<details>	
     <summary>Solución</summary>
     <pre>
 # ---
-# ./config_interfaces/tasks/main.yml
+# ./configure_interfaces/tasks/main.yml
 #
 # Tareas para configurar la interfaz de un equipo.
 # ---
@@ -1317,9 +1397,10 @@ roles
       - no shutdown
     parents: 'interface {{ item.interface }}'
 </details>
+
 ---
 
-Ahora que tenemos el rol, podemos configurar estas opciones dentro del archivo de inventario, o pasar las opciones directamente al momento de consumir el `role`.
+Ahora que tenemos el rol, podemos configurar estas opciones dentro del archivo de inventario. Carguemos esta información en nuestro inventario.
 
 ```yaml
 ---
@@ -1405,7 +1486,7 @@ https://docs.ansible.com/ansible/devel/modules/ios_user_module.html#ios-user-mod
 
 ---
 
-###Ejercicio #7
+### Ejercicio #9
 
 Construya un `playbook` que le permita crear un usuario en todos los routers con las siguientes credenciales:
 
@@ -1472,6 +1553,10 @@ El cual lo único que hace es enviarle un mensaje a un usuario ficticio de Webex
 Y2lzY29zcGFyazovL3VzL1BFT1BMRS83MjJiYjI3MS1kN2NhLTRiY2UtYTllMy00NzFlNDQxMmZhNzc
 ```
 
+---
+
+### 🚨🚨🚨 Solo de Referencia 🚨🚨🚨 
+
 A su vez, aprovecharemos este momento para explicar como podemos encriptar nuestras credenciales de acceso dentro de los `playbooks` de Ansible utilizando `ansible-vault`. 
 
 Para no dejar registrado en texto plano nuestro token, vamos a utilizar `ansible-vault` para encriptarlo.  Comenzamos editando la configuración de Ansible en nuestro entorno. En el archivo `ansible.cfg` le indicaremos a Ansible donde puede encontrar la contraseña utilizada para encriptar.
@@ -1512,7 +1597,24 @@ webex_teams_token: <SU TOKEN>
 
 Si abrimos el archivo `secret/vars.yml` en un editor de texto veremos que su contenido este encriptado usando AES256. En caso de querer editarlo usamos el comando `ansible-vault edit secret/vars.yml`. Agregaremos el ID de Sparky en este mismo archivo por conveniencia.
 
-Ahora escribiremos el comando de prueba ofrecido en la página de Webex Teams con Ansible, utilizando nuestro token encriptado.
+### 🚨🚨🚨 --- 🚨🚨🚨 
+
+---
+
+Ahora escribiremos el comando de prueba ofrecido en la página de Webex Teams con Ansible, utilizando nuestro token. Las variables las configuraremos en un archivo llamado `secret/vars.yml`.
+
+```yaml
+# ---
+# secret/vars.yml
+#
+# Archivo que almacena las variables para comunicarse con
+# Webex Teams.
+# ---
+webes_teams_token: <SU_TOKEN>
+person_id: Y2lzY29zcGFyazovL3VzL1BFT1BMRS83MjJiYjI3MS1kN2NhLTRiY2UtYTllMy00NzFlNDQxMmZhNzc
+```
+
+El `playbook` puede implementarse de la siguiente manera.
 
 ```yaml
 # ---
@@ -1552,7 +1654,7 @@ ansible-playbook hello_sparky.yml
 
 ---
 
-## Ejercicio #7
+## Ejercicio #10
 
 Cree un `playbook` que consuma dos variables:
 
@@ -1580,7 +1682,7 @@ _OBS: Cuando analice el resultado de la salida de un request en `json` utilice l
 
 <details>
     <summary>Pista #1</summary>
-    Intente obtener la lista de todos los rooms a los cuales tiene acceso, y luego intente filtrarla para conseguir el objeto JSON que representa al room que estamos buscando.
+    Intente obtener la lista de todos los rooms a los cuales tiene acceso, y luego intente filtrarla para conseguir el objeto JSON que representa al room que estamos buscando. Recuerde que para iterar sobre una lista deben utilizar la opción <code>loop</code> sobre el nivel de la <code>task</code>, y para aplicar condicionales la opción <code>when</code>.
 </details>
 
 <details>
@@ -1734,11 +1836,13 @@ Antes de poder construir la URL tenemos que identificar que `capabilities` publi
 
 ---
 
-### Ejercicio #8
+### Ejercicio #11
 
 Escriba un `playbook` que descargue todas las capabilities de cada equipo en un archivo distinto.
 
 ---
+
+### 🚨🚨🚨 Solo de Referencia 🚨🚨🚨 
 
 Cada equipo cuenta con una gran cantidad de `capabilities`. Podemos usar herramientas como `jq` (o el propio Ansible :D) para evaluar su resultado en la consola:
 
@@ -1773,7 +1877,7 @@ Esta claro que este último comando no es del todo agradable, por lo tanto, escr
 
 ---
 
-### Ejercicio #9
+### Ejercicio #12
 
 Escribir un `playbook` capaz de obtener una lista **filtrada** de `capabilities` de acuerdo al valor pasado en la variable `filter`.
 
@@ -1787,9 +1891,55 @@ Escribir un `playbook` capaz de obtener una lista **filtrada** de `capabilities`
     Puede iterar sobre la lista utilizando la opción <code>loop: '{{output.json["ietf-yang-library:modules-state"]["module"]}}'</code>. Luego puede filtrar los elementos utilizando el comando <code>when: filter in item.name</code>. Recuerde que dentro de los condicionales <code>when</code> se pueden utilizar todos los operadores condicionales de Python.
 </details>
 
+<details>
+	<summary>Solución</summary>
+	<pre>
+# filtered_capabilities.yml
+#
+# Obtiene las capabilities de todos los equipos filtradas segun el valor de la
+# variable filter y los almacena en un archivo de texto distinto para cada
+# equipo.
+# ---
+- hosts: routers
+  connection: local
+  gather_facts: yes
+  vars:
+    filter: interface
+  tasks:
+    - name: Obtenemos las capabilities de la interfaz RESTCONF para cada equipo
+      uri:
+        url: 'https://{{inventory_hostname}}/restconf/data/ietf-yang-library:modules-state'
+        force_basic_auth: yes
+        body_format: json
+        headers:
+          'Accept': 'application/yang-data+json,application/yang-data.errors+json'
+          'Accept-Encoding': 'gzip,deflate'
+          'Content-Type': 'application/yang-data+json'
+        method: GET
+        user: conatel
+        password: conatel
+        return_content: yes
+        validate_certs: no
+      register: output
+      failed_when: False
+    - name: Eliminar la version anterior del archivo
+      file:
+        path: 'outputs/{{inventory_hostname}}_filtered_capabilities.json'
+        state: absent
+    - name: Guardar los datos en un archivo de texto
+      lineinfile:
+        dest: 'outputs/{{inventory_hostname}}_filtered_capabilities.json'
+        line: '{{item | to_json}}'
+        create: yes
+      loop: '{{output.json["ietf-yang-library:modules-state"]["module"]}}'
+      when: filter in item.name
+</details>
+
+### 🚨🚨🚨 --- 🚨🚨🚨 
+
 ---
 
-Por el momento vamos a trabajar con `Cisco-IOS-XE-interfaces-oper` e `ietf-interfaces` . Ambos módulos contienen información interesante sobre las interfaces de los equipos, sin embargo, presentan funcionalidades distintas. Por ejemplo, el primer módulo solo permite leer la información del equipo. Podemos identificar este comportamiento cuando analizamos la documentación del módulo y vemos que el único `container` que pública, cuenta con su opción `config` igual a `false`. El valor por defecto de esta opción es `true`. Aquellos `containers` que no cuenten con esta opción en ` false` permiten la edición de sus datos.
+Por el momento vamos a trabajar con `Cisco-IOS-XE-interfaces-oper` e `ietf-interfaces` . Ambos módulos contienen información interesante sobre las interfaces de los equipos, sin embargo, presentan funcionalidades distintas. Por ejemplo, el primer módulo solo permite leer la información del equipo. Podemos identificar este comportamiento cuando analizamos la documentación del módulo y vemos que el único `container` que pública, cuenta con su opción `config` igual a `false`. El valor por defecto de esta opción es `true`. **Aquellos `containers` que no cuenten con esta opción en ` false` permiten la edición de sus datos.**
 
 ```javascript
 container interfaces {
@@ -1807,11 +1957,50 @@ container interfaces {
 
 ---
 
-### Ejercicio #10
+### Ejercicio #13
 
 Cree un `playbook` que extraiga la información de ambos módulos, y los almacene en un mismo archivo, o en uno para cada módulo.
 
 _OBS: Recuerde como se construían las URL en RESTCONF._
+
+<details>
+	<summary>Solución</summary>
+	<pre>
+# ---
+# get_interface_modules.yml
+#
+# Obtiene datos de las interfaces utilizando dos módulos distintos
+# ---
+- hosts: routers
+  connection: local
+  gather_facts: yes
+  tasks:
+    - name: 'Descarga de módulos'
+      uri:
+        url: 'https://{{inventory_hostname}}/restconf/data/{{item}}'
+        force_basic_auth: yes
+        body_format: json
+        headers:
+          'Accept': 'application/yang-data+json,application/yang-data.errors+json'
+          'Accept-Encoding': 'gzip,deflate'
+          'Content-Type': 'application/yang-data+json'
+        method: GET
+        user: conatel
+        password: conatel
+        return_content: yes
+        validate_certs: no
+      register: output
+      failed_when: false
+      loop:
+        - "Cisco-IOS-XE-interfaces-oper:interfaces"
+        - "ietf-interfaces:interfaces"
+    - name: Almacena los resultados en un archivo de json
+      include_role:
+        name: ../roles/store_uri_output
+      vars:
+        output_filename: '{{inventory_hostname}}_interface_modules'
+</pre>
+</details>
 
 ---
 
@@ -1902,7 +2091,7 @@ Utilizando esta información como base podemos crear un `playbook` que actualice
         body: {
           "ietf-interfaces:interfaces": {
             "interface": [{
-              "description": "Red de transito 1",
+              "description": "Modificado con Ansible y Restconf",
               "enabled": true,
               "ietf-ip:ipv4": {
                   "address": [
@@ -1930,11 +2119,9 @@ Utilizando esta información como base podemos crear un `playbook` que actualice
         status_code: 200, 201, 204
       register: output
       failed_when: false
-    - name: Almacena los resultados en un archivo de json
-      include_role:
-        name: ../roles/store_uri_output
-      vars:
-        output_filename: ietf_patch_interface
+    - name: Debug
+      debug:
+        var: output
 ```
 
 Es importante notar un par de cosas de este `playbook` 
@@ -1948,9 +2135,9 @@ Es importante notar un par de cosas de este `playbook`
 
 ---
 
-### Ejercicio #11
+### Ejercicio #14
 
-Construya un `role` capaz de configurar interfaces utilizando `RESTCONF` y el módulo `ietf-interfaces`. El `role` consumirá una variable llamada `interfaces` la cual contará con una lista de objetos con las siguientes claves:
+Construya un `role` llamado `restconf_interfaces` capaz de configurar interfaces utilizando `RESTCONF` y el módulo `ietf-interfaces`. El `role` consumirá una variable llamada `interfaces` la cual contará con una lista de objetos con las siguientes claves:
 
 ```yaml
 interfaces:  
@@ -1960,7 +2147,78 @@ interfaces:
     description: Conexión con red Spoke 1
 ```
 
+Llamaremos luego a este rol utilizando este `playbook`:
+
+```yaml
+# ---
+# configure_interfaces.yml
+#
+# Configura interfaces utilizando un rol
+#
+# OBS:
+# 	Dentro del inventario, se configurará una variable llamada
+#	  `interfaces` con una lista de interfaces. Por ejemplo:
+#		interfaces:
+# 	  - interface: GigabitEthernet2
+# 	    ip_address: '10.X.201.254'
+# 	    netmask: '255.255.255.0'
+# 	    description: Configurado desde el nuevo rol
+# ---
+- name: Configuración de interface
+  hosts: spokes
+  connection: local
+  gather_facts: no
+  roles:
+    - role: ../roles/restconf_interfaces
+  tasks:
+    - name: Debug
+      debug:
+        var: restconf_output
+      when: restconf_output is defined
+```
+
 _OBS: Recuerde que ya creamos un `role` similar utilizando el módulo `ios_config`._
+
+<details>
+	<summary>Solución</summary>
+	<pre>
+# ---
+# roles/restconf_interfaces/tasks/main.yml
+#
+# Tareas para configurar interfaces a traés de RESTCONF con Ansible.
+# ---
+- name: PATCH method (running configuration)
+  uri:
+    url: 'https://{{inventory_hostname}}/restconf/data/ietf-interfaces:interfaces'
+    force_basic_auth: yes
+    body_format: json
+    body:
+      "ietf-interfaces:interfaces":
+        interface:
+          - description: "{{item.description}}"
+            enabled: "{{item.enabled | default(true)}}"
+            "ietf-ip:ipv4":
+              address:
+                - ip: "{{item.ip_address}}"
+                  netmask: "{{item.netmask}}"
+            "ietf-ip:ipv6": {}
+            name: "{{item.interface}}"
+            type: "iana-if-type:ethernetCsmacd"
+    headers:
+      'Accept': 'application/yang-data+json,application/yang-data.errors+json'
+      'Accept-Encoding': 'gzip,deflate'
+      'Content-Type': 'application/yang-data+json'
+    method: PATCH
+    user: conatel
+    password: conatel
+    return_content: yes
+    validate_certs: no
+    status_code: 200, 201, 204
+  failed_when: false
+  loop: "{{interfaces}}"
+  register: restconf_output
+	</pre>
+</details>
 
 ---
 
@@ -2007,7 +2265,7 @@ Creemos un `playbook` para ver que información retorna en la raíz del módulo.
         create: yes
 ```
 
-El resultado de este comando es la configuración completa del equipo en formato `JSON`. A través de estemódulo podemos realizar todas las configuraciones del equipo que queramos.
+El resultado de este comando es la configuración completa del equipo en formato `JSON`. A través de este módulo podemos realizar todas las configuraciones del equipo que queramos.
 
 Comencemos por algo fácil: modificar el hostname.
 
@@ -2043,18 +2301,6 @@ Comencemos por algo fácil: modificar el hostname.
       failed_when: False
     - debug:
         var: output['json']
-      when: output['json'] is defined
-    - name: Eliminar la version anterior del archivo
-      file:
-        path: 'outputs/{{inventory_hostname}}_native.json'
-        state: absent
-      when: output["json"] is defined
-    - name: Guardar los datos en un archivo de texto
-      lineinfile:
-        dest: 'outputs/{{inventory_hostname}}_hostname.json'
-        line: '{{output["json"] | to_nice_json}}'
-        create: yes
-      when: output["json"] is defined
 ```
 
 Pasemos a algo relativamente más complejo: configurar una ruta estatica.
@@ -2128,7 +2374,7 @@ Con esta información, estamos en condiciones de crear un `playbook` capaz de mo
 
 ---
 
-### Ejercicio #11
+### Ejercicio #15
 
 Cree un nuevo `playbook` capaz de configurar rutas estáticas utilizando el módulo `Cisco-IOS-XE-native`. El mismo consumiría una variable llamada `routes` que contendrá un objeto con una llave llamada `static`, la cual incluirá una lista de objetos representando una ruta estática. Las opciones de este objeto son:
 
