@@ -8,6 +8,9 @@
 - name: Running VS. Startup Diff
   hosts: routers
   connection: local
+  vars:
+    aws_region: sa-east-1
+    lab_pod: 1
   tasks:
     - name: Comando para hallar las diferencias
       ios_config:
