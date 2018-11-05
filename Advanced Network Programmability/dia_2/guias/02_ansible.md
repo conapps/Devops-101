@@ -2000,7 +2000,7 @@ _OBS: Recuerde como se construían las URL en RESTCONF._
       vars:
         output_filename: '{{inventory_hostname}}_interface_modules'
 </pre>
-</summary>
+</details>
 
 ---
 
