@@ -16,3 +16,4 @@ ENV LC_ALL en_US.UTF-8
 
 # adjust file permissions to make run.sh executable
 RUN chmod 755 /var/run.sh
+CMD /var/run.sh
