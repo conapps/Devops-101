@@ -306,14 +306,14 @@ Ahora nos conectarémos a la instancia en la `subnet` pública para ver como pod
 5. Seleccionar la instancia de la `subnet` privada.
 6. Identificar la dirección `IP` privada de dicha instancia
 7. Iniciar una sesión `SSH` desde nuestra maquina local con la instancia en la `subnet` pública.
-  ```
-  ssh -i <llave_privada>.pem ec2-user@<ip_publica_de_la_instancia_publica>
-  ```
-6. Copiar la llave privada de nuestra maquina local a la instancia pública.
-7. Iniciar una sesión `SSH` desde la instancia pública con la instancia en la `subnet` privada.
-   ```
-   ssh -i <llave_privada>.pem ec2-user@<ip_privada_de_la_instancia_privada>
-   ```
+    ```
+    ssh -i <llave_privada>.pem ec2-user@<ip_publica_de_la_instancia_publica>
+    ```
+8. Copiar la llave privada de nuestra maquina local a la instancia pública.
+9. Iniciar una sesión `SSH` desde la instancia pública con la instancia en la `subnet` privada.
+    ```
+    ssh -i <llave_privada>.pem ec2-user@<ip_privada_de_la_instancia_privada>
+    ```
  
 #### FAQ
 
