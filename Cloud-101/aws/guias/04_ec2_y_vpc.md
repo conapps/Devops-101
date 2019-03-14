@@ -246,3 +246,222 @@ Si no creamos una nueva `route table` ambas `subnets` quedarán configuradas com
 No porque todas las `route tables` que estamos utilizando cuentan con una ruta que indica como llegar a otras `subnets` por defecto. Mientras no eliminemos esta ruta no hay problema.
   
 ---
+
+Ahora que tenemos una `subnet` privada y una `pública` vamos a levantar una instancia dentro de cada una de ellas para probar su funcionamiento.
+
+---
+
+### 💻 DEMO #7 ~ Levantar instancias en `subnets` privadas y públicas
+
+#### Procedimiento
+
+1. Ir al Dashboard de EC2.
+2. Hacer click en `Instances`.
+3. Hacer click en `Launch Instance`.
+4. Seleccionar la `AMI` "Amazon Linux 2 AMI (HVM)".
+5. Seleccionar el tipo de `AMI` `t2.micro` (seleccionado por defecto).
+6. Hacer click en `Next: Configure Instance Details`.
+7. Modificar las siguientes opciones.
+   1. `Network`: Seleccionar el `VPC` previamente creado.
+   2. `Subnet`: Seleccionar la `subnet` pública.
+   3. `Auto-assign Public IP`: Seleccionar `Enable`.
+8. Hacer click en `Review and Launch`.
+9. Hacer click en `Launch`.
+10. Seleccionar el par de llaves `SSH` previamente creado y seleccionar la opción que dice: "I acknowledge that I have access to the selected private key file (<el_nombre_de_su_llave>), and that without this file, I won't be able to log into my instance."
+11. Hacer click en `Launch Instances`.
+12. Hacer click en `View Instances`.
+
+Luego repetimos el mismo procedimiento que el anterior pero seleccionamos la `subnet` privada en vez de la pública al llegar al paso `7.2`, y la opción `Disable` en `Auto-assign Public IP`.
+
+#### FAQ
+
+**¿Que paso si selecciono `Enable` en el paso `7.3` al levantar la instancia en la red privada?**
+
+AWS le asignará a esa instancia una `IP` pública. Sin embargo, nunca nos podremos conectar a esta instancia porque no sabe como llegar a un `Internet Gateway`. Para poder hacer esto debería tener configurada una ruta en su `route table` que apuntara al `IG` asociado al `VPC` de la `subnet`.
+
+**¿Que pasa si selecciono `Disable` en el paso `7.3` al levantar la instancia en la red pública?**
+
+AWS no le asignará una `IP` pública a esta maquina por lo que no podrémos acceder a ella desde Internet. Además, desde esta instancia tampoco podrémos llegar a Internet mientras no tengamos una `IP` pública asignada.
+
+**¿Como le asigno una `IP` pública a una instanca en una `subnet` pública si me olvide de asignarle una al momento de crearla?**
+
+La única forma es asignandole una `Elastic IP`. Estas `IP` públicas se crean de forma independiente y se asignan manualmente a una instancia. Esta forma de víncular ambos recursos permite re-asignar de forma dínamica la `IP` a distintas instancias sin tener que modificar reglas de ruteo.
+
+---
+
+Finalmente obtendremos dos instancias una en cada `subnet`. Si veríficamos las direcciones `IP` de cada instancia veremos que ambas tienen una `IP` privada que corresponde a su `subnet` y la instancia que se encuentra en la `subnet` pública cuenta con una `IP` pública.
+
+Ahora nos conectarémos a la instancia en la `subnet` pública para ver como podemos llegar de ahí a las instancias en la `subnet` privada.
+
+---
+
+### 💻 DEMO #8 ~ Conexión por SSH a ambas instancias
+
+#### Procedimiento
+
+1. Ir al Dashboard de EC2.
+2. Hacer click en `Instances`.
+3. Seleccionar la instancia de la `subnet` pública.
+4. Identificar la dirección `IP` pública de dicha instancia.
+5. Seleccionar la instancia de la `subnet` privada.
+6. Identificar la dirección `IP` privada de dicha instancia
+7. Iniciar una sesión `SSH` desde nuestra maquina local con la instancia en la `subnet` pública.
+  ```
+  ssh -i <llave_privada>.pem ec2-user@<ip_publica_de_la_instancia_publica>
+  ```
+6. Copiar la llave privada de nuestra maquina local a la instancia pública.
+7. Iniciar una sesión `SSH` desde la instancia pública con la instancia en la `subnet` privada.
+   ```
+   ssh -i <llave_privada>.pem ec2-user@<ip_privada_de_la_instancia_privada>
+   ```
+ 
+#### FAQ
+
+**¿Porque puedo conectarme por `SSH` desde la instancia pública hacia la privada pero no puedo hacer un `ping`?**
+
+Porque la instancia privada esta protegida por un `Security Group` que es un recurso que limita los puertos por los cuales esta permitida la comunicación. Por defecto, AWS le asigna a las instancias un `Security Group` por defecto que solamente permite tráfico entrante por el puerto `22` desde cualquier `IP` (`0.0.0.0`).
+
+---
+
+Podemos comprobar que desde la instancia privada no tenemos acceso a Internet utilizando `curl` o `ping`.
+
+```
+[ec2-user@ip-10-0-0-218 ~]$ curl www.google.com
+curl: (7) Failed to connect to www.google.com port 80: Connection timed out
+
+[ec2-user@ip-10-0-1-245 ~]$ ping 8.8.8.8
+PING 8.8.8.8 (8.8.8.8) 56(84) bytes of data.
+--- 8.8.8.8 ping statistics ---
+380 packets transmitted, 0 received, 100% packet loss, time 388098ms
+```
+
+Para que estas instancias puedan acceder a Internet tenemos que configurar un `NAT Gateway` dentro de nuestro `VPC` y agregar una ruta por defecto hacia el `NAT Gateway` de la `route table` vinculada a la  `subnet` privada.
+
+---
+
+### 💻 DEMO #9 ~ Creación de un NAT Gateway
+
+#### Procedimiento
+
+1. Ir al Dashboard de VPC.
+2. Hacer click en `NAT Gateways`.
+3. Hacer click en `Create NAT Gateway`.
+4. Seleccionar la `subnet` pública.
+5. Hacer click en `Create New EIP`.
+6. Hacer click en `Create a NAT Gateway`.
+7. Hacer click en `Edit route tables`.
+8. Seleccionar la `route table` por defecto de nuestro `VPC`, en donde esta asignada la `subnet` privada.
+9. Seleccionar la pestaña `Routes`.
+10. Hacer click en `Edit routes`.
+11. Hacer click en `Add route`.
+12. Colocar `0.0.0.0/0` como `Destination` y seleccionar el `NAT Gateway` previamente creado.
+13. Hacer click en `Save routes`.
+14. Hacer click en `Close`.
+ 
+#### FAQ
+
+**¿Que pasa si selecciono la `subnet` privada en vez de la pública al momento de crear el `NAT Gateway`?**
+
+El `NAT Gateway` no funcionara porque la `subnet` donde fue configurado no tiene forma de llegar hasta el `Internet Gateway`.
+
+---
+
+![Redes privadas y públicas en AWS](../imagenes/015.png)
+
+Si realizamos las mismas pruebas que antes desde la instancia privada podemos comprobar que contamos con acceso a Internet. Sin embargo, todavía no podemos hacer `ping` entre ambas instancias. Veamos como podemos solucionar esto.
+
+---
+
+### 💻 DEMO #10 ~ Configuración de un Security Group
+
+#### Procedimiento
+
+Para veríficar el funcinamiento de las proximas modificaciones es recomendable dejar corriendo un `ping` entre las instancias.
+
+1. Ir al Dashboard de EC2.
+2. Hacer click en `Instances`.
+3. Seleccionar la instancia pública.
+4. Hacer click en el `Security group` asignado a la instancia dentro de la pestaña `Description`.
+5. Hacer click en la pestaña `Inbound`.
+6. Hacer click en `Edit`.
+7. Hacer click en `Add Rule`.
+8. Seleccionar:
+   1. `Type`: `Custom ICMP`.
+   2. `Protocol`: `All`.
+   3. `Source`: La subred asignada al `VPC`, p ej. `10.0.0.0/16`.
+9. Hacer click en `Save`.
+10. Si la configuración funciono correctamente el `ping` debería estar funcionando ahora.
+
+---
+
+Los `Security Groups` funcionan como firewalls virtuales sobre las instancias. Hasta 5 `Security Groups` se pueden asociar a una instancia en paralelo. La ventaja de estos recursos es que actuan sobre las instancias y no las `subnets`. De manera que cada instancia puede contar con reglas distintas de seguridad. 
+
+Como medida adicional de seguridad, AWS provee `Network ACLs`, o `Network access control list`. Estas si actuan sobre todas las instancias de la `subnet` y por defecto están configuradas para permitir todo el tráfico saliente y entrante. 
+
+Configuraremos una nueva `Network ACL` para permitir el acceso por `SSH` a las instancias de la `subnet` privada solamente de la instancia pública.
+
+---
+
+### 💻 DEMO #10 ~ Creación de una Network ACL
+
+#### Procedimiento
+
+1. Ir al Dashboard de VPC.
+2. Hacer click en `Network ACLs`.
+3. Hacer click en `Create network ACL`.
+4. Asignar un nombew a la `Network ACL` y seleccionar el `VPC` sobre el que estamos trabajando.
+5. Hacer click en `Create`.
+6. Seleccionar la `Network ACL` recien creada.
+7. Hacer click en la pestaña `Subnet associations`.
+8. Hacer click en `Edit subnet associations`.
+9. Seleccionar la `subnet` privada.
+10. Hacer click en `Edit`.
+11. Hacer click en `Inbound Rules`.
+12. Hacer click en `Edit Inbound rules`.
+13. Hacer click en `Add Rule`.
+14. Configurar la nueva regla de la siguiente manera:
+    1.  `Rule #`: `100`
+    2.  `Type`: `Custom TCP Rule`.
+    3.  `Protocol`: `TCP`.
+    4.  `Port Range`: `22`.
+    5.  `Source`: `<ip_de_la_instancia_pública>/32`.
+    6.  `Allow/Deny`: `ALLOW`.
+15. Hacer click en `Add Rule`.
+16. Configurar la nueva regla de la siguiente manera:
+    1.  `Rule #`: `200`
+    2.  `Type`: `Custom TCP Rule`.
+    3.  `Protocol`: `TCP`.
+    4.  `Port Range`: `22`.
+    5.  `Source`: `0.0.0.0/0`.
+    6.  `Allow / Deny`: `DENY`.
+17. Hacer click en `Add Rule`.
+18. Configurar la nueva regla de la siguiente manera:
+    1.  `Rule #`: `300`
+    2.  `Type`: `ALL Traffic`.
+    3.  `Protocol`: `ALL`.
+    4.  `Port Range`: `ALL`.
+    5.  `Source`: `0.0.0.0/0`.
+    6.  `Allow / Deny`: `ALLOW`.
+19. Hacer click en `Save`.
+20. Hacer click en `Outbound Rules`.
+21. Hacer click en `Edit outbound rules`.
+22. Hacer click en `Add Rule`.
+23. Configurar la nueva regla de la siguiente manera:
+    1.  `Rule #`: `100`
+    2.  `Type`: `ALL Traffic`.
+    3.  `Protocol`: `ALL`.
+    4.  `Port Range`: `ALL`.
+    5.  `Source`: `0.0.0.0/0`.
+    6.  `Allow / Deny`: `ALLOW`.
+ 
+#### FAQ
+
+**¿Que pasa si no configuro mi `Network ACL` despues de crearla?**
+
+Por defecto las nuevas `Network ACL` tienen una regla al final para bloquear todo el tráfico entrante y saliente. Si no modificamos las reglas para permitir el tráfico deseado, nuestras instancias quedarán incomunicadas.
+
+**¿En que orden se aplican las reglas?**
+
+Las reglas se aplican en órden creciente. Inmediatamente que el tráfico corresponda a una regla, se dejarán de evaluar las siguiente. Por lo tanto, es recomendable que las reglas más específicas sean definidas primero.
+
+---
