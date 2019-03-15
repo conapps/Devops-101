@@ -76,7 +76,7 @@ Si investigamos los detalles de la instancia creada vamos a ver que la misma tie
 
 ---
 
-### 💻 DEMO #3 ~ Terminar una instancia
+### 💻 DEMO #3 ~ Terminar una instancia <a name="demo003"></a>
 
 #### Procedimiento
 
@@ -463,5 +463,145 @@ Por defecto las nuevas `Network ACL` tienen una regla al final para bloquear tod
 **¿En que orden se aplican las reglas?**
 
 Las reglas se aplican en órden creciente. Inmediatamente que el tráfico corresponda a una regla, se dejarán de evaluar las siguiente. Por lo tanto, es recomendable que las reglas más específicas sean definidas primero.
+
+---
+
+## EBS
+
+Amazon Elastic Block Store o Amazon EBS es un servicio de volumenes de almacenamiento para trabajar en conjunto con EC2. Los volumenes de AWS pueden vincularse a instancias de EC2, o persistir desacoplado de los mismos.
+
+El almacenamiento en EBS es recomendado para almacenar información persistente que deba ser accedida rápidamente. Los volumenes creados pueden ser utilizados para cualquier tipo de aplicación, especialmente aquellas que requieran diversos recursos de Input/Output. 
+
+Cuenta con la funcionalidad de realizar `snapshots` de los volumenes para su respaldo, y es capaz de encriptar los volumenes para obtener mayor seguridad. 
+
+Cada instancia de EC2 puede contar con múltiples vólumenes. Los mismos pueden víncularse al momento de crear las instancias, o más adelante. 
+
+Los vólumenes pueden estar soportados sobre diversos tipos de tecnología para garantizar los IOPS requeridos por la aplicación (ssd por ejemplo.)
+
+La lista de vólumenes creados la podemos ver en `EC2 Dashboard > Volumes`. Actualmente deberíamos tener dos vólumenes creado, uno para cada una de nuestras instancias. Estos vólumenes fueron creados automaticamente al momento de crear nuestras instancias, y están atadas a las mismas. Si eliminamos las instancias, estos vólumenes también serán eliminados.
+
+---
+
+### 💻 DEMO #11 ~ Creación de un vólumen <a name="demo011"></a>
+
+#### Procedimiento
+
+Vamos a crear volumenes de dos maneras posibles. Primero al crear una nueva instancia, y segúndo, vínculando un vólumen creado independientemente.
+
+1. Ir al Dashboard de EC2.
+2. Hacer click en `Launch Instance`.
+3. Seleccionar `Amazon Linux 2 AMI (HVM)`.
+4. Seleccionar el tipo de instancia `t2.micro`.
+5. Hacer click en `Next: Configure Instance Details`.
+6. Seleccionar la `VPC` con la que estamos trabajando.
+7. Seleccionar le `subnet` privada.
+8. Hacer click en `Next: Add Storage`.
+9. Hacer click en `Add New Volume`.
+10. Tomar nota de la ubicación donde será montado el vólumen (`/dev/sdb` por ejemplo).
+11. Hacer click en `Review and Launch`.
+12. Hacer click en `Launch`.
+13. Seleccionar la llave privada que creamos previamente.
+14. Hacer click en `Launch Instance`.
+15. Hacer click en `View Instances`.
+
+Ahora le agregaremos a esta instancia un nuevo vólumen.
+
+1. Ir al Dashboard de EC2.
+2. Hacer click en `Volumes`.
+3. Hacer click en `Create Volume`.
+4. Seleccionar la zona de disponibilidad en la que se encuentra la instancia a la que queremos agregarle el vólumen (ej. `us-east-1b`).
+5. Hacer click en `Create Volume`.
+6. Seleccionar el vólumen recientemente creado. 🚨 Será aquel cuyo estado sea `available`.
+7. Hacer click en `Actions > Attach Volume`.
+8. Seleccionar la instancia a la que queremos víncularle el vólumen.
+9. Observar la ubicación donde será montado el vólumen.
+10. Hacer click en `Attach`.
+
+#### FAQ
+
+**¿Que pasa si no selecciono la zona de disponibilidad correctamente al momento de crear el vólumen?**
+
+Solo puedo víncular instancias y vólumenes que se encuentren en la misma zona de disponibilidad.
+
+**¿Que pasa con los vólumenes extra que monto a la instancia al momento de eliminar la instancia?**
+
+El único vólumen que se elimina junto con la instancia, es aquel creado por defecto junto con ella.
+
+---
+
+Si accedemos por `SSH` a la instancia creada podemos ver la lista de vólumenes que tiene asociado.
+
+```
+[ec2-user@ip-10-0-1-28 ~]$ lsblk
+NAME    MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
+xvda    202:0    0    8G  0 disk
+└─xvda1 202:1    0    8G  0 part /
+xvdb    202:16   0    8G  0 disk
+xvdf    202:80   0  100G  0 disk
+```
+
+Todos los vólumenes son visibles, pero solo uno de ellos esta montado en la instancia. Para montar un vólumen realizamos los siguientes pasos:
+
+```
+# Creamos un filesystem dentro del vólumen
+sudo mkfs -t xfs /dev/xvdb
+sudo mkfs -t xfs /dev/xvdf
+
+# Creamos carpetas donde montaremos los vólumenes
+sudo mkdir /xvdb
+sudo mkdir /xvdf
+
+# Montamos el vólumen en los nuevos directorios
+sudo mount /dev/xvdb /xvdb
+sudo mount /dev/xvdf /xvdf
+```
+
+[Referencia](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-using-volumes.html)
+
+Para ver la potencia de los vólumenes vamos a crear un nuevo archivo dentro de uno de ellos; borraremos la instancia; y luego montaremos el volumen en otra instancia, donde tendremos disponible la información previamente almacenada.
+
+```
+sudo touch /xvdf/something
+```
+
+Si volvemos a la lista de vólumenes tras eliminar la instancia donde estaban montados, vamos a ver que los dos vólumenes que creamos adicionales siguen disponibles.
+
+Para volver a víncular los vólumenes a una nueva instancia tenemos que volver a realizar los pasos 6-10 de la [DEMO 11](#demo011). Los comandos para montarlos a un directorio son los mismos con la excepción del comando para crear el `fs` porque no es necesario recrearlo
+
+```
+# Creamos carpetas donde montaremos los vólumenes
+sudo mkdir /xvdf
+sudo mkdir /xvdg
+
+# Montamos el vólumen en los nuevos directorios
+sudo mount /dev/xvdf /xvdf
+sudo mount /dev/xvdg /xvdg
+```
+
+Si listamos los archivos almacenados dentro del vólumen de `100G` vamos a ver los archivos que creamos en la otra instancia.
+
+```
+[ec2-user@ip-10-0-1-84 ~]$ ll /xvdg
+total 0
+-rw-r--r-- 1 root root 0 Mar 14 18:16 something
+```
+
+---
+
+### 💻 DEMO #12 ~ Terminación de un vólumen <a name="demo012"></a>
+
+#### Procedimiento
+
+1. Ir al Dashboard de EC2.
+2. Terminar las instancias donde tenemos montados los vólumenes que queremos eliminar. Ver [DEMO #3](#demo003)
+3. Hacer click en `Volumes`.
+4. Seleccionar los volumenes a terminar.
+5. Hacer click en `Actions > Delete Volume`.
+
+#### FAQ
+
+**¿Que pasa si me olvido de eliminar el vólumen al momento de terminar la instancia donde estaba corriendo?**
+
+El vólumen seguira "vivo" y AWS seguira cargando la cuenta por la existencia del vólumen (aún si no se esta utilizando) en base a su tamaño.
 
 ---
