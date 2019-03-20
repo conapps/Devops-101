@@ -152,6 +152,8 @@ Las credenciales mencionadas en esta sección tienen que haber sido proveidas a 
 
 También se puede realizar los siguientes pasos con las credenciales de su cuenta personal.
 
+**🚨 La primera vez que se ejecute `aws-shell` se generara el indice de `autocomplete` por lo que puede demorar unos minutos en iniciar.**
+
 #### Procedimiento
 
 0. Correr `aws-shell` (solamente si va a utilizar este programa).
@@ -159,7 +161,7 @@ También se puede realizar los siguientes pasos con las credenciales de su cuent
 2. Ingresar su AWS Access Key ID.
 3. Ingresar su AWS Secret Access Key.
 4. Seleccione su región (la misma que fue asignada anteriormente.)
-5. Seleccione `JSON` como `Default output format`.
+5. Seleccione `table` como `Default output format`.
 
 #### FAQ
 
@@ -175,4 +177,176 @@ No podrá utilizar ninguna de las interfaces de gestión de AWS programaticas.
 
 El administrador de la cuenta de AWS puede crear usuarios desde el servicio `IAM`. Estos usuarios cuentan con múltiples tipos de credenciales para acceder a la cuenta de AWS, entre ellos, credenciales de acceso a la consola Web y credenciales de acceso prográmatico. Solamente un administrador de la cuenta puede crear credenciales para otros usuarios. Además, un usuario puede recrear sus credenciales de acceso prográmatico si siente que pueden haberse comprometido las anteriores, siempre y cuando tenga los permisos suficientes para realizar esta acción.
 
+**¿Tengo que correr el comando `configure` cada vez que quiero usar la `cli`?**
+
+No. El comando `configure` crea un archivo en la carpeta `~/.aws` llamado `credentials` en donde almacena las credenciales. Dentro de este archivo se pueden cargar múltiples credenciales, de múltiples cuentas de AWS. Luego al momento de utilizar la `cli` se puede indicar que credencial utilizar mediante la opción `--profile` seguida del nombre del perfil a utilizar.
+
 ---
+
+La `cli` es llamada desde la consola a través del comando `aws` seguido del servicio/comando que queremos realizar y luego el subcomando y sus parámetros necesarios. Se pueden pasar opciones antes del comando/servicio, principalemente para modificar la salida de los datos.
+
+```
+aws [options] <command> <subcommand> [parameters]
+```
+
+Por ejemplo, en el siguiente ejemplo estamos realizando el comando `describe-regions` sobre el servicio `ec2`, configurando la salida en formato `json`.
+
+```
+aws ec2 --color="on" --output="json" describe-regions
+```
+
+Para obtener información sobre los subcomandos utilizamos la opción `help`.
+
+```
+aws s3 ls help
+```
+
+Se nos desplegara una `man page` en la consola con toda su información. Por ejemplo, para el comando `ls` de `s3` la salida es algo así:
+
+```
+NAME
+       ls -
+
+DESCRIPTION
+       List  S3  objects and common prefixes under a prefix or all S3 buckets.
+       Note that the --output and --no-paginate arguments are ignored for this
+       command.
+
+       See 'aws help' for descriptions of global parameters.
+
+SYNOPSIS
+            ls
+          <S3Uri> or NONE
+          [--recursive]
+          [--page-size <value>]
+          [--human-readable]
+          [--summarize]
+          [--request-payer <value>]
+```
+
+Reproduciremos los mismos pasos que realizamos sobre la consola web de S3 pero en la `cli`.
+
+---
+
+### 💻 DEMO #04 ~ Configuración de la `cli` <a name="demo004"></a>
+
+#### Procedimiento
+
+Comenzaremos por obtener la lista de `Buckets` disponibles en nuestra cuenta.
+
+```
+aws s3api list-buckets
+```
+
+Dentro de la lista existirá el `Bucket` que creamos en la [demo anterior](#demo003). Ahora listaremos todos los objetos que existan dentro de dicho `Bucket`.
+
+```
+aws s3 ls s3://<apellido>.<nombre>.cloud.devops
+```
+
+Ahora eliminaremos y volveremos a subir los mismos archivos que subimos anteriormente.
+
+```
+aws s3 rm s3://<apellido>.<nombre>.cloud.devops/<ruta_al_archivo>
+aws s3 cp <ruta_del_archivo_a_subir> s3://<apellido>.<nombre>.cloud.devops/<ruta_del_archivo_en_s3>
+```
+
+El proceso de descargar la imagen es el mismo que utilizamos para subirla pero invirtiendo el orden de las rutas. La interfaz de la `cli` de S3 intenta simular el funcionamiento tradicional del `fs`.
+
+#### FAQ
+
+**¿Como se cual es el nombre del servicio que tengo que utilizar?**
+
+El comando `aws help` devuelve la lista entera de servicios disponible. Combinando la salida con `grep` se puede obtener rapidamente el nombre buscado.
+
+**¿Como se cuales son los subcomandos disponibles que tengo para realizar dentro del servicio?**
+
+El comando `aws <command> help` devuelve la información de todos los subcomandos disponibles.
+
+**¿Cuando es mejor configurar servicios desde la `cli`?**
+
+La `cli` es especialmente útil cuando tengo que automatizar la creación de recursos; cuando tengo que crear múltiples recursos; o cuando quiero probar algo rápidamente. Además, hay ciertas acciones que son más faciles de realizar desde la `cli` que desde la consola web, como la carga y descarga de archivos.
+
+---
+
+Practicamente todos los servicios y todas sus funcionalidades están disponibles a través de la `cli`. Es una herramienta muy potente. Sin embargo, algunos de los subcomandos requieren de una gran cantidad de parámetros a configurar para funcionar, lo que los hace poco prácticos para tipear directo en la consola. Una opción para minimizar esto es a través de scripts. 
+
+A continuación hay un ejemplo de un script que lanza una nueva instancia de la imagen "Amazon Linux 2", permitiendo solo la configuración del tipo de instancia y su IP privada.
+
+```bash
+#!/bin/bash
+
+usage() { echo "Usage: $0 [-t <aws instance type>] [-i <ip address>]" 1>&2; exit 1; }
+
+### CONSTANTES
+SUBNET_ID=subnet-0479b60e92afdbf9a
+SECURITY_GROUP_ID=sg-0ed723f1bad9315af
+###
+
+while getopts ":t:i:" o; do
+    case "${o}" in
+        t)
+            t=${OPTARG}
+            ;;
+        i)
+            i=${OPTARG}
+            ;;
+        *)
+            usage
+            ;;
+    esac
+done
+shift $((OPTIND-1))
+
+if [ -z "${t}" ] || [ -z "${i}" ]; then
+    usage
+fi
+
+echo
+echo "Running new instance"
+aws ec2 run-instances \
+--instance-type "${t}" \
+--private-ip-address "${i}" \
+--image-id ami-0de53d8956e8dcf80 \
+--subnet-id ${SUBNET_ID} \
+--security-group-ids ${SECURITY_GROUP_ID} \
+--no-associate-public-ip-address
+echo
+echo "Done"
+```
+
+**🚨 Para probar este script desde sus maquinas en sus cuentas, deben modificar las variables encontradas bajo el comentario "CONSTANTES" con los recursos de su cuenta.**
+
+Con `scripts` y la `cli` de AWS podemos automatizar y simplificar todas las acciones queramos realizar sobre los recursos de AWS. Sin embargo, no es fácil mantener actualizado la lista de `script`; es díficil mantener una base de `scripts` común; y usualmente no son faciles de _debuggear_. Es por esto que existen otras formas de automatizar los recursos de la nube.
+
+En este curso veremos dos de ellos:
+
+- SDKs (boto)
+- CloudFormation.
+
+Mediante el uso de `SDK` podemos simplificar la interacción con los recursos de la nube y podemos tomar provecho de las funcionalidades que ofrecen los nuevos lenguajes de programación. Existen `SDK` para prácticamente todos los lenguajes más populares del momento, así como extensiva documentación de su uso.
+
+Los `SDK` brindados son excelentes para extender el funcionamiento de nuestra aplicación con tecnologías de nube, manteniendo el acceso a nuestra cuenta de forma segura.
+
+Utilizar un `SDK` no es suficiente mara mitigar todos los problemas mencionados anteriormente. Por más que utilizemos lenguajes más complejos, sigue siendo nuestra responsabilidad mantenerlos libres de _bugs_, extensibles, y fáciles de entender por el resto del equipo. El problema principal, es que estos `scripts` no representan nuestra arquitectura como código.
+
+`Infraestructure as Code` o `IaC` es:
+
+> [...el proceso de administrar y aprovisionar recursos computacionales en centros de datos a través de la definición de archivos, en vez de a través de configuración de hardware o a través de interfacez de configuración interactivas.]
+> 
+> ***Traducido del ingles de [Wikipedia](https://en.wikipedia.org/wiki/Infrastructure_as_code).**
+
+Osea, es la capacidad de definir la infraestructura de nuestro sistema mediante la modificación de archivos de texto. Estos archivos son procesados por algún tipo de sistema, que los transforma en configuración y aprovisionamiento de servicio. De esta manera, conseguimos ser más declarativos en como definimos y configuramos nuestra infraestructura, enfocandonos en que queremos hacer, y no en como lo vamos a hacer.
+
+Administrar nuestros sistemas de esta manera tiene varias ventajas:
+
+- **Auto-documentación**: Los archivos de texto mencionados describen completamente el estado de nuestra arquitectura, por lo que no necesitamos herramientas adicionales para describirla.
+- **Homogeneidad**: Todos los recursos de nuestra red son configurados exactamente de la misma manera, ya sean recursos de red, sistemas, bases de datos, o aplicaciones. Esto simplifica su mantenimiento y entendimiento por parte del resto del equipo.
+- **Idempotencia**: La aplicación del mismo juego de configuraciones múltiples veces no modifica las configuraciones. Esta característica es díficil de conseguir en nuestros propios scripts.
+- **Mejor mantenimiento**: Una vez definida nuestra arquitectura, es fácil identificar que archivo tenemos que modificar para realizar cambios en la misma.
+
+No todos los sistemas de `IaC` consiguen implementar todas estas carácteristicas completamente, pero de a poco estan tendiendo a ellas. Por otro lado, los archivos mencionados pueden resultar muy verbosos lo que dificulta su lectura.
+
+`CloudFormation` es el servicio de `IaC` que brinda AWS a sus usuarios. Con el, se pueden configurar todos los servicios de su nube a través de archivos `yaml` o `json`. Cada juego de configuraciones, o `stack`, puede mantenersa aislado del otro, lo que permite construir arquitecturas multi-tenant con facilidad o múltiples ambientes de desarrollo. La eliminación de un `stack` lanzará la eliminación de todos los otros recursos creados por el, lo que simplifica enormemente las tareas de limpieza y mantenimiento de servicios, y evita gastos innecesarios en la cuenta.
+
+Veremos como utilizar ambas herramientas más adelante.
