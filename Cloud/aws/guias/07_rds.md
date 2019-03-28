@@ -95,4 +95,58 @@ Un `Subnet Group` es una colección de `subnets` utilizada para asignar una inst
 
 Dentro del dashboard de administración de la instancia hay una opción llamada `Modify` que permite ajustar todos los parámetros de configuración. También puede realizar estas modificaciones desde la `cli`. Prácticamente todas las opciones de la base de datos pueden ser modificadas luego de su creación.
 
+**¿Que es Amazon Aurora?**
+
+Es una base de dato relacional completamente administrada por AWS, compatible con MySQL y PostgreSQL. AWS expresa que es capaz de manejar hasta 5 veces más throughput que MySQL y hasta 3 veces más que PostgreSQL. El producto ofrece alta disponibilidad, escalabilidad, y alto rendimiento por defecto. 
+
+**¿Como puedo comprobar que la base esta funcionando?**
+
+Desde una instancia dentro de nuestro `VPC` podemos instalar `mysql` a través de `yum`.
+
+```bash
+sudo yum install mysql
+```
+
+Una vez instalado usamos el siguiente comando para conectarnos:
+
+```
+mysql -h <url_de_la_instancia_de_rds> -u <master_user> -p
+```
+
+**Segui los pasos anteriores pero no puedo conectarme, ¿cual es el problema?**
+
+Verífique que el `security group` que tenga asignado a su instancia de `RDS` cuente con reglas que permitan la conexión de su instancia de `EC2`.
+
 ---
+
+Podemos veríficar que la base de datos esta funcionando utilizando el cliente de `mysql`.
+
+```bash
+# Instalamos el clente de mysql
+sudo yum install mysql
+
+# Obtenemos la dirección de la instancia de RDS
+aws rds describe-db-instances --query 'DBInstances[*].Endpoint'
+
+# Nos conectamos a la base utilizando el cliente de mysql
+mysql -h <rds_host> -u <master_username> -p
+```
+
+Si todo funciona bien veremos un prompt similar a: `MySQL [(none)]>`.
+
+Utilice los siguientes comandos para crear una nueva base de datos y una tabla dentro de la misma.
+
+```bash
+CREATE DATABASE conatel;
+USE conatel;
+CREATE TABLE people (id SERIAL NOT NULL, name VARCHAR(30));
+INSERT INTO people (name) VALUES ('John Doe'), ('Jane Doe');
+SELECT * FROM people
+
++----+--------------+
+| id | name         |
++----+--------------+
+|  1 | John Doe     |
+|  2 | Jane Doe     |
++----+--------------+
+```
