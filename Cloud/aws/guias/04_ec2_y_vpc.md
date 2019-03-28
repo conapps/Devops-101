@@ -372,24 +372,27 @@ Si realizamos las mismas pruebas que antes desde la instancia privada podemos co
 
 ---
 
-### 💻 DEMO #10 ~ Configuración de un Security Group
+### 💻 DEMO #10 ~ Creación de un nuevo Security Group
 
 #### Procedimiento
 
 Para veríficar el funcinamiento de las proximas modificaciones es recomendable dejar corriendo un `ping` entre las instancias.
 
 1. Ir al Dashboard de EC2.
-2. Hacer click en `Instances`.
-3. Seleccionar la instancia pública.
-4. Hacer click en el `Security group` asignado a la instancia dentro de la pestaña `Description`.
-5. Hacer click en la pestaña `Inbound`.
-6. Hacer click en `Edit`.
-7. Hacer click en `Add Rule`.
-8. Seleccionar:
-   1. `Type`: `Custom ICMP`.
+2. Hacer click en `Security Groups`.
+3. Hacer click en `Create Security Group`.
+4. Ingresar un nombre y una dirección.
+5. Seleccionar el VPC sobre el cual estamos trabajando.
+6. Hacer click en `Add Rule`.
+7. Crear la siguiente regla:
+   1. `Type`: `All TCP`.
    2. `Protocol`: `All`.
-   3. `Source`: La subred asignada al `VPC`, p ej. `10.0.0.0/16`.
-9. Hacer click en `Save`.
+   3. `Source`: `0.0.0.0/0`.
+8. Hacer nuevamente click en `Add Rule` y crear la siguiente regla.
+   1. `Type`: `All ICMP - IPv4`.
+   2. `Protocol`: `All`.
+   3. `Source`: `0.0.0.0/0`.
+9.  Hacer click en `Save`.
 10. Si la configuración funciono correctamente el `ping` debería estar funcionando ahora.
 
 ---
