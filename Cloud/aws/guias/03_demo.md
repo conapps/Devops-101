@@ -27,3 +27,5 @@
 ![Amazon WorkSpaces](../imagenes/006.png)
 
 ## Autenticación y seguridad
+
+![IAM](../imagenes/cloud_101_001.jpg)
