@@ -1,0 +1,26 @@
+{
+  "name": "cloud_101",
+  "version": "1.0.0",
+  "description": "Permite levantar los distintos ejemplos desde 0",
+  "private": true,
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc -w",
+    "cdk": "cdk",
+    "demo1": "cdk --app 'ts-node bin/demo1.ts' ls"
+  },
+  "author": {
+    "name": "CONATEL S.A.",
+    "url": "http://www.conatel.com.uy",
+    "organization": true
+  },
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "@types/node": "^8.10.38",
+    "typescript": "^3.2.4"
+  },
+  "dependencies": {
+    "@aws-cdk/aws-ec2": "*",
+    "@aws-cdk/core": "*"
+  }
+}

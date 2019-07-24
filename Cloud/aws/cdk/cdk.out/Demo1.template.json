@@ -1,0 +1,32 @@
+{
+  "Resources": {
+    "PrivateInstance384D0B11": {
+      "Type": "AWS::EC2::Instance",
+      "Properties": {
+        "AvailabilityZone": "us-east-1a",
+        "ImageId": "ami-0b898040803850657",
+        "InstanceType": "t2.small",
+        "KeyName": "cdh",
+        "NetworkInterfaces": [
+          {
+            "AssociatePublicIpAddress": true,
+            "DeviceIndex": "0"
+          }
+        ],
+        "Tags": [
+          {
+            "Key": "Project",
+            "Value": "cloud_101"
+          },
+          {
+            "Key": "Name",
+            "Value": "private_instance"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "Demo1/PrivateInstance/PrivateInstance"
+      }
+    }
+  }
+}
