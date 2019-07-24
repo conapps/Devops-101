@@ -1,0 +1,750 @@
+{
+  "version": "0.36.0",
+  "artifacts": {
+    "Demo1": {
+      "type": "aws:cloudformation:stack",
+      "environment": "aws://unknown-account/unknown-region",
+      "properties": {
+        "templateFile": "Demo1.template.json"
+      },
+      "metadata": {
+        "/Demo1/PrivateInstance/PrivateInstance": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PrivateInstance384D0B11",
+            "trace": [
+              "new Cloud101EC2Instance (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/constructs/Cloud101EC2Instance.ts:16:21)",
+              "new Demo1 (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/stacks/Demo1.ts:9:5)",
+              "Object.<anonymous> (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/index.ts:7:1)",
+              "Module._compile (internal/modules/cjs/loader.js:774:30)",
+              "Module.m._compile (/Users/gmonne/.nvm/versions/node/v12.4.0/lib/node_modules/ts-node/src/index.ts:473:23)",
+              "Module._extensions..js (internal/modules/cjs/loader.js:785:10)",
+              "Object.require.extensions.<computed> [as .ts] (/Users/gmonne/.nvm/versions/node/v12.4.0/lib/node_modules/ts-node/src/index.ts:476:12)",
+              "Module.load (internal/modules/cjs/loader.js:641:32)",
+              "Function.Module._load (internal/modules/cjs/loader.js:556:12)",
+              "Function.Module.runMain (internal/modules/cjs/loader.js:837:10)",
+              "Object.<anonymous> (/Users/gmonne/.nvm/versions/node/v12.4.0/lib/node_modules/ts-node/src/bin.ts:158:12)",
+              "Module._compile (internal/modules/cjs/loader.js:774:30)",
+              "Object.Module._extensions..js (internal/modules/cjs/loader.js:785:10)",
+              "Module.load (internal/modules/cjs/loader.js:641:32)",
+              "Function.Module._load (internal/modules/cjs/loader.js:556:12)",
+              "Function.Module.runMain (internal/modules/cjs/loader.js:837:10)",
+              "internal/main/run_main_module.js:17:11"
+            ]
+          }
+        ]
+      }
+    },
+    "Demo3": {
+      "type": "aws:cloudformation:stack",
+      "environment": "aws://unknown-account/unknown-region",
+      "properties": {
+        "templateFile": "Demo3.template.json"
+      },
+      "metadata": {
+        "/Demo3/VPC/VPC/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "VPC61AD6880",
+            "trace": [
+              "new Vpc (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/node_modules/@aws-cdk/aws-ec2/lib/vpc.ts:784:21)",
+              "new Cloud101VPC (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/constructs/Cloud101VPC.ts:10:16)",
+              "new Demo3 (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/stacks/Demo3.ts:9:5)",
+              "Object.<anonymous> (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/index.ts:8:1)",
+              "Module._compile (internal/modules/cjs/loader.js:774:30)",
+              "Module.m._compile (/Users/gmonne/.nvm/versions/node/v12.4.0/lib/node_modules/ts-node/src/index.ts:473:23)",
+              "Module._extensions..js (internal/modules/cjs/loader.js:785:10)",
+              "Object.require.extensions.<computed> [as .ts] (/Users/gmonne/.nvm/versions/node/v12.4.0/lib/node_modules/ts-node/src/index.ts:476:12)",
+              "Module.load (internal/modules/cjs/loader.js:641:32)",
+              "Function.Module._load (internal/modules/cjs/loader.js:556:12)",
+              "Function.Module.runMain (internal/modules/cjs/loader.js:837:10)",
+              "Object.<anonymous> (/Users/gmonne/.nvm/versions/node/v12.4.0/lib/node_modules/ts-node/src/bin.ts:158:12)",
+              "Module._compile (internal/modules/cjs/loader.js:774:30)",
+              "Object.Module._extensions..js (internal/modules/cjs/loader.js:785:10)",
+              "Module.load (internal/modules/cjs/loader.js:641:32)",
+              "Function.Module._load (internal/modules/cjs/loader.js:556:12)",
+              "Function.Module.runMain (internal/modules/cjs/loader.js:837:10)",
+              "internal/main/run_main_module.js:17:11"
+            ]
+          }
+        ],
+        "/Demo3/VPC/VPC/PublicSubnet1/Subnet": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "VPCPublicSubnet1Subnet441EC08B",
+            "trace": [
+              "new Subnet (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/node_modules/@aws-cdk/aws-ec2/lib/vpc.ts:1120:20)",
+              "new PublicSubnet (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/node_modules/@aws-cdk/aws-ec2/lib/vpc.ts:1198:5)",
+              "/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/node_modules/@aws-cdk/aws-ec2/lib/vpc.ts:988:32",
+              "Array.forEach (<anonymous>)",
+              "Vpc.createSubnetResources (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/node_modules/@aws-cdk/aws-ec2/lib/vpc.ts:970:28)",
+              "Vpc.createSubnets (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/node_modules/@aws-cdk/aws-ec2/lib/vpc.ts:965:12)",
+              "new Vpc (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/node_modules/@aws-cdk/aws-ec2/lib/vpc.ts:808:10)",
+              "new Cloud101VPC (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/constructs/Cloud101VPC.ts:10:16)",
+              "new Demo3 (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/stacks/Demo3.ts:9:5)",
+              "Object.<anonymous> (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/index.ts:8:1)",
+              "Module._compile (internal/modules/cjs/loader.js:774:30)",
+              "Module.m._compile (/Users/gmonne/.nvm/versions/node/v12.4.0/lib/node_modules/ts-node/src/index.ts:473:23)",
+              "Module._extensions..js (internal/modules/cjs/loader.js:785:10)",
+              "Object.require.extensions.<computed> [as .ts] (/Users/gmonne/.nvm/versions/node/v12.4.0/lib/node_modules/ts-node/src/index.ts:476:12)",
+              "Module.load (internal/modules/cjs/loader.js:641:32)",
+              "Function.Module._load (internal/modules/cjs/loader.js:556:12)",
+              "Function.Module.runMain (internal/modules/cjs/loader.js:837:10)",
+              "Object.<anonymous> (/Users/gmonne/.nvm/versions/node/v12.4.0/lib/node_modules/ts-node/src/bin.ts:158:12)",
+              "Module._compile (internal/modules/cjs/loader.js:774:30)",
+              "Object.Module._extensions..js (internal/modules/cjs/loader.js:785:10)",
+              "Module.load (internal/modules/cjs/loader.js:641:32)",
+              "Function.Module._load (internal/modules/cjs/loader.js:556:12)",
+              "Function.Module.runMain (internal/modules/cjs/loader.js:837:10)",
+              "internal/main/run_main_module.js:17:11"
+            ]
+          }
+        ],
+        "/Demo3/VPC/VPC/PublicSubnet1/RouteTable": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "VPCPublicSubnet1RouteTable2DF31CC2",
+            "trace": [
+              "new Subnet (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/node_modules/@aws-cdk/aws-ec2/lib/vpc.ts:1132:19)",
+              "new PublicSubnet (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/node_modules/@aws-cdk/aws-ec2/lib/vpc.ts:1198:5)",
+              "/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/node_modules/@aws-cdk/aws-ec2/lib/vpc.ts:988:32",
+              "Array.forEach (<anonymous>)",
+              "Vpc.createSubnetResources (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/node_modules/@aws-cdk/aws-ec2/lib/vpc.ts:970:28)",
+              "Vpc.createSubnets (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/node_modules/@aws-cdk/aws-ec2/lib/vpc.ts:965:12)",
+              "new Vpc (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/node_modules/@aws-cdk/aws-ec2/lib/vpc.ts:808:10)",
+              "new Cloud101VPC (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/constructs/Cloud101VPC.ts:10:16)",
+              "new Demo3 (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/stacks/Demo3.ts:9:5)",
+              "Object.<anonymous> (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/index.ts:8:1)",
+              "Module._compile (internal/modules/cjs/loader.js:774:30)",
+              "Module.m._compile (/Users/gmonne/.nvm/versions/node/v12.4.0/lib/node_modules/ts-node/src/index.ts:473:23)",
+              "Module._extensions..js (internal/modules/cjs/loader.js:785:10)",
+              "Object.require.extensions.<computed> [as .ts] (/Users/gmonne/.nvm/versions/node/v12.4.0/lib/node_modules/ts-node/src/index.ts:476:12)",
+              "Module.load (internal/modules/cjs/loader.js:641:32)",
+              "Function.Module._load (internal/modules/cjs/loader.js:556:12)",
+              "Function.Module.runMain (internal/modules/cjs/loader.js:837:10)",
+              "Object.<anonymous> (/Users/gmonne/.nvm/versions/node/v12.4.0/lib/node_modules/ts-node/src/bin.ts:158:12)",
+              "Module._compile (internal/modules/cjs/loader.js:774:30)",
+              "Object.Module._extensions..js (internal/modules/cjs/loader.js:785:10)",
+              "Module.load (internal/modules/cjs/loader.js:641:32)",
+              "Function.Module._load (internal/modules/cjs/loader.js:556:12)",
+              "Function.Module.runMain (internal/modules/cjs/loader.js:837:10)",
+              "internal/main/run_main_module.js:17:11"
+            ]
+          }
+        ],
+        "/Demo3/VPC/VPC/PublicSubnet1/RouteTableAssociation": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "VPCPublicSubnet1RouteTableAssociation45D07AC0",
+            "trace": [
+              "new Subnet (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/node_modules/@aws-cdk/aws-ec2/lib/vpc.ts:1138:5)",
+              "new PublicSubnet (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/node_modules/@aws-cdk/aws-ec2/lib/vpc.ts:1198:5)",
+              "/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/node_modules/@aws-cdk/aws-ec2/lib/vpc.ts:988:32",
+              "Array.forEach (<anonymous>)",
+              "Vpc.createSubnetResources (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/node_modules/@aws-cdk/aws-ec2/lib/vpc.ts:970:28)",
+              "Vpc.createSubnets (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/node_modules/@aws-cdk/aws-ec2/lib/vpc.ts:965:12)",
+              "new Vpc (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/node_modules/@aws-cdk/aws-ec2/lib/vpc.ts:808:10)",
+              "new Cloud101VPC (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/constructs/Cloud101VPC.ts:10:16)",
+              "new Demo3 (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/stacks/Demo3.ts:9:5)",
+              "Object.<anonymous> (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/index.ts:8:1)",
+              "Module._compile (internal/modules/cjs/loader.js:774:30)",
+              "Module.m._compile (/Users/gmonne/.nvm/versions/node/v12.4.0/lib/node_modules/ts-node/src/index.ts:473:23)",
+              "Module._extensions..js (internal/modules/cjs/loader.js:785:10)",
+              "Object.require.extensions.<computed> [as .ts] (/Users/gmonne/.nvm/versions/node/v12.4.0/lib/node_modules/ts-node/src/index.ts:476:12)",
+              "Module.load (internal/modules/cjs/loader.js:641:32)",
+              "Function.Module._load (internal/modules/cjs/loader.js:556:12)",
+              "Function.Module.runMain (internal/modules/cjs/loader.js:837:10)",
+              "Object.<anonymous> (/Users/gmonne/.nvm/versions/node/v12.4.0/lib/node_modules/ts-node/src/bin.ts:158:12)",
+              "Module._compile (internal/modules/cjs/loader.js:774:30)",
+              "Object.Module._extensions..js (internal/modules/cjs/loader.js:785:10)",
+              "Module.load (internal/modules/cjs/loader.js:641:32)",
+              "Function.Module._load (internal/modules/cjs/loader.js:556:12)",
+              "Function.Module.runMain (internal/modules/cjs/loader.js:837:10)",
+              "internal/main/run_main_module.js:17:11"
+            ]
+          }
+        ],
+        "/Demo3/VPC/VPC/PublicSubnet1/DefaultRoute": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "VPCPublicSubnet1DefaultRoute3EBA16C7",
+            "trace": [
+              "PublicSubnet.addDefaultInternetRoute (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/node_modules/@aws-cdk/aws-ec2/lib/vpc.ts:1154:19)",
+              "/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/node_modules/@aws-cdk/aws-ec2/lib/vpc.ts:824:22",
+              "Array.forEach (<anonymous>)",
+              "new Vpc (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/node_modules/@aws-cdk/aws-ec2/lib/vpc.ts:823:46)",
+              "new Cloud101VPC (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/constructs/Cloud101VPC.ts:10:16)",
+              "new Demo3 (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/stacks/Demo3.ts:9:5)",
+              "Object.<anonymous> (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/index.ts:8:1)",
+              "Module._compile (internal/modules/cjs/loader.js:774:30)",
+              "Module.m._compile (/Users/gmonne/.nvm/versions/node/v12.4.0/lib/node_modules/ts-node/src/index.ts:473:23)",
+              "Module._extensions..js (internal/modules/cjs/loader.js:785:10)",
+              "Object.require.extensions.<computed> [as .ts] (/Users/gmonne/.nvm/versions/node/v12.4.0/lib/node_modules/ts-node/src/index.ts:476:12)",
+              "Module.load (internal/modules/cjs/loader.js:641:32)",
+              "Function.Module._load (internal/modules/cjs/loader.js:556:12)",
+              "Function.Module.runMain (internal/modules/cjs/loader.js:837:10)",
+              "Object.<anonymous> (/Users/gmonne/.nvm/versions/node/v12.4.0/lib/node_modules/ts-node/src/bin.ts:158:12)",
+              "Module._compile (internal/modules/cjs/loader.js:774:30)",
+              "Object.Module._extensions..js (internal/modules/cjs/loader.js:785:10)",
+              "Module.load (internal/modules/cjs/loader.js:641:32)",
+              "Function.Module._load (internal/modules/cjs/loader.js:556:12)",
+              "Function.Module.runMain (internal/modules/cjs/loader.js:837:10)",
+              "internal/main/run_main_module.js:17:11"
+            ]
+          }
+        ],
+        "/Demo3/VPC/VPC/PublicSubnet1/EIP": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "VPCPublicSubnet1EIP4B4569C9",
+            "trace": [
+              "PublicSubnet.addNatGateway (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/node_modules/@aws-cdk/aws-ec2/lib/vpc.ts:1210:21)",
+              "Vpc.createNatGateways (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/node_modules/@aws-cdk/aws-ec2/lib/vpc.ts:941:27)",
+              "new Vpc (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/node_modules/@aws-cdk/aws-ec2/lib/vpc.ts:828:12)",
+              "new Cloud101VPC (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/constructs/Cloud101VPC.ts:10:16)",
+              "new Demo3 (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/stacks/Demo3.ts:9:5)",
+              "Object.<anonymous> (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/index.ts:8:1)",
+              "Module._compile (internal/modules/cjs/loader.js:774:30)",
+              "Module.m._compile (/Users/gmonne/.nvm/versions/node/v12.4.0/lib/node_modules/ts-node/src/index.ts:473:23)",
+              "Module._extensions..js (internal/modules/cjs/loader.js:785:10)",
+              "Object.require.extensions.<computed> [as .ts] (/Users/gmonne/.nvm/versions/node/v12.4.0/lib/node_modules/ts-node/src/index.ts:476:12)",
+              "Module.load (internal/modules/cjs/loader.js:641:32)",
+              "Function.Module._load (internal/modules/cjs/loader.js:556:12)",
+              "Function.Module.runMain (internal/modules/cjs/loader.js:837:10)",
+              "Object.<anonymous> (/Users/gmonne/.nvm/versions/node/v12.4.0/lib/node_modules/ts-node/src/bin.ts:158:12)",
+              "Module._compile (internal/modules/cjs/loader.js:774:30)",
+              "Object.Module._extensions..js (internal/modules/cjs/loader.js:785:10)",
+              "Module.load (internal/modules/cjs/loader.js:641:32)",
+              "Function.Module._load (internal/modules/cjs/loader.js:556:12)",
+              "Function.Module.runMain (internal/modules/cjs/loader.js:837:10)",
+              "internal/main/run_main_module.js:17:11"
+            ]
+          }
+        ],
+        "/Demo3/VPC/VPC/PublicSubnet1/NATGateway": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "VPCPublicSubnet1NATGateway773F4C26",
+            "trace": [
+              "PublicSubnet.addNatGateway (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/node_modules/@aws-cdk/aws-ec2/lib/vpc.ts:1208:17)",
+              "Vpc.createNatGateways (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/node_modules/@aws-cdk/aws-ec2/lib/vpc.ts:941:27)",
+              "new Vpc (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/node_modules/@aws-cdk/aws-ec2/lib/vpc.ts:828:12)",
+              "new Cloud101VPC (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/constructs/Cloud101VPC.ts:10:16)",
+              "new Demo3 (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/stacks/Demo3.ts:9:5)",
+              "Object.<anonymous> (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/index.ts:8:1)",
+              "Module._compile (internal/modules/cjs/loader.js:774:30)",
+              "Module.m._compile (/Users/gmonne/.nvm/versions/node/v12.4.0/lib/node_modules/ts-node/src/index.ts:473:23)",
+              "Module._extensions..js (internal/modules/cjs/loader.js:785:10)",
+              "Object.require.extensions.<computed> [as .ts] (/Users/gmonne/.nvm/versions/node/v12.4.0/lib/node_modules/ts-node/src/index.ts:476:12)",
+              "Module.load (internal/modules/cjs/loader.js:641:32)",
+              "Function.Module._load (internal/modules/cjs/loader.js:556:12)",
+              "Function.Module.runMain (internal/modules/cjs/loader.js:837:10)",
+              "Object.<anonymous> (/Users/gmonne/.nvm/versions/node/v12.4.0/lib/node_modules/ts-node/src/bin.ts:158:12)",
+              "Module._compile (internal/modules/cjs/loader.js:774:30)",
+              "Object.Module._extensions..js (internal/modules/cjs/loader.js:785:10)",
+              "Module.load (internal/modules/cjs/loader.js:641:32)",
+              "Function.Module._load (internal/modules/cjs/loader.js:556:12)",
+              "Function.Module.runMain (internal/modules/cjs/loader.js:837:10)",
+              "internal/main/run_main_module.js:17:11"
+            ]
+          }
+        ],
+        "/Demo3/VPC/VPC/PublicSubnet2/Subnet": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "VPCPublicSubnet2SubnetE3B6F81A",
+            "trace": [
+              "new Subnet (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/node_modules/@aws-cdk/aws-ec2/lib/vpc.ts:1120:20)",
+              "new PublicSubnet (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/node_modules/@aws-cdk/aws-ec2/lib/vpc.ts:1198:5)",
+              "/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/node_modules/@aws-cdk/aws-ec2/lib/vpc.ts:988:32",
+              "Array.forEach (<anonymous>)",
+              "Vpc.createSubnetResources (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/node_modules/@aws-cdk/aws-ec2/lib/vpc.ts:970:28)",
+              "Vpc.createSubnets (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/node_modules/@aws-cdk/aws-ec2/lib/vpc.ts:965:12)",
+              "new Vpc (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/node_modules/@aws-cdk/aws-ec2/lib/vpc.ts:808:10)",
+              "new Cloud101VPC (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/constructs/Cloud101VPC.ts:10:16)",
+              "new Demo3 (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/stacks/Demo3.ts:9:5)",
+              "Object.<anonymous> (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/index.ts:8:1)",
+              "Module._compile (internal/modules/cjs/loader.js:774:30)",
+              "Module.m._compile (/Users/gmonne/.nvm/versions/node/v12.4.0/lib/node_modules/ts-node/src/index.ts:473:23)",
+              "Module._extensions..js (internal/modules/cjs/loader.js:785:10)",
+              "Object.require.extensions.<computed> [as .ts] (/Users/gmonne/.nvm/versions/node/v12.4.0/lib/node_modules/ts-node/src/index.ts:476:12)",
+              "Module.load (internal/modules/cjs/loader.js:641:32)",
+              "Function.Module._load (internal/modules/cjs/loader.js:556:12)",
+              "Function.Module.runMain (internal/modules/cjs/loader.js:837:10)",
+              "Object.<anonymous> (/Users/gmonne/.nvm/versions/node/v12.4.0/lib/node_modules/ts-node/src/bin.ts:158:12)",
+              "Module._compile (internal/modules/cjs/loader.js:774:30)",
+              "Object.Module._extensions..js (internal/modules/cjs/loader.js:785:10)",
+              "Module.load (internal/modules/cjs/loader.js:641:32)",
+              "Function.Module._load (internal/modules/cjs/loader.js:556:12)",
+              "Function.Module.runMain (internal/modules/cjs/loader.js:837:10)",
+              "internal/main/run_main_module.js:17:11"
+            ]
+          }
+        ],
+        "/Demo3/VPC/VPC/PublicSubnet2/RouteTable": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "VPCPublicSubnet2RouteTableED3EBA50",
+            "trace": [
+              "new Subnet (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/node_modules/@aws-cdk/aws-ec2/lib/vpc.ts:1132:19)",
+              "new PublicSubnet (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/node_modules/@aws-cdk/aws-ec2/lib/vpc.ts:1198:5)",
+              "/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/node_modules/@aws-cdk/aws-ec2/lib/vpc.ts:988:32",
+              "Array.forEach (<anonymous>)",
+              "Vpc.createSubnetResources (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/node_modules/@aws-cdk/aws-ec2/lib/vpc.ts:970:28)",
+              "Vpc.createSubnets (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/node_modules/@aws-cdk/aws-ec2/lib/vpc.ts:965:12)",
+              "new Vpc (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/node_modules/@aws-cdk/aws-ec2/lib/vpc.ts:808:10)",
+              "new Cloud101VPC (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/constructs/Cloud101VPC.ts:10:16)",
+              "new Demo3 (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/stacks/Demo3.ts:9:5)",
+              "Object.<anonymous> (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/index.ts:8:1)",
+              "Module._compile (internal/modules/cjs/loader.js:774:30)",
+              "Module.m._compile (/Users/gmonne/.nvm/versions/node/v12.4.0/lib/node_modules/ts-node/src/index.ts:473:23)",
+              "Module._extensions..js (internal/modules/cjs/loader.js:785:10)",
+              "Object.require.extensions.<computed> [as .ts] (/Users/gmonne/.nvm/versions/node/v12.4.0/lib/node_modules/ts-node/src/index.ts:476:12)",
+              "Module.load (internal/modules/cjs/loader.js:641:32)",
+              "Function.Module._load (internal/modules/cjs/loader.js:556:12)",
+              "Function.Module.runMain (internal/modules/cjs/loader.js:837:10)",
+              "Object.<anonymous> (/Users/gmonne/.nvm/versions/node/v12.4.0/lib/node_modules/ts-node/src/bin.ts:158:12)",
+              "Module._compile (internal/modules/cjs/loader.js:774:30)",
+              "Object.Module._extensions..js (internal/modules/cjs/loader.js:785:10)",
+              "Module.load (internal/modules/cjs/loader.js:641:32)",
+              "Function.Module._load (internal/modules/cjs/loader.js:556:12)",
+              "Function.Module.runMain (internal/modules/cjs/loader.js:837:10)",
+              "internal/main/run_main_module.js:17:11"
+            ]
+          }
+        ],
+        "/Demo3/VPC/VPC/PublicSubnet2/RouteTableAssociation": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "VPCPublicSubnet2RouteTableAssociation124A6C7A",
+            "trace": [
+              "new Subnet (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/node_modules/@aws-cdk/aws-ec2/lib/vpc.ts:1138:5)",
+              "new PublicSubnet (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/node_modules/@aws-cdk/aws-ec2/lib/vpc.ts:1198:5)",
+              "/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/node_modules/@aws-cdk/aws-ec2/lib/vpc.ts:988:32",
+              "Array.forEach (<anonymous>)",
+              "Vpc.createSubnetResources (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/node_modules/@aws-cdk/aws-ec2/lib/vpc.ts:970:28)",
+              "Vpc.createSubnets (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/node_modules/@aws-cdk/aws-ec2/lib/vpc.ts:965:12)",
+              "new Vpc (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/node_modules/@aws-cdk/aws-ec2/lib/vpc.ts:808:10)",
+              "new Cloud101VPC (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/constructs/Cloud101VPC.ts:10:16)",
+              "new Demo3 (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/stacks/Demo3.ts:9:5)",
+              "Object.<anonymous> (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/index.ts:8:1)",
+              "Module._compile (internal/modules/cjs/loader.js:774:30)",
+              "Module.m._compile (/Users/gmonne/.nvm/versions/node/v12.4.0/lib/node_modules/ts-node/src/index.ts:473:23)",
+              "Module._extensions..js (internal/modules/cjs/loader.js:785:10)",
+              "Object.require.extensions.<computed> [as .ts] (/Users/gmonne/.nvm/versions/node/v12.4.0/lib/node_modules/ts-node/src/index.ts:476:12)",
+              "Module.load (internal/modules/cjs/loader.js:641:32)",
+              "Function.Module._load (internal/modules/cjs/loader.js:556:12)",
+              "Function.Module.runMain (internal/modules/cjs/loader.js:837:10)",
+              "Object.<anonymous> (/Users/gmonne/.nvm/versions/node/v12.4.0/lib/node_modules/ts-node/src/bin.ts:158:12)",
+              "Module._compile (internal/modules/cjs/loader.js:774:30)",
+              "Object.Module._extensions..js (internal/modules/cjs/loader.js:785:10)",
+              "Module.load (internal/modules/cjs/loader.js:641:32)",
+              "Function.Module._load (internal/modules/cjs/loader.js:556:12)",
+              "Function.Module.runMain (internal/modules/cjs/loader.js:837:10)",
+              "internal/main/run_main_module.js:17:11"
+            ]
+          }
+        ],
+        "/Demo3/VPC/VPC/PublicSubnet2/DefaultRoute": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "VPCPublicSubnet2DefaultRoute7530A66D",
+            "trace": [
+              "PublicSubnet.addDefaultInternetRoute (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/node_modules/@aws-cdk/aws-ec2/lib/vpc.ts:1154:19)",
+              "/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/node_modules/@aws-cdk/aws-ec2/lib/vpc.ts:824:22",
+              "Array.forEach (<anonymous>)",
+              "new Vpc (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/node_modules/@aws-cdk/aws-ec2/lib/vpc.ts:823:46)",
+              "new Cloud101VPC (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/constructs/Cloud101VPC.ts:10:16)",
+              "new Demo3 (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/stacks/Demo3.ts:9:5)",
+              "Object.<anonymous> (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/index.ts:8:1)",
+              "Module._compile (internal/modules/cjs/loader.js:774:30)",
+              "Module.m._compile (/Users/gmonne/.nvm/versions/node/v12.4.0/lib/node_modules/ts-node/src/index.ts:473:23)",
+              "Module._extensions..js (internal/modules/cjs/loader.js:785:10)",
+              "Object.require.extensions.<computed> [as .ts] (/Users/gmonne/.nvm/versions/node/v12.4.0/lib/node_modules/ts-node/src/index.ts:476:12)",
+              "Module.load (internal/modules/cjs/loader.js:641:32)",
+              "Function.Module._load (internal/modules/cjs/loader.js:556:12)",
+              "Function.Module.runMain (internal/modules/cjs/loader.js:837:10)",
+              "Object.<anonymous> (/Users/gmonne/.nvm/versions/node/v12.4.0/lib/node_modules/ts-node/src/bin.ts:158:12)",
+              "Module._compile (internal/modules/cjs/loader.js:774:30)",
+              "Object.Module._extensions..js (internal/modules/cjs/loader.js:785:10)",
+              "Module.load (internal/modules/cjs/loader.js:641:32)",
+              "Function.Module._load (internal/modules/cjs/loader.js:556:12)",
+              "Function.Module.runMain (internal/modules/cjs/loader.js:837:10)",
+              "internal/main/run_main_module.js:17:11"
+            ]
+          }
+        ],
+        "/Demo3/VPC/VPC/PublicSubnet2/EIP": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "VPCPublicSubnet2EIPB849754E",
+            "trace": [
+              "PublicSubnet.addNatGateway (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/node_modules/@aws-cdk/aws-ec2/lib/vpc.ts:1210:21)",
+              "Vpc.createNatGateways (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/node_modules/@aws-cdk/aws-ec2/lib/vpc.ts:941:27)",
+              "new Vpc (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/node_modules/@aws-cdk/aws-ec2/lib/vpc.ts:828:12)",
+              "new Cloud101VPC (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/constructs/Cloud101VPC.ts:10:16)",
+              "new Demo3 (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/stacks/Demo3.ts:9:5)",
+              "Object.<anonymous> (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/index.ts:8:1)",
+              "Module._compile (internal/modules/cjs/loader.js:774:30)",
+              "Module.m._compile (/Users/gmonne/.nvm/versions/node/v12.4.0/lib/node_modules/ts-node/src/index.ts:473:23)",
+              "Module._extensions..js (internal/modules/cjs/loader.js:785:10)",
+              "Object.require.extensions.<computed> [as .ts] (/Users/gmonne/.nvm/versions/node/v12.4.0/lib/node_modules/ts-node/src/index.ts:476:12)",
+              "Module.load (internal/modules/cjs/loader.js:641:32)",
+              "Function.Module._load (internal/modules/cjs/loader.js:556:12)",
+              "Function.Module.runMain (internal/modules/cjs/loader.js:837:10)",
+              "Object.<anonymous> (/Users/gmonne/.nvm/versions/node/v12.4.0/lib/node_modules/ts-node/src/bin.ts:158:12)",
+              "Module._compile (internal/modules/cjs/loader.js:774:30)",
+              "Object.Module._extensions..js (internal/modules/cjs/loader.js:785:10)",
+              "Module.load (internal/modules/cjs/loader.js:641:32)",
+              "Function.Module._load (internal/modules/cjs/loader.js:556:12)",
+              "Function.Module.runMain (internal/modules/cjs/loader.js:837:10)",
+              "internal/main/run_main_module.js:17:11"
+            ]
+          }
+        ],
+        "/Demo3/VPC/VPC/PublicSubnet2/NATGateway": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "VPCPublicSubnet2NATGateway5A7176EE",
+            "trace": [
+              "PublicSubnet.addNatGateway (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/node_modules/@aws-cdk/aws-ec2/lib/vpc.ts:1208:17)",
+              "Vpc.createNatGateways (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/node_modules/@aws-cdk/aws-ec2/lib/vpc.ts:941:27)",
+              "new Vpc (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/node_modules/@aws-cdk/aws-ec2/lib/vpc.ts:828:12)",
+              "new Cloud101VPC (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/constructs/Cloud101VPC.ts:10:16)",
+              "new Demo3 (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/stacks/Demo3.ts:9:5)",
+              "Object.<anonymous> (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/index.ts:8:1)",
+              "Module._compile (internal/modules/cjs/loader.js:774:30)",
+              "Module.m._compile (/Users/gmonne/.nvm/versions/node/v12.4.0/lib/node_modules/ts-node/src/index.ts:473:23)",
+              "Module._extensions..js (internal/modules/cjs/loader.js:785:10)",
+              "Object.require.extensions.<computed> [as .ts] (/Users/gmonne/.nvm/versions/node/v12.4.0/lib/node_modules/ts-node/src/index.ts:476:12)",
+              "Module.load (internal/modules/cjs/loader.js:641:32)",
+              "Function.Module._load (internal/modules/cjs/loader.js:556:12)",
+              "Function.Module.runMain (internal/modules/cjs/loader.js:837:10)",
+              "Object.<anonymous> (/Users/gmonne/.nvm/versions/node/v12.4.0/lib/node_modules/ts-node/src/bin.ts:158:12)",
+              "Module._compile (internal/modules/cjs/loader.js:774:30)",
+              "Object.Module._extensions..js (internal/modules/cjs/loader.js:785:10)",
+              "Module.load (internal/modules/cjs/loader.js:641:32)",
+              "Function.Module._load (internal/modules/cjs/loader.js:556:12)",
+              "Function.Module.runMain (internal/modules/cjs/loader.js:837:10)",
+              "internal/main/run_main_module.js:17:11"
+            ]
+          }
+        ],
+        "/Demo3/VPC/VPC/PrivateSubnet1/Subnet": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "VPCPrivateSubnet1Subnet77928CB3",
+            "trace": [
+              "new Subnet (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/node_modules/@aws-cdk/aws-ec2/lib/vpc.ts:1120:20)",
+              "new PrivateSubnet (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/node_modules/@aws-cdk/aws-ec2/lib/vpc.ts:1237:5)",
+              "/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/node_modules/@aws-cdk/aws-ec2/lib/vpc.ts:993:33",
+              "Array.forEach (<anonymous>)",
+              "Vpc.createSubnetResources (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/node_modules/@aws-cdk/aws-ec2/lib/vpc.ts:970:28)",
+              "Vpc.createSubnets (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/node_modules/@aws-cdk/aws-ec2/lib/vpc.ts:965:12)",
+              "new Vpc (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/node_modules/@aws-cdk/aws-ec2/lib/vpc.ts:808:10)",
+              "new Cloud101VPC (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/constructs/Cloud101VPC.ts:10:16)",
+              "new Demo3 (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/stacks/Demo3.ts:9:5)",
+              "Object.<anonymous> (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/index.ts:8:1)",
+              "Module._compile (internal/modules/cjs/loader.js:774:30)",
+              "Module.m._compile (/Users/gmonne/.nvm/versions/node/v12.4.0/lib/node_modules/ts-node/src/index.ts:473:23)",
+              "Module._extensions..js (internal/modules/cjs/loader.js:785:10)",
+              "Object.require.extensions.<computed> [as .ts] (/Users/gmonne/.nvm/versions/node/v12.4.0/lib/node_modules/ts-node/src/index.ts:476:12)",
+              "Module.load (internal/modules/cjs/loader.js:641:32)",
+              "Function.Module._load (internal/modules/cjs/loader.js:556:12)",
+              "Function.Module.runMain (internal/modules/cjs/loader.js:837:10)",
+              "Object.<anonymous> (/Users/gmonne/.nvm/versions/node/v12.4.0/lib/node_modules/ts-node/src/bin.ts:158:12)",
+              "Module._compile (internal/modules/cjs/loader.js:774:30)",
+              "Object.Module._extensions..js (internal/modules/cjs/loader.js:785:10)",
+              "Module.load (internal/modules/cjs/loader.js:641:32)",
+              "Function.Module._load (internal/modules/cjs/loader.js:556:12)",
+              "Function.Module.runMain (internal/modules/cjs/loader.js:837:10)",
+              "internal/main/run_main_module.js:17:11"
+            ]
+          }
+        ],
+        "/Demo3/VPC/VPC/PrivateSubnet1/RouteTable": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "VPCPrivateSubnet1RouteTable49AABFA8",
+            "trace": [
+              "new Subnet (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/node_modules/@aws-cdk/aws-ec2/lib/vpc.ts:1132:19)",
+              "new PrivateSubnet (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/node_modules/@aws-cdk/aws-ec2/lib/vpc.ts:1237:5)",
+              "/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/node_modules/@aws-cdk/aws-ec2/lib/vpc.ts:993:33",
+              "Array.forEach (<anonymous>)",
+              "Vpc.createSubnetResources (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/node_modules/@aws-cdk/aws-ec2/lib/vpc.ts:970:28)",
+              "Vpc.createSubnets (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/node_modules/@aws-cdk/aws-ec2/lib/vpc.ts:965:12)",
+              "new Vpc (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/node_modules/@aws-cdk/aws-ec2/lib/vpc.ts:808:10)",
+              "new Cloud101VPC (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/constructs/Cloud101VPC.ts:10:16)",
+              "new Demo3 (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/stacks/Demo3.ts:9:5)",
+              "Object.<anonymous> (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/index.ts:8:1)",
+              "Module._compile (internal/modules/cjs/loader.js:774:30)",
+              "Module.m._compile (/Users/gmonne/.nvm/versions/node/v12.4.0/lib/node_modules/ts-node/src/index.ts:473:23)",
+              "Module._extensions..js (internal/modules/cjs/loader.js:785:10)",
+              "Object.require.extensions.<computed> [as .ts] (/Users/gmonne/.nvm/versions/node/v12.4.0/lib/node_modules/ts-node/src/index.ts:476:12)",
+              "Module.load (internal/modules/cjs/loader.js:641:32)",
+              "Function.Module._load (internal/modules/cjs/loader.js:556:12)",
+              "Function.Module.runMain (internal/modules/cjs/loader.js:837:10)",
+              "Object.<anonymous> (/Users/gmonne/.nvm/versions/node/v12.4.0/lib/node_modules/ts-node/src/bin.ts:158:12)",
+              "Module._compile (internal/modules/cjs/loader.js:774:30)",
+              "Object.Module._extensions..js (internal/modules/cjs/loader.js:785:10)",
+              "Module.load (internal/modules/cjs/loader.js:641:32)",
+              "Function.Module._load (internal/modules/cjs/loader.js:556:12)",
+              "Function.Module.runMain (internal/modules/cjs/loader.js:837:10)",
+              "internal/main/run_main_module.js:17:11"
+            ]
+          }
+        ],
+        "/Demo3/VPC/VPC/PrivateSubnet1/RouteTableAssociation": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "VPCPrivateSubnet1RouteTableAssociationD9B03FCA",
+            "trace": [
+              "new Subnet (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/node_modules/@aws-cdk/aws-ec2/lib/vpc.ts:1138:5)",
+              "new PrivateSubnet (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/node_modules/@aws-cdk/aws-ec2/lib/vpc.ts:1237:5)",
+              "/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/node_modules/@aws-cdk/aws-ec2/lib/vpc.ts:993:33",
+              "Array.forEach (<anonymous>)",
+              "Vpc.createSubnetResources (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/node_modules/@aws-cdk/aws-ec2/lib/vpc.ts:970:28)",
+              "Vpc.createSubnets (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/node_modules/@aws-cdk/aws-ec2/lib/vpc.ts:965:12)",
+              "new Vpc (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/node_modules/@aws-cdk/aws-ec2/lib/vpc.ts:808:10)",
+              "new Cloud101VPC (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/constructs/Cloud101VPC.ts:10:16)",
+              "new Demo3 (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/stacks/Demo3.ts:9:5)",
+              "Object.<anonymous> (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/index.ts:8:1)",
+              "Module._compile (internal/modules/cjs/loader.js:774:30)",
+              "Module.m._compile (/Users/gmonne/.nvm/versions/node/v12.4.0/lib/node_modules/ts-node/src/index.ts:473:23)",
+              "Module._extensions..js (internal/modules/cjs/loader.js:785:10)",
+              "Object.require.extensions.<computed> [as .ts] (/Users/gmonne/.nvm/versions/node/v12.4.0/lib/node_modules/ts-node/src/index.ts:476:12)",
+              "Module.load (internal/modules/cjs/loader.js:641:32)",
+              "Function.Module._load (internal/modules/cjs/loader.js:556:12)",
+              "Function.Module.runMain (internal/modules/cjs/loader.js:837:10)",
+              "Object.<anonymous> (/Users/gmonne/.nvm/versions/node/v12.4.0/lib/node_modules/ts-node/src/bin.ts:158:12)",
+              "Module._compile (internal/modules/cjs/loader.js:774:30)",
+              "Object.Module._extensions..js (internal/modules/cjs/loader.js:785:10)",
+              "Module.load (internal/modules/cjs/loader.js:641:32)",
+              "Function.Module._load (internal/modules/cjs/loader.js:556:12)",
+              "Function.Module.runMain (internal/modules/cjs/loader.js:837:10)",
+              "internal/main/run_main_module.js:17:11"
+            ]
+          }
+        ],
+        "/Demo3/VPC/VPC/PrivateSubnet1/DefaultRoute": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "VPCPrivateSubnet1DefaultRouteECADCC3A",
+            "trace": [
+              "PrivateSubnet.addDefaultNatRoute (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/node_modules/@aws-cdk/aws-ec2/lib/vpc.ts:1171:19)",
+              "/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/node_modules/@aws-cdk/aws-ec2/lib/vpc.ts:837:23",
+              "Array.forEach (<anonymous>)",
+              "new Vpc (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/node_modules/@aws-cdk/aws-ec2/lib/vpc.ts:830:48)",
+              "new Cloud101VPC (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/constructs/Cloud101VPC.ts:10:16)",
+              "new Demo3 (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/stacks/Demo3.ts:9:5)",
+              "Object.<anonymous> (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/index.ts:8:1)",
+              "Module._compile (internal/modules/cjs/loader.js:774:30)",
+              "Module.m._compile (/Users/gmonne/.nvm/versions/node/v12.4.0/lib/node_modules/ts-node/src/index.ts:473:23)",
+              "Module._extensions..js (internal/modules/cjs/loader.js:785:10)",
+              "Object.require.extensions.<computed> [as .ts] (/Users/gmonne/.nvm/versions/node/v12.4.0/lib/node_modules/ts-node/src/index.ts:476:12)",
+              "Module.load (internal/modules/cjs/loader.js:641:32)",
+              "Function.Module._load (internal/modules/cjs/loader.js:556:12)",
+              "Function.Module.runMain (internal/modules/cjs/loader.js:837:10)",
+              "Object.<anonymous> (/Users/gmonne/.nvm/versions/node/v12.4.0/lib/node_modules/ts-node/src/bin.ts:158:12)",
+              "Module._compile (internal/modules/cjs/loader.js:774:30)",
+              "Object.Module._extensions..js (internal/modules/cjs/loader.js:785:10)",
+              "Module.load (internal/modules/cjs/loader.js:641:32)",
+              "Function.Module._load (internal/modules/cjs/loader.js:556:12)",
+              "Function.Module.runMain (internal/modules/cjs/loader.js:837:10)",
+              "internal/main/run_main_module.js:17:11"
+            ]
+          }
+        ],
+        "/Demo3/VPC/VPC/PrivateSubnet2/Subnet": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "VPCPrivateSubnet2SubnetFF789F8E",
+            "trace": [
+              "new Subnet (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/node_modules/@aws-cdk/aws-ec2/lib/vpc.ts:1120:20)",
+              "new PrivateSubnet (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/node_modules/@aws-cdk/aws-ec2/lib/vpc.ts:1237:5)",
+              "/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/node_modules/@aws-cdk/aws-ec2/lib/vpc.ts:993:33",
+              "Array.forEach (<anonymous>)",
+              "Vpc.createSubnetResources (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/node_modules/@aws-cdk/aws-ec2/lib/vpc.ts:970:28)",
+              "Vpc.createSubnets (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/node_modules/@aws-cdk/aws-ec2/lib/vpc.ts:965:12)",
+              "new Vpc (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/node_modules/@aws-cdk/aws-ec2/lib/vpc.ts:808:10)",
+              "new Cloud101VPC (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/constructs/Cloud101VPC.ts:10:16)",
+              "new Demo3 (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/stacks/Demo3.ts:9:5)",
+              "Object.<anonymous> (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/index.ts:8:1)",
+              "Module._compile (internal/modules/cjs/loader.js:774:30)",
+              "Module.m._compile (/Users/gmonne/.nvm/versions/node/v12.4.0/lib/node_modules/ts-node/src/index.ts:473:23)",
+              "Module._extensions..js (internal/modules/cjs/loader.js:785:10)",
+              "Object.require.extensions.<computed> [as .ts] (/Users/gmonne/.nvm/versions/node/v12.4.0/lib/node_modules/ts-node/src/index.ts:476:12)",
+              "Module.load (internal/modules/cjs/loader.js:641:32)",
+              "Function.Module._load (internal/modules/cjs/loader.js:556:12)",
+              "Function.Module.runMain (internal/modules/cjs/loader.js:837:10)",
+              "Object.<anonymous> (/Users/gmonne/.nvm/versions/node/v12.4.0/lib/node_modules/ts-node/src/bin.ts:158:12)",
+              "Module._compile (internal/modules/cjs/loader.js:774:30)",
+              "Object.Module._extensions..js (internal/modules/cjs/loader.js:785:10)",
+              "Module.load (internal/modules/cjs/loader.js:641:32)",
+              "Function.Module._load (internal/modules/cjs/loader.js:556:12)",
+              "Function.Module.runMain (internal/modules/cjs/loader.js:837:10)",
+              "internal/main/run_main_module.js:17:11"
+            ]
+          }
+        ],
+        "/Demo3/VPC/VPC/PrivateSubnet2/RouteTable": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "VPCPrivateSubnet2RouteTable61C48158",
+            "trace": [
+              "new Subnet (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/node_modules/@aws-cdk/aws-ec2/lib/vpc.ts:1132:19)",
+              "new PrivateSubnet (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/node_modules/@aws-cdk/aws-ec2/lib/vpc.ts:1237:5)",
+              "/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/node_modules/@aws-cdk/aws-ec2/lib/vpc.ts:993:33",
+              "Array.forEach (<anonymous>)",
+              "Vpc.createSubnetResources (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/node_modules/@aws-cdk/aws-ec2/lib/vpc.ts:970:28)",
+              "Vpc.createSubnets (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/node_modules/@aws-cdk/aws-ec2/lib/vpc.ts:965:12)",
+              "new Vpc (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/node_modules/@aws-cdk/aws-ec2/lib/vpc.ts:808:10)",
+              "new Cloud101VPC (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/constructs/Cloud101VPC.ts:10:16)",
+              "new Demo3 (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/stacks/Demo3.ts:9:5)",
+              "Object.<anonymous> (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/index.ts:8:1)",
+              "Module._compile (internal/modules/cjs/loader.js:774:30)",
+              "Module.m._compile (/Users/gmonne/.nvm/versions/node/v12.4.0/lib/node_modules/ts-node/src/index.ts:473:23)",
+              "Module._extensions..js (internal/modules/cjs/loader.js:785:10)",
+              "Object.require.extensions.<computed> [as .ts] (/Users/gmonne/.nvm/versions/node/v12.4.0/lib/node_modules/ts-node/src/index.ts:476:12)",
+              "Module.load (internal/modules/cjs/loader.js:641:32)",
+              "Function.Module._load (internal/modules/cjs/loader.js:556:12)",
+              "Function.Module.runMain (internal/modules/cjs/loader.js:837:10)",
+              "Object.<anonymous> (/Users/gmonne/.nvm/versions/node/v12.4.0/lib/node_modules/ts-node/src/bin.ts:158:12)",
+              "Module._compile (internal/modules/cjs/loader.js:774:30)",
+              "Object.Module._extensions..js (internal/modules/cjs/loader.js:785:10)",
+              "Module.load (internal/modules/cjs/loader.js:641:32)",
+              "Function.Module._load (internal/modules/cjs/loader.js:556:12)",
+              "Function.Module.runMain (internal/modules/cjs/loader.js:837:10)",
+              "internal/main/run_main_module.js:17:11"
+            ]
+          }
+        ],
+        "/Demo3/VPC/VPC/PrivateSubnet2/RouteTableAssociation": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "VPCPrivateSubnet2RouteTableAssociation8205E0E5",
+            "trace": [
+              "new Subnet (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/node_modules/@aws-cdk/aws-ec2/lib/vpc.ts:1138:5)",
+              "new PrivateSubnet (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/node_modules/@aws-cdk/aws-ec2/lib/vpc.ts:1237:5)",
+              "/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/node_modules/@aws-cdk/aws-ec2/lib/vpc.ts:993:33",
+              "Array.forEach (<anonymous>)",
+              "Vpc.createSubnetResources (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/node_modules/@aws-cdk/aws-ec2/lib/vpc.ts:970:28)",
+              "Vpc.createSubnets (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/node_modules/@aws-cdk/aws-ec2/lib/vpc.ts:965:12)",
+              "new Vpc (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/node_modules/@aws-cdk/aws-ec2/lib/vpc.ts:808:10)",
+              "new Cloud101VPC (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/constructs/Cloud101VPC.ts:10:16)",
+              "new Demo3 (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/stacks/Demo3.ts:9:5)",
+              "Object.<anonymous> (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/index.ts:8:1)",
+              "Module._compile (internal/modules/cjs/loader.js:774:30)",
+              "Module.m._compile (/Users/gmonne/.nvm/versions/node/v12.4.0/lib/node_modules/ts-node/src/index.ts:473:23)",
+              "Module._extensions..js (internal/modules/cjs/loader.js:785:10)",
+              "Object.require.extensions.<computed> [as .ts] (/Users/gmonne/.nvm/versions/node/v12.4.0/lib/node_modules/ts-node/src/index.ts:476:12)",
+              "Module.load (internal/modules/cjs/loader.js:641:32)",
+              "Function.Module._load (internal/modules/cjs/loader.js:556:12)",
+              "Function.Module.runMain (internal/modules/cjs/loader.js:837:10)",
+              "Object.<anonymous> (/Users/gmonne/.nvm/versions/node/v12.4.0/lib/node_modules/ts-node/src/bin.ts:158:12)",
+              "Module._compile (internal/modules/cjs/loader.js:774:30)",
+              "Object.Module._extensions..js (internal/modules/cjs/loader.js:785:10)",
+              "Module.load (internal/modules/cjs/loader.js:641:32)",
+              "Function.Module._load (internal/modules/cjs/loader.js:556:12)",
+              "Function.Module.runMain (internal/modules/cjs/loader.js:837:10)",
+              "internal/main/run_main_module.js:17:11"
+            ]
+          }
+        ],
+        "/Demo3/VPC/VPC/PrivateSubnet2/DefaultRoute": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "VPCPrivateSubnet2DefaultRoute538BAFF8",
+            "trace": [
+              "PrivateSubnet.addDefaultNatRoute (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/node_modules/@aws-cdk/aws-ec2/lib/vpc.ts:1171:19)",
+              "/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/node_modules/@aws-cdk/aws-ec2/lib/vpc.ts:837:23",
+              "Array.forEach (<anonymous>)",
+              "new Vpc (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/node_modules/@aws-cdk/aws-ec2/lib/vpc.ts:830:48)",
+              "new Cloud101VPC (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/constructs/Cloud101VPC.ts:10:16)",
+              "new Demo3 (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/stacks/Demo3.ts:9:5)",
+              "Object.<anonymous> (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/index.ts:8:1)",
+              "Module._compile (internal/modules/cjs/loader.js:774:30)",
+              "Module.m._compile (/Users/gmonne/.nvm/versions/node/v12.4.0/lib/node_modules/ts-node/src/index.ts:473:23)",
+              "Module._extensions..js (internal/modules/cjs/loader.js:785:10)",
+              "Object.require.extensions.<computed> [as .ts] (/Users/gmonne/.nvm/versions/node/v12.4.0/lib/node_modules/ts-node/src/index.ts:476:12)",
+              "Module.load (internal/modules/cjs/loader.js:641:32)",
+              "Function.Module._load (internal/modules/cjs/loader.js:556:12)",
+              "Function.Module.runMain (internal/modules/cjs/loader.js:837:10)",
+              "Object.<anonymous> (/Users/gmonne/.nvm/versions/node/v12.4.0/lib/node_modules/ts-node/src/bin.ts:158:12)",
+              "Module._compile (internal/modules/cjs/loader.js:774:30)",
+              "Object.Module._extensions..js (internal/modules/cjs/loader.js:785:10)",
+              "Module.load (internal/modules/cjs/loader.js:641:32)",
+              "Function.Module._load (internal/modules/cjs/loader.js:556:12)",
+              "Function.Module.runMain (internal/modules/cjs/loader.js:837:10)",
+              "internal/main/run_main_module.js:17:11"
+            ]
+          }
+        ],
+        "/Demo3/VPC/VPC/IGW": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "VPCIGWE1DD60CF",
+            "trace": [
+              "new Vpc (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/node_modules/@aws-cdk/aws-ec2/lib/vpc.ts:815:19)",
+              "new Cloud101VPC (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/constructs/Cloud101VPC.ts:10:16)",
+              "new Demo3 (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/stacks/Demo3.ts:9:5)",
+              "Object.<anonymous> (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/index.ts:8:1)",
+              "Module._compile (internal/modules/cjs/loader.js:774:30)",
+              "Module.m._compile (/Users/gmonne/.nvm/versions/node/v12.4.0/lib/node_modules/ts-node/src/index.ts:473:23)",
+              "Module._extensions..js (internal/modules/cjs/loader.js:785:10)",
+              "Object.require.extensions.<computed> [as .ts] (/Users/gmonne/.nvm/versions/node/v12.4.0/lib/node_modules/ts-node/src/index.ts:476:12)",
+              "Module.load (internal/modules/cjs/loader.js:641:32)",
+              "Function.Module._load (internal/modules/cjs/loader.js:556:12)",
+              "Function.Module.runMain (internal/modules/cjs/loader.js:837:10)",
+              "Object.<anonymous> (/Users/gmonne/.nvm/versions/node/v12.4.0/lib/node_modules/ts-node/src/bin.ts:158:12)",
+              "Module._compile (internal/modules/cjs/loader.js:774:30)",
+              "Object.Module._extensions..js (internal/modules/cjs/loader.js:785:10)",
+              "Module.load (internal/modules/cjs/loader.js:641:32)",
+              "Function.Module._load (internal/modules/cjs/loader.js:556:12)",
+              "Function.Module.runMain (internal/modules/cjs/loader.js:837:10)",
+              "internal/main/run_main_module.js:17:11"
+            ]
+          }
+        ],
+        "/Demo3/VPC/VPC/VPCGW": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "VPCVPCGW3AFA48F6",
+            "trace": [
+              "new Vpc (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/node_modules/@aws-cdk/aws-ec2/lib/vpc.ts:818:19)",
+              "new Cloud101VPC (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/constructs/Cloud101VPC.ts:10:16)",
+              "new Demo3 (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/stacks/Demo3.ts:9:5)",
+              "Object.<anonymous> (/Users/gmonne/Projects/Conatel/Devops-101/Cloud/aws/cdk/index.ts:8:1)",
+              "Module._compile (internal/modules/cjs/loader.js:774:30)",
+              "Module.m._compile (/Users/gmonne/.nvm/versions/node/v12.4.0/lib/node_modules/ts-node/src/index.ts:473:23)",
+              "Module._extensions..js (internal/modules/cjs/loader.js:785:10)",
+              "Object.require.extensions.<computed> [as .ts] (/Users/gmonne/.nvm/versions/node/v12.4.0/lib/node_modules/ts-node/src/index.ts:476:12)",
+              "Module.load (internal/modules/cjs/loader.js:641:32)",
+              "Function.Module._load (internal/modules/cjs/loader.js:556:12)",
+              "Function.Module.runMain (internal/modules/cjs/loader.js:837:10)",
+              "Object.<anonymous> (/Users/gmonne/.nvm/versions/node/v12.4.0/lib/node_modules/ts-node/src/bin.ts:158:12)",
+              "Module._compile (internal/modules/cjs/loader.js:774:30)",
+              "Object.Module._extensions..js (internal/modules/cjs/loader.js:785:10)",
+              "Module.load (internal/modules/cjs/loader.js:641:32)",
+              "Function.Module._load (internal/modules/cjs/loader.js:556:12)",
+              "Function.Module.runMain (internal/modules/cjs/loader.js:837:10)",
+              "internal/main/run_main_module.js:17:11"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "runtime": {
+    "libraries": {
+      "@aws-cdk/core": "1.1.0",
+      "@aws-cdk/cx-api": "1.1.0",
+      "@aws-cdk/aws-ec2": "1.1.0",
+      "@aws-cdk/aws-ssm": "1.1.0",
+      "@aws-cdk/aws-iam": "1.1.0",
+      "@aws-cdk/region-info": "1.1.0",
+      "@aws-cdk/aws-cloudwatch": "1.1.0",
+      "jsii-runtime": "node.js/v12.4.0"
+    }
+  }
+}
