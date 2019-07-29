@@ -37,8 +37,8 @@ aws ec2 describe-volumes
 
 # Creamos la snapshot
 aws ec2 create-snapshot \
---volume-id <volume-id> \
---description "<descripción>"
+  --volume-id <volume-id> \
+  --description "<descripción>"
 ```
 
 ### FAQ
@@ -88,9 +88,9 @@ aws ec2 describe-instances \
 
 # Creamos la imagen a partir de la imagen
 aws ec2 create-image \
---instance-id <instance-id> \
---name "<nombre>" \
---description "<descripción>"
+  --instance-id <instance-id> \
+  --name "<nombre>" \
+  --description "<descripción>"
 
 # Obtenemos la lista de imagenes
 # ❗❗️❗️ COPIE Y PEGUE ESTE COMANDO PARA EVITAR ERRORES ❗❗️❗️
