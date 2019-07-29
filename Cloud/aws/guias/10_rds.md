@@ -21,7 +21,7 @@ Las instancias de RDS pueden correr dentro de un VPC, desde donde se puede contr
 
 ---
 
-### 💻 DEMO #01 ~ Creación de una instancia de RDS <a name="demo001"></a>
+## 💻 DEMO #18 ~ Creación de una instancia de RDS <a name="demo018"></a>
 
 Mostraremos como realizar este procedimiento desde la consola de administración y la `cli`.
 
@@ -54,35 +54,36 @@ La lista de clases de instancia de RDS se encuentra [en esta dirección](https:/
 
 ```
 # Obtenemos la lista de VPCs para identificar el ID de nuestro VPC
-aws ec2 describe-vpcs --query 'Vpcs[*].[VpcId, Tags[*]]'
+aws ec2 describe-vpcs \
+  --query 'Vpcs[*].{Id:VpcId,Tags:Tags}' --output json
 
 # Obtenemos la lista de subnets dentro de nuestro VPC
 aws ec2 describe-subnets \
---filters Name=vpc-id,Values=<vpc_id> \
---query 'Subnets[*].[SubnetId]'
+  --filters Name=vpc-id,Values=<vpc_id> \
+  --query 'Subnets[*].[SubnetId]'
 
 # Creamos un subnet group
 aws rds create-db-subnet-group \
---db-subnet-group-name <nombre_de_subnet_group> \
---db-subnet-group-description <descripcion_del_subnet_group>
---subnet-ids <lista_de_subnet_ids>
+  --db-subnet-group-name <nombre_de_subnet_group> \
+  --db-subnet-group-description <descripcion_del_subnet_group>
+  --subnet-ids <lista_de_subnet_ids>
 
 # Creamos una instancia de RDS asociada al nuevo subnet group
 aws rds create-db-instance \
---allocated-storage 20 \
---db-instance-class db.t2.micro \
---engine mysql \
---storage-type standard \
---no-publicly-accesible \
---no-multi-az \
---db-subnet-group-name <nombre_del_subnet_group_prviamente_creado> \
---db-instance-identifier <identificador_de_su_instancia> \
---master-username <usuario_master> \
---master-user-password <password_de_usuario_master>
+  --allocated-storage 20 \
+  --db-instance-class db.t2.micro \
+  --engine mysql \
+  --storage-type standard \
+  --no-publicly-accesible \
+  --no-multi-az \
+  --db-subnet-group-name <nombre_del_subnet_group_prviamente_creado> \
+  --db-instance-identifier <identificador_de_su_instancia> \
+  --master-username <usuario_master> \
+  --master-user-password <password_de_usuario_master>
 
 # Listamos las instancias de RDS
 aws rds describe-db-instances \
---query 'DBInstances[*].{ID: DBInstanceIdentifier}'
+  --query 'DBInstances[*].{ID: DBInstanceIdentifier}'
 ```
 
 #### FAQ
@@ -115,7 +116,7 @@ mysql -h <url_de_la_instancia_de_rds> -u <master_user> -p
 
 **Segui los pasos anteriores pero no puedo conectarme, ¿cual es el problema?**
 
-Verífique que el `security group` que tenga asignado a su instancia de `RDS` cuente con reglas que permitan la conexión de su instancia de `EC2`.
+Verífique que el `security group` que tenga asignado a su instancia de `RDS` cuente con reglas que permitan la conexión de su instancia de `EC2`. El puerto por defecto en el que esta publicado `mysql` es `3306`.
 
 ---
 
@@ -126,7 +127,8 @@ Podemos veríficar que la base de datos esta funcionando utilizando el cliente d
 sudo yum install mysql
 
 # Obtenemos la dirección de la instancia de RDS
-aws rds describe-db-instances --query 'DBInstances[*].Endpoint'
+aws rds describe-db-instances \
+  --query 'DBInstances[*].Endpoint'
 
 # Nos conectamos a la base utilizando el cliente de mysql
 mysql -h <rds_host> -u <master_username> -p
@@ -136,12 +138,12 @@ Si todo funciona bien veremos un prompt similar a: `MySQL [(none)]>`.
 
 Utilice los siguientes comandos para crear una nueva base de datos y una tabla dentro de la misma.
 
-```bash
+```sql
 CREATE DATABASE conatel;
 USE conatel;
 CREATE TABLE people (id SERIAL NOT NULL, name VARCHAR(30));
 INSERT INTO people (name) VALUES ('John Doe'), ('Jane Doe');
-SELECT * FROM people
+SELECT * FROM people;
 
 +----+--------------+
 | id | name         |
