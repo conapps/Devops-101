@@ -137,7 +137,7 @@ Solo puedo víncular instancias y volumenes que se encuentren en la misma zona d
 Si accedemos a nuestra instancia privada veremos los volumenes montados (`lsblk`). Debemos montarlos antes de poder utilizarlos. Los comandos son los mismos que antes, con la diferencia de que uno de nuestros volumenes ya tiene creado un `fs`, y no tenemos por que recrearlo.
 
 
-> ❗❗️❗️<br/>**️Antes de realizar estos pasos verífque que volumen tiene disponible en cada ubicación. Su situación puede diferir del ejemplo a continuación.**<br/>❗❗️❗️
+> **️Antes de realizar estos pasos verífque que volumen tiene disponible en cada ubicación. Su situación puede diferir del ejemplo a continuación.**
 
 ```
 # Creamos un filesystem dentro del volumen de 100G
