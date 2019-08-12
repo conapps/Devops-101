@@ -176,7 +176,7 @@ Si vamos a la consola de instancias de EC2, veremos las instancias creadas por n
 
 Cuando el `Auto Scaling Group` detecta la caída de una instancia, inmediatemente comienza el procedimiento para volverla a levantar. Si ya no necestiamos el `Auto Scaling Group` podemos eliminarlo. 
 
-> ❗❗️❗️<br/>Todas las instancias creadas por el `Auto Scaling Group` serán eliminadas junto con el.<br/>❗❗️❗️
+> Todas las instancias creadas por el `Auto Scaling Group` serán eliminadas junto con el.
 
 ---
 

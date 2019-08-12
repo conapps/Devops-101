@@ -33,7 +33,7 @@ Además de la `cli` es recomendable instalar [`aws-shell`](https://github.com/aw
 pip install aws-shell
 ```
 
-> ❗❗️❗️<br/>Si esta trabajando desde una Mac es recomendable que realice la instalación con el siguiente comando, ya que existe un bug en una de sus dependencias.</br>❗❗️❗️
+> Si esta trabajando desde una Mac es recomendable que realice la instalación con el siguiente comando, ya que existe un bug en una de sus dependencias.
 
 ```
 pip install aws-shell --upgrade --ignore-installed siz
@@ -41,7 +41,7 @@ pip install aws-shell --upgrade --ignore-installed siz
 
 ### Configuración de la `cli`
 
-> ❗❗️❗️<br/>Los siguientes ejemplos se realizarán sobre `aws-shell` sin embargo, todos los comandos pueden utilizarse de la misma manera sobre la `cli` sin modificaciones.</br>❗❗️❗️
+> Los siguientes ejemplos se realizarán sobre `aws-shell` sin embargo, todos los comandos pueden utilizarse de la misma manera sobre la `cli` sin modificaciones.
 
 ---
 
@@ -172,7 +172,7 @@ Practicamente todos los servicios y todas sus funcionalidades están disponibles
 
 A continuación hay un ejemplo de un script que lanza una nueva instancia de la imagen "Amazon Linux 2", permitiendo solo la configuración del tipo de instancia y su IP privada.
 
-> ❗❗️❗️<br/>Para probar este script desde sus maquinas en sus cuentas, deben modificar las variables encontradas bajo el comentario "CONSTANTES" con los recursos de su cuenta. Para encontrar estos valores utilice los siguientes comandos, u obtengalos desde la consola web.</br>❗❗️❗️
+> Para probar este script desde sus maquinas en sus cuentas, deben modificar las variables encontradas bajo el comentario "CONSTANTES" con los recursos de su cuenta. Para encontrar estos valores utilice los siguientes comandos, u obtengalos desde la consola web.
 
 ```bash
 # Obtener el ID del Security Group

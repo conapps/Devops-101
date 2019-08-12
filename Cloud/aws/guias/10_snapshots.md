@@ -79,7 +79,7 @@ Mostraremos el procedimiento para realizar en la consola web o la `cli`.
 
 ### Procedimiento (`cli`)
 
-> ❗❗️❗️<br/>Desde la `cli` solo se pueden crear imagenes desde una instancia, y no de una `snapshot`. Por lo tanto, no es el metodo más recomendado para realizarla.<br/>❗❗️❗️
+> Desde la `cli` solo se pueden crear imagenes desde una instancia, y no de una `snapshot`. Por lo tanto, no es el metodo más recomendado para realizarla.
 
 ```
 # Obtenemos la lista de instancias
@@ -97,7 +97,7 @@ aws ec2 create-image \
 aws ec2 describe-images --owner self
 ```
 
->❗❗️❗️<br/>Si no configuramos la opción `--owner self` al momento de ejecutar el comando `aws ec2 describe-images`, la `cli` nos devolvera la lista de _todas_ las imagenes disponibles en nuestra cuenta, incluyendo las de AWS y las del marketplace.<br/>❗❗️❗️
+>Si no configuramos la opción `--owner self` al momento de ejecutar el comando `aws ec2 describe-images`, la `cli` nos devolvera la lista de _todas_ las imagenes disponibles en nuestra cuenta, incluyendo las de AWS y las del marketplace.
 
 ### FAQ
 
