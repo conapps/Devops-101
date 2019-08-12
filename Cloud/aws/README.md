@@ -6,7 +6,7 @@ Bienvenidos al curso de "Cloud 101", parte del programa "DevOps - 101" de CONATE
 
 - [00 - Introducción](./guias/00_introduccion.md)
 - [01 - Definiciones](./guias/01_definiciones.md)
-- [02 - AWS](./guias/02_demo.md)
+- [02 - AWS](./guias/02_aws.md)
 - [03 - Demo](./guias/03_demo.md)
 - [04 - EC2](./guias/04_ec2.md)
 - [05 - VPC](./guias/05_vpc.md)
