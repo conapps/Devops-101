@@ -251,3 +251,9 @@ La definición de cualquier recurso tiene como mínimo 2 opciones que configurar
 ---
 
 Veamos como podemos aplicar estos conceptos para la creación de un balanceador de carga que nos permita llegar a nuestra aplicación.
+
+---
+<div style="width: 100%">
+  <div style="float: left"><a href="../guias/13_auto_scaling_groups.md">⬅️13 - Auto Scaling Groups</a></div>
+  <div style="float: right"><a href="../guias/15_alb.md">15 - ALB ➡️</a></div>
+</div>

@@ -69,3 +69,9 @@ Los beneficios son muchos y dependen del tipo de servicio que utilicemos. De tod
 - **Disaster Recovery**. Diseñar una aplicación robusta es más sencillo en la nube. Porque en general, contamos con múltiples regiones, zonas de disponibilidad, y recursos a utilizar. Además, si utilizamos servicios `PaaS` o `SaaS` el diseño se hace todavía más sencillo, porque podemos utilizar los `SLA` que nos brinda el proveedor.
 - **Procesamiento en paralelo.** Es mucho más sencillo desarrollar aplicaciones que escalen horizontalmente, o que puedan tomar provecho de realizar acciones en paralelo. Especialmente importante en aplicaciones de analítica de datos, o en aplicaciones con grandes consumos de ancho de banda (streaming). Los anchos de banda de los servicios `cloud`, sobre todo aquellos de cara a Internet, son mucho más potentes que los que usualmente contamos en nuestros data centers.
 - **Rendimiento**. Si nuestras aplicaciones tienen `SLA` muy exigentes es complicado estimar la cantidad de requerimientos que necesitamos para cumplirlos. Especialmente si la demanda de estas aplicaciones varía con el tiempo. En estos casos es usual tener qué comprar equipamiento para soportar los picos, lo que deja un montón de computo inutilizado durante los períodos de uso promedio.
+
+---
+<div style="width: 100%">
+  <div style="float: left"><a href="../guias/00_introduccion.md">⬅️00 - Introducción</a></div>
+  <div style="float: right"><a href="../guias/02_aws.md">02 - AWS ➡️</a></div>
+</div>

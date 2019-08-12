@@ -250,3 +250,9 @@ Ahora tenemos una aplicación conectada a la base de datos, pero:
 Idealmente, nos gustaría tener más de una instancia sirviendo a la aplicación; conectada a una base de datos robusta y escalable; y contar con un balanceador de tráfico que termine las conexiones de los clientes y las distribuya a las instancias de la aplicación. Además, necesitamos un metodo para reconstruir las instancias en caso de errores, y para escalarlas horizontalmente si la demanda de conexiones aumenta. El tamaño de cada una de ellas dependerá de la aplicación que estemos ejecutando. En general, podemos utilizar muchas instancias pequeñas cuando la necesidad de computo es baja, y los cuellos de botella suelen darse en la red. Si en cambio la necesidad de computo es muy alta utilizaremos instancias más grandes. No existe una formula que nos permita estimar a priori el timpo de instancia que más nos combiene, necesariamente vamos a tener que hacer algunas pruebas para llegar a la configuración óptima. Basicamente, queremos que la cantidad de instancias que estén sirviendo nuestra aplicación se elastica. Que se adapte a los requerimientos de forma dínamica.
 
 Para conseguir esto vamos a ver como funcionan los `Auto Scaling Groups`.
+
+---
+<div style="width: 100%">
+  <div style="float: left"><a href="../guias/11_rds.md">⬅️11 - RDS</a></div>
+  <div style="float: right"><a href="../guias/13_auto_scaling_groups.md">13 - Auto Scaling Groups ➡️</a></div>
+</div>

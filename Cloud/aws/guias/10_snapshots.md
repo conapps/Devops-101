@@ -125,3 +125,9 @@ La combinacion de `Snapshots` y `AMI` simplifica la instalación de nuestras apl
 ![Aplicación](../imagenes/018.png)
 
 Podemos resolver ambos simplemente instalando aplicaciones específicas  para cada caso (`nginx` y `mysql` por ejemplo), con sus configuraciones correspondientes de aplicación y red. Esta sería una forma de resolverlo utilizando solo los servicios `IaaS` de AWS. Sin embargo, hay otro grupo de servicio que nos puede ayudar a simplificar la resolución de estos problemas. Veremos a continuación algunos ejemplos.
+
+---
+<div style="width: 100%">
+  <div style="float: left"><a href="../guias/09_aws_cli.md">⬅️09 - AWS <code>cli</code></a></div>
+  <div style="float: right"><a href="../guias/11_rds.md">11 - RDS ➡️</a></div>
+</div>

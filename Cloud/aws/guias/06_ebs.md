@@ -200,3 +200,7 @@ Para poder eliminar los volumenes primero tenemos que desvincularlos de las inst
 El volumen seguira "vivo" y AWS seguira cargando la cuenta por la existencia del volumen (aún si no se esta utilizando) en base a su tamaño.
 
 ---
+<div style="width: 100%">
+  <div style="float: left"><a href="../guias/05_vpc.md">⬅️05 - VPC</a></div>
+  <div style="float: right"><a href="../guias/07_iam.md">07 - IAM ➡️</a></div>
+</div>
