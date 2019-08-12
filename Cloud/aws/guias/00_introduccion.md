@@ -15,3 +15,9 @@ Una vez finalizada la sección teórica, se realizará una demostración de los 
 Se revertirá a una modalidad más hands-on una vez finalizada la demostración. El resto del curso se centrara en mostrar cómo funcionan algunos de los servicios fundamentales de la nube. Contar con un entendimiento de los mismos es fundamental para obtener el máximo provecho de los servicios más avanzados ofrecidos por los proveedores de `cloud`.
 
 El curso finalizará con una actividad competitiva grupal, en donde los participantes deberán responder múltiples preguntas presentadas en pantalla. Aquellos que terminen con los mejores tres puntajes recibirán un premio en agradecimiento por participar.
+
+---
+
+<div style="width: 100%">
+  <div style="float: right"><a href="../guias/01_definiciones.md">01 - Definiciones ➡️</a></div>
+</div>

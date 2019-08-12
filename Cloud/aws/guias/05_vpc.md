@@ -382,3 +382,7 @@ Por defecto las nuevas `Network ACL` tienen una regla al final para bloquear tod
 Las reglas se aplican en órden creciente. Inmediatamente que el tráfico corresponda a una regla, se dejarán de evaluar las siguiente. Por lo tanto, es recomendable que las reglas más específicas sean definidas primero.
 
 ---
+<div style="width: 100%">
+  <div style="float: left"><a href="../guias/04_ec2.md">⬅️04 - EC2</a></div>
+  <div style="float: right"><a href="../guias/06_ebs.md">06 - EBS ➡️</a></div>
+</div>

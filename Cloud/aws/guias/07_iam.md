@@ -49,3 +49,7 @@ No se podrá conectar más de forma programatica hasta que haya generado un nuev
 Todo lo que el usuario dueño de las mismas tenga permisos. Por eso es importante mantenerlas seguras.
 
 ---
+<div style="width: 100%">
+  <div style="float: left"><a href="../guias/06_ebs.md">⬅️06 - EBS</a></div>
+  <div style="float: right"><a href="../guias/09_s3.md">08 - S3 ➡️</a></div>
+</div>

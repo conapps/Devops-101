@@ -205,3 +205,9 @@ Mostraremos como realizar este procedimiento desde la consola web.
 Los `Auto Scaling Group` son excelentes para mantener la disponibilidad de nuestras aplicaciones, pero todavía no tenemos una forma de balancear el tráfico sobre ellos. Por otro lado, los pasos necesarios para levantar esta infraestructura se están volviendo cada vez más complejos. Por más que podemos generar `scripts` que nos ayuden a levantar la infraestructura, es dificil mantenerlos actualizados y libres de `bugs`. Tampoco tenemos níngun tipo de documentación respecto a nuestra infra. Cualquier cambio adicional empeorara la situación. Necesitamos otra forma de levantar nuestros servicios.
 
 Vamos a ver como podemos solucionar la creación de un balanceador y documentar nuestro sistema con `CloudFormation`. 
+
+---
+<div style="width: 100%">
+  <div style="float: left"><a href="../guias/12_marketplace.md">⬅️12 - EC2 Marketplace</a></div>
+  <div style="float: right"><a href="../guias/14_cloudformation.md">14 - CloudFormation ➡️</a></div>
+</div>

@@ -29,3 +29,9 @@
 ## Autenticación y seguridad
 
 ![IAM](../imagenes/cloud_101_001.jpg)
+
+---
+<div style="width: 100%">
+  <div style="float: left"><a href="../guias/02_aws.md">⬅️02 - AWS</a></div>
+  <div style="float: right"><a href="../guias/04_ec2.md">04 - EC2 ➡️</a></div>
+</div>

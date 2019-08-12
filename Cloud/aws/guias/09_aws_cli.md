@@ -269,3 +269,9 @@ No todos los sistemas de `IaC` consiguen implementar todas estas carácteristica
 `CloudFormation` es el servicio de `IaC` que brinda AWS a sus usuarios. Con el, se pueden configurar todos los servicios de su nube a través de archivos `yaml` o `json`. Cada juego de configuraciones, o `stack`, puede mantenersa aislado del otro, lo que permite construir arquitecturas multi-tenant con facilidad o múltiples ambientes de desarrollo. La eliminación de un `stack` lanzará la eliminación de todos los recursos creados por el, lo que simplifica enormemente las tareas de limpieza y mantenimiento de servicios, y evita gastos innecesarios en la cuenta.
 
 Veremos como utilizar ambas herramientas más adelante.
+
+---
+<div style="width: 100%">
+  <div style="float: left"><a href="../guias/08_s3.md">⬅️08 - S3</a></div>
+  <div style="float: right"><a href="../guias/10_snapshots.md">10 - Snapshots ➡️</a></div>
+</div>
