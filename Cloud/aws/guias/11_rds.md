@@ -155,6 +155,6 @@ SELECT * FROM people;
 
 ---
 <div style="width: 100%">
-  <div style="float: left"><a href="../guias/10_snapshot.md">⬅️10 - Snapshot</a></div>
+  <div style="float: left"><a href="../guias/10_snapshots.md">⬅️10 - Snapshot</a></div>
   <div style="float: right"><a href="../guias/12_marketplace.md">12 - EC2 Marketplace ➡️</a></div>
 </div>
