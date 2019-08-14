@@ -8,7 +8,7 @@ Los objetivos de este curso son:
 
 Todos los conceptos mencionados durante el curso son aplicables a cualquier tecnología de `cloud`. Sin embargo, utilizaremos “Amazon Web Services” para las demos, y para explicar los conceptos. 
 
-Así como con otros tracks `Devops 101`, el curso cuenta con una gran parte práctica. Pero a diferencia de otros cursos, este cuenta con una sección inicial más teórica. Durante esta sección se le presentara en varias oportunidades preguntas para que mida su nivel de entendimiento del material expuesto. Se lo invita a preguntar al finalizar la instancia del ejercicio si no conoce la respuesta o no coincide con la misma. De esta manera, ayudamos a que todos los participantes.
+Así como con otros tracks `Devops 101`, el curso cuenta con una gran parte práctica. Pero a diferencia de otros cursos, este cuenta con una sección inicial más teórica. Durante esta sección se le presentara en varias oportunidades preguntas para que mida su nivel de entendimiento del material expuesto. Se lo invita a preguntar al finalizar la instancia del ejercicio si no conoce la respuesta o no coincide con la misma. De esta manera, ayudamos a todos los participantes.
 
 Una vez finalizada la sección teórica, se realizará una demostración de los distintos servicios de AWS sobre la consola de administración. Esta instancia también servirá para explicar el funcionamiento de la consola en términos generales. Los participantes podrán seguir la demostración dentro de sus propias cuentas.
 
