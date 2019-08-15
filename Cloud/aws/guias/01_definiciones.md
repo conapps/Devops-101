@@ -20,8 +20,8 @@ Veamos a qué hacen referencia cada una de estas características escenciales.
 
 - **On-demand self-service**: El consumidor puede aprovisionar servicios de computo sin necesidad de interactuar con otra persona para realizarlo.
 - **Broad network access**: Se debe poder acceder a los servicios a través de una red utilizando mecanismos estandar.
-- **Resource pooling**: Los recursos son compartidos por varios consumidores dentro de un modelo multi-tenant, y son distribuidos y re-asignados de acuerdo a la demanda de los consumidores. Los consumidores por su parte, no saben exactamente qué recurso físico esta sirviendo a su aplicación. Como máximo contará con algún nivel de abstracción que le permita identificar de que país, ciudad, o datacenter quiere se le asignen los recursos.
-- **Rapid elasticity**: Las funcionalidades de los servicios pueden ser aprovisionadas y liberadas de forma elástica, de forma manual o automática, de acuerdo a la demanda del consumidor. Desde su punto de vista, el consumidor debe percibir que esta trabajando con un pool de recursos ilimitados que puede consumir en cualquier momento.
+- **Resource pooling**: Los recursos son compartidos por varios consumidores dentro de un modelo multi-tenant, y son distribuidos y re-asignados de acuerdo a la demanda de los consumidores. Los consumidores por su parte, no saben exactamente qué recurso físico está sirviendo a su aplicación. Como máximo contará con algún nivel de abstracción que le permita identificar de que país, ciudad, o datacenter quiere se le asignen los recursos.
+- **Rapid elasticity**: Las funcionalidades de los servicios pueden ser aprovisionadas y liberadas de forma elástica, de forma manual o automática, de acuerdo a la demanda del consumidor. Desde su punto de vista, el consumidor debe percibir que está trabajando con un pool de recursos ilimitados que puede consumir en cualquier momento.
 - **Measured service**: Todos los servicios cuentan con algún sistema de medición que permite llevar la cuenta de su uso. Esta información debe estar disponible al consumidor, y es la utilizada para cobrarle el uso del servicio.
 
 Las servicios de `cloud` cuentan además con otras cualidades adicionales a estas, como: `alta disponibilidad`, `escalabilidad`, `seguridad`, `robustez`, etc.
@@ -38,7 +38,7 @@ Definiciones desarrolladas por NIST.
 
 **Tipos de nubes**
 
-Los tipos de nubes se determinan en base a _quien_ es el consumidor del servicio y no en base a quién lo administra. Por ejemplo, una _private cloud_ es aquella que existe para dar servicio a una organización, pero puede estar administrada por un tercero, y no por la propia organización.
+Los tipos de nubes se determinan en base a _quién_ es el consumidor del servicio y no en base a quién lo administra. Por ejemplo, una _private cloud_ es aquella que existe para dar servicio a una organización, pero puede estar administrada por un tercero, y no por la propia organización.
 
 Los tipos de `cloud` más populares son:
 
