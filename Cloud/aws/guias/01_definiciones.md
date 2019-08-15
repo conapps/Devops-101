@@ -16,7 +16,7 @@ El "National Institute of Standards and Technology" o [NIST](#)(https://www.nist
 
 **Características esenciales**
 
-Veamos que a qué hacen referencia cada una de estas características escenciales.
+Veamos a qué hacen referencia cada una de estas características escenciales.
 
 - **On-demand self-service**: El consumidor puede aprovisionar servicios de computo sin necesidad de interactuar con otra persona para realizarlo.
 - **Broad network access**: Se debe poder acceder a los servicios a través de una red utilizando mecanismos estandar.
