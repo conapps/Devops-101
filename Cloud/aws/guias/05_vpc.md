@@ -6,7 +6,7 @@ Cada VPC esta aislada de las demás. Ya sea dentro de la misma cuenta, o de otra
 
 ![Acceder a Internet](../imagenes/011.png)
 
-Los VPC tienen asociado un bloque de IPs, usualmente un `/16`, subdividido en múltiples `subnets` configuradass con una subred dentro de este rango. Cada `subnet` esta asociada a una zona de disponibilidad y es sobre ellas que se levantan los servicios.
+Los VPC tienen asociado un bloque de IPs, usualmente un `/16`, subdividido en múltiples `subnets` configuradas con una subred dentro de este rango. Cada `subnet` esta asociada a una zona de disponibilidad y es sobre ellas que se levantan los servicios.
 
 Cada `subnet` puede ser pública o privada. Se considera a una `subnet` como pública cuando cuenta con un `Internet Gateway` asociado a la `subnet`. Un `IG` es un recurso dentro del VPC que permite la conexión de las instancias de la `subnet` con Internet. Las instancias levantadas en una `subnet` pública contarán con una `IP` privada dentro del rango asignado, y una `IP` pública asignada por el `IG`.
 
@@ -139,9 +139,9 @@ Verificar que sea aquel cuyo `State` se encuentre en `detached`.
 
 ### FAQ
 
-**¿Que paso si solamente creo el `IG` y no lo asigno al `VPC`?**
+**¿Que pasa si solamente creo el `IG` y no lo asigno al `VPC`?**
 
-Nada. El `IG` quedara en desuso hasta que se lo vincule con algún `VPC`.
+Nada. El `IG` quedará en desuso hasta que se lo vincule con algún `VPC`.
 
 **¿Es suficiente solo con vincular el `IG` al `VPC`?**
 
@@ -189,15 +189,15 @@ Seleccione la llave creada recientemente. Deberá tener esta llave a mano para c
 
 ### FAQ
 
-**¿Que paso si selecciono `Enable` en el paso `7.3` al levantar la instancia en la red privada?**
+**¿Que pasa si selecciono `Enable` en el paso `7.3` al levantar la instancia en la red privada?**
 
 AWS le asignará a esa instancia una `IP` pública. Sin embargo, nunca nos podremos conectar a esta instancia porque no sabe como llegar a un `Internet Gateway`. Para poder hacer esto debería tener configurada una ruta en su `route table` que apuntara al `IG` asociado al `VPC` de la `subnet`.
 
 **¿Que pasa si selecciono `Disable` en el paso `7.3` al levantar la instancia en la red pública?**
 
-AWS no le asignará una `IP` pública a esta maquina por lo que no podrémos acceder a ella desde Internet. Además, desde esta instancia tampoco podrémos llegar a Internet mientras no tengamos una `IP` pública asignada.
+AWS no le asignará una `IP` pública a esta máquina por lo que no podrémos acceder a ella desde Internet. Además, desde esta instancia tampoco podrémos llegar a Internet mientras no tengamos una `IP` pública asignada.
 
-**¿Como le asigno una `IP` pública a una instanca en una `subnet` pública si me olvide de asignarle una al momento de crearla?**
+**¿Como le asigno una `IP` pública a una instancia en una `subnet` pública si me olvide de asignarle una al momento de crearla?**
 
 La única forma es asignandole una `Elastic IP`. Estas `IP` públicas se crean de forma independiente y se asignan manualmente a una instancia. Esta forma de víncular ambos recursos permite re-asignar de forma dínamica la `IP` a distintas instancias sin tener que modificar reglas de ruteo.
 
