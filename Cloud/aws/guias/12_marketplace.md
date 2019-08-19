@@ -1,5 +1,7 @@
 # AWS Marketplace
 
+_ami-0273150f1f5fefd92`_
+
 Ahora que ya tenemos nuestro motor de bases de datos funcionando podemos pasar a configurar nuestra aplicación. En este caso, queremos poner en producción un blog personal, en particular [Ghost](https://ghost.org/es/).
 
 Si vamos a la [documentación](https://docs.ghost.org/install/ubuntu/) de esta aplicación podemos ver los pasos que debemos seguir para su instalación. Siguiendo esta guía podemos configurar todos los parámetros de acuerdo a nuestas necesidades, partiendo de una `AMI` de Ubuntu 18.04 por ejemplo. Una vez terminadas nuestras configuraciones principales, podríamos crear una nueva `AMI` que incorpore todos los cambios que le realizamos a la `AMI` inicial. De esta manera podremos levantar múltiples instancias con esta configuración, o hacer una restauración a fabrica si algo sale mal.
