@@ -14,7 +14,7 @@ La lista de volumenes creados la podemos ver en `EC2 Dashboard > Volumes`. Actua
 
 ---
 
-## 💻 DEMO #11 ~ Creación de un volumen a través del Wizard de instancias <a name="demo011"></a>
+## 💻 DEMO #1 ~ Creación de un volumen a través del Wizard de instancias <a name="demo011"></a>
 
 ### Procedimiento
 
@@ -103,7 +103,7 @@ Si ahora volvemos a la lista de volumenes, vamos a ver que que el volumen adicio
 
 ---
 
-### 💻 DEMO #12 ~ Creación y montado de un volumen en una instancia existente <a name="demo012"></a>
+### 💻 DEMO #2 ~ Creación y montado de un volumen en una instancia existente <a name="demo012"></a>
 
 ### Procedimiento
 
@@ -178,7 +178,7 @@ tree /xvdg
 
 ---
 
-### 💻 DEMO #12 ~ Terminación de un volumen <a name="demo012"></a>
+### 💻 DEMO #3 ~ Terminación de un volumen <a name="demo012"></a>
 
 ### Procedimiento
 

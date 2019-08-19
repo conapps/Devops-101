@@ -27,7 +27,7 @@ Todas las instancias se ven afectados por ambos recursos, con la diferencia de d
 
 ---
 
-## 💻 DEMO #4 ~ Crear un nuevo VPC
+## 💻 DEMO #1 ~ Crear un nuevo VPC
 
 ### Procedimiento
 
@@ -58,7 +58,7 @@ Al crear un nuevo VPC no se crean `subnets` por defecto. Debemos crearlas dentro
 
 ---
 
-## 💻 DEMO #5 ~ Crear subnets
+## 💻 DEMO #2 ~ Crear subnets
 
 ### Procedimiento
 
@@ -103,7 +103,7 @@ Para poder conectarnos con nuestras instancias vamos a:
 
 ---
 
-## 💻 DEMO #6 ~ Crear Internet Gateway
+## 💻 DEMO #3 ~ Crear Internet Gateway
 
 ### Procedimiento
 
@@ -161,7 +161,7 @@ Ahora que tenemos una `subnet` privada y una `pública` vamos a levantar una ins
 
 ---
 
-## 💻 DEMO #7 ~ Levantar instancias en `subnets` privadas y públicas
+## 💻 DEMO #4 ~ Levantar instancias en `subnets` privadas y públicas
 
 ### Procedimiento
 
@@ -209,7 +209,7 @@ Ahora nos conectarémos a la instancia en la `subnet` pública para ver como pod
 
 ---
 
-## 💻 DEMO #8 ~ Conexión por SSH a ambas instancias
+## 💻 DEMO #5 ~ Conexión por SSH a ambas instancias
 
 ### Procedimiento
 
@@ -253,7 +253,7 @@ Para que estas instancias puedan acceder a Internet tenemos que configurar un `N
 
 ---
 
-## 💻 DEMO #9 ~ Creación de un NAT Gateway
+## 💻 DEMO #6 ~ Creación de un NAT Gateway
 
 ### Procedimiento
 
@@ -286,7 +286,7 @@ Si realizamos las mismas pruebas que antes desde la instancia privada podemos co
 
 ---
 
-## 💻 DEMO #10 ~ Creación de un nuevo Security Group
+## 💻 DEMO #7 ~ Creación de un nuevo Security Group
 
 ### Procedimiento
 
@@ -319,7 +319,7 @@ Configuraremos una nueva `Network ACL` para permitir el acceso por `SSH` a las i
 
 ---
 
-## 💻 DEMO #10 ~ Creación de una Network ACL
+## 💻 DEMO #8 ~ Creación de una Network ACL
 
 ### Procedimiento
 

@@ -45,7 +45,7 @@ pip install aws-shell --upgrade --ignore-installed siz
 
 ---
 
-### 💻 DEMO #15 ~ Configuración de la `cli` <a name="demo015"></a>
+### 💻 DEMO #1 ~ Configuración de la `cli` <a name="demo015"></a>
 
 Las credenciales mencionadas en esta sección serán provistas por el moderador. Si por algún motivo no cuenta con estas credenciales, consulte con alguno de los ayudantes.
 
@@ -127,7 +127,7 @@ Reproduciremos los mismos pasos que realizamos sobre la consola web de S3 pero e
 
 ---
 
-### 💻 DEMO #15 ~ Configuración de la `cli` <a name="demo015"></a>
+### 💻 DEMO #2 ~ Interactuando con la `cli` <a name="demo015"></a>
 
 #### Procedimiento
 
@@ -236,9 +236,7 @@ Antes de poder correr este `script` debemos darle permisos de ejecución:
 chmod +x ./script.sh
 ```
 
-Con `scripts` y la `cli` de AWS podemos automatizar y simplificar todas las acciones queramos realizar sobre los recursos de AWS. Sin embargo, no es fácil mantener actualizado la lista de `script`; es díficil mantener una base de `scripts` común; y usualmente no son faciles de _debuggear_. Es por esto que existen otras formas de automatizar los recursos de la nube.
-
-En este curso veremos dos de ellos:
+Con `scripts` y la `cli` de AWS podemos automatizar y simplificar todas las acciones queramos realizar sobre los recursos de AWS. Sin embargo, no es fácil mantener actualizado la lista de `script`; es díficil mantener una base de `scripts` común; y usualmente no son faciles de _debuggear_. Es por esto que existen otras formas de automatizar los recursos de la nube. Por ejemplo:
 
 - SDKs (boto)
 - CloudFormation.
