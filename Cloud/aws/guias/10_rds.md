@@ -21,7 +21,7 @@ Las instancias de RDS pueden correr dentro de un VPC, desde donde se puede contr
 
 ---
 
-## 💻 DEMO #18 ~ Creación de una instancia de RDS <a name="demo018"></a>
+## 💻 DEMO #1 ~ Creación de una instancia de RDS <a name="demo018"></a>
 
 Mostraremos como realizar este procedimiento desde la consola de administración y la `cli`.
 
@@ -155,6 +155,6 @@ SELECT * FROM people;
 
 ---
 <div style="width: 100%">
-  <div style="float: left"><a href="../guias/10_snapshots.md">⬅️10 - Snapshots</a></div>
-  <div style="float: right"><a href="../guias/12_marketplace.md">12 - EC2 Marketplace ➡️</a></div>
+  <div style="float: left"><a href="../guias/09_aws_cli.md">⬅️09 - AWS `cli`</a></div>
+  <div style="float: right"><a href="../guias/11_marketplace.md">11 - Marketplace ➡️</a></div>
 </div>

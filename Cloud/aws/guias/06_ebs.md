@@ -202,5 +202,5 @@ El volumen seguira "vivo" y AWS seguira cargando la cuenta por la existencia del
 ---
 <div style="width: 100%">
   <div style="float: left"><a href="../guias/05_vpc.md">⬅️05 - VPC</a></div>
-  <div style="float: right"><a href="../guias/07_iam.md">07 - IAM ➡️</a></div>
+  <div style="float: right"><a href="../guias/07_s3.md">07 - S3 ➡️</a></div>
 </div>

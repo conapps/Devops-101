@@ -6,6 +6,25 @@
 
 `CloudFormation` no tiene costos adicionale por su utilización. Solo se pagan los recursos aprovisionados. La ventaja, es que con `CloudFormation` es más facil llevar el ciclo de vida de los servicios, de manera de evitar servicios "zombies".
 
+### ¿Que es `Infraestructure as Code` o `IaC`?
+
+> [...el proceso de administrar y aprovisionar recursos computacionales en centros de datos a través de la definición de archivos, en vez de a través de configuración de hardware o a través de interfacez de configuración interactivas.]
+> 
+> ***Traducido del ingles de [Wikipedia](https://en.wikipedia.org/wiki/Infrastructure_as_code).**
+
+Osea, es la capacidad de definir la infraestructura de nuestro sistema mediante la modificación de archivos de texto. Estos archivos son procesados por algún tipo de sistema, que los transforma en configuración y aprovisionamiento de servicio. De esta manera, conseguimos ser más declarativos en como definimos y configuramos nuestra infraestructura, _enfocandonos en el resultado, y no en el camino._
+
+Administrar nuestros sistemas de esta manera tiene varias ventajas:
+
+- **Auto-documentación**: Los archivos de texto mencionados describen completamente el estado de nuestra arquitectura, por lo que no necesitamos herramientas adicionales para describirla.
+- **Homogeneidad**: Todos los recursos de nuestra red son configurados exactamente de la misma manera, ya sean recursos de red, sistemas, bases de datos, o aplicaciones. Esto simplifica su mantenimiento y entendimiento por parte del resto del equipo.
+- **Idempotencia**: La aplicación del mismo juego de configuraciones múltiples veces no modifica las configuraciones. Esta característica es díficil de conseguir en nuestros propios scripts.
+- **Mejor mantenimiento**: Una vez definida nuestra arquitectura, es fácil identificar que archivo tenemos que modificar para realizar cambios en la misma.
+
+No todos los sistemas de `IaC` consiguen implementar todas estas carácteristicas completamente, pero de a poco tienden a ellas. Por otro lado, los archivos mencionados pueden resultar muy verbosos lo que puede dificultar su lectura.
+
+`CloudFormation` es el servicio de `IaC` que brinda AWS a sus usuarios. Con el, se pueden configurar todos los servicios de su nube a través de archivos `yaml` o `json`. Cada juego de configuraciones, o `stack`, puede mantenersa aislado del otro, lo que permite construir arquitecturas multi-tenant con facilidad o múltiples ambientes de desarrollo. La eliminación de un `stack` lanzará la eliminación de todos los recursos creados por el, lo que simplifica enormemente las tareas de limpieza y mantenimiento de servicios, y evita gastos innecesarios en la cuenta.
+
 ## Conceptos
 
 Trabajamos con `CloudFormation` a través de `templates` y `stacks`. Un `template` describe los recursos de AWS y sus propiedades. Con el, podemos crear un `stack` que aprovisiona dichos recursos. Un `template` puede crear múltiples `stack`, en múltiples regiones.

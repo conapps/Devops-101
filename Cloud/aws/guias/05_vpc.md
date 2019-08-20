@@ -65,7 +65,7 @@ Al crear un nuevo VPC no se crean `subnets` por defecto. Debemos crearlas dentro
 1. Ir al Dashboard de VPC.
 2. Hacer click en `Subnets`.
 
-**En total crearemos dos nuevas `subnets`. Para eso repetiremos las siguientes instrucciones dos veces, teniendo precaución en aquellos pasos que requieran de una configuración distinta en cada iteración.**
+**En total crearemos seis (6) nuevas `subnets`. Para eso repetiremos las siguientes instrucciones seis (6) veces, teniendo precaución en aquellos pasos que requieran de una configuración distinta en cada iteración.**
 
 1. Hacer click en `Create subnet`.
 2. ❗️Asignarle un nombre, la VPC recién creada, una zona de disponibilidad, y una subred.
@@ -125,7 +125,7 @@ Para poder conectarnos con nuestras instancias vamos a:
 16. Seleccionar la `Route Table` recien creada.
 17. Hacer click en la pestaña `Subnet Associations`.
 18. Hacer click en `Edit subnet associations`.
-19. Seleccionar una de las dos redes.
+19. Seleccionar tres de las seis redes.
 20. Hacer click en `Save`.
 21. Hacer click en la pestaña `Routes`.
 22. Hacer click en `Edit routes`.
@@ -157,7 +157,7 @@ No porque todas las `Route Tables` que estamos utilizando cuentan con una ruta q
   
 ---
 
-Ahora que tenemos una `subnet` privada y una `pública` vamos a levantar una instancia dentro de cada una de ellas para probar su conectividad.
+Ahora que tenemos tres `subnets` privada y tres `públicas` vamos a levantar una instancia dentro de cada una de ellas para probar su conectividad.
 
 ---
 
@@ -173,7 +173,7 @@ Ahora que tenemos una `subnet` privada y una `pública` vamos a levantar una ins
 6. Hacer click en `Next: Configure Instance Details`.
 7. Modificar las siguientes opciones.
    1. `Network`: Seleccionar el `VPC` previamente creado.
-   2. `Subnet`: Seleccionar la `subnet` pública.
+   2. `Subnet`: Seleccionar alguna `subnet` pública.
    3. `Auto-assign Public IP`: Seleccionar `Enable`.
 8. Hacer click en `Review and Launch`.
 9. Hacer click en `Launch`.
@@ -260,7 +260,7 @@ Para que estas instancias puedan acceder a Internet tenemos que configurar un `N
 1. Ir al Dashboard de VPC.
 2. Hacer click en `NAT Gateways`.
 3. Hacer click en `Create NAT Gateway`.
-4. Seleccionar la `subnet` pública.
+4. Seleccionar alguna `subnet` pública.
 5. Hacer click en `Create New EIP`.
 6. Hacer click en `Create a NAT Gateway`.
 7. Hacer click en `Edit route tables`.

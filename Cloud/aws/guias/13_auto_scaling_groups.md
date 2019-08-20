@@ -22,7 +22,7 @@ Dentro de nuestros `Auto Scaling Group` podemos utilizar una combinación de ins
 
 ---
 
-## 💻 DEMO #21 ~ Configurar un Auto Scaling Group <a name="demo020"></a>
+## 💻 DEMO #1 ~ Configurar un Auto Scaling Group <a name="demo01"></a>
 
 Mostraremos como realizar este procedimiento desde la `cli`.
 
@@ -180,7 +180,7 @@ Cuando el `Auto Scaling Group` detecta la caída de una instancia, inmediatement
 
 ---
 
-## 💻 DEMO #21 ~ Eliminar un `Auto Scaling Group` y un `Launch Template` <a name="demo020"></a>
+## 💻 DEMO #2 ~ Eliminar un `Auto Scaling Group` y un `Launch Template` <a name="demo020"></a>
 
 Mostraremos como realizar este procedimiento desde la consola web.
 
@@ -208,6 +208,6 @@ Vamos a ver como podemos solucionar la creación de un balanceador y documentar 
 
 ---
 <div style="width: 100%">
-  <div style="float: left"><a href="../guias/12_marketplace.md">⬅️12 - EC2 Marketplace</a></div>
-  <div style="float: right"><a href="../guias/14_cloudformation.md">14 - CloudFormation ➡️</a></div>
+  <div style="float: left"><a href="../guias/12_snapshots.md">⬅️12 - Snapshots</a></div>
+  <div style="float: right"><a href="../guias/14_alb.md">14 - ALB ➡️</a></div>
 </div>
