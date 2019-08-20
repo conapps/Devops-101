@@ -1,7 +1,5 @@
 # AWS Marketplace
 
-_ami-0273150f1f5fefd92`_
-
 Ahora que ya tenemos nuestro motor de bases de datos funcionando podemos pasar a configurar nuestra aplicación. En este caso, queremos poner en producción un blog personal, en particular [Ghost](https://ghost.org/es/).
 
 Si vamos a la [documentación](https://docs.ghost.org/install/ubuntu/) de esta aplicación podemos ver los pasos que debemos seguir para su instalación. Siguiendo esta guía podemos configurar todos los parámetros de acuerdo a nuestas necesidades, partiendo de una `AMI` de Ubuntu 18.04 por ejemplo. Una vez terminadas nuestras configuraciones principales, podríamos crear una nueva `AMI` que incorpore todos los cambios que le realizamos a la `AMI` inicial. De esta manera podremos levantar múltiples instancias con esta configuración, o hacer una restauración a fabrica si algo sale mal.
@@ -18,7 +16,7 @@ Por último, existen las `AMI` de la comunidad que son `AMI` creadas por usuario
 
 ---
 
-## 💻 DEMO #19 ~ Levantar una instancia de Ghost <a name="demo001"></a>
+## 💻 DEMO #1 ~ Levantar una instancia de Ghost <a name="demo001"></a>
 
 Mostraremos como realizar este procedimiento desde la `cli`.
 
@@ -27,7 +25,7 @@ Mostraremos como realizar este procedimiento desde la `cli`.
 Primero debemos obtener la `ImageId` de la `AMI` de Ghost que queremos utilizar, dado que la `ImageId` depende de la región. Para simplificar la obtención de esta información vamos a utilizar el programa `jq` que permite manipular JSON. Lo podemos instalar haciendo `sudo yum install jq`.
 
 ```
-# Obtenemos la ImageId de la ami
+# Almacenamos la ID de la AMI que vamos a crear
 export AMI=$(aws ec2 describe-images \
   --filters Name=name,Values=ghost-cdh-2.0.0 \
   --query 'sort_by(Images, &CreationDate)[-1].[ImageId]' \
@@ -174,9 +172,9 @@ aws ec2 run-instances \
 
 Las `AMI` son únicas por region. Por lo tanto, debemos hallar la que corresponde a nuestra región en particular.
 
-**¿Como obtengo las credenciales para acceder a la nueva instancia?**
+**¿Como obtengo las credenciales para acceder a instancias creadas a partir de imagenes del Marketplace?**
 
-Cada `AMI` del marketplace tiene una página dentro del catalogo con la información de conexión. En este caso, es necesario dirigirse a [la siguiente](https://aws.amazon.com/marketplace/pp/B00NPHLY8W?ref=cns_1clkPro#pdp-pricing) dirección y dirigirse a la sección `Usage Information`.
+Cada `AMI` del marketplace tiene una página dentro del catalogo con la información de conexión.
 
 En este caso, el usuario de `ssh` es `ec2-user`.
 
@@ -188,7 +186,7 @@ Ahora que tenemos la instancia levantada, tenemos que configurarla para conectar
 
 ---
 
-## 💻 DEMO #20 ~ Configurar la nueva instancia de Ghost <a name="demo002"></a>
+## 💻 DEMO #2 ~ Configurar la nueva instancia de Ghost <a name="demo002"></a>
 
 Mostraremos como realizar este procedimiento desde la `cli`.
 
@@ -245,16 +243,16 @@ Es una funcionalidad que provee `ssh` para mover tráfico entre redes privadas s
 
 Ahora tenemos una aplicación conectada a la base de datos, pero:
 
-1. No pudeo accer a través de Internet a la misma.
+1. No puedo acceder a través de Internet a la misma.
 2. No cuenta alta disponibilidad
 3. No cuento con níngun procedimiento de Disaster Recovery
 
 Idealmente, nos gustaría tener más de una instancia sirviendo a la aplicación; conectada a una base de datos robusta y escalable; y contar con un balanceador de tráfico que termine las conexiones de los clientes y las distribuya a las instancias de la aplicación. Además, necesitamos un metodo para reconstruir las instancias en caso de errores, y para escalarlas horizontalmente si la demanda de conexiones aumenta. El tamaño de cada una de ellas dependerá de la aplicación que estemos ejecutando. En general, podemos utilizar muchas instancias pequeñas cuando la necesidad de computo es baja, y los cuellos de botella suelen darse en la red. Si en cambio la necesidad de computo es muy alta utilizaremos instancias más grandes. No existe una formula que nos permita estimar a priori el timpo de instancia que más nos combiene, necesariamente vamos a tener que hacer algunas pruebas para llegar a la configuración óptima. Basicamente, queremos que la cantidad de instancias que estén sirviendo nuestra aplicación se elastica. Que se adapte a los requerimientos de forma dínamica.
 
-Para conseguir esto vamos a ver como funcionan los `Auto Scaling Groups`.
+Para conseguir esto vamos a ver como funcionan los `Auto Scaling Groups` y las `Snapshots`.
 
 ---
 <div style="width: 100%">
-  <div style="float: left"><a href="../guias/11_rds.md">⬅️11 - RDS</a></div>
-  <div style="float: right"><a href="../guias/13_auto_scaling_groups.md">13 - Auto Scaling Groups ➡️</a></div>
+  <div style="float: left"><a href="../guias/10_rds.md">⬅️10 - RDS</a></div>
+  <div style="float: right"><a href="../guias/12_snapshots.md">12 - Snapshots ➡️</a></div>
 </div>

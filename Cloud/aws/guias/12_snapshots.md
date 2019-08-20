@@ -128,6 +128,6 @@ Podemos resolver ambos simplemente instalando aplicaciones específicas  para ca
 
 ---
 <div style="width: 100%">
-  <div style="float: left"><a href="../guias/09_aws_cli.md">⬅️09 - AWS <code>cli</code></a></div>
-  <div style="float: right"><a href="../guias/11_rds.md">11 - RDS ➡️</a></div>
+  <div style="float: left"><a href="../guias/11_marketplace.md">⬅️11 - Marketplace</a></div>
+  <div style="float: right"><a href="../guias/13_auto_scaling_groups.md">11 - Auto Scaling Groups ➡️</a></div>
 </div>
