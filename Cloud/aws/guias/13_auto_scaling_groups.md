@@ -24,7 +24,9 @@ Dentro de nuestros `Auto Scaling Group` podemos utilizar una combinación de ins
 
 ## 💻 DEMO #1 ~ Configurar un Auto Scaling Group <a name="demo01"></a>
 
-Mostraremos como realizar este procedimiento desde la `cli`.
+## Procedimiento (`web`)
+
+1. 
 
 ### Procedimiento (`cli`)
 

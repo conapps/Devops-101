@@ -18,234 +18,73 @@ Puede configurar los `Health Checks`, que se utilizan para monitorizar el estado
 
 ---
 
-## 💻 DEMO #24 ~ Crear un `ALB` con `CloudFormation` <a name="demo020"></a>
+## 💻 DEMO #1 ~ Crear un `ALB` con `CloudFormation` <a name="demo020"></a>
 
-Vamos a realizar estas tareas desde la `cli`.
+Vamos a realizar estas tareas desde la `web`.
 
-### Procedimiento (`cli`)
+### Procedimiento (`web`)
 
-1. Creamos el template `alb_template.yaml` con el siguiente contenido:
-  ```yaml
-  AWSTemplateFormatVersion: '2010-09-09'
-  Description: Application Load Balancer
-  Parameters:
-    PrivateSubnet0:
-      Description: Public Subnet 0
-      Type: String
-    PrivateSubnet1:
-      Description: Public Subnet 1
-      Type: String
-    InstancesSecurityGroup:
-      Description: Instance Security Group
-      Type: String
-  Resources:
-    LoadBalancer:
-      Type: 'AWS::ElasticLoadBalancingV2::LoadBalancer'
-      Properties:
-        IpAddressType: ipv4
-        Name: ApplicationLoadBalancer
-        Scheme: internet-facing
-        SecurityGroups:
-          - !Ref InstancesSecurityGroup
-        Subnets:
-          - !Ref PrivateSubnet0
-          - !Ref PrivateSubnet1
-        Type: application
-  ```
-2. Obtenemos los valores de los parámetros que necesitamos
-  ```bash
-  # Obtenemos el ID de nuestro VPC
-  aws ec2 describe-vpcs \
-    --query 'Vpcs[*].{Id:VpcId,Tags:Tags}' \
-    --output json
-  export VPC_ID=
-  # Obtenemos el ID de nuestras redes privadas
-  aws ec2 describe-subnets \
-    --filters Name=vpc-id,Values=$VPC_ID \
-    --query 'Subnets[*].{Name:Tags[0].Value, Id:SubnetId}'
-  export SUBNET0_ID=
-  export SUBNET1_ID=
-  # Obtenemos el ID de nuestro Security Group
-  aws ec2 describe-security-groups \
-    --filters Name=vpc-id,Values=$VPC_ID \
-    --query 'SecurityGroups[*].{Name:GroupName, ID:GroupId}'
-  # Cargamos la variable `SG_ID` con nuestro Security Group
-  export SG_ID=
-  ```
-3. Creamos el `stack` utilizando nuestro `template`
-  ```bash
-  aws cloudformation create-stack \
-    --stack-name cloud-101-alb \
-    --template-body file://alb_template.yaml \
-    --parameters \
-      ParameterKey=PrivateSubnet0,ParameterValue=$SUBNET0_ID \
-      ParameterKey=PrivateSubnet1,ParameterValue=$SUBNET1_ID \
-      ParameterKey=InstancesSecurityGroup,ParameterValue=$SG_ID
-  ```
-4. Podemos ver el estado de nuestro `stack` con el siguiente comando
-  ```bash
-  watch aws cloudformation describe-stack-events --stack-name cloud-101-alb --output json
-  ```
+1. Acceder al dashboard de EC2.
+2. Hacer click en `Load Balancers`.
+3. Hacer click en `Create Load Balancer`.
+4. Dentro de la sección `Application Load Balancer` hacer click en `Create`.
+5. Asignar un nombre al `ALB`.
+6. Seleccionarlo como `internet-facing`.
+7. ❗️Seleccionar `HTTP` como protocolo y el puerto `80`.
+8. ❗️Seleccionar la `VPC` donde se encuentran las instancias del `Auto Scaling Group`.
+9. ❗️Seleccionar al menos tres zonas de disponibilidad y las redes públicas de cada una de ellas.
+10. Hacer click en `Next: Configure Security Groups`. Si se le presenta un cartel de advertencia, omitalo haciendo click nuevamente en el boton `Next: Configure Security Groups`.
+11. Seleccionar el `Security Group` creado previamente. El mismo debe permitir el tráfico entrante al puerto 80.
+12. Hacer click en `Next: Configure Routing`.
+13. Seleccionar `New Target Group` en la opción `Target Group`.
+14. Asignele un nombre al `Target Group`.
+15. Configure `HTTP` como protocolo y `8080` como puerto.
+16. En la sección de `Health checks` configure `HTTP` como protocolo y `8080` como puerto.
+17. Haga click en `Next: Register Targets`.
+18. Haga click en `Next: Review`.
+19. Haga click en `Create`.
+20. Haga click en `Close`.
+
+### ❗️Atención
+
+En producción se recomienda utilizar HTTPS como protocolo para públicar nuestras aplicaciones en el puerto 443. El `ALB` se puede encargar de terminar el tráfico `HTTPS` por nuesto motor de aplicaciones. Se pueden utilizar certificados externos, o generados por el servicio de certificados de AWS.
+
+Es importante que tenga precaución al momento de realizar la configuración del `ALB` con el `VPC`. Debe seleccionar el `VPC` donde se encuentran las instancias con nuestra aplicación, y las `Subnets` publicas. Si selecciona las `Subnet` privadas, el balanceador no podrá recibir tráfico de Internet.
+
+### FAQ
+
+**¿Que diferencia hay entre los distintos tipos de balanceadores?**
+
+En [esta página](https://aws.amazon.com/elasticloadbalancing/features/#compare) se pueden ver todas las diferencias entre ellos.
+
+**¿Que pasa si no configuro el puerto 8080 en el `Target Group`?**
+
+Si esta mal configurado este puerto el `ALB` enviara los requests a un puerto incorrecto y la aplicación no funcionara. Además, los chequeos de salud no funcionarán, por lo que las instancias activas serán eliminadas del `Auto Scaling Group`.
 
 ---
 
-El balanceador de carga en si mismo no nos aporta nada. Tenemos que conectarlo a nuestras instancias para que sirva nuestro contenido. Este proceso involucra la creación de los siguientes recursos:
+Durante el proceso anterior generamos los siguientes recursos, además del `ALB`:
 
 1. `Listener`: Configura el puerto, el protocolo, y el objetivo.
 2. `ListenerRule`: Reglas que indican como distribuir el tráfico HTTP.
 3. `TargetGroup`: Definen el conjunto de recursos que recibirán las consultas. También definen los chequeos de salud necesarios para identificar las instancias con errores.
 
----
-
-## 💻 DEMO #25 ~ Agregamos nuevos recursos al template de `CloudFormation` <a name="demo025"></a>
-
-En vez de crear un nuevo `template`, vamos a extender el que ya tenemos. Luego vamos a crear un `Change Set`, y por último, aplicaremos los cambios. 
-
-Vamos a realizar estas tareas desde la `cli`.
-
-### Procedimiento (`cli`)
-
-1. Editamos el archivo `alb_template.yaml` para que quede de la siguiente manera:
-
-```yaml
-AWSTemplateFormatVersion: '2010-09-09'
-Description: Application Load Balancer
-Parameters:
-  PrivateSubnet0:
-    Description: Public Subnet 0
-    Type: String
-  PrivateSubnet1:
-    Description: Public Subnet 1
-    Type: String
-  InstancesSecurityGroup:
-    Description: Instance Security Group
-    Type: String
-  VPC:
-    Description: VPC ID del proyecto
-    Type: String
-Resources:
-  LoadBalancer:
-    Type: 'AWS::ElasticLoadBalancingV2::LoadBalancer'
-    Properties:
-      IpAddressType: ipv4
-      Name: ApplicationLoadBalancer
-      Scheme: internet-facing
-      SecurityGroups:
-        - !Ref InstancesSecurityGroup
-      Subnets:
-        - !Ref PrivateSubnet0
-        - !Ref PrivateSubnet1
-      Type: application
-
-  Listener:
-    Type: AWS::ElasticLoadBalancingV2::Listener
-    Properties:
-      DefaultActions:
-        - TargetGroupArn: !Ref TargetGroup
-          Type: forward
-      LoadBalancerArn: !Ref LoadBalancer
-      Port: 80
-      Protocol: HTTP
-
-  ListenerRule:
-    Type: AWS::ElasticLoadBalancingV2::ListenerRule
-    Properties:
-      Actions:
-        - TargetGroupArn: !Ref TargetGroup
-          Type: forward
-      Conditions:
-        - Field: path-pattern
-          Values: 
-            - '/*'
-      ListenerArn: !Ref Listener
-      Priority: 1
-
-  TargetGroup:
-    Type: AWS::ElasticLoadBalancingV2::TargetGroup
-    Properties:
-      HealthCheckIntervalSeconds: 30
-      HealthCheckProtocol: HTTP
-      HealthCheckPath: /
-      HealthCheckTimeoutSeconds: 10
-      HealthyThresholdCount: 4
-      Matcher:
-        HttpCode: 200
-      Name: !Sub 'cloud-101-tg'
-      Port: 8080
-      Protocol: HTTP
-      VpcId: !Ref VPC
-```
-2. Obtenemos los valores de los parámetros que necesitamos
-  ```bash
-  # Obtenemos el ID de nuestro VPC
-  aws ec2 describe-vpcs \
-    --query 'Vpcs[*].{Id:VpcId,Tags:Tags}' \
-    --output json
-  export VPC_ID=
-  # Obtenemos el ID de nuestras redes privadas
-  aws ec2 describe-subnets \
-    --filters Name=vpc-id,Values=$VPC_ID \
-    --query 'Subnets[*].{Name:Tags[0].Value, Id:SubnetId}'
-  export SUBNET0_ID=
-  export SUBNET1_ID=
-  # Obtenemos el ID de nuestro Security Group
-  aws ec2 describe-security-groups \
-    --filters Name=vpc-id,Values=$VPC_ID \
-    --query 'SecurityGroups[*].{Name:GroupName, ID:GroupId}'
-  # Cargamos la variable `SG_ID` con nuestro Security Group
-  export SG_ID=
-  ---
-3. Creamos un `Change Set` utilizando nuestro `template` editado
-  ```bash
-  aws cloudformation create-change-set \
-    --change-set-name cloud-101-alb-change-set \
-    --stack-name cloud-101-alb \
-    --template-body file://alb_template.yaml \
-    --parameters \
-      ParameterKey=PrivateSubnet0,ParameterValue=$SUBNET0_ID \
-      ParameterKey=PrivateSubnet1,ParameterValue=$SUBNET1_ID \
-      ParameterKey=InstancesSecurityGroup,ParameterValue=$SG_ID \
-      ParameterKey=VPC,ParameterValue=$VPC_ID
-  ```
-4. Analizamos los cambios a realizar en el `Change Set`.
-  ```bash
-  aws cloudformation describe-change-set \
-    --change-set-name cloud-101-alb-change-set \
-    --stack-name cloud-101-alb \
-    --output json \
-    | jq
-  ```
-5. Aplicamos los cambios
-  ```bash
-  aws cloudformation update-stack \
-    --stack-name cloud-101-alb \
-    --template-body file://alb_template.yaml \
-    --parameters \
-      ParameterKey=PrivateSubnet0,ParameterValue=$SUBNET0_ID \
-      ParameterKey=PrivateSubnet1,ParameterValue=$SUBNET1_ID \
-      ParameterKey=InstancesSecurityGroup,ParameterValue=$SG_ID \
-      ParameterKey=VPC,ParameterValue=$VPC_ID \
-    | watch -n 1 'aws cloudformation describe-stack-events --stack-name cloud-101-alb --output json'
-  ```
+Lo único que nos resta hacer es configurar nuestro `Auto Scaling Group` a nuesto balanceador.
 
 ---
 
-Una vez que el `stack` termine de actualizar, contaremos con todos los recursos necesarios. Lo único que falta es conectar nuestro `Auto Scaling Group` a nuesto `ALB`. Esto es porque ambos recursos los creamos a través de distintos metodos, y la conexión entre ambos se realiza de forma indirecta utilizando nuestro `Target Group`. Los pasos a realizar son los siguientes:
+## 💻 DEMO #2 ~ Configuración del Auto Scaling Group <a name="demo025"></a>
 
----
+Vamos a configurar nuestro `Auto Scaling Group` para que registre las instancias en el `Target Group` de nuestro `ALB`. De esta manera, cada modificación en las instancias administradas por el `Auto Scaling Group` será reflejada en los `Targets` a los que les enviara los mensajes el `ALB`.
 
-## 💻 DEMO #26 ~ Conectamos los recursos creadso con `CloudFormation` con los recursos existentes <a name="demo025"></a>
-
-Vamos a realizar estas tareas desde la consola `web`.
-
-### Procedimiento (`cli`)
+### Procedimiento (`web`)
 
 1. Vamos a la consola de `EC2`.
 2. Hacemos click en `Auto Scaling Groups`.
 3. Seleccionamos nuestro grupo.
 4. Hacemos click en `Actions`.
 5. Hacemos click en `Edit`.
-6. Bajamos hasta encontrar el camop `Target Groups`. Seleccionamos el `Target Group` creado con `CloudFormation`.
+6. Bajamos hasta encontrar el camop `Target Groups`. Seleccionamos el `Target Group` en la demo anterior.
 7. Hacemos click en `Save`.
 
 ---
