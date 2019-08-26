@@ -16,6 +16,8 @@ Se revertirá a una modalidad más hands-on una vez finalizada la demostración.
 
 El curso finalizará con una actividad competitiva grupal, en donde los participantes deberán responder múltiples preguntas presentadas en pantalla. Aquellos que terminen con los mejores tres puntajes recibirán un premio en agradecimiento por participar.
 
+![../imagenes/template.svg](../imagenes/template.svg)
+
 ---
 
 <div style="width: 100%">
