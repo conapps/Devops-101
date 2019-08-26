@@ -24,10 +24,6 @@ Dentro de nuestros `Auto Scaling Group` podemos utilizar una combinación de ins
 
 ## 💻 DEMO #1 ~ Configurar un Auto Scaling Group <a name="demo01"></a>
 
-## Procedimiento (`web`)
-
-1. 
-
 ### Procedimiento (`cli`)
 
 Las opciones de la `cli` de AWS pueden pasarse como JSON. Esto es especialmente útil cuando la cantidad de información que tenemos que configurar es tan grande que se vuelve complejo introducirla directo en la consola.
