@@ -93,6 +93,6 @@ Para acceder a nuestro sistema tenemos que obtener la dirección DNS por la cual
 
 ---
 <div style="width: 100%">
-  <div style="float: left"><a href="../guias/14_cloudformation.md">⬅️14 - Cloudformation</a></div>
-  <div style="float: right"><a href="../guias/16_desafio_final.md">16 - Desafío Final ➡️</a></div>
+  <div style="float: left"><a href="../guias/13_auto_scaling_groups.md">⬅️13 - Auto Scaling Groups</a></div>
+  <div style="float: right"><a href="../guias/15_desafio_final.md">15 - Desafío Final ➡️</a></div>
 </div>
