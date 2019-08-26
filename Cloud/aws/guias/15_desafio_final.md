@@ -12,7 +12,7 @@ Para poder resolver estos problemas te contratan a ti como consultor externo. Tu
 
 El diagrama de la arquitectura es el siguiente:
 
-![../imagenes/template.png](../imagenes/template.png)
+![../imagenes/template.jpg](../imagenes/template.jpg)
 
 ---
 <div style="width: 100%">
