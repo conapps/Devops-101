@@ -18,7 +18,7 @@ Puede configurar los `Health Checks`, que se utilizan para monitorizar el estado
 
 ---
 
-## 💻 DEMO #1 ~ Crear un `ALB` con `CloudFormation` <a name="demo020"></a>
+## 💻 DEMO #1 ~ Crear un `ALB` <a name="demo020"></a>
 
 Vamos a realizar estas tareas desde la `web`.
 
