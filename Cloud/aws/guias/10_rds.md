@@ -74,7 +74,7 @@ aws rds create-db-instance \
   --db-instance-class db.t2.micro \
   --engine mysql \
   --storage-type standard \
-  --no-publicly-accesible \
+  --no-publicly-accessible \
   --no-multi-az \
   --db-subnet-group-name <nombre_del_subnet_group_prviamente_creado> \
   --db-instance-identifier <identificador_de_su_instancia> \
