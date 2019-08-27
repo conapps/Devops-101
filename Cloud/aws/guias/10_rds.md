@@ -30,7 +30,7 @@ Mostraremos como realizar este procedimiento desde la consola de administración
 1. Ir al Dashboard de RDS.
 2. Hacer click en `Create database`.
 3. Hacer click en `Next`.
-4. Seleccionar `Dev/Test - MySQL`.
+4. Seleccionar `Free tier - MySQL`.
 5. Hacer click en `Next`.
 6. En el cuadro `Free tier` seleccionar la opción que dice `Only enable options eligible for RDS Free Usage Tier`.
 7. En la sección `Settings` colocar:
