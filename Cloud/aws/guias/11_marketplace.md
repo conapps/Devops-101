@@ -200,7 +200,7 @@ Lo importante de este procedimiento no son las acciones puntuales para levantar 
     ```
 2. Establecer una conexión SSH con la instancia de Ghost desde el bastion.
     ```bash
-    ssh -i <llave_privada_del_ghost> ubuntu@<ip_privada_del_ghost>
+    ssh -i <llave_privada_del_ghost> ec2-user@<ip_privada_del_ghost>
     ```
 3. Realizar el siguiente procedimiento:
     ```bash
