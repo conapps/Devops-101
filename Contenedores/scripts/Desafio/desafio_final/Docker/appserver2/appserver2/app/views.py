@@ -7,15 +7,18 @@ from django.views.decorators.csrf import csrf_exempt
 import json
 
 # Create your views here.
+
+
 def home(request, template_name):
     context = {}
     room_id = get_room_id_by_name('prueba123')
     post_message('prueba desde view', room_id)
     return render(request, template_name, context)
 
+
 @csrf_exempt
 def send_message(request):
-    teams_key = 'MGU0YjRhN2EtZmRjMS00MjdjLWJmZWYtOWYzOWFjMTBlZWFiMDhhMDM0ZjMtYWY3'
+    teams_key = os.environ.get('TEAMS_KEY', None)
     group = os.environ['GRUPO']
     room_name = 'Docker-101'
     message = '## Mensaje de ' + group + '\n'
