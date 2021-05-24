@@ -259,9 +259,9 @@ Veamos con un ejemplo como acceder a un directorio local del host (*bind mount*)
    Creating webserver01 ... done
    
    $ docker container ls
-   CONTAINER ID     IMAGE                  COMMAND             CREATED             STATUS           PORTS       NAMES
-   e6ddd3f51806     compose01_web-server   "/bin/sh -c bash"   52 seconds ago      Up 51 seconds                webserver01
-   88adc0875532     compose01_db-server    "/bin/sh -c bash"   52 seconds ago      Up 51 seconds                dbserver01
+   CONTAINER ID     IMAGE                  COMMAND             CREATED             STATUS           PORTS     NAMES
+   e6ddd3f51806     compose01_web-server   "/bin/sh -c bash"   52 seconds ago      Up 51 seconds              webserver01
+   88adc0875532     compose01_db-server    "/bin/sh -c bash"   52 seconds ago      Up 51 seconds              dbserver01
    ```
 
 2. En el mismo directorio de nuestro proyecto, creamos un directorio `./data` y un archivo dentro, que montaremos dentro de uno de los servicios:
@@ -325,7 +325,6 @@ Veamos con un ejemplo como acceder a un directorio local del host (*bind mount*)
 Podemos hacer las definiciones de esta forma, dentro de la sección **services:** para cada uno de los servicios que requieran acceso a disco. Pero si quisieramos utilizar volumenes de docker, y además poder accederlos desde múltiples servicios, es preferible definirlos utilizando la sección **volumes:** como veremos a continuación.
 
 
-
 ### Definición de *volumes:*
 
 Editemos nuevamente el archivo *docker-compose.yml*, realizando los siguientes cambios:
@@ -367,9 +366,10 @@ volumes:
 
 
 
-En este ejemplo, creamos un volumen `db-volume` que es utilizado por el servicio *db-server*  y es compartido con un nuevo servicio *backup-server* que agregamos. Ambos servicios utilizan el mismo volumen, que esta vez lo definimos en la sección **volumes:**  y lo montan en diferentes ubicaciones.
+En este ejemplo, agregamos un volumen `db-volume`, definiendolo dentro de la sección **volumes:**.
+El mismo es utilizado por el servicio *db-server* existente, así como también por un nuevo servicio *backup-server* que estamos agregando. Ambos servicios utilizan el mismo volumen, pero lo montan internamente en diferentes ubicaciones de cada contenedor.
 
-Volvemos a refrescar nuestros servicios:
+Refrescamos nuestros servicios (puede demorar algunos segundos):
 
 ```bash
 $ docker-compose up -d
@@ -386,11 +386,11 @@ Creating backupserver ... done
 Recreating webserver01 ... done
 
 
-$ docker ps
-CONTAINER ID        IMAGE                     COMMAND             CREATED              STATUS              PORTS               NAMES
-0fe09e3f54f3        compose01_web-server      "/bin/sh -c bash"   About a minute ago   Up About a minute                       webserver01
-407b6d0533a5        compose01_db-server       "/bin/sh -c bash"   About a minute ago   Up About a minute                       dbserver01
-612cfaf139a7        compose01_backup-server   "/bin/sh -c bash"   2 minutes ago        Up About a minute                       backupserver
+$ docker container ls
+CONTAINER ID     IMAGE                     COMMAND             CREATED              STATUS              PORTS     NAMES
+0fe09e3f54f3     compose01_web-server      "/bin/sh -c bash"   About a minute ago   Up About a minute             webserver01
+407b6d0533a5     compose01_db-server       "/bin/sh -c bash"   About a minute ago   Up About a minute             dbserver01
+612cfaf139a7     compose01_backup-server   "/bin/sh -c bash"   2 minutes ago        Up About a minute             backupserver
 ```
 
 
@@ -415,7 +415,7 @@ root@6dae219d5ac6:/base# touch archivo1.txt
 root@6dae219d5ac6:/base# ls -l
 total 0
 -rw-r--r-- 1 root root 0 Aug 22 01:06 archivo1.txt
-root@6dae219d5ac6:/base#
+
 <ctrl-pq>
 
 
@@ -424,7 +424,7 @@ root@94f5d5cb6abb:/#
 root@94f5d5cb6abb:/# ls -l /backup/base/
 total 0
 -rw-r--r-- 1 root root 0 Aug 22 01:06 archivo1.txt
-root@94f5d5cb6abb:/# 
+
 <ctrl-pq>
 
 ```
@@ -444,15 +444,15 @@ volumes:
 
 
 
-Podemos en cambio, especificar que driver queremos utilizar, así como pasarle opciones al mismo. Por ejemplo, utilizar el driver *sshfs* que ya vimos anteriormente, para montar un volumen desde un servidor ssh. 
+Podemos en cambio, especificar que driver queremos utilizar, así como pasarle opciones al mismo. Por ejemplo, utilizar el driver *sshfs* que ya vimos anteriormente [aquí](https://github.com/conapps/Devops-101/blob/master/Contenedores/20170815-Storage.md#volumenes-con-drivers-creados-por-los-usuarios), para montar un volumen desde un servidor ssh. 
 
 ```
 volumes:
   db-volume:
     driver: vieux/sshfs:latest
     driver_opts:
-      sshcmd: "conatel@sshserver.labs.labs.conatest.click:/home/conatel"
-      password: "docker101"
+      sshcmd: "ubuntu@sshserver.labs.conatest.click:/home/ubuntu/docker101"
+      password: "conatel_docker101"
 ```
 
 
