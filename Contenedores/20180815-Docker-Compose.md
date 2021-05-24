@@ -39,7 +39,7 @@ Docker Compose se puede instalar de varias formas, recomendamos realizar la inst
 $ sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 ```
 
-Para instalar la última versión, en el comando anterior debemos indicar cuál es el último release disponible (1.29.2). Esto lo podemos obtener aquí: [Compose repository release page on GitHub](https://github.com/docker/compose/releases).
+Para instalar la última versión, en el comando anterior debemos indicar cuál es el último release disponible (1.29.2). Esto lo podemos ver aquí: [Compose repository release page on GitHub](https://github.com/docker/compose/releases).
 
 Luego de finalizada la instalación debemos aplicar permiso de ejecución al binario:
 
@@ -110,7 +110,7 @@ En este ejercicio vamos a crear dos servicios simples, llamados *db-server* y *w
    CMD bash
    ```
 
-   Este *Dockerfile* simplemente crea una imagen a partir de *ubuntu* a la cuál le instala un par de paquetes, y ejecuta el shell `bash`.
+   Como ya vimos, este *Dockerfile* simplemente crea una imagen a partir de *ubuntu* a la cuál le instala algunos paquetes, y ejecuta el shell `bash`.
 
 3. Crear el archivo *docker-compose.yml* con el siguiente contenido:
 
@@ -174,19 +174,19 @@ En este ejercicio vamos a crear dos servicios simples, llamados *db-server* y *w
 
    La opción `-d` hace que el deploy corra en segundo plano (*detached*), ejecutando como servicio. 
 
-   Si no ponemos esta opción el comando quedará en primer plano, y de veremos los logs de todos los contenedores. Esto puede ser útil para diagnosticar algún problema, como contra, si lo cortamos (ctrl-c) detendrá la ejecución de todos los contenedores generados.
+   Si no ponemos esta opción el comando quedará en primer plano, y veremos los logs de todos los contenedores. Esto puede ser útil para diagnosticar algún problema, como contra, si lo cortamos (ctrl-c) detendrá la ejecución de todos los contenedores generados.
 
-   Como es la primera vez que generamos nuestra imagen, el deploy va a mostrar todo el proceso de creación de la misma, bajando la imagen de `ubuntu`e instalando los paquetes que indicamos en el *Dockerfile*. La próxima vez el deploy será mucho mas rápido, dado que la imagen ya estará creada.
+   Como es la primera vez que generamos nuestra imagen, el deploy va a mostrar todo el proceso de creación de la misma, bajando la imagen de `ubuntu` e instalando los paquetes que indicamos en el *Dockerfile*. La próxima vez el deploy será mucho mas rápido, dado que la imagen ya estará creada.
 
 
 
 4. Una vez finalizado el despliegue, podemos verificar que los dos servicios están corriendo:
 
    ```bash
-   $ docker ps
-   CONTAINER ID        IMAGE                  COMMAND             CREATED             STATUS              PORTS               NAMES
-   5b1ccbd47029        compose01_web-server   "/bin/sh -c bash"   5 seconds ago       Up 4 seconds                            webserver01
-   e2c909735c87        compose01_db-server    "/bin/sh -c bash"   6 seconds ago       Up 5 seconds                            dbserver01
+   $ docker container ls
+   CONTAINER ID   IMAGE                  COMMAND             CREATED          STATUS           PORTS      NAMES
+   5b1ccbd47029   compose01_web-server   "/bin/sh -c bash"   5 seconds ago    Up 4 seconds                webserver01
+   e2c909735c87   compose01_db-server    "/bin/sh -c bash"   6 seconds ago    Up 5 seconds                dbserver01
    ```
 
 
@@ -201,8 +201,8 @@ En este ejercicio vamos a crear dos servicios simples, llamados *db-server* y *w
    Removing dbserver01  ... done
    Removing network compose01_default
    
-   $ docker ps
-   CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
+   $ docker container ls
+   CONTAINER ID   IMAGE                  COMMAND             CREATED          STATUS           PORTS      NAMES
    
    ```
 
