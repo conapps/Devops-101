@@ -475,6 +475,7 @@ En este caso, buscará un [volumen](https://github.com/conapps/Devops-101/blob/m
 ##### Eliminación de volumenes
 
 Si bajamos el ambiente con `docker-compose down`, por defecto los volumenes creados en la sección *volumes:* no son eliminados. Si queremos forzar su eliminación, debemos agregarle la opción  `-v` o `--volumes`.
+
 Tenga en cuenta que esto eliminará la información contenida en dichos volumenes.
 
 ```bash
