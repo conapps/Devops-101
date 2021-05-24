@@ -210,15 +210,15 @@ En este ejercicio vamos a crear dos servicios simples, llamados *db-server* y *w
 
 ## Contenido del archivo *docker-compose.yml*
 
-Como vimos , el nombre por defecto para el archivo de configuración es *docker-compose.yml*.
+El nombre por defecto para el archivo de configuración es *docker-compose.yml*.
 
-Si bien podemos utilizar otro nombre, tendremos que pasarselo a cada uno de los comandos que ejecutemos, por lo cual recomendamos utilizar siempre el nombre por defecto, y crear directorios particulares para cada proyecto (como hicimos en el ejemplo anterior).
+Si bien podemos utilizar otro nombre, tendremos que pasarselo como opción (-f) a cada uno de los comandos que ejecutemos, por lo cual recomendamos utilizar siempre el nombre por defecto, y crear directorios particulares para cada proyecto (como hicimos en el ejemplo anterior).
 
-Este archivo contiene 3 secciones principales, las cuales son:
+Este archivo contiene **3 secciones principales**, las cuales son:
 
 - **services:** contiene la configuración de cada uno de los servicios que vamos a levantar, esto es, cada contenedor y sus opciones.
-- **volumes:** contiene la configuración de los volumenes de disco que vamos a utilizar. Si bien es posible declarar los volumenes de cada contenedor dentro de la sección de *services:*, hacerlo en esta sección nos permite crear volumenes con nombres, que puedan ser reutilizados y facilmente referenciados desde múltiples servicios.  
-- **networks:** contiene la configuración de las redes que vamos a utilizar para los servivios. Si no definimos esta sección, se utilizará una red por defecto para todos los servicios.
+- **volumes:** contiene la configuración de los volumenes de disco que vamos a utilizar. Si bien es posible declarar los volumenes de cada contenedor dentro de la sección *services:*, hacerlo aquí en *volumes:* nos permite crear volumenes con nombres, que puedan ser reutilizados y fácilmente referenciados desde múltiples servicios.  
+- **networks:** contiene la configuración de las redes que vamos a utilizar para los servivios. Si no definimos esta sección, se utilizará una única red por defecto para todos los servicios.
 
 Veamos las opciones principales dentro de cada una de estas secciones.
 
@@ -242,15 +242,15 @@ En la sección **services:** es donde definimos todos los servicios que vamos a 
 
 **environment:** perminte pasarle variables de entorno al contenedor, en formato `VARIABLE=valor `
 
-**depends_on:** indica dependencia con otro(s) contenedor(es). El contenedor no va a levanta si los contenedores de los cuales depende no se encuentran corriendo. Los contenedores son iniciados/bajados siguiendo el orden necesario de acuerdo a las dependencias establecidas.
+**depends_on:** indica dependencia con otro(s) contenedor(es). El contenedor no va a levantar si los contenedores de los cuales depende no se encuentran corriendo. Los contenedores son iniciados/bajados siguiendo el orden necesario de acuerdo a las dependencias establecidas.
 
-**network**: indica las redes va a utilizar el servicio (lo veremos mas adelante).
+**network**: indica las redes que va a utilizar el servicio (lo veremos mas adelante).
 
-**volumes:** indica los volumenes de disco que vamos a acceder desde el servicio.
+**volumes:** indica los volumenes de disco que vamos a acceder desde el servicio. Como vimos antes, podemos definir los volumenes aquí dentro de *services:* o hacerlo preferentemente mas adelante, dentro de *volumes:*.
 
-Veamos con un ejemplo, como acceder con docker compose a un directorio local del host (*bind mount*):
+Veamos con un ejemplo como acceder a un directorio local del host (*bind mount*) desde un contenedor:
 
-1. Iniciemos nuevamente nuestros servicios:
+1. Iniciamos los servicios:
 
    ```bash
    $ docker-compose up -d
@@ -258,13 +258,13 @@ Veamos con un ejemplo, como acceder con docker compose a un directorio local del
    Creating dbserver01 ... done
    Creating webserver01 ... done
    
-   $ docker ps
-   CONTAINER ID        IMAGE                  COMMAND             CREATED             STATUS              PORTS               NAMES
-   e6ddd3f51806        compose01_web-server   "/bin/sh -c bash"   52 seconds ago      Up 51 seconds                           webserver01
-   88adc0875532        compose01_db-server    "/bin/sh -c bash"   52 seconds ago      Up 51 seconds                           dbserver01
+   $ docker container ls
+   CONTAINER ID     IMAGE                  COMMAND             CREATED             STATUS           PORTS       NAMES
+   e6ddd3f51806     compose01_web-server   "/bin/sh -c bash"   52 seconds ago      Up 51 seconds                webserver01
+   88adc0875532     compose01_db-server    "/bin/sh -c bash"   52 seconds ago      Up 51 seconds                dbserver01
    ```
 
-2. En el mismo directorio de nuestro proyecto, crear un directorio `./data` que montaremos dentro de uno de los servicios:
+2. En el mismo directorio de nuestro proyecto, creamos un directorio `./data` y un archivo dentro, que montaremos dentro de uno de los servicios:
 
    ```bash
    $ mkdir data
@@ -272,8 +272,7 @@ Veamos con un ejemplo, como acceder con docker compose a un directorio local del
    ```
 
 
-
-3. Editemos el archivo *docker-compose.yml*, agregando el directorio que queremos montar desde el host (bind mount) al servicio *web-server*:
+3. Editamos el archivo *docker-compose.yml*, agregando la referencia a este directorio dentro del servicio *web-server*:
 
    ```bash
    version: '3'
@@ -296,7 +295,7 @@ Veamos con un ejemplo, como acceder con docker compose a un directorio local del
          - ./data:/mnt/data
    ```
 
-   De esta forma, montamos el directorio local `./data` del host, en el direcotrio `/mnt/data` dentro del contenedor creado para el servicio `web-server`.
+   De esta forma, vamos a montamos el directorio local `./data` del host, en el direcotrio `/mnt/data` del contenedor `webserver01` que es creado para el servicio `web-server`.
 
 
 
@@ -320,7 +319,7 @@ Veamos con un ejemplo, como acceder con docker compose a un directorio local del
    -rw-rw-r-- 1 1000 1000 0 Aug 21 23:17 test.txt
    ```
 
-   **nota:** recuerde que para salir del contenedor luego de hacer el `attach` debe hacer <ctrl-p-q>, de lo contrario terminará el proceso bash que está ejecutando, y el contenedor finalizará su ejecución.
+   **nota:** recuerde que para salir del contenedor debe hacer \<ctrl-p-q>, de lo contrario terminará el proceso bash que está ejecutando y el contenedor finalizará su ejecución.
 
 
 Podemos hacer las definiciones de esta forma, dentro de la sección **services:** para cada uno de los servicios que requieran acceso a disco. Pero si quisieramos utilizar volumenes de docker, y además poder accederlos desde múltiples servicios, es preferible definirlos utilizando la sección **volumes:** como veremos a continuación.
