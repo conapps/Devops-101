@@ -21,7 +21,7 @@ A medida que las aplicaciones son mas complejas, resulta necesario distribuirlas
 
 Con Docker Compose podemos definir nuestra aplicación multicontenedor utilizando un único archivo de configuración, que contiene las definiciones de todos los servicios (contenedores) que necesitamos, y con un único comando podemos iniciar todos los servicios, o bajarlos.
 
-Este archivo de configuración, en formato *yaml*, no solo nos sirve para poder desplegar y eliminar todo nuestro ambiente, sino que también es útil como documentación del mismo, dado que incluye toda la información sobre sus contenedores, imágenes, volúmenes, networking, y el resto de las características.
+Este archivo de configuración, en formato *yaml*, no solo nos sirve para poder desplegar y eliminar todo nuestro ambiente, sino que también es útil como documentación, dado que incluye toda la información sobre sus contenedores, imágenes, volúmenes, networking, y el resto de las características.
 
 
 
@@ -29,24 +29,23 @@ Este archivo de configuración, en formato *yaml*, no solo nos sirve para poder 
 
 Docker Compose se puede instalar de varias formas, recomendamos realizar la instalación mediante una de estas dos alternativas.
 
-Nota: Al momento de escribir este tutorial, instalar Docker Compose mediante *apt-get* nos ha dado problemas, dado que la versión instalada no soporta el archivo de configuración *version 3* que es el que utilizamos en este tutorial. Por tanto no recomendamos por el momento instalar de esta forma.
+**Nota**: Al momento de escribir este tutorial, instalar Docker Compose mediante *apt-get* nos ha dado problemas, dado que la versión instalada no soporta el archivo de configuración *version 3* que es el que utilizamos en este tutorial. Por tanto no recomendamos por el momento instalar de esta forma.
 
 
 
 #### Alternativa 1: Instalación mediante *curl*
 
 ```bash
-$ sudo curl -L https://github.com/docker/compose/releases/download/1.22.0/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose
+$ sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 ```
 
-Para instalar la última versión, en el comando anterior debemos indicar el último release disponible, el cual lo podemos ver aquí: [Compose repository release page on GitHub](https://github.com/docker/compose/releases).
+Para instalar la última versión, en el comando anterior debemos indicar cuál es el último release disponible (1.29.2). Esto lo podemos obtener aquí: [Compose repository release page on GitHub](https://github.com/docker/compose/releases).
 
 Luego de finalizada la instalación debemos aplicar permiso de ejecución al binario:
 
 ```bash
 $ sudo chmod +x /usr/local/bin/docker-compose
 ```
-
 
 
 #### Alternativa 2: Instlación mediante *pip*
@@ -62,17 +61,17 @@ $ sudo pip install docker-compose
 #### Verificación de la instalación:
 
 ```bash
-$ sudo docker-compose --version
-docker-compose version 1.21.2, build 1719ceb
+$ docker-compose --version
+docker-compose version 1.29.2, build 5becea4c
 ```
 
 
 
 ## Como funciona Docker Compose
 
-Docker Compose se basa en la utilización de un archivo de configuración en formato *yml*, donde vamos a indicar los servicios que queremos desplegar. Esto incluye, entre otras cosas, que imagen de contenedor vamos a utilizar, su configuración, las dependencias entre contenedores, los volúmenes de disco, la configuración de las redes, etc.
+Docker Compose se basa en la utilización de un archivo de configuración en formato *YAML*, donde vamos a indicar los servicios que queremos desplegar. Esto incluye, entre otras cosas, que imagen de contenedor vamos a utilizar, su configuración, las dependencias entre contenedores, los volúmenes de disco, la configuración de las redes, etc.
 
-Las dependencias permiten no solo crear los contenedores en determinado orden, sino que además, si un contenedor depende de otro, el *contendor hijo* no será creado hasta que el *contenendor padre* exista y esté corriendo.
+Las dependencias permiten no solo crear los contenedores en determinado orden, sino que además, si un contenedor depende de otro, el *contenedor hijo* no será creado hasta que el *contenedor padre* exista y esté corriendo.
 
 Este archivo también podemos usarlo para eliminar (bajar) nuestro ambiente una vez que ya no lo necesitamos, y es una fuenta de documentación muy precisa sobre el mismo.
 
