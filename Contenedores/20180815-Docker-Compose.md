@@ -433,9 +433,7 @@ total 0
 
 ##### Accediendo a volumenes mediante driver específico
 
-Si vemos nuevamente el *docker-compose.yml*, dentro de la sección `volumes:` lo que agregamos es el volumen que será creado al correr el comando `docker-compose up`.
-
-En nuesto caso la entrada  `db-volume:` se encuentra vacía, por lo cual para acceder a dicho volumen se va a utilizar el driver por defecto del Docker Engine (generalmente es el driver `local`).  
+Si vemos nuevamente el *docker-compose.yml* dentro de la sección `volumes:`, la entrada `db-volume:` que creamos se encuentra vacía. Por lo cual para acceder a dicho volumen se va a utilizar el driver por defecto del Docker Engine, que como ya vimos, generalmente es el driver `local`.  
 
 ```bash
 volumes:
@@ -443,8 +441,8 @@ volumes:
 ```
 
 
-
-Podemos en cambio, especificar que driver queremos utilizar, así como pasarle opciones al mismo. Por ejemplo, utilizar el driver *sshfs* que ya vimos anteriormente [aquí](https://github.com/conapps/Devops-101/blob/master/Contenedores/20170815-Storage.md#volumenes-con-drivers-creados-por-los-usuarios), para montar un volumen desde un servidor ssh. 
+Podemos en cambio, especificar que driver queremos utilizar, así como pasarle las opciones necesarias al mismo.
+Por ejemplo, podemos utilizar el driver *sshfs* que ya vimos anteriormente [aquí](https://github.com/conapps/Devops-101/blob/master/Contenedores/20170815-Storage.md#volumenes-con-drivers-creados-por-los-usuarios), para montar un volumen desde un servidor ssh. 
 
 ```
 volumes:
@@ -456,14 +454,13 @@ volumes:
 ```
 
 
-
 ##### Accediendo a volumenes externos
 
-En todos los casos anteriores, el comando `docker-compose up` se encarga de crear el volumen que estamos definiendo dentro de la sección `volumes:` del archivo *docker-compose.yml*. Esto lo verificamos al hacer un `docker volume ls`. Pero si ya tuvieramos un volumen definido previamente e intentamos accederlo de esta forma, vamos a obtener un error.
+En los casos anteriores, el comando `docker-compose up` se encarga de crear el volumen que definimos dentro de la sección `volumes:` del archivo *docker-compose.yml*. Esto lo verificamos al hacer un `docker volume ls`. Pero si ya tuvieramos un volumen definido previamente e intentáramos accederlo de esta forma, vamos a obtener un error.
 
 Para esto, podemos acceder a volumenes externos que hayan sido definidos previamente. En este caso, el comando `docker-compose up` no intentará crear el volumen, sino que buscará el volumen ya creado y lo montará en el servicio. Claro que, en caso de que el volumen no exista, el deploy terminará con error.
 
-Para definir un volumen externo le agregamos la opción `external: true`:
+Para definir un volumen como externo, le agregamos la opción `external: true`:
 
 ```bash
 volumes:
@@ -471,13 +468,13 @@ volumes:
     external: true
 ```
 
-En este caso, buscará un volumen ya definido en docker, con nombre *mi-volumen-externo*.
+En este caso, buscará un [volumen](https://github.com/conapps/Devops-101/blob/master/Contenedores/20170815-Storage.md#volumenes) ya definido en docker, con nombre *mi-volumen-externo*.
 
 
 
 ##### Eliminación de volumenes
 
-Si bajamos el ambiente con `docker-compose down`, por defecto los volumenes creados en la sección *volumes:* no son eliminados. Para eliminarlos debemos agregarle la opción  `-v` o `--volumes`
+Si bajamos el ambiente con `docker-compose down`, por defecto los volumenes creados en la sección *volumes:* no son eliminados. Si queremos forzar su eliminación, debemos agregarle la opción  `-v` o `--volumes`.
 
 ```bash
 $ docker-compose down -v
