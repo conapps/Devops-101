@@ -703,7 +703,7 @@ services:
 
 
 
-#### Accediendo a redes externas
+#### Accediendo a redes externas:
 
 Si ya tenemos una red previamente definida en docker (algo que vimos [aqui](https://github.com/conapps/Devops-101/blob/master/Contenedores/20170807-Networking.md#redes-definidas-por-el-usuario)) y queremos utilizarla para nuestros servicios, podemos referenciarla de la siguiente manera:
 
