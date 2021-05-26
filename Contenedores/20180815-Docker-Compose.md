@@ -501,7 +501,7 @@ Los volumenes definidos como externos nunca son eliminados desde docker compose 
 
 ### Definición de Networks:
 
-Por defecto, cuando desplegamos nuestro ambiente el comando `docker-compose up` crea una única network y agrega cada contenedor de cada servicio a esta *XXXXX_default* network. 
+Por defecto, cuando desplegamos nuestro ambiente el comando `docker-compose up` crea una única network y agrega cada contenedor a esta *XXXXX_default* network. 
 
 ```bash
 $ docker network ls
@@ -513,10 +513,10 @@ b9b7a573b4d0        none                null                local
 ```
 
 
-Como consecuencia, todos los contenedores pueden conectarse entre ellos y además pueden descubrirse mediante su *hostname*:
+Como consecuencia, todos los contenedores pueden conectarse entre si, y además pueden descubrirse mediante su *hostname*:
 
 ```bash
- docker container ls
+$ docker container ls
 CONTAINER ID   IMAGE                     COMMAND             CREATED         STATUS         PORTS     NAMES
 851ae243af3a   compose01_web-server      "/bin/sh -c bash"   8 seconds ago   Up 7 seconds             webserver01
 828c77fe3061   compose01_db-server       "/bin/sh -c bash"   9 seconds ago   Up 7 seconds             dbserver01
@@ -549,11 +549,14 @@ Para esto, dentro de la sección **networks:** del archivo *docker-compose.yml* 
 
 **Ejercicio 21:**
 
-Como vimos antes, nuestro *docker-compose.yml* crea los servicios *db-server*, *web-server*, y *backup-server*.  Supongamos que queremos que *db-server* se pueda comunicar con *web-server* y con *backup-server*, pero no queremos que *web-server* y *backup-server* se comuniquen entre si. Para esto vamos a crear dos redes en forma manual (*custom networks*):
+Como vimos antes, nuestro *docker-compose.yml* crea los servicios *db-server*, *web-server*, y *backup-server*.  
+En este ejercicio queremos modificar la conectividad, de forma que *db-server* se pueda comunicar con *web-server* y *backup-server*, pero, no queremos que *web-server* y *backup-server* se comuniquen entre si.
+Para esto vamos a crear dos redes en forma manual (*custom networks*):
 
 
 
-1. Primero bajemos nuestros servicios con `docker-compose down`. Si bien podemos dejarlos arriba y luego actualizarlos, será mas claro si lo hacemos de este modo, dado que de esta forma eliminamos la *default network*:
+1. Primero bajemos nuestros servicios con `docker-compose down`. 
+Si bien podemos dejarlos arriba y luego actualizarlos, será mas claro si lo hacemos de este modo, y aprovechamos a eliminar la default network:
 
    ```bash
    $ docker-compose down
@@ -567,8 +570,9 @@ Como vimos antes, nuestro *docker-compose.yml* crea los servicios *db-server*, *
    ```
 
 
+2. Editamos el *docker-compose.yml* y en la sección *networks:* agregamos dos redes llamadas `prod-network` y `backup-network`.
+Y dentro de la configuración de cada servicio, colocamos la *networks:* a las cuales queremos que acceda.
 
-2. Editamos el *docker-compose.yml* y agregamos dos redes `prod-network` y `backup-network`. 
 
    ```bash
    version: '3'
@@ -622,9 +626,9 @@ Como vimos antes, nuestro *docker-compose.yml* crea los servicios *db-server*, *
 
 
 
-   Ambas redes las definimos con el driver `bridge`, y dado que no indicamos ninguna configuración adicional, es el engine de docker quien asignará los rangos de IP a las redes y las IP a los servicios.
+   Ambas redes las definimos con el driver `bridge` (el cuál vimos [aqui](https://github.com/conapps/Devops-101/blob/master/Contenedores/20170807-Networking.md#bridge)), y dado que no estamos indicando ninguna configuración adicional, es el engine de docker quien asignará los rangos de direcciones IP a las redes, y las direcciones IP específicas a los servicios.
 
-   De esta forma, la red `prod-network` conecta a los servicios *db-server* y *web-server*, mientras que `backup-network` conecta a *backup-server* y *db-server*; pero no hay ninguna red que conecte a *web-server* con *backup-server* por lo cual estos dos servicios no podrán comunicarse entre si.
+   De esta forma, la red `prod-network` conecta únicamente los servicios *db-server* y *web-server*, mientras que la red `backup-network` conecta a *backup-server* y *db-server*; pero no hay ninguna red que conecte a *web-server* con *backup-server* por lo cual estos dos servicios no podrán comunicarse entre si.
 
 
 3. Ahora despleguemos nuestro ambiente, y verifiquemos la comunicación entre los servicios:
@@ -648,25 +652,19 @@ Como vimos antes, nuestro *docker-compose.yml* crea los servicios *db-server*, *
 
 
 
-   Podemos ver el detalle de cada una de las redes mediante el comando `docker network inspect`, por ejemplo para ver que contenedor se encuentra conectado a cada red.
+   Podemos ver el detalle de cada una de las redes mediante el comando `docker network inspect`, y así saber por ejemplo que contenedor se encuentra conectado a cada red.
 
-   En este caso también podemos conectarnos a los contenedores y probar la comunicación entre ellos:
+   En este caso también podemos conectarnos a los contenedores y probar la comunicación entre ellos como hicimos antes:
 
    ```bash
    $ docker attach backupserver
-   root@f7397251a392:/# ping -c4 dbserver01
+   root@f7397251a392:/# ping dbserver01
    PING dbserver01 (192.168.0.3) 56(84) bytes of data.
    64 bytes from dbserver01.compose01_backup-network (192.168.0.3): icmp_seq=1 ttl=64 time=0.056 ms
    64 bytes from dbserver01.compose01_backup-network (192.168.0.3): icmp_seq=2 ttl=64 time=0.054 ms
-   64 bytes from dbserver01.compose01_backup-network (192.168.0.3): icmp_seq=3 ttl=64 time=0.055 ms
-   64 bytes from dbserver01.compose01_backup-network (192.168.0.3): icmp_seq=4 ttl=64 time=0.058 ms
+   ^C
          
-   --- dbserver01 ping statistics ---
-   4 packets transmitted, 4 received, 0% packet loss, time 2997ms
-   rtt min/avg/max/mdev = 0.054/0.055/0.058/0.009 ms
-         
-   
-   root@f7397251a392:/# ping -c4 webserver01
+   root@f7397251a392:/# ping webserver01
    ping: webserver01: Name or service not known
          
    ```
