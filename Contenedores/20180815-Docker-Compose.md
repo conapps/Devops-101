@@ -21,7 +21,7 @@ A medida que las aplicaciones son mas complejas, resulta necesario distribuirlas
 
 Con Docker Compose podemos definir nuestra aplicación multicontenedor utilizando un único archivo de configuración, que contiene las definiciones de todos los servicios (contenedores) que necesitamos, y con un único comando podemos iniciar todos los servicios, o bajarlos.
 
-Este archivo de configuración, en formato *yaml*, no solo nos sirve para poder desplegar y eliminar todo nuestro ambiente, sino que también es útil como documentación del mismo, dado que incluye toda la información sobre sus contenedores, imágenes, volúmenes, networking, y el resto de las características.
+Este archivo de configuración, en formato *yaml*, no solo nos sirve para poder desplegar y eliminar todo nuestro ambiente, sino que también es útil como documentación, dado que incluye toda la información sobre sus contenedores, imágenes, volúmenes, networking, y el resto de las características.
 
 
 
@@ -29,24 +29,23 @@ Este archivo de configuración, en formato *yaml*, no solo nos sirve para poder 
 
 Docker Compose se puede instalar de varias formas, recomendamos realizar la instalación mediante una de estas dos alternativas.
 
-Nota: Al momento de escribir este tutorial, instalar Docker Compose mediante *apt-get* nos ha dado problemas, dado que la versión instalada no soporta el archivo de configuración *version 3* que es el que utilizamos en este tutorial. Por tanto no recomendamos por el momento instalar de esta forma.
+**Nota**: Al momento de escribir este tutorial, instalar Docker Compose mediante *apt-get* nos ha dado problemas, dado que la versión instalada no soporta el archivo de configuración *version 3* que es el que utilizamos en este tutorial. Por tanto no recomendamos por el momento instalar de esta forma.
 
 
 
 #### Alternativa 1: Instalación mediante *curl*
 
 ```bash
-$ sudo curl -L https://github.com/docker/compose/releases/download/1.22.0/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose
+$ sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 ```
 
-Para instalar la última versión, en el comando anterior debemos indicar el último release disponible, el cual lo podemos ver aquí: [Compose repository release page on GitHub](https://github.com/docker/compose/releases).
+Para instalar la última versión, en el comando anterior debemos indicar cuál es el último release disponible (1.29.2). Esto lo podemos ver aquí: [Compose repository release page on GitHub](https://github.com/docker/compose/releases).
 
 Luego de finalizada la instalación debemos aplicar permiso de ejecución al binario:
 
 ```bash
 $ sudo chmod +x /usr/local/bin/docker-compose
 ```
-
 
 
 #### Alternativa 2: Instlación mediante *pip*
@@ -62,17 +61,17 @@ $ sudo pip install docker-compose
 #### Verificación de la instalación:
 
 ```bash
-$ sudo docker-compose --version
-docker-compose version 1.21.2, build 1719ceb
+$ docker-compose --version
+docker-compose version 1.29.2, build 5becea4c
 ```
 
 
 
 ## Como funciona Docker Compose
 
-Docker Compose se basa en la utilización de un archivo de configuración en formato *yml*, donde vamos a indicar los servicios que queremos desplegar. Esto incluye, entre otras cosas, que imagen de contenedor vamos a utilizar, su configuración, las dependencias entre contenedores, los volúmenes de disco, la configuración de las redes, etc.
+Docker Compose se basa en la utilización de un archivo de configuración en formato *YAML*, donde vamos a indicar los servicios que queremos desplegar. Esto incluye, entre otras cosas, que imagen de contenedor vamos a utilizar, su configuración, las dependencias entre contenedores, los volúmenes de disco, la configuración de las redes, etc.
 
-Las dependencias permiten no solo crear los contenedores en determinado orden, sino que además, si un contenedor depende de otro, el *contendor hijo* no será creado hasta que el *contenendor padre* exista y esté corriendo.
+Las dependencias permiten no solo crear los contenedores en determinado orden, sino que además, si un contenedor depende de otro, el *contenedor hijo* no será creado hasta que el *contenedor padre* exista y esté corriendo.
 
 Este archivo también podemos usarlo para eliminar (bajar) nuestro ambiente una vez que ya no lo necesitamos, y es una fuenta de documentación muy precisa sobre el mismo.
 
@@ -111,7 +110,7 @@ En este ejercicio vamos a crear dos servicios simples, llamados *db-server* y *w
    CMD bash
    ```
 
-   Este *Dockerfile* simplemente crea una imagen a partir de *ubuntu* a la cuál le instala un par de paquetes, y ejecuta el shell `bash`.
+   Como ya vimos, este *Dockerfile* simplemente crea una imagen a partir de *ubuntu* a la cuál le instala algunos paquetes, y ejecuta el shell `bash`.
 
 3. Crear el archivo *docker-compose.yml* con el siguiente contenido:
 
@@ -175,19 +174,19 @@ En este ejercicio vamos a crear dos servicios simples, llamados *db-server* y *w
 
    La opción `-d` hace que el deploy corra en segundo plano (*detached*), ejecutando como servicio. 
 
-   Si no ponemos esta opción el comando quedará en primer plano, y de veremos los logs de todos los contenedores. Esto puede ser útil para diagnosticar algún problema, como contra, si lo cortamos (ctrl-c) detendrá la ejecución de todos los contenedores generados.
+   Si no ponemos esta opción el comando quedará en primer plano, y veremos los logs de todos los contenedores. Esto puede ser útil para diagnosticar algún problema, como contra, si lo cortamos (ctrl-c) detendrá la ejecución de todos los contenedores generados.
 
-   Como es la primera vez que generamos nuestra imagen, el deploy va a mostrar todo el proceso de creación de la misma, bajando la imagen de `ubuntu`e instalando los paquetes que indicamos en el *Dockerfile*. La próxima vez el deploy será mucho mas rápido, dado que la imagen ya estará creada.
+   Como es la primera vez que generamos nuestra imagen, el deploy va a mostrar todo el proceso de creación de la misma, bajando la imagen de `ubuntu` e instalando los paquetes que indicamos en el *Dockerfile*. La próxima vez el deploy será mucho mas rápido, dado que la imagen ya estará creada.
 
 
 
 4. Una vez finalizado el despliegue, podemos verificar que los dos servicios están corriendo:
 
    ```bash
-   $ docker ps
-   CONTAINER ID        IMAGE                  COMMAND             CREATED             STATUS              PORTS               NAMES
-   5b1ccbd47029        compose01_web-server   "/bin/sh -c bash"   5 seconds ago       Up 4 seconds                            webserver01
-   e2c909735c87        compose01_db-server    "/bin/sh -c bash"   6 seconds ago       Up 5 seconds                            dbserver01
+   $ docker container ls
+   CONTAINER ID   IMAGE                  COMMAND             CREATED          STATUS           PORTS      NAMES
+   5b1ccbd47029   compose01_web-server   "/bin/sh -c bash"   5 seconds ago    Up 4 seconds                webserver01
+   e2c909735c87   compose01_db-server    "/bin/sh -c bash"   6 seconds ago    Up 5 seconds                dbserver01
    ```
 
 
@@ -202,8 +201,8 @@ En este ejercicio vamos a crear dos servicios simples, llamados *db-server* y *w
    Removing dbserver01  ... done
    Removing network compose01_default
    
-   $ docker ps
-   CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
+   $ docker container ls
+   CONTAINER ID   IMAGE                  COMMAND             CREATED          STATUS           PORTS      NAMES
    
    ```
 
@@ -211,15 +210,15 @@ En este ejercicio vamos a crear dos servicios simples, llamados *db-server* y *w
 
 ## Contenido del archivo *docker-compose.yml*
 
-Como vimos , el nombre por defecto para el archivo de configuración es *docker-compose.yml*.
+El nombre por defecto para el archivo de configuración es *docker-compose.yml*.
 
-Si bien podemos utilizar otro nombre, tendremos que pasarselo a cada uno de los comandos que ejecutemos, por lo cual recomendamos utilizar siempre el nombre por defecto, y crear directorios particulares para cada proyecto (como hicimos en el ejemplo anterior).
+Si bien podemos utilizar otro nombre, tendremos que pasarselo como opción (-f) a cada uno de los comandos que ejecutemos, por lo cual recomendamos utilizar siempre el nombre por defecto, y crear directorios particulares para cada proyecto (como hicimos en el ejemplo anterior).
 
-Este archivo contiene 3 secciones principales, las cuales son:
+Este archivo contiene **3 secciones principales**, las cuales son:
 
 - **services:** contiene la configuración de cada uno de los servicios que vamos a levantar, esto es, cada contenedor y sus opciones.
-- **volumes:** contiene la configuración de los volumenes de disco que vamos a utilizar. Si bien es posible declarar los volumenes de cada contenedor dentro de la sección de *services:*, hacerlo en esta sección nos permite crear volumenes con nombres, que puedan ser reutilizados y facilmente referenciados desde múltiples servicios.  
-- **networks:** contiene la configuración de las redes que vamos a utilizar para los servivios. Si no definimos esta sección, se utilizará una red por defecto para todos los servicios.
+- **volumes:** contiene la configuración de los volumenes de disco que vamos a utilizar. Si bien es posible declarar los volumenes de cada contenedor dentro de la sección *services:*, hacerlo aquí en *volumes:* nos permite crear volumenes con nombres, que puedan ser reutilizados y fácilmente referenciados desde múltiples servicios.  
+- **networks:** contiene la configuración de las redes que vamos a utilizar para los servivios. Si no definimos esta sección, se utilizará una única red por defecto para todos los servicios.
 
 Veamos las opciones principales dentro de cada una de estas secciones.
 
@@ -243,15 +242,15 @@ En la sección **services:** es donde definimos todos los servicios que vamos a 
 
 **environment:** perminte pasarle variables de entorno al contenedor, en formato `VARIABLE=valor `
 
-**depends_on:** indica dependencia con otro(s) contenedor(es). El contenedor no va a levanta si los contenedores de los cuales depende no se encuentran corriendo. Los contenedores son iniciados/bajados siguiendo el orden necesario de acuerdo a las dependencias establecidas.
+**depends_on:** indica dependencia con otro(s) contenedor(es). El contenedor no va a levantar si los contenedores de los cuales depende no se encuentran corriendo. Los contenedores son iniciados/bajados siguiendo el orden necesario de acuerdo a las dependencias establecidas.
 
-**network**: indica las redes va a utilizar el servicio (lo veremos mas adelante).
+**network**: indica las redes que va a utilizar el servicio (lo veremos mas adelante).
 
-**volumes:** indica los volumenes de disco que vamos a acceder desde el servicio.
+**volumes:** indica los volumenes de disco que vamos a acceder desde el servicio. Como vimos antes, podemos definir los volumenes aquí dentro de *services:* o hacerlo preferentemente mas adelante, dentro de *volumes:*.
 
-Veamos con un ejemplo, como acceder con docker compose a un directorio local del host (*bind mount*):
+Veamos con un ejemplo como acceder a un directorio local del host (*bind mount*) desde un contenedor:
 
-1. Iniciemos nuevamente nuestros servicios:
+1. Iniciamos los servicios:
 
    ```bash
    $ docker-compose up -d
@@ -259,13 +258,13 @@ Veamos con un ejemplo, como acceder con docker compose a un directorio local del
    Creating dbserver01 ... done
    Creating webserver01 ... done
    
-   $ docker ps
-   CONTAINER ID        IMAGE                  COMMAND             CREATED             STATUS              PORTS               NAMES
-   e6ddd3f51806        compose01_web-server   "/bin/sh -c bash"   52 seconds ago      Up 51 seconds                           webserver01
-   88adc0875532        compose01_db-server    "/bin/sh -c bash"   52 seconds ago      Up 51 seconds                           dbserver01
+   $ docker container ls
+   CONTAINER ID     IMAGE                  COMMAND             CREATED             STATUS           PORTS     NAMES
+   e6ddd3f51806     compose01_web-server   "/bin/sh -c bash"   52 seconds ago      Up 51 seconds              webserver01
+   88adc0875532     compose01_db-server    "/bin/sh -c bash"   52 seconds ago      Up 51 seconds              dbserver01
    ```
 
-2. En el mismo directorio de nuestro proyecto, crear un directorio `./data` que montaremos dentro de uno de los servicios:
+2. En el mismo directorio de nuestro proyecto, creamos un directorio `./data` y un archivo dentro, que montaremos dentro de uno de los servicios:
 
    ```bash
    $ mkdir data
@@ -273,8 +272,7 @@ Veamos con un ejemplo, como acceder con docker compose a un directorio local del
    ```
 
 
-
-3. Editemos el archivo *docker-compose.yml*, agregando el directorio que queremos montar desde el host (bind mount) al servicio *web-server*:
+3. Editamos el archivo *docker-compose.yml*, agregando la referencia a este directorio dentro del servicio *web-server*:
 
    ```bash
    version: '3'
@@ -297,7 +295,7 @@ Veamos con un ejemplo, como acceder con docker compose a un directorio local del
          - ./data:/mnt/data
    ```
 
-   De esta forma, montamos el directorio local `./data` del host, en el direcotrio `/mnt/data` dentro del contenedor creado para el servicio `web-server`.
+   De esta forma, vamos a montamos el directorio local `./data` del host, en el direcotrio `/mnt/data` del contenedor `webserver01` que es creado para el servicio `web-server`.
 
 
 
@@ -321,11 +319,10 @@ Veamos con un ejemplo, como acceder con docker compose a un directorio local del
    -rw-rw-r-- 1 1000 1000 0 Aug 21 23:17 test.txt
    ```
 
-   **nota:** recuerde que para salir del contenedor luego de hacer el `attach` debe hacer <ctrl-p-q>, de lo contrario terminará el proceso bash que está ejecutando, y el contenedor finalizará su ejecución.
+   **nota:** recuerde que para salir del contenedor debe hacer \<ctrl-p-q>, de lo contrario terminará el proceso bash que está ejecutando y el contenedor finalizará su ejecución.
 
 
 Podemos hacer las definiciones de esta forma, dentro de la sección **services:** para cada uno de los servicios que requieran acceso a disco. Pero si quisieramos utilizar volumenes de docker, y además poder accederlos desde múltiples servicios, es preferible definirlos utilizando la sección **volumes:** como veremos a continuación.
-
 
 
 ### Definición de *volumes:*
@@ -369,9 +366,10 @@ volumes:
 
 
 
-En este ejemplo, creamos un volumen `db-volume` que es utilizado por el servicio *db-server*  y es compartido con un nuevo servicio *backup-server* que agregamos. Ambos servicios utilizan el mismo volumen, que esta vez lo definimos en la sección **volumes:**  y lo montan en diferentes ubicaciones.
+En este ejemplo, agregamos un volumen `db-volume`, definiendolo dentro de la sección **volumes:**.
+El mismo es utilizado por el servicio *db-server* existente, así como también por un nuevo servicio *backup-server* que estamos agregando. Ambos servicios utilizan el mismo volumen, pero lo montan internamente en diferentes ubicaciones de cada contenedor.
 
-Volvemos a refrescar nuestros servicios:
+Refrescamos nuestros servicios (puede demorar algunos segundos):
 
 ```bash
 $ docker-compose up -d
@@ -388,11 +386,11 @@ Creating backupserver ... done
 Recreating webserver01 ... done
 
 
-$ docker ps
-CONTAINER ID        IMAGE                     COMMAND             CREATED              STATUS              PORTS               NAMES
-0fe09e3f54f3        compose01_web-server      "/bin/sh -c bash"   About a minute ago   Up About a minute                       webserver01
-407b6d0533a5        compose01_db-server       "/bin/sh -c bash"   About a minute ago   Up About a minute                       dbserver01
-612cfaf139a7        compose01_backup-server   "/bin/sh -c bash"   2 minutes ago        Up About a minute                       backupserver
+$ docker container ls
+CONTAINER ID     IMAGE                     COMMAND             CREATED              STATUS              PORTS     NAMES
+0fe09e3f54f3     compose01_web-server      "/bin/sh -c bash"   About a minute ago   Up About a minute             webserver01
+407b6d0533a5     compose01_db-server       "/bin/sh -c bash"   About a minute ago   Up About a minute             dbserver01
+612cfaf139a7     compose01_backup-server   "/bin/sh -c bash"   2 minutes ago        Up About a minute             backupserver
 ```
 
 
@@ -417,7 +415,7 @@ root@6dae219d5ac6:/base# touch archivo1.txt
 root@6dae219d5ac6:/base# ls -l
 total 0
 -rw-r--r-- 1 root root 0 Aug 22 01:06 archivo1.txt
-root@6dae219d5ac6:/base#
+
 <ctrl-pq>
 
 
@@ -426,7 +424,7 @@ root@94f5d5cb6abb:/#
 root@94f5d5cb6abb:/# ls -l /backup/base/
 total 0
 -rw-r--r-- 1 root root 0 Aug 22 01:06 archivo1.txt
-root@94f5d5cb6abb:/# 
+
 <ctrl-pq>
 
 ```
@@ -435,9 +433,7 @@ root@94f5d5cb6abb:/#
 
 ##### Accediendo a volumenes mediante driver específico
 
-Si vemos nuevamente el *docker-compose.yml*, dentro de la sección `volumes:` lo que agregamos es el volumen que será creado al correr el comando `docker-compose up`.
-
-En nuesto caso la entrada  `db-volume:` se encuentra vacía, por lo cual para acceder a dicho volumen se va a utilizar el driver por defecto del Docker Engine (generalmente es el driver `local`).  
+Si vemos nuevamente el *docker-compose.yml* dentro de la sección `volumes:`, la entrada `db-volume:` que creamos se encuentra vacía. Por lo cual para acceder a dicho volumen se va a utilizar el driver por defecto del Docker Engine, que como ya vimos, generalmente es el driver `local`.  
 
 ```bash
 volumes:
@@ -445,27 +441,26 @@ volumes:
 ```
 
 
-
-Podemos en cambio, especificar que driver queremos utilizar, así como pasarle opciones al mismo. Por ejemplo, utilizar el driver *sshfs* que ya vimos anteriormente, para montar un volumen desde un servidor ssh. 
+Podemos en cambio, especificar que driver queremos utilizar, así como pasarle las opciones necesarias al mismo.
+Por ejemplo, podemos utilizar el driver *sshfs* que ya vimos anteriormente [aquí](https://github.com/conapps/Devops-101/blob/master/Contenedores/20170815-Storage.md#volumenes-con-drivers-creados-por-los-usuarios), para montar un volumen desde un servidor ssh. 
 
 ```
 volumes:
   db-volume:
     driver: vieux/sshfs:latest
     driver_opts:
-      sshcmd: "conatel@sshserver.labs.labs.conatest.click:/home/conatel"
-      password: "docker101"
+      sshcmd: "ubuntu@sshserver.labs.conatest.click:/home/ubuntu/docker101"
+      password: "conatel_docker101"
 ```
-
 
 
 ##### Accediendo a volumenes externos
 
-En todos los casos anteriores, el comando `docker-compose up` se encarga de crear el volumen que estamos definiendo dentro de la sección `volumes:` del archivo *docker-compose.yml*. Esto lo verificamos al hacer un `docker volume ls`. Pero si ya tuvieramos un volumen definido previamente e intentamos accederlo de esta forma, vamos a obtener un error.
+En los casos anteriores, el comando `docker-compose up` se encarga de crear el volumen que definimos dentro de la sección `volumes:` del archivo *docker-compose.yml*. Esto lo verificamos al hacer un `docker volume ls`. Pero si ya tuvieramos un volumen definido previamente e intentáramos accederlo de esta forma, vamos a obtener un error.
 
 Para esto, podemos acceder a volumenes externos que hayan sido definidos previamente. En este caso, el comando `docker-compose up` no intentará crear el volumen, sino que buscará el volumen ya creado y lo montará en el servicio. Claro que, en caso de que el volumen no exista, el deploy terminará con error.
 
-Para definir un volumen externo le agregamos la opción `external: true`:
+Para definir un volumen como externo, le agregamos la opción `external: true`:
 
 ```bash
 volumes:
@@ -473,13 +468,15 @@ volumes:
     external: true
 ```
 
-En este caso, buscará un volumen ya definido en docker, con nombre *mi-volumen-externo*.
+En este caso, buscará un [volumen](https://github.com/conapps/Devops-101/blob/master/Contenedores/20170815-Storage.md#volumenes) ya definido en docker, con nombre *mi-volumen-externo*.
 
 
 
 ##### Eliminación de volumenes
 
-Si bajamos el ambiente con `docker-compose down`, por defecto los volumenes creados en la sección *volumes:* no son eliminados. Para eliminarlos debemos agregarle la opción  `-v` o `--volumes`
+Si bajamos el ambiente con `docker-compose down`, por defecto los volumenes creados en la sección *volumes:* no son eliminados. Si queremos forzar su eliminación, debemos agregarle la opción  `-v` o `--volumes`.
+
+**Atención:** Tenga en cuenta que esto eliminará la información contenida en dichos volumenes.
 
 ```bash
 $ docker-compose down -v
