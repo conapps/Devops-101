@@ -673,7 +673,6 @@ Y dentro de la configuración de cada servicio, colocamos la *networks:* a las c
 
 #### Configuración de *custom networks*:
 Podemos establecer configuraciones adicionales para las redes que definimos.
-
 Por ej. especificar que rangos de direcciones IP queremos utilizar para cada red, dentro de la sección **networks:**
    ```bash
 networks:
@@ -704,7 +703,7 @@ services:
 
 
 
-##### Accediendo a redes externas
+#### Accediendo a redes externas
 
 Si ya tenemos una red previamente definida en docker (algo que vimos [aqui](https://github.com/conapps/Devops-101/blob/master/Contenedores/20170807-Networking.md#redes-definidas-por-el-usuario)) y queremos utilizarla para nuestros servicios, podemos referenciarla de la siguiente manera:
 
