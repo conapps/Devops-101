@@ -654,7 +654,7 @@ Y dentro de la configuración de cada servicio, colocamos la *networks:* a las c
 
    Podemos ver el detalle de cada una de las redes mediante el comando `docker network inspect`, y así saber por ejemplo que contenedor se encuentra conectado a cada red.
 
-   En este caso también podemos conectarnos a los contenedores y probar la comunicación entre ellos como hicimos antes:
+   También podemos conectarnos a los contenedores y probar la comunicación entre ellos como hicimos antes:
 
    ```bash
    $ docker attach backupserver
