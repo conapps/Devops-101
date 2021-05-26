@@ -25,7 +25,7 @@ Docker Compose se puede instalar de varias formas, recomendamos realizar la inst
 
 
 
-#### Alternativa 1: Instalación mediante *curl*
+### Alternativa 1: Instalación mediante *curl*
 
 ```bash
 $ sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
@@ -40,7 +40,7 @@ $ sudo chmod +x /usr/local/bin/docker-compose
 ```
 
 
-#### Alternativa 2: Instlación mediante *pip*
+### Alternativa 2: Instlación mediante *pip*
 
 Si tenemos instalado `pip` (o lo instalamos), podemos usar esta alternativa:
 
@@ -50,7 +50,7 @@ $ sudo pip install docker-compose
 
 
 
-#### Verificación de la instalación:
+### Verificación de la instalación:
 
 ```bash
 $ docker-compose --version
@@ -75,7 +75,7 @@ Para entender el contenido del archivo *docker-compose.yml* y como realizar el d
 
 
 
-#### Ejercicio 20:
+### Ejercicio 20:
 
 En este ejercicio vamos a crear dos servicios simples, llamados *db-server* y *web-server*.
 
@@ -104,6 +104,7 @@ En este ejercicio vamos a crear dos servicios simples, llamados *db-server* y *w
 
    Como ya vimos, este *Dockerfile* simplemente crea una imagen a partir de *ubuntu* a la cuál le instala algunos paquetes, y ejecuta el shell `bash`.
 
+
 3. Crear el archivo *docker-compose.yml* con el siguiente contenido:
 
    ```bash
@@ -128,7 +129,8 @@ En este ejercicio vamos a crear dos servicios simples, llamados *db-server* y *w
 
    Las opciones `stdin_open: true` y `tty: true` permiten dejar abierta `STDIN` y asigarle una terminal al mismo, de forma que tendremos acceso al shell para poder interactuar con el contenedor. Esto es análogo a correr el comando `docker run -it` que vimos anteriormente.
 
-4. Realizar el despliegue de los servicios, mediante el comando  `docker-compose up -d` desde el directorio del proyecto:
+
+4. Realizar el despliegue de los servicios, mediante el comando  `docker-compose up -d`, desde el directorio del proyecto:
 
    ```bash
    $ docker-compose up -d
@@ -172,7 +174,18 @@ En este ejercicio vamos a crear dos servicios simples, llamados *db-server* y *w
 
 
 
-4. Una vez finalizado el despliegue, podemos verificar que los dos servicios están corriendo:
+5. Una vez finalizado el despliegue, podemos verificar que los servicios están corriendo, mediante `docker-compose ps`
+
+    ```bash
+    $ docker-compose ps
+        Name           Command       State   Ports
+    ----------------------------------------------
+    backupserver   /bin/sh -c bash   Up           
+    dbserver01     /bin/sh -c bash   Up           
+    webserver01    /bin/sh -c bash   Up  
+    ```
+
+    Y también podemos ver como siempre, el estado de los contenedores correspondientes:
 
    ```bash
    $ docker container ls
@@ -183,7 +196,7 @@ En este ejercicio vamos a crear dos servicios simples, llamados *db-server* y *w
 
 
 
-5. Para detener todos los servicios, lo hacemos mediante el comando  `docker-compose down`:
+6. Para detener todos los servicios utilizamos el comando `docker-compose down`:
 
    ```bash
    $ docker-compose down
@@ -192,10 +205,7 @@ En este ejercicio vamos a crear dos servicios simples, llamados *db-server* y *w
    Removing webserver01 ... done
    Removing dbserver01  ... done
    Removing network compose01_default
-   
-   $ docker container ls
-   CONTAINER ID   IMAGE                  COMMAND             CREATED          STATUS           PORTS      NAMES
-   
+  
    ```
 
 
@@ -264,7 +274,7 @@ Veamos con un ejemplo como acceder a un directorio local del host (*bind mount*)
    ```
 
 
-3. Editamos el archivo *docker-compose.yml*, agregando la referencia a este directorio dentro del servicio *web-server*:
+3. Editamos el archivo *docker-compose.yml* y agregamos la referencia a este directorio dentro del servicio *web-server*:
 
    ```bash
    version: '3'
@@ -298,8 +308,6 @@ Veamos con un ejemplo como acceder a un directorio local del host (*bind mount*)
    dbserver01 is up-to-date
    Recreating webserver01 ... done
    ```
-
-
 
    Si nos conectamos al contenedor, podemos ver que el directorio local fue montado:
 
@@ -423,7 +431,7 @@ total 0
 
 
 
-##### Accediendo a volumenes mediante driver específico
+#### Accediendo a volumenes mediante driver específico
 
 Si vemos nuevamente el *docker-compose.yml* dentro de la sección `volumes:`, la entrada `db-volume:` que creamos se encuentra vacía. Por lo cual para acceder a dicho volumen se va a utilizar el driver por defecto del Docker Engine, que como ya vimos, generalmente es el driver `local`.  
 
@@ -446,7 +454,7 @@ volumes:
 ```
 
 
-##### Accediendo a volumenes externos
+#### Accediendo a volumenes externos
 
 En los casos anteriores, el comando `docker-compose up` se encarga de crear el volumen que definimos dentro de la sección `volumes:` del archivo *docker-compose.yml*. Esto lo verificamos al hacer un `docker volume ls`. Pero si ya tuvieramos un volumen definido previamente e intentáramos accederlo de esta forma, vamos a obtener un error.
 
@@ -464,7 +472,7 @@ En este caso, buscará un [volumen](https://github.com/conapps/Devops-101/blob/m
 
 
 
-##### Eliminación de volumenes
+#### Eliminación de volumenes
 
 Si bajamos el ambiente con `docker-compose down`, por defecto los volumenes creados en la sección *volumes:* no son eliminados. Si queremos forzar su eliminación, debemos agregarle la opción  `-v` o `--volumes`.
 
@@ -663,7 +671,7 @@ Y dentro de la configuración de cada servicio, colocamos la *networks:* a las c
    ```
 
 
-##### Estableciendo configuración de red a las custom networks
+#### Configuración de *custom networks*:
 Podemos establecer configuraciones adicionales para las redes que definimos.
 
 Por ej. especificar que rangos de direcciones IP queremos utilizar para cada red, dentro de la sección **networks:**
@@ -696,9 +704,20 @@ services:
 
 
 
-##### Eliminación de *custom networks:*
+##### Accediendo a redes externas
 
-Si bajamos el ambiente con `docker-compose down`, las redes que definimos serán eliminadas por defecto:
+Si ya tenemos una red previamente definida en docker (algo que vimos [aqui](https://github.com/conapps/Devops-101/blob/master/Contenedores/20170807-Networking.md#redes-definidas-por-el-usuario)) y queremos utilizarla para nuestros servicios, podemos referenciarla de la siguiente manera:
+
+```bash
+networks:
+  mi-red-externa: 
+    external: true
+```
+
+
+#### Eliminación de *custom networks*:
+
+Si bajamos el ambiente con `docker-compose down`, las *custom netowrks* que definimos dentro del *docker-compose.yml* serán eliminadas por defecto:
 
 ```bash
 $ docker-compose down
@@ -713,40 +732,17 @@ Removing network compose01_backup-network
 
 ```
 
-
-##### Accediendo a redes externas
-
-Si ya tenemos una red previamente definida en docker (algo que vimos [aqui](https://github.com/conapps/Devops-101/blob/master/Contenedores/20170807-Networking.md#redes-definidas-por-el-usuario)), y queremos utilizarla para nuestros servicios, podemos referenciarla de la siguiente manera:
-
-```bash
-networks:
-  mi-red-externa: 
-    external: true
-```
-
 Como indicamos antes, ni las redes externas ni los volúmenes externos son eliminados por defecto cuando bajamos nuestros servicios con `docker-compose down`.
 
 
 
-### Desplegando el estado de los servicios
-Por último, para ver el estado de los servicios podemos utilizar `docker-compose ps`
-
-```bash
-$ docker-compose ps
-    Name           Command       State   Ports
-----------------------------------------------
-backupserver   /bin/sh -c bash   Up           
-dbserver01     /bin/sh -c bash   Up           
-webserver01    /bin/sh -c bash   Up  
-```
-
 ---
 
-
-Referencias:
+**Referencias:**
 * Overview of Docker Compose: [https://docs.docker.com/compose/](https://docs.docker.com/compose/)
 * Compose file version 3 reference: [https://docs.docker.com/compose/compose-file/](https://docs.docker.com/compose/compose-file/)
 * docker-compose command options: [https://docs.docker.com/compose/reference/](https://docs.docker.com/compose/reference/)
+---
 
 | [<-- Volver](20170807-Networking.md) |
 
