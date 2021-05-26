@@ -641,7 +641,7 @@ Y dentro de la configuración de cada servicio, colocamos la *networks:* a las c
    Creating dbserver01   ... done
    Creating webserver01  ... done
    
-   ubuntu@serverNum1:~/compose01$ docker network ls
+   $ docker network ls
    NETWORK ID          NAME                       DRIVER              SCOPE
    ecdf172b3adf        bridge                     bridge              local
    e62e9a0d6427        compose01_backup-network   bridge              local
@@ -658,6 +658,7 @@ Y dentro de la configuración de cada servicio, colocamos la *networks:* a las c
 
    ```bash
    $ docker attach backupserver
+
    root@f7397251a392:/# ping dbserver01
    PING dbserver01 (192.168.0.3) 56(84) bytes of data.
    64 bytes from dbserver01.compose01_backup-network (192.168.0.3): icmp_seq=1 ttl=64 time=0.056 ms
@@ -671,11 +672,9 @@ Y dentro de la configuración de cada servicio, colocamos la *networks:* a las c
 
 
 ##### Estableciendo configuración de red a las custom networks
+Podemos establecer configuraciones adicionales para las redes que definimos.
 
-Podemos establecer la configuración de cada una de nuestras *custom networks*, indicando por ej. que rangos de IP queremos utilizar para cada una de ellas. 
-
-Esto lo hacemos en la sección **networks:** del *docker-compose.yml*:
-
+Por ej. especificar que rangos de direcciones IP queremos utilizar para cada red, dentro de la sección **networks:**: 
    ```bash
 networks:
   prod-network:
@@ -687,8 +686,7 @@ networks:
    ```
 
 
-
-Y podemos también configurar las opciones de red de los servicios, por ej. asignandoles una dirección IP específica, lo cuál hacemos en la sección **services:** del *docker-compose.yml*:
+Y configurar también ciertas opciones de red para los servicios, por ej. asignarle una dirección IP específica, lo cuál hacemos en la sección **services:**:
 
 ```bash
 services:
@@ -706,26 +704,12 @@ services:
 
 
 
-##### Accediendo a redes externas
-
-Si ya tenemos una red previamente definida en docker, y queremos utilizarla para nuestros servicios, podemos referenciarla de la siguiente manera:
-
-```bash
-networks:
-  mi-red-externa: 
-    external: true
-```
-
-Como indicamos antes, ni las redes externas, ni los volúmenes externos son eliminados cuando bajamos nuestros servicios con `docker-compose down`.
-
-
-
 ##### Eliminación de *custom networks:*
 
-Si bajamos el ambiente con `docker-compose down`, por defecto las redes serán eliminadas:
+Si bajamos el ambiente con `docker-compose down`, las redes que definimos serán eliminadas por defecto:
 
 ```bash
-$ docker-compose down -v
+$ docker-compose down
 Stopping webserver01  ... done
 Stopping backupserver ... done
 Stopping dbserver01   ... done
@@ -734,23 +718,36 @@ Removing backupserver ... done
 Removing dbserver01   ... done
 Removing network compose01_prod-network
 Removing network compose01_backup-network
-Network mi-red-externa is external, skipping
-Removing volume compose01_db-volume
-Volume mi-volumen-externo is external, skipping
 
-$ docker network ls
-NETWORK ID          NAME                DRIVER              SCOPE
-241e4c4be1e6        bridge              bridge              local
-f9a3c9feaf96        host                host                local
-9166adfed0fa        mi-red-externa      bridge              local
-a8fd98b4fcd6        none                null                local
 ```
 
-Las redes definidas como externas nunca son eliminados desde docker compose.
 
+##### Accediendo a redes externas
 
+Si ya tenemos una red previamente definida en docker (algo que vimos [aqui](https://github.com/conapps/Devops-101/blob/master/Contenedores/20170807-Networking.md#redes-definidas-por-el-usuario)), y queremos utilizarla para nuestros servicios, podemos referenciarla de la siguiente manera:
+
+```bash
+networks:
+  mi-red-externa: 
+    external: true
+```
+
+Como indicamos antes, ni las redes externas ni los volúmenes externos son eliminados por defecto cuando bajamos nuestros servicios con `docker-compose down`.
 
 ---
+
+
+### Desplegando el estado de los servicios
+Por último, para ver el estado de los servicios podemos utilizar `docker-compose ps`
+
+```bash
+$ docker-compose ps
+    Name           Command       State   Ports
+----------------------------------------------
+backupserver   /bin/sh -c bash   Up           
+dbserver01     /bin/sh -c bash   Up           
+webserver01    /bin/sh -c bash   Up  
+```
 
 
 
