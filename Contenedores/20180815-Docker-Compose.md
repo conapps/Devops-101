@@ -501,50 +501,49 @@ Los volumenes definidos como externos nunca son eliminados desde docker compose 
 
 ### Definición de Networks:
 
-Por defecto, cuando desplegamos nuestro ambiente el comando `docker-compose up` crea una única network, y agrega cada contenedor de cada servicio a esta *default network*. Como consecuencia, todos los contenedores pueden conectarse entre ellos y además pueden descubrirse mediante su *hostname*:
+Por defecto, cuando desplegamos nuestro ambiente el comando `docker-compose up` crea una única network y agrega cada contenedor de cada servicio a esta *XXXXX_default* network. 
 
 ```bash
-$ docker-compose up -d
-...
-
-
 $ docker network ls
 NETWORK ID          NAME                DRIVER              SCOPE
 ecdf172b3adf        bridge              bridge              local
 db68a213cd9c        compose01_default   bridge              local
 4b6f37984b56        host                host                local
 b9b7a573b4d0        none                null                local
+```
 
+
+Como consecuencia, todos los contenedores pueden conectarse entre ellos y además pueden descubrirse mediante su *hostname*:
+
+```bash
+ docker container ls
+CONTAINER ID   IMAGE                     COMMAND             CREATED         STATUS         PORTS     NAMES
+851ae243af3a   compose01_web-server      "/bin/sh -c bash"   8 seconds ago   Up 7 seconds             webserver01
+828c77fe3061   compose01_db-server       "/bin/sh -c bash"   9 seconds ago   Up 7 seconds             dbserver01
+de70336c7814   compose01_backup-server   "/bin/sh -c bash"   9 seconds ago   Up 7 seconds             backupserver
 
 $ docker attach backupserver 
-root@03c3f705f7d1:/# 
-root@03c3f705f7d1:/# ping -c4 dbserver01
+root@03c3f705f7d1:/# ping dbserver01
 PING dbserver01 (172.26.0.2) 56(84) bytes of data.
 64 bytes from dbserver01.compose01_default (172.26.0.2): icmp_seq=1 ttl=64 time=0.047 ms
 64 bytes from dbserver01.compose01_default (172.26.0.2): icmp_seq=2 ttl=64 time=0.055 ms
 64 bytes from dbserver01.compose01_default (172.26.0.2): icmp_seq=3 ttl=64 time=0.056 ms
-64 bytes from dbserver01.compose01_default (172.26.0.2): icmp_seq=4 ttl=64 time=0.061 ms
+^C
 
---- dbserver01 ping statistics ---
-4 packets transmitted, 4 received, 0% packet loss, time 2997ms
-rtt min/avg/max/mdev = 0.047/0.054/0.061/0.010 ms
-
-
-root@03c3f705f7d1:/# ping -c4 webserver01
+root@03c3f705f7d1:/# ping webserver01
 PING web-server (172.26.0.4) 56(84) bytes of data.
 64 bytes from webserver01.compose01_default (172.26.0.4): icmp_seq=1 ttl=64 time=0.071 ms
 64 bytes from webserver01.compose01_default (172.26.0.4): icmp_seq=2 ttl=64 time=0.068 ms
 64 bytes from webserver01.compose01_default (172.26.0.4): icmp_seq=3 ttl=64 time=0.058 ms
-64 bytes from webserver01.compose01_default (172.26.0.4): icmp_seq=4 ttl=64 time=0.067 ms
+^C
 
---- web-server ping statistics ---
-4 packets transmitted, 4 received, 0% packet loss, time 2998ms
-rtt min/avg/max/mdev = 0.058/0.066/0.071/0.004 ms
 ```
 
 
 
-Si bien esto puede ser útil en un ambiente de prueba, en una ambiente en producción podría interesarnos restringir o segmentar esta conectividad, de modo que cada servicio pueda comunicarse únicamente con aquellos otros servicios que sea extrictamente necesario. Dentro de la sección **networks:** del archivo *docker-compose.yml*, podemos crear nuestras propias redes y definir la comunicaciones entre los servicios.
+Si bien esto puede ser muy útil en un ambiente de prueba, en una ambiente en producción podría ser necesario restringir o segmentar esta conectividad, de modo que cada servicio pueda comunicarse únicamente con aquellos otros servicios que sea extrictamente necesario. 
+
+Para esto, dentro de la sección **networks:** del archivo *docker-compose.yml* podemos crear nuestras propias redes, y así definir la conectividad entre los servicios.
 
 
 
