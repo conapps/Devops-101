@@ -744,9 +744,9 @@ webserver01    /bin/sh -c bash   Up
 
 
 Referencias:
-* [Overview of Docker Compose: https://docs.docker.com/compose/](https://docs.docker.com/compose/)
-* [Compose file version 3 reference: https://docs.docker.com/compose/compose-file/](https://docs.docker.com/compose/compose-file/)
-* [docker-compose command options: https://docs.docker.com/compose/reference/](https://docs.docker.com/compose/reference/)
+* Overview of Docker Compose: [https://docs.docker.com/compose/](https://docs.docker.com/compose/)
+* Compose file version 3 reference: [https://docs.docker.com/compose/compose-file/](https://docs.docker.com/compose/compose-file/)
+* docker-compose command options: [https://docs.docker.com/compose/reference/](https://docs.docker.com/compose/reference/)
 
 | [<-- Volver](20170807-Networking.md) |
 
