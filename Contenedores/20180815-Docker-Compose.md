@@ -658,7 +658,7 @@ Y dentro de la configuración de cada servicio, colocamos la *networks:* a las c
 
    ```bash
    $ docker attach backupserver
-
+   root@f7397251a392:/#
    root@f7397251a392:/# ping dbserver01
    PING dbserver01 (192.168.0.3) 56(84) bytes of data.
    64 bytes from dbserver01.compose01_backup-network (192.168.0.3): icmp_seq=1 ttl=64 time=0.056 ms
@@ -674,7 +674,7 @@ Y dentro de la configuración de cada servicio, colocamos la *networks:* a las c
 ##### Estableciendo configuración de red a las custom networks
 Podemos establecer configuraciones adicionales para las redes que definimos.
 
-Por ej. especificar que rangos de direcciones IP queremos utilizar para cada red, dentro de la sección **networks:**: 
+Por ej. especificar que rangos de direcciones IP queremos utilizar para cada red, dentro de la sección **networks:**
    ```bash
 networks:
   prod-network:
@@ -686,7 +686,7 @@ networks:
    ```
 
 
-Y configurar también ciertas opciones de red para los servicios, por ej. asignarle una dirección IP específica, lo cuál hacemos en la sección **services:**:
+Y configurar también ciertas opciones de red para los servicios, por ej. asignarle una dirección IP específica, lo cuál hacemos en la sección **services:**
 
 ```bash
 services:
@@ -734,7 +734,6 @@ networks:
 
 Como indicamos antes, ni las redes externas ni los volúmenes externos son eliminados por defecto cuando bajamos nuestros servicios con `docker-compose down`.
 
----
 
 
 ### Desplegando el estado de los servicios
@@ -749,6 +748,7 @@ dbserver01     /bin/sh -c bash   Up
 webserver01    /bin/sh -c bash   Up  
 ```
 
+---
 
 
 | [<-- Volver](20170807-Networking.md) |
