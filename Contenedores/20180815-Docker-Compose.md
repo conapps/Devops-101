@@ -11,6 +11,8 @@ Introducción
 
 A medida que las aplicaciones son mas complejas, resulta necesario distribuirlas en múltiples contenedores. Por ej. aplicaciones basadas en microservicios son apropiadas para usar múltiples contenedores, un contenedor con una base de datos, otro con un servidor web, un sistema de mensajería en otro, etc., etc. Crear estos contenedores en forma manual (*docker run*) resultará poco práctico, y si tuvieramos que crear un ambiente con decenas de contenedores, ciertamente no es la mejor opción.
 
+![alt text](Imagenes/microservicios.jpg "Arquitectura de Microservicios")
+
 Con Docker Compose podemos definir nuestra aplicación multicontenedor utilizando un único archivo de configuración, que contiene las definiciones de todos los servicios (contenedores) que necesitamos, y con un único comando podemos iniciar todos los servicios, o bajarlos.
 
 Este archivo de configuración, en formato *yaml*, no solo nos sirve para poder desplegar y eliminar todo nuestro ambiente, sino que también es útil como documentación, dado que incluye toda la información sobre sus contenedores, imágenes, volúmenes, networking, y el resto de las características.
