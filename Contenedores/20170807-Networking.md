@@ -20,7 +20,7 @@ cf03ee007fb4        host                host
 
 Los contenedores pueden conectarse a estas redes al momento de su creación con la opción ```--network```.
 Si no especificamos ninguna opción, Docker conecta los contenedores a la red ```bridge``` por defecto.
-Estas tres redes utilizan drivers dinsintos y por tanto tienen comportamientos también distintos, a continuación veremos una breve explicación de cada una de ellas:
+Estas tres redes utilizan drivers distintos y por tanto tienen comportamientos también distintos, a continuación veremos una breve explicación de cada una de ellas:
 
 ### bridge
 La red ```bridge``` representa a la interface ```docker0``` en el host. Básicamente, al instalar Docker, se crea en el host una interface ```docker0``` que "mira" hacia los contenedores, se le asigna una dirección IP, y se la deja lista para que los contenedores que no definan ninguna red específica al momento de su creación se conecten a ella.
