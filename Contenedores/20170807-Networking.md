@@ -492,7 +492,7 @@ $ curl http://172.17.0.2:2368
 
 Como podemos ver el servidor devuelve la página en HTML, lo que demuestra que está funcionando.
 
-¿Pero que sucede si utilizando el navegador de nuestra notebook intentamos acceder a la url ```http://servernumx.labs.conatest.click:2368```?. Esto no funciona debido a que ```servernumx.labs.conatest.click``` está mapeado a una IP "exterior" del host y por defecto los contenedores no son accesibles dede afuera.
+¿Pero que sucede si utilizando el navegador de nuestra notebook intentamos acceder a la url ```http://servernumX.labs.conatest.click:2368```?. Esto no funciona debido a que ```servernumX.labs.conatest.click``` está mapeado a una IP "exterior" del host y por defecto los contenedores no son accesibles dede afuera.
 Para hacer que un contenedor pueda ser accesible desde afuera es necesario publicar dicho puerto al momento de la creación del contenedor; esto se hace utilizando la opción ```-p```. De esta forma, si ahora ejecutamos el siguiete comando:
 
 ```bash
@@ -528,7 +528,7 @@ $ docker run -d --rm --name prueba-web-server -p 80:2368 ghost
 ```
 De esta forma el puerto `2368` del contenedor queda mapeado al puerto `80` de la máquina host.
 
-Para comprobar que esto funciona intente navegar a la url ```http://servernumx.labs.conatest.click```.
+Para comprobar que esto funciona intente navegar a la url ```http://servernumX.labs.conatest.click```.
 Si quisieramos además del puerto, poder controlar sobre que IP de la máquina host publicamos el servicio podríamos ejecutar:
 
 ```bash
