@@ -5,7 +5,7 @@ _Fuentes:_
 - [Cisco Git Lab](https://learninglabs.cisco.com/lab/git-intro/step/1)
 - [Instalación de Git](https://git-scm.com/book/es/v2/Inicio---Sobre-el-Control-de-Versiones-Instalaci%C3%B3n-de-Git)\*
 - [What a branch is](https://git-scm.com/book/en/v1/Git-Branching-What-a-Branch-Is)
-- [Git reference](http://gitref.org/basic/)
+- [Git reference](https://git-scm.com/docs)
 - [What is a git "snapshot"](http://stackoverflow.com/questions/4964099/what-is-a-git-snapshot)
 
 ## Sistema de control de versiones.
