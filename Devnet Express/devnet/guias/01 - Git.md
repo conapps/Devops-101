@@ -40,11 +40,10 @@ También se puede compilar directamente a partir del codigo fuente.
 apt-get install libcurl4-gnutls-dev libexpat1-dev gettext libz-dev libssl-dev wget
 
 // Luego descargamos la versión más reciente (2.11.0 al día de redacción de este texto).
-wget https://www.kernel.org/pub/software/scm/git/git-2.11.0.tar.xz
-
+wget https://www.kernel.org/pub/software/scm/git/git-2.34.1.tar.gz 
 // Por último compilamos e instalamos el software
-tar -zxf git-2.0.0.tar.gz
-cd git-2.0.0
+tar -zxf git-2.34.1.tar.gz 
+cd git-2.34.1
 make configure
 ./configure --prefix=/usr
 make all doc info
