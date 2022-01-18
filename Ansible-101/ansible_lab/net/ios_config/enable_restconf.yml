@@ -1,0 +1,15 @@
+# ---
+# enable_restconf.yml
+#
+# Activa RESTCONF en todos los routers
+# ---
+
+- name: Enable RESTCONF
+  hosts: routers
+  connection: local
+  tasks:
+    - name: Comandos necesarios para habilitar RESTCONF
+      ios_config:
+        lines:
+          - restconf
+          - ip http secure-server

@@ -1,0 +1,43 @@
+# ---
+# native_hostname.yml
+#
+# Consulta al módulo Cisco-IOS-XE-native por su información principal.
+# ---
+- hosts: routers
+  connection: local
+  gather_facts: yes
+  vars:
+    filter: interface
+  tasks:
+    - name: Consulta RESTCONF
+      uri:
+        url: 'https://{{inventory_hostname}}/restconf/data/Cisco-IOS-XE-native:native/hostname'
+        force_basic_auth: yes
+        body_format: json
+        body:
+          "Cisco-IOS-XE-native:hostname": "{{hostname}}-RC"
+        headers:
+          'Accept': 'application/yang-data+json,application/yang-data.errors+json'
+          'Accept-Encoding': 'gzip,deflate'
+          'Content-Type': 'application/yang-data+json'
+        method: "{{method | default('GET')}}"
+        user: conatel
+        password: conatel
+        return_content: yes
+        validate_certs: no
+      register: output
+      failed_when: False
+    - debug:
+        var: output['json']
+      when: output['json'] is defined
+    - name: Eliminar la version anterior del archivo
+      file:
+        path: 'outputs/{{inventory_hostname}}_native.json'
+        state: absent
+      when: output["json"] is defined
+    - name: Guardar los datos en un archivo de texto
+      lineinfile:
+        dest: 'outputs/{{inventory_hostname}}_hostname.json'
+        line: '{{output["json"] | to_nice_json}}'
+        create: yes
+      when: output["json"] is defined

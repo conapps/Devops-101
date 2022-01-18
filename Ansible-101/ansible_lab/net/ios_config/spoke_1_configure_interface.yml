@@ -1,0 +1,16 @@
+# ---
+# spoke_1_configure_interface.yml
+#
+# Configura la interface GigabitEthernet2 del router Spoke01
+# ...
+- name: Configuracion de interface GigabitEthernet2
+  hosts: 10.X.201.253
+  connection: local
+  gather_facts: no
+  tasks:
+    - ios_config:
+        lines:
+          - description "Conexión con Red Spoke#1"
+          - ip address 10.1.1.254 255.255.255.0
+          - no shutdown
+        parents: interface GigabitEthernet2

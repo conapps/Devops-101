@@ -1,0 +1,12 @@
+# ./config_interfaces/tasks/main.yml
+#
+# Tareas para configurar la interfaz de un equipo.
+# ---
+- name: Configuración de interfaces
+  loop: '{{ interfaces }}'
+  ios_config:
+    lines:
+      - 'description {{ item.description }}'
+      - 'ip address {{ item.ip_address }} {{ item.netmask }}'
+      - no shutdown
+    parents: 'interface {{ item.interface }}'

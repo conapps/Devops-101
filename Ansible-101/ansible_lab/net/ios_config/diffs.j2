@@ -1,0 +1,24 @@
+{{ report_name }}
+===
+
+_Fecha: {{ansible_date_time.date}} {{ansible_date_time.time}}_
+
+## Diferencia
+
+```
+{{ after | difference(before) | join("\n")  }}
+```
+
+---
+
+## Antes
+
+```
+{{ before | join("\n") }}
+```
+
+---
+
+## Despues
+```
+{{ after | join("\n") }}

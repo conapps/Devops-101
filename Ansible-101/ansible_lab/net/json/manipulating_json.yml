@@ -1,0 +1,23 @@
+# ---
+# manipulating_json.yml
+#
+# Playbook que demuestra formas para manipular JSON
+# ---
+
+- name: Ejemplos de manipulación de JSON con Ansible
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  vars:
+    email_list: []
+  tasks:
+    - name: Cargamos el contenido de 'example.json' en una variable
+      set_fact:
+        json: "{{ lookup('file', 'example.json') | from_json }}"
+    - name: Iteramos sobre los datos y almacenamos el correo en la lista 'email_list'
+      set_fact:
+        email_list: "{{ email_list }} + [ '{{ item['email'] }}' ]"
+      loop: "{{ json['data'] }}"
+    - name: Imprimimos la lista 'email_list'
+      debug:
+        var: email_list

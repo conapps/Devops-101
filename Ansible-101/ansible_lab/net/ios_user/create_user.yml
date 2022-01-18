@@ -1,0 +1,18 @@
+# ---
+# create_user.yml
+#
+# Crea un usuario conatel/conatel en todos los routers
+# ---
+- name: Modificar el hostname
+  hosts: routers
+  connection: local
+  gather_facts: no
+  tasks:
+    - name: Create the conatel user
+      ios_user:
+        configured_password: conatel
+        name: conatel
+        privilege: 15
+        state: present
+        update_password: always
+        nopassword: no

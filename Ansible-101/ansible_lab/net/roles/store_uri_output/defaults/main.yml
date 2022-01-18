@@ -1,0 +1,8 @@
+# ---
+# store_uri_output/defaults
+#
+# Variables por defector para utilizar en este rol.
+# ---
+outputs_directory: outputs
+output_filename: output
+output_append: False

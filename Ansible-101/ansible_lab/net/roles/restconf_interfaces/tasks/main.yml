@@ -1,0 +1,35 @@
+# ---
+# roles/restconf_interfaces/tasks/main.yml
+#
+# Tareas para configurar interfaces a traés de RESTCONF con Ansible.
+# ---
+- name: PATCH method (running configuration)
+  uri:
+    url: 'https://{{inventory_hostname}}/restconf/data/ietf-interfaces:interfaces'
+    force_basic_auth: yes
+    body_format: json
+    body:
+      "ietf-interfaces:interfaces":
+        interface:
+          - description: "{{item.description}}"
+            enabled: "{{item.enabled | default(true)}}"
+            "ietf-ip:ipv4":
+              address:
+                - ip: "{{item.ip_address}}"
+                  netmask: "{{item.netmask}}"
+            "ietf-ip:ipv6": {}
+            name: "{{item.interface}}"
+            type: "iana-if-type:ethernetCsmacd"
+    headers:
+      'Accept': 'application/yang-data+json,application/yang-data.errors+json'
+      'Accept-Encoding': 'gzip,deflate'
+      'Content-Type': 'application/yang-data+json'
+    method: PATCH
+    user: conatel
+    password: conatel
+    return_content: yes
+    validate_certs: no
+    status_code: 200, 201, 204
+  failed_when: false
+  loop: "{{interfaces}}"
+  register: restconf_output

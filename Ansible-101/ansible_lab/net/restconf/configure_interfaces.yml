@@ -1,0 +1,23 @@
+# ---
+# configure_interfaces.yml
+#
+# Configura interfaces utilizando un rol
+#
+# OBS:
+# 	Dentro del inventario, se configurará una variable llamada
+#	  `interfaces` con una lista de interfaces. Por ejemplo:
+#		interfaces:
+# 	  - interface: GigabitEthernet2
+# 	    ip_address: '10.X.201.254'
+# 	    netmask: '255.255.255.0'
+# 	    description: Configurado desde el nuevo rol
+# ---
+- name: Configuración de interface
+  hosts: spokes
+  connection: local
+  gather_facts: no
+  roles:
+    - role: ../roles/restconf_interfaces
+  tasks:
+    - debug:
+        var: restconf_output

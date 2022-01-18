@@ -1,0 +1,48 @@
+# ---
+# store_uri_output/tasks
+#
+# Almacena el resultado de un request utilizando el módulo uri en un archivo
+# de texto. Si el cuerpo del mensaje esta en JSON lo almacena como tal, de otra
+# manera, lo almacena como un archivo de texto convencional.
+# ---
+- name: 'Delete the {{output_filename}}.json file'
+  shell: '/bin/rm -rf {{outputs_directory}}/{{output_filename}}.json'
+  args:
+    warn: False
+  when: output_append == False
+
+- name: 'Delete the {{output_filename}} file'
+  shell: '/bin/rm -rf {{outputs_directory}}/{{output_filename}}'
+  args:
+    warn: False
+  when: output_append == False
+
+- name: 'Add the inventory host name'
+  lineinfile:
+    line: 'Host: {{inventory_hostname}}'
+    dest: '{{outputs_directory}}/{{output_filename}}.json'
+    create: yes
+  when: output.json is defined
+
+- name: 'Add the inventory host name'
+  lineinfile:
+    line: 'Host: {{inventory_hostname}}'
+    dest: '{{outputs_directory}}/{{output_filename}}'
+    create: yes
+  when: output.json is not defined and output.content is defined
+
+- name: 'Update {{output_filename}}.json file'
+  lineinfile:
+    dest: '{{outputs_directory}}/{{output_filename}}.json'
+    line: '{{output.json | to_nice_json}}'
+    create: yes
+    insertafter: 'Host: {{inventory_hostname}}'
+  when: output.json is defined
+
+- name: 'Update the {{output_filename}} file'
+  lineinfile:
+    dest: '{{outputs_directory}}/{{output_filename}}'
+    line: '{{output.content}}'
+    create: yes
+    insertafter: 'Host: {{inventory_hostname}}'
+  when: output.json is not defined and output.content is defined
