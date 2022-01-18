@@ -4,27 +4,23 @@
 
 Comenzaremos nuestra discusión de `network programmability` analizando qué es una API y por que este tipo de interfaces son tan importantes. Empecemos por asegurarnos que tenemos una buena base comenzando con algunas definiciones.
 
-Una API (Application Programming Interface) es una via para que dos piezas de software intercambien información. Se puede hacer un paralelismo con las interfaces Web que los usuarios utilizamos para interactuar con las aplicaciones; estas interfaces nos presentan un flujo de trabajo determinado que nos permite visualizar información o ejecutar acciones. Del mismo modo, la API de una pieza de software presenta un flujo de trabajo determinado que hace posible que otra pieza de software pueda intercambiar información o ejecutar acciones.
+Una API (Application Programming Interface) es una forma para que dos piezas de software intercambien información. Se puede hacer un paralelismo con las interfaces Web que los usuarios utilizamos para interactuar con las aplicaciones; estas interfaces nos presentan un flujo de trabajo determinado que nos permite visualizar información o ejecutar acciones. Del mismo modo, la API de una pieza de software presenta un flujo de trabajo determinado que hace posible que otra pieza de software pueda intercambiar información o ejecutar acciones.
 
-We are going to begin our discussion on network programmability by discussing what an API is and why they are important. Let's start by making sure we have a good foundation by diving into some definitions.
 
-An API (Application Programming Interface) is a way for two pieces of software to talk to each other. Think about the ways you typically interface with software. For example, you might open up a web interface to access your email. You might have a specific workflow to open up messages and file them away for later. Each of these workflows has a specific "interface" or way in which you achieve a certain task.
+Una API es similar en concepto. En lugar de que los humanos interactúen con el software, el software interactúa con el software. En lugar de tener un punto humano y hacer clic en un flujo de trabajo, una API expone la funcionalidad a otra aplicación.
 
-An API is similar in concept. Instead of humans interfacing with software, software interfaces with software. Rather than having a human point and click-through a workflow, an API exposes functionality to another application.
+Para qué hacer esto? Una de las razones es que esto permite el desarrollo de aplicaciones ricas con una amplia variedad de funciones. Veamos un ejemplo.
 
-Why would you want to do this? One reason is that this allows for the development of rich applications with a wide variety of functionality. Let's go through an example.
+Supongamos que es el creador de una aplicación de recomendación de restaurantes y desea integrar fácilmente la capacidad de devolver una lista de restaurantes relevantes en el área con una aplicación de mapa que muestra dónde están los restaurantes en relación con su ubicación. ¿Crearías esta funcionalidad desde cero? Probablemente no.
 
-Suppose you are the creator of a Restaurant Recommendation app and you want to easily integrate the ability to return a list of relevant restaurants in the area with a map application that displays where the restaurants are relative to your location. Would you create this functionality from scratch? Probably not.
+Hacerlo probablemente lo alejaría de su experiencia principal. Además, piense en todo el riesgo y la curva de aprendizaje necesarios para construir algo así desde cero. En su lugar, sería mejor aprovechar un tercero que ya ofrece esa funcionalidad e integrar la funcionalidad en sus aplicaciones.
 
-Doing so would likely take you away from your core expertise. Also, think about all of the risk and learning curve required to build something like that from the ground up. Instead, it would be better to leverage a third party that already offers that functionality, and integrate the functionality into your applications.
-
-A good example is a Maps Server. Rather than build map functionality from scratch, you could use an API provided the Maps Server to integrate map functionality quickly into your application.
+Un buen ejemplo es un servidor de mapas. En lugar de crear la funcionalidad de mapas desde cero, puede utilizar una API proporcionada por el servidor de mapas para integrar la funcionalidad de mapas rápidamente en su aplicación.
 
 ![API example](../imagenes/REST-18.jpg)
 
-Much like a wall outlet, an API enforces a specification of an interface. An API ensures that software adheres to the proper specifications much like an outlet ensures that devices adhere to the proper electrical specifications regardless of the vendor or device.
 
-## Get Access To The Spark REST APIs
+## Get Access To The Webex Teams REST APIs
 
 We are going to use the Spark REST API to start our programmability journey. Spark is a collaboration tool that allows people to chat and share files, plus other capabilities.
 
@@ -35,6 +31,7 @@ You need to set up a Spark developer account in order to explore the Spark REST 
 3.  Log in with your new credentials and click on the member icon located on the top right corner of the page and click on the 'Copy' button to copy your Access Token.
 
 ![Spark developer key](../imagenes/REST-17.png)
+![Spark developer key](../imagenes/webexlogin.png)
 
 The token allows you to make Spark API calls.
 

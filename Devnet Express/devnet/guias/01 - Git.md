@@ -5,8 +5,9 @@ _Fuentes:_
 - [Cisco Git Lab](https://learninglabs.cisco.com/lab/git-intro/step/1)
 - [Instalación de Git](https://git-scm.com/book/es/v2/Inicio---Sobre-el-Control-de-Versiones-Instalaci%C3%B3n-de-Git)\*
 - [What a branch is](https://git-scm.com/book/en/v1/Git-Branching-What-a-Branch-Is)
-- [Git reference](http://gitref.org/basic/)
+- [Git reference](https://git-scm.com/docs)
 - [What is a git "snapshot"](http://stackoverflow.com/questions/4964099/what-is-a-git-snapshot)
+- [O'reilly](https://learning.oreilly.com/library/view/cisco-certified-devnet/9780136677314/ch02.xhtml#ch02lev1sec6)
 
 ## Sistema de control de versiones.
 
@@ -19,7 +20,22 @@ Los sistemas de control de versiones de archivo existen desde la invención del 
 - Brindar herramientas para encontrar y solucionar bugs dentro del código.
 - Etc.
 
-`git` es el sistema de control de versiones más popular en el mundo, desarrollado por Linus Torvalds, quien es el el fundador del kernel de linux. Es importante no confundir `git` con "Github". El último es una compania popular que utiliza el protocolo `git` para compartir bases de codigo entre múltiples usuarios, brindando herramientas adicionales para construir comunidades en torno al codigo.
+`Git` es el sistema de control de versiones más popular en el mundo, desarrollado por Linus Torvalds, fundador del kernel de linux.
+Se creó como  alternativa al sistema SCM BitKeeper, cuando el propietario decidió no permitir el uso gratuito del sistema para el desarrollo del kernel de Linux. Sin opciones de código abierto existentes que satisficieran sus necesidades, Torvalds creó su propio sistema de control de versiones distribuido y lo llamó Git.
+ 
+Git es un sistema de control de versiones distribuido creado teniendo en cuenta la escalabilidad. Utiliza una estructura arbolescente en ramas (branch) milar a un filesystem. 
+
+Git realiza un seguimiento de tres estructuras principales:
+
+- Espacio de trabajo local: aquí es donde almacena archivos de código fuente, binarios, imágenes, documentación y cualquier otra cosa que necesite.
+
+- Área de Staging: Esta es un área de almacenamiento intermedia para sincronizar elementos (cambios y elementos nuevos).
+
+- Repositorio principal o local: aquí es donde almacena todos los elementos confirmados(con commit).
+
+![](https://github.com/conapps/Devops-101/blob/master/Devnet%20Express/devnet/imagenes/GIT-wf.jpg)
+
+Es importante no confundir `git` con "Github". El último es una compania popular que utiliza el protocolo `git` para compartir bases de codigo entre múltiples usuarios, brindando herramientas adicionales para construir comunidades en torno al codigo.
 
 ## Instalación de Git
 
@@ -40,11 +56,10 @@ También se puede compilar directamente a partir del codigo fuente.
 apt-get install libcurl4-gnutls-dev libexpat1-dev gettext libz-dev libssl-dev wget
 
 // Luego descargamos la versión más reciente (2.11.0 al día de redacción de este texto).
-wget https://www.kernel.org/pub/software/scm/git/git-2.11.0.tar.xz
-
+wget https://www.kernel.org/pub/software/scm/git/git-2.34.1.tar.gz 
 // Por último compilamos e instalamos el software
-tar -zxf git-2.0.0.tar.gz
-cd git-2.0.0
+tar -zxf git-2.34.1.tar.gz 
+cd git-2.34.1
 make configure
 ./configure --prefix=/usr
 make all doc info
@@ -94,10 +109,7 @@ Si revisamos el contenido de la carpeta de nuestro proyecto, vamos a ver que `gi
 
 ```
 $ ls -a
-total 1M
-drwxrwxr-x  3 user user 1M ene 24 10:25 .
-drwxr-xr-x 22 user root 1M ene 24 10:25 ..
-drwxrwxr-x  7 user user 1M ene 24 10:25 .git
+.  ..  .git
 ```
 
 Todas las interacciones con `git` serán a través de la linea de comandos. Nunca vamos a tener que realizar ninguna modificación a los archivos encontrados dentro de la carpeta `.git`. Podemos olvidarnos de la existencia de la misma y seguir adelante.
