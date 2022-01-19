@@ -1,12 +1,12 @@
 # Ansible
 
-_Fecha: 2018-08-04_
+*Fecha: 2018-08 | Actualizado: 2022-02*
 
-## Notas
+## Introducción
 
 Durante los últimos años la forma con la que configuramos la infraestructura y las aplicaciones que conforman nuestro sistema han ido cambiando. Con el tiempo hemos ido automatizando los procesos de configuración, y simplificando la forma en la que interactuamos con los dispositivos. Pasamos de escribir la configuración de todos los componentes de forma manual, a automatizar las mismas tareas a través de scripts. Hoy, hay un nuevo paradigma de automatización se ha empezado a utilizar conocido como `Infrastructure as Code` o `IaaS`.
 
-![Desarrollo de la administración de Infraestrcutura](../imagenes/ansible_001.png)
+![Desarrollo de la administración de Infraestrcutura](./imagenes/ansible_001.png)
 
 La idea es describir de forma declarativa mi sistema en funcionamiento, para que luego otro proceso independiente sigua esta especificación y aplique las modificaciones necesarias para que todos los elementos involucrados reflejen esta descripción.
 
@@ -39,7 +39,7 @@ Ansible esta escrito en su totalidad en `python 2.7`  y esta realizando la trans
 
 A diferencia de otros sistemas, Ansible no necesita de un cliente instalado en los hosts que va a administrar. Realiza todas las tareas a través de `SSH`, `WinRM`, o algún otro método configurado por el usuario. Esta forma de interactuar con los dispositivos finales, permite a Ansible trabajar en base a un modelo `push` en vez de un modelo `pull`.
 
-![Push vs Pull](../imagenes/ansible_002.svg)
+![Push vs Pull](./imagenes/ansible_002.svg)
 
 _OBS: El servidor de control tiene que poder llegar a todos los componentes que va a administrar. Esto no debería ser un problema si se cuenta con una red de management._
 
@@ -64,7 +64,7 @@ Como mencionamos anteriormente, bajo el paradigma de IaaC debemos dejar de pensa
 
 Un ejemplo un poco burdo es el de la construcción de un edificio. El arquitecto diseña un plano (blueprint) del edificio, indicando como debería verse el resultado final. Luego se lo pasa al constructor, junto con una guía de lo **que** se debe realizar. A partir de ahí, es responsabilidad del constructor en tomar esta impronta y construir el edificio.
 
-![Diagrama de IaaC](../imagenes/ansible_003.svg)
+![Diagrama de IaaC](./imagenes/ansible_003.svg)
 
 Una de las ventajas que nos brinda el trabajar bajo este paradigma es que podemos aprovechar las herramientas de control de versiones y metodologías de programación probadas en el mercado en los últimos años. Podemos contar con múltiples versiones de configuración de nuestros sistemas, mantener un historial de todos los cambios realizados, y volver atrás en el tiempo luego de ejecutar un cambio.
 
@@ -82,7 +82,7 @@ Otra de las ideas importantes que plantea Ansible es el hecho de mantener los da
 
 Por ejemplo, podemos crear una tarea que levante un servidor de Apache publicado en un determinado puerto, bajo un determinado usuario, cuyos logs serán almacenados en una determinada ubicación. Luego, creamos tres perfiles con la información de configuración de tres servidores distintos, con valores independientes de `user`, `port`, y directorio de `logs`.  Podemos entonces re-utilizar la misma tarea de creación de servidor Apache con estos tres perfiles, para crear tres servidores distintos.
 
-![Servidores Apache con múltiples configuraciones](../imagenes/ansible_004.svg)
+![Servidores Apache con múltiples configuraciones](./imagenes/ansible_004.svg)
 
 **Idempotente**
 
@@ -90,11 +90,11 @@ Por ejemplo, podemos crear una tarea que levante un servidor de Apache publicado
 
 Cada vez que ejecutemos una acción de Ansible, primero va a verificar el estado actual del sistema a modificar con el estado deseado. **Solamente si existen diferencias entre los estados se termina realizando una acción.**
 
-![Idempotente](../imagenes/ansible_005.svg)
+![Idempotente](./imagenes/ansible_005.svg)
 
 Dependiendo del estado del sistema con que vamos a interactuar, es la acción que terminará realizando Ansible sobre el mismo para llevarlo al estado deseado.
 
-![Acciones según código](../imagenes/ansible_006.svg)
+![Acciones según código](./imagenes/ansible_006.svg)
 
 _OBS: Puede ser necesario que tenga que realizar más de una acción para conseguir el resultado deseado. Además, **NO** todos los módulos cumplen con esta propiedad, en partícular los módulos de networking._
 
@@ -102,7 +102,7 @@ _OBS: Puede ser necesario que tenga que realizar más de una acción para conseg
 
 Supongamos que estamos trabajando sobre una arquitectura tradicional de una aplicación web.
 
-![Estructura de una Aplicación Web](../imagenes/ansible_007.svg)
+![Estructura de una Aplicación Web](./imagenes/ansible_007.svg)
 
 Ahora, necesitamos identifica que necesitamos para que esta infraestructura funcione.
 
@@ -119,7 +119,7 @@ Ahora, necesitamos identifica que necesitamos para que esta infraestructura func
   - `service`
 - ¿Que propiedades debo configurar en cada tarea?
 
-![Propiedades por tarea](../imagenes/ansible_008.svg)
+![Propiedades por tarea](./imagenes/ansible_008.svg)
 
 Cada uno de estos módulos consumira distintas variables para cumplir con la tarea indicada.
 
@@ -129,19 +129,19 @@ Siguiendo las mejores prácticas de Ansible, conviene que separemos las variable
 
 La combinación de las tareas, las variables, y los archivos los podemos englobar en una única estructura de orden superior conocido como un rol o `role`. El mismo presupone un cierto orden de carpetas para almacenar todos estos elementos.
 
-![Rule](../imagenes/ansible_009.svg)
+![Rule](./imagenes/ansible_009.svg)
 
 Idealmente, cada acción contará con uno o más roles que se le aplicarán a cada host para configurarlo.
 
 Por ejemplo, podríamos construir la siguiente estructura de carpetas para ejecutar las acciones identificadas anteriormente.
 
-![Roles](../imagenes/ansible_010.svg)
+![Roles](./imagenes/ansible_010.svg)
 
 Ahora que tenemos la lista de roles que contienen todas las configuraciones de nuestros servicios, tenemos que construir la lista de hosts donde los implementaremos. En Ansible, creamos inventarios donde almacenamos la lista de nodos con los cuales queremos interactuar. El sistema de inventarios de Ansible es muy potente. Nos permite crear todo tipo de grupos de equipos, y configurar variables especifica para cada nodo o grupo de nodo. Hasta podemos utilizar inventarios dínamicos, que cumplan con una determinada interface para resolver la lista de nodos y sus variables.
 
 Por ultimo, la union de hosts con las tareas o los roles los definimos en un `playbook`.  Los `playbooks` cuentan con múltiples `plays` que vinculan las tareas a realizar con los equipos correspondientes. Cada una de ellas cuenta con configuraciones adicionales que cambian el comportamiento del `play`.
 
-![Playbook](../imagenes/ansible_011.svg)
+![Playbook](./imagenes/ansible_011.svg)
 
 Luego ejecutaremos esta `playbook` utilizando Ansible. El sistema comenzara recabando datos de los hosts sobre los que debe operar, y luego pasara a ejecutar todos los `plays` de forma secuencial. Ansible decidirá al momento de ejecutar cada rol, las tareas que debe realizar para conseguir el estado desado. En caso de que se le proveea una lista de hosts sobre los cuales Ansible deba trabajar, Ansible realizará las configuraciones de forma paralela en todos los hosts.
 
@@ -165,7 +165,7 @@ Ansible es capaz de tomar hosts de múltiples inventarios al mismo tiempo, y pue
 
 El laboratorio consiste en un set contenedores que simularán una granja de servidores. Los mismos correrán en una maquina virtual en la nube de AWS. Las indicaciones para conectarse a su maquina virtual serán entregadas durante el workshop.
 
-![Diagrama de Lab en Docker](../imagenes/ansible_012.png)
+![Diagrama de Lab en Docker](./imagenes/ansible_012.png)
 
 Una vez conectados a su VM, debemos levantar todos los contenedores, y luego debemos pasarnos al contenedor `master` desde donde correremos todos los comandos de Ansible. Los pasos a realizar son los siguientes:
 
@@ -801,7 +801,7 @@ Nosotros solamente nos concentraremos en los módulos para IOS.
 
 ### DEMO Lab #3 - Configurar el ambiente de desarrollo
 
-![Diagrama de Lab](../imagenes/ansible_013.png)
+![Diagrama de Lab](./imagenes/ansible_013.png)
 
 Cada Pod cuenta con 3 routers configurados como Hub & Spoke. El Hub, se encuentra en la red de `management` y es el único que puede ser accedido a través de Internet, aunque se recomienda acceder a el desde la maquina de control a través de la IP privada `10.X.254.254`. Los demás se encuentran en redes privadas, y conseguiremos acceder a ellos a medida que avanzamos con el laboratorio. 
 
