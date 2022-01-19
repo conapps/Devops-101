@@ -2391,17 +2391,7 @@ _OBS: Como desafío adicional, cree un nuevo `role` que contenga las tareas nece
 
 ---
 
-<div style="text-align: right"> [siguiente>](https://github.com/conapps/Devops-101/blob/master/Ansible-101/02_awx.md)</div>
----
-
-
-
-
-
-
-
-
-
+[Siguiente >](https://docs.ansible.com/ansible/2.9/modules/modules_by_category.html)
 
 
 
