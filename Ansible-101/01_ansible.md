@@ -54,7 +54,7 @@ Para interactuar con el sinfín de sistemas que existen en el mercado, Ansible d
 - Containers.
 - Etc.
 
-_OBS: [Link a módulos de `ansible`](https://docs.ansible.com/ansible/latest/modules/modules_by_category.html)._
+_OBS: [Link a módulos de `ansible`](https://docs.ansible.com/ansible/2.9/modules/modules_by_category.html)._
 
 Además, se pueden escribir módulos nuevos para utilizar contra sistemas que no estén en la lista, aunque vale la pena investigar si no existe al día de hoy un módulo en el repositorio de Ansible o en la comunidad que realice las mismas tareas (veremos `ansible-galaxy` más adelante que ayuda a encontrar estos módulos desarrollados por la comunidad).
 
@@ -2391,8 +2391,8 @@ _OBS: Como desafío adicional, cree un nuevo `role` que contenga las tareas nece
 
 ---
 
-
-
+<div style="text-align: right"> [siguiente>](https://github.com/conapps/Devops-101/blob/master/Ansible-101/02_awx.md)</div>
+---
 
 
 
