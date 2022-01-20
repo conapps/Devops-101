@@ -2,16 +2,21 @@
 _Fuentes:_
 
 - [Documentación oficial](https://docs.ansible.com/ansible_community.html)
+- [Pagina de redhat](https://www.redhat.com/en/resources/awx-and-ansible-tower-datasheet)
 
-Ansible Tower (la version open suource es  'AWX') es una solución con un fronted web para admiinstrar la ejecucion de Ansible. Está diseñado para ser el centro de todas las tareas de automatización de una organización y que estas puedan ser ejecutadas graficamente de forma interactiva ó programar su ejecución.
+Ansible Tower (la version open suource es  'AWX') es una solución con un fronted web para administrar la ejecución de Ansible. Está diseñado para ser el centro de todas las tareas de automatización de una organización y que estas puedan ser ejecutadas gráficamente de forma interactiva ó programar su ejecución.
  
+
 ## Dashboard 
 
-En el dashboad se puede ver un estado general de las organizcciones procyectos, host, etc.
+En el dashboad se puede ver un estado general de las organizaciones proyectos, host, etc.
+
+Se ve información general y total de equipos con ejecuciones fallidas.
+
 
 ## Usuarios y perfiles
 
-Son los usuarios que podran ejecutar las playbookm....
+Son los usuarios que podrán ejecutar las playbookm....
 
 
 ## Inventario
@@ -20,11 +25,23 @@ El inventario es el conjunto de host a los cuales vamos a ejecutar las playbooks
 
 ## Proyectos
 
-Es el proyecto donde se encuentan nuestras playbooks y roles, es necesario para luego crear los templates apartir de las playbooks
+Es el proyecto donde se encuentran nuestras playbooks y roles, es necesario para luego crear los templates a partir de las playbooks
 
 ## Templates
 
-El template es una planilla de configuracion asociada a un playbook, contiene la configuracion apra la ejecucion de la misma como credenciales necesarias, programacion de ejecucion, inventario a apicar, permismos de usuario, etc-
+El template es una plantilla de configuración asociada a un playbook, contiene la configuración para la ejecución de la misma como credenciales necesarias, programación de ejecución, inventario a aplicar, permisos de usuario, etc-
 
-En particular, es intereante el uso de encuestas, para la cual se pueden crear formualrios 
+En particular, es interesante el uso de encuestas, para la cual se pueden crear formularios 
+
+## Ejercicio #11
+
+Cree un proyecto con el ejercicio 9 y 10 e importe el inventario para correr las playbooks de estos ejercicios.
+
+
+## Ejercicio #12
+Genere templates con encuesta para ejecutar el ejerció 9 y 10 desde awx.
+
+Para el caso del ejerció 9, harcodee privilege en 15 y en la encuesta solicite el nombre usuario y contraseña(para esta usar un campo de contraseña para que no se muestre al ingresar).
+
+Para el caso del ejercicio 10, generar un formulario que permita ingresar el `room_name` y el `message`.
 

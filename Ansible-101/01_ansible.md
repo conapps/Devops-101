@@ -23,7 +23,7 @@ Existen muchas herramientas en el mercado que han intentado implementar este con
   - Heat
   - AWS Cloudformation
 
-Cualquiera de ellas son muy potentes en su área, pero pocio utiles en las demás. Ansible es una de las pocas herramientas que permite implementar estas mismas ideas pero en todas estas áreas de forma eficiente.
+Cualquiera de ellas son muy potentes en su área, pero poco utiles en las demás. Ansible es una de las pocas herramientas que permite implementar estas mismas ideas pero en todas estas áreas de forma eficiente.
 
 ### Historia
 
@@ -35,7 +35,7 @@ De a poco Ansible fue superando en popularidad a otras herramientas similares, l
 
 ### Propiedades
 
-Ansible esta escrito en su totalidad en `python 2.7`  y esta realizando la transición a `python 3.6`. Las configuraciones de todas las entidades de Ansible se realizan a través de archivos de texto, escritos en formato `YAML`. 
+Ansible esta escrito en su totalidad en `python`. Las configuraciones de todas las entidades de Ansible se realizan a través de archivos de texto, escritos en formato `YAML`. 
 
 A diferencia de otros sistemas, Ansible no necesita de un cliente instalado en los hosts que va a administrar. Realiza todas las tareas a través de `SSH`, `WinRM`, o algún otro método configurado por el usuario. Esta forma de interactuar con los dispositivos finales, permite a Ansible trabajar en base a un modelo `push` en vez de un modelo `pull`.
 
