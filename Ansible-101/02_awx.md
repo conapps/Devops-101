@@ -3,6 +3,7 @@ _Fuentes:_
 
 - [Documentación oficial](https://docs.ansible.com/ansible_community.html)
 - [Pagina de redhat](https://www.redhat.com/en/resources/awx-and-ansible-tower-datasheet)
+<!-- - [Usuarios oficial](https://docs.ansible.com/ansible-tower/latest/html/userguide/users.html) -->
 
 Ansible Tower (la version open suource es  'AWX') es una solución con un fronted web para administrar la ejecución de Ansible. Está diseñado para ser el centro de todas las tareas de automatización de una organización y que estas puedan ser ejecutadas gráficamente de forma interactiva ó programar su ejecución.
  
@@ -13,12 +14,6 @@ En el dashboad se puede ver un estado general de las organizaciones proyectos, h
 
 Se ve información general y total de equipos con ejecuciones fallidas.
 
-
-## Usuarios y perfiles
-
-Son los usuarios que podrán ejecutar las playbookm....
-
-
 ## Inventario
 
 El inventario es el conjunto de host a los cuales vamos a ejecutar las playbooks programadas, este puede dividirse en grupos para ejecutar en determinado conjunto de hosts.
@@ -27,11 +22,28 @@ El inventario es el conjunto de host a los cuales vamos a ejecutar las playbooks
 
 Es el proyecto donde se encuentran nuestras playbooks y roles, es necesario para luego crear los templates a partir de las playbooks
 
-## Templates
+## Templates/Plantillas
 
-El template es una plantilla de configuración asociada a un playbook, contiene la configuración para la ejecución de la misma como credenciales necesarias, programación de ejecución, inventario a aplicar, permisos de usuario, etc-
+El template es una plantilla de configuración asociada a un playbook, contiene la configuración para la ejecución de la misma como credenciales necesarias, programación de ejecución, inventario a aplicar, permisos de usuario, etc.
 
-En particular, es interesante el uso de encuestas, para la cual se pueden crear formularios 
+En particular, es interesante el uso de encuestas, para la cual se pueden crear formularios que generan interacción con el operador.
+
+## Usuarios y tipos
+
+Los usuarios que tienen acceso al frontend de Awx tanto para administrar el Awx como para ejeutar playbook a nivel de operador. 
+
+Los tipos son:
+
+- Normal: Tienen acceso de lectura y escritura limitado a los recursos (como inventario, proyectos y plantillas de trabajo) para los que se le han otorgado los roles y privilegios apropiados a ese usuario, por ejemplo, a nivel de template se agregan estos usuarios con el permiso que corresponde en el mismo(ejecutar, lectura,admin).
+
+- Auditor de sistema: Tienen solo permisos de lectura para todos los objetos del Awx.
+
+- Administrador de sistema(también conocido como superusuario): tiene todos los privilegios de administración, similar al usuario root de linux.
+
+
+<!-- ## Organizaciones
+
+Las organizaciones reprensentarian una orgnazación a administrar, para la cual se pueden asociar proyectos, usuarios, inventarios, plantillas etc. -->
 
 ## Ejercicio #11
 
