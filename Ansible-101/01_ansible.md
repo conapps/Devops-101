@@ -189,7 +189,7 @@ Verifiquen que tienen conexión con los siguientes hosts utilizando `ping`:
 
 ### DEMO Lab #2 - Crear un archivo de inventario
 
-Vamos a definir un nuevo archivo de inventario. Dentro de la carpeta `/home/ubuntu/ansible_lab/volume` vamos a crear un nuevo archivo llamado `inventory.yml`.
+Vamos a definir un nuevo archivo de inventario. Dentro de la carpeta `/home/ubuntu/ansible_lab/docker/volume` vamos a crear un nuevo archivo llamado `inventory.yml`.
 
 Los inventarios de Ansible pueden contener múltiples grupos, y cada host puede pertenecer a uno o más grupos. En general, se comienza identificando un grupo llamado `all`  al cual pertenecerán todos los hosts, y todos los demás grupos. 
 
@@ -261,13 +261,13 @@ Para probar que efectivamente tenemos acceso a los hosts definidos en el inventa
 Los comandos `ad-hoc` se llaman a través del flag `-m` seguidos del módulo que queremos utilizar, o a través del flag `-a` seguidos del comando que queremos lanzar en los hosts remotos.
 
 ```bash
-ansible -i hosts.yml all -m ping
+ansible -i inventory.yml all -m ping
 ```
 
 Utilizando el comando anterior podemos realizar un ping sobre todos los hosts detallados en el inventario.
 
 ```bash
-ansible -i hosts.yml all -a 'echo "Hello, World!"'
+ansible -i inventory.yml all -a 'echo "Hello, World!"'
 ```
 
 Es importante identificar las comillas que envuelven el comando que ejecutara ansible a través del flag `-a`, especialmente si se quieren utilizar variables de entorno dentro del comando (las comillas simples `'` no resuelven variables, solo la hacen las comillas dobles `"`). Otro punto a tener en cuenta es que el flag `-a` no soporta comandos concatenados con un pipe (`|`). Para hacer esto tenemos que utilizar el módulo `shell`.
@@ -304,7 +304,7 @@ _OBS: Verificar la configuración de inventario utilizando el módulo `ping`_.
 all:
   vars:
     ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
-    ansible_ssh_private_key_file: './docker/master_key'
+    ansible_ssh_private_key_file: './master_key'
   hosts:
     host01:
     host02:
@@ -467,17 +467,18 @@ Por ejemplo, si queremos generalizar una tarea para que se ejecute tanto en serv
 #      a la ejecución de las tareas.
 # ---
 - name: Ejemplo, instalar `jq` con `apt` en Ubuntu y `yum` en CentOS
+  hosts: localhost
   tasks:
     - name: Instalar `jq` en Ubuntu
       apt:
         name: jq
         update_cache: yes
-      when: ansible_distribution = Ubuntu
+      when: ansible_os_family == 'Debian'
     - name: Instalar `jq` en CentOS
       yum:
         name: jq
         state: latest
-      when: ansible_distribution = CentOS
+      when: ansible_os_family == 'RedHat'
 ```
 
 ### Loops
@@ -550,7 +551,7 @@ Para correr un `playbook` utilizamos la aplicación de linea de comandos `ansibl
 ansible-playbook -i inventory.yml tmp/playbook.yml
 ```
 
-Si queremos comprobar que la sintaxis de nuestro `playbook` no tiene errores podemos utilizar el flag `syntax-check`. Y, si queremos ver con más detalles las acciones que esta realizando Ansible para detectar errores, podemos correr el comando con el flag `--verbose`  levantado.
+Si queremos comprobar que la sintaxis de nuestro `playbook` no tiene errores podemos utilizar el flag `--syntax-check`. Y, si queremos ver con más detalles las acciones que esta realizando Ansible para detectar errores, podemos correr el comando con el flag `--verbose`  levantado.
 
 ### Ansible Config
 
@@ -569,9 +570,8 @@ Por defecto, Ansible buscara el archivo de configuración de la siguiente manera
 
 Nosotros recomendamos acompañar todos los proyectos de Ansible con un archivo de configuración `ansible.cfg` en la raiz del proyecto. De esta manera podemos saber exactamente que configuraciones estamos modificando.
 
-<details>
-	<summary>Reutilización de Playbooks</summary>
 ### Reutilización de `playbooks`
+TODO: REVISAR ESTA SECCION Ó QUITAR!!!
 
 Dada la forma de configuración que provee Ansible, es útil poder reutilizar el codigo de cada tarea o `playbook`. En Ansible hay tres formas de reutilizar codigo: `includes`, `import`, y `roles`. A continuación, mencionaremos como funcionan las tres, pero nos concentraremos en al utilización de roles.
 
@@ -602,7 +602,6 @@ Existen algunas limitaciones en el uso de `imports` e `include` que es important
 # three_tier_app.yml
 - import_playbook: webservers.yml
 ```
-</details>
 
 ---
 
@@ -657,19 +656,17 @@ Al menos uno de estos directorios debe existir dentro de la carpeta del rol, sin
 Dentro de los archivos `main.yml` podemos referencias otros archivos para simplificar su lectura. Esto es usual, por ejemplo, cuando se quiere que un rol sea capaz de interactuar con multiples sistemas operativos, los cuales pueden requerir de la realización de distintas tareas para cumplir con el mismo objetivo. En la documentación de Ansible se presenta el siguiente ejemplo para demostrar esta práctica:
 
 ```yaml
-# roles/example/tasks/main.yml
-- name: added in 2.4, previously you used 'include'
-  import_tasks: redhat.yml
-  when: ansible_os_platform|lower == 'redhat'
+# roles/apache2/tasks/main.yml
+- import_tasks: redhat.yml
+  when: ansible_os_family|lower == 'redhat'
 - import_tasks: debian.yml
-  when: ansible_os_platform|lower == 'debian'
-
-# roles/example/tasks/redhat.yml
+  when: ansible_os_family|lower == 'debian'
+# roles/apache2/tasks/redhat.yml
 - yum:
     name: "httpd"
     state: present
 
-# roles/example/tasks/debian.yml
+# roles/apache2/tasks/debian.yml
 - apt:
     name: "apache2"
     state: present
@@ -681,7 +678,30 @@ Una vez definido el rol, puede ser agregado a un `playbook` a través de la opci
 
 ### Ejercicio #4
 
-Cree un rol capaz de instalar `apache2` y otro capaz de instalar `sqlite3`. Luego cree un nuevo `playbook` que instale `apache2` en los servidores identificados como `app` e instale `sqlite3` en los servidores identificados como `db` utilizando los roles previamente creados.
+<!--
+EJERCICIO 4 Y 5 DUPLICADOS
+ Cree un rol capaz de instalar `apache2` y otro capaz de instalar `sqlite3`. Luego cree un nuevo `playbook` que instale `apache2` en los servidores identificados como `app` e instale `sqlite3` en los servidores identificados como `db` utilizando los roles previamente creados. -->
+
+Cree dos roles, uno llamado `apache2` y otro `sqlite3`, que instalen `apache` y `sqlite3` respectivamente. Luego, cree un `playbook` que aplique el rol `apache2` a los servidores del grupo `app` y el rol `sqlite3` a los servidores del grupo `db`.
+
+<details>
+	<summary>
+		Pista #1
+	</summary>
+	Recuerde que los roles deben ser crados dentro de la carpeta `/roles`.
+</details>
+<details>
+	<summary>
+		Pista #2
+	</summary>
+	Las carpetas activas dentro de los roles, cuentan con un archivo llamado `main.yml`.
+</details>
+<details>
+	<summary>
+		Pista #3
+	</summary>
+	Las tareas dentro del archivo `tasks/main.yml` se definen dentro de una lista.
+</details>
 
 <details>
     <summary>Solución</summary>
@@ -711,28 +731,7 @@ Por defecto, cuando indiquemos el rol solo por su nombre, Ansible buscara la car
 
 Los roles puedes consumir variables definidas dentro del `playbook` a través de la opción `vars`. Las variables definidas de esta manera sobreescribirán los valores por defecto que se hayan configurado dentro del rol.
 
-### Ejercicio #5
 
-Cree dos roles, uno llamado `apache2` y otro `sqlite3`, que instalen `apache` y `sqlite` respectivamente. Luego, cree un `playbook` que aplique el rol `apache2` a los servidores del grupo `app` y el rol `sqlite3` a los servidores del grupo `db`.
-
-<details>
-	<summary>
-		Pista #1
-	</summary>
-	Recuerde que los roles deben ser crados dentro de la carpeta `/roles`.
-</details>
-<details>
-	<summary>
-		Pista #2
-	</summary>
-	Las carpetas activas dentro de los roles, cuentan con un archivo llamado `main.yml`.
-</details>
-<details>
-	<summary>
-		Pista #3
-	</summary>
-	Las tareas dentro del archivo `tasks/main.yml` se definen dentro de una lista.
-</details>
 
 ---
 
@@ -877,7 +876,7 @@ Para simplificar la escritura de comandos en la consola, también vamos a crear 
 ```Ini
 [defaults]
 
-inventory = ./hosts.yml
+inventory = ./inventory.yml
 host_key_checking = False
 retry_files_enabled = False
 ```
