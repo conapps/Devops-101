@@ -735,8 +735,6 @@ Los roles puedes consumir variables definidas dentro del `playbook` a través de
 
 ---
 
-### 🚨🚨🚨 Solo de Referencia 🚨🚨🚨 
-
 ### Ansible galaxy
 
 [Ansibe galaxy](https://galaxy.ansible.com/) es un sitio gratuito mantenido por Red Hat que permite descargar roles desarrollados por la comunidad. Es una excelente forma de simplificar la configuración de nuestros `playbooks`. 
@@ -781,7 +779,6 @@ _OBS: para evitar problemas de permisos, configuren la opción `ansible_become` 
   </pre>
 </details>
 
-### 🚨🚨🚨 --- 🚨🚨🚨 
 ---
 
 ## Networking con Ansible
@@ -790,7 +787,7 @@ Como mencionamos antes, Ansible puede utilizarse para configurar más que servid
 
 ### Módulos de Networking de Ansible
 
-Dentro de la lista de modulos con los que cuenta Ansible para interactuar con otros sistemas, existe una categoría exclusiva para módulos de networking. Pueden encontrar la lista entera en [la siguiente ubicación](https://docs.ansible.com/ansible/devel/modules/list_of_network_modules.html).
+Dentro de la lista de modulos con los que cuenta Ansible para interactuar con otros sistemas, existe una categoría exclusiva para módulos de networking. Pueden encontrar la lista entera en [la siguiente ubicación](https://docs.ansible.com/ansible/2.9/modules/list_of_network_modules.html).
 
 La lista es muy extensa y contiene módulos para la mayoría de los vendors de Networking más importantes del mercado. Sin embargo, es posible que algún módulo en particular no exista y no este en la lista. En este caso, lo que podemos hacer es desarrollar nuestro proximo módulo, y si queremos, ofrecerlo luego al resto de la comunidad. Esta es una de las ventajas que tiene el software de código abierto.
 
@@ -809,9 +806,9 @@ Recomendamos que para los siguientes ejercicios abran más de una consola para a
 Desde el servidor de control podemos acceder a la consola del router principal por ssh:
 
 ```bash
-ssh -i .ssh/key_pair_X ec2-user@hub-X.labs.conatest.click
+ssh -i ~/.ssh/ansible101-podX-key.pem -o KexAlgorithms=diffie-hellman-group-exchange-sha1ec2-user@hub-X.labs.conatest.click
 ```
-
+TODO: REVISAR DNS
 _OBS: La `X` corresponde al número del pod que esta utilizando._
 
 Si todo funcionan ok debería entrar en la consola de configuración en modo `EXEC`. El prompt de bienvenida debería verse algo así.
@@ -827,7 +824,7 @@ La idea de este workshop es realizar las configuraciones de este equipo a travé
 Para poder establecer la conexión a través de Ansible con el router, tenemos que realizar algunos pasos previos. Comenzaremos por crear un nuevo directorio en el servidor de control.
 
 ```bash
-mkdir ~/net
+mkdir ~/net-lab
 ```
 
 Dentro de este directorio incluiremos todos los archivos necesarios para interactuar con los equipos de red. 
@@ -836,7 +833,7 @@ Empezamos configurando el inventario.
 
 ```yaml
 # ---
-# hosts.yml
+# inventory.yml
 #
 # Lista de equipos de Networking
 # ---
@@ -844,7 +841,7 @@ all:
   children:
     routers:
       hosts:
-        10.X.254.254:
+        10.X.254.238:
 ```
 
 La mayoría de los equipos de red no cuentan con una interfaz programática para interactuar con ellos. En general, solamente podemos configurarlos a través de una consola. Además, tampoco permiten correr scripts de python dentro de la caja, ejecutados a través de ssh, que es lo que realizamos con Ansible en los ejemplos anteriores. Por lo tanto, tenemos que indicarle a Ansible como debe interactuar con estos equipos. Comenzaremos por configurar algunas variables a aplicar a todos los dispositivos del inventario.
@@ -858,7 +855,7 @@ all:
         # Nombre de usuario
         ansible_user: ec2-user
         # Llave privada a utilizar
-        ansible_ssh_private_key_file: /home/ubuntu/.ssh/key_pair_X
+        ansible_ssh_private_key_file: /home/ubuntu/.ssh/ansible101-podX-key.pem
         # Sistema operativo a utilizar
         ansible_network_os: ios
         # Permitir elevación de permisos
@@ -904,14 +901,14 @@ all:
       children:
         hub:
           hosts:
-            10.1.254.254:
+            10.X.254.254:
         spokes:
           hosts:
-            10.1.201.253:
-            10.1.202.253:
+            10.X.201.253:
+            10.X.202.253:
   vars:
     ansible_user: ec2-user
-    ansible_ssh_private_key_file: /home/ubuntu/.ssh/key_pair_1
+    ansible_ssh_private_key_file: /home/ubuntu/.ssh/ansible101-podX-key.pem
     ansible_network_os: ios
     ansible_become: yes
     ansible_become_method: enable
