@@ -806,9 +806,9 @@ Recomendamos que para los siguientes ejercicios abran más de una consola para a
 Desde el servidor de control podemos acceder a la consola del router principal por ssh:
 
 ```bash
-ssh -i ~/.ssh/ansible101-podX-key.pem -o KexAlgorithms=diffie-hellman-group-exchange-sha1ec2-user@hub-X.labs.conatest.click
+ssh -i ~/.ssh/ansible101-podX-key.pem -o KexAlgorithms=diffie-hellman-group-exchange-sha1 ec2-user@ansible101-podX-hub-router.labs.conatest.click
 ```
-TODO: REVISAR DNS
+
 _OBS: La `X` corresponde al número del pod que esta utilizando._
 
 Si todo funcionan ok debería entrar en la consola de configuración en modo `EXEC`. El prompt de bienvenida debería verse algo así.
@@ -841,7 +841,7 @@ all:
   children:
     routers:
       hosts:
-        10.X.254.238:
+        10.X.254.254:
 ```
 
 La mayoría de los equipos de red no cuentan con una interfaz programática para interactuar con ellos. En general, solamente podemos configurarlos a través de una consola. Además, tampoco permiten correr scripts de python dentro de la caja, ejecutados a través de ssh, que es lo que realizamos con Ansible en los ejemplos anteriores. Por lo tanto, tenemos que indicarle a Ansible como debe interactuar con estos equipos. Comenzaremos por configurar algunas variables a aplicar a todos los dispositivos del inventario.
@@ -868,9 +868,9 @@ all:
         10.X.254.254:
 ```
 
-Para simplificar la escritura de comandos en la consola, también vamos a crear un archivo de configuración en la raíz del directorio `net`  llamado `ansible.cfg`. Las opciones detalladas dentro de este archivo reemplazarán las opciones generales de Ansible
+Para simplificar la escritura de comandos en la consola, también vamos a crear un archivo de configuración en la raíz del directorio `net-lab`  llamado `ansible.cfg`. Las opciones detalladas dentro de este archivo reemplazarán las opciones generales de Ansible
 
-```Ini
+```ansible.cfg
 [defaults]
 
 inventory = ./inventory.yml
