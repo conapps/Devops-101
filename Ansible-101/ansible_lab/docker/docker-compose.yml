@@ -13,7 +13,7 @@ services:
     command: ['/usr/sbin/sshd', '-D']
     volumes:
       - ./volume:/var/ans
-      - /home/ubuntu/.ssh:/root/./ssh
+      - /home/ubuntu/.ssh:/root/.ssh
   host01:
     links:
       - base
