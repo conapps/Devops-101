@@ -980,9 +980,8 @@ Cree un `playbook` que le permita modificar el `hostname` del `hub`, solo en el 
       ios_config:
         lines: 'hostname {{hostname}}'
       when: hostname is defined
-
-# inventory.yml
 # ---
+# inventory.yml
 all:
   children:
     routers:
@@ -1003,9 +1002,7 @@ all:
     ansible_become: yes
     ansible_become_method: enable
     ansible_connection: network_cli
-```
   </pre>
-      
 </details>
 
 ---
