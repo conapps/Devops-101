@@ -855,7 +855,7 @@ all:
         # Nombre de usuario
         ansible_user: ec2-user
         # Llave privada a utilizar
-        ansible_ssh_private_key_file: /home/ubuntu/.ssh/ansible101-podX-key.pem
+        ansible_ssh_private_key_file: ~/.ssh/ansible101-podX-key.pem
         # Sistema operativo a utilizar
         ansible_network_os: ios
         # Permitir elevación de permisos
@@ -908,7 +908,7 @@ all:
             10.X.202.253:
   vars:
     ansible_user: ec2-user
-    ansible_ssh_private_key_file: /home/ubuntu/.ssh/ansible101-podX-key.pem
+    ansible_ssh_private_key_file: ~/.ssh/ansible101-podX-key.pem
     ansible_network_os: ios
     ansible_become: yes
     ansible_become_method: enable
@@ -980,6 +980,32 @@ Cree un `playbook` que le permita modificar el `hostname` del `hub`, solo en el 
       ios_config:
         lines: 'hostname {{hostname}}'
       when: hostname is defined</pre>
+
+# inventory.yml
+# ---
+all:
+  children:
+    routers:
+      children:
+        hub:
+          vars:
+            hostname: nombre_host
+          hosts:
+            10.X.254.254:
+        spokes:
+          hosts:
+            10.X.201.253:
+            10.X.202.253:
+  vars:
+    ansible_user: ec2-user
+    ansible_ssh_private_key_file: ~/.ssh/ansible101-podX-key.pem
+    ansible_network_os: ios
+    ansible_become: yes
+    ansible_become_method: enable
+    ansible_connection: network_cli
+```
+
+      
 </details>
 
 ---
