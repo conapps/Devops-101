@@ -1225,6 +1225,8 @@ Combinando condicionales y loops con distintos filtros podemos extraer cualquier
 
 ## Ejercicio #7
 
+TODO: Evaluar quitar este ejercicio
+
 Escriba un `playbook` que permita almacenar la diferencia entre la `startup` y `running` config.
 
 _OBS: Recuerde correr el `playbook` con la opción `—diff`._
@@ -1566,21 +1568,18 @@ curl https://api.ciscospark.com/v1/messages -X POST -H "Authorization:Bearer <SU
 ```
 
 curl --location --request POST 'https://api.ciscospark.com/v1/messages' \
---header 'Authorization: Bearer TOKENCLASA' \
+--header 'Authorization: Bearer <SU_TOKEN>' \
 --header 'Content-Type: application/json' \
 --data-raw '{
-  "roomId" : "IDROOMCURSO",
+  "roomId" : "<ROOMID_CLASE>",
   "text" : "Prueba de Mesanje"
 }'
 
 ```
 
-
 El cual lo  que hace es enviarle un mensaje al grupo de Webex Teams.
 
-
-
-A su vez, aprovecharemos este momento para explicar como podemos encriptar nuestras credenciales de acceso dentro de los `playbooks` de Ansible utilizando `ansible-vault`. 
+A su vez, aprovecharemos este momento para explicar como podemos encriptar nuestras credenciales de acceso dentro de los `playbooks` de Ansible utilizando `ansible-vault`.
 
 Para no dejar registrado en texto plano nuestro token, vamos a utilizar `ansible-vault` para encriptarlo.  Comenzamos editando la configuración de Ansible en nuestro entorno. En el archivo `ansible.cfg` le indicaremos a Ansible donde puede encontrar la contraseña utilizada para encriptar.
 
@@ -1631,8 +1630,8 @@ Ahora escribiremos el comando de prueba ofrecido en la página de Webex Teams co
 # Archivo que almacena las variables para comunicarse con
 # Webex Teams.
 # ---
-webes_teams_token: <SU_TOKEN>
-roomId: Y2lzY29zcGFyazovL3VzL1BFT1BMRS83MjJiYjI3MS1kN2NhLTRiY2UtYTllMy00NzFlNDQxMmZhNzc
+webex_teams_token: <SU_TOKEN>
+roomId: <ROOMID_CLASE>
 ```
 
 El `playbook` puede implementarse de la siguiente manera.
@@ -1676,7 +1675,7 @@ ansible-playbook hello_api.yml
 ---
 
 ## Ejercicio #10
-
+TODO: Evaluar quitar este ejercicio
 Cree un `playbook` que consuma dos variables:
 
 - `room_name` 
