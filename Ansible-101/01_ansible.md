@@ -1289,14 +1289,13 @@ _OBS: Recuerde correr el `playbook` con la opción `—diff`._
       difference: "{{ after | difference(before) }}"
   - name: Configuramos el nombre del reporte
     set_fact:
-      report_name: "{{hostname | default(ansible_hostname)}} - Running Config VS. Startup Config Diff"
+      report_name: "{{hostname | default(ansible_net_hostname)}} - Running Config VS. Startup Config Diff"
   - name: 'Guardamos la diferencia en un archivo'
     lineinfile:
       create: yes
       state: present
-      path: "./diffs/{{hostname | default(ansible_hostname)}}_{{ ansible_date_time.epoch }}_diff.md"
-      line: "{{ difference }}"
-	</pre>
+      path: "./diffs/{{hostname | default(ansible_net_hostname)}}_{{lookup('pipe','date +%Y_%m_%d_%H_%M_%S')}}_diff.md"
+      line: "{{ difference }}"</pre>
 </details>
 
 ---
@@ -1402,7 +1401,7 @@ roles
     <summary>Solución</summary>
     <pre>
 # ---
-# ./configure_interfaces/tasks/main.yml
+# ./roles/configure_interfaces/tasks/main.yml
 #
 # Tareas para configurar la interfaz de un equipo.
 # ---
@@ -1436,7 +1435,7 @@ all:
           hosts:
             10.X.254.254:
               hostname: hub
-              interfacecs:
+              interfaces:
                 - interface: GigabitEthernet1
                   ip_address: 10.X.254.254
                   netmask: 255.255.255.0
@@ -1532,7 +1531,6 @@ Construya un `playbook` que le permita crear un usuario en todos los routers con
         privilege: 15
         state: present
         update_password: always
-        nopassword: no
     </pre>
 </details>
 
@@ -1554,27 +1552,33 @@ Crearemos un `playbook` que interactuara con la API de Webex Teams. Pueden encon
 
 [https://developer.webex.com/](https://developer.webex.com/)
 
-Lo primero que debemos obtener de esta pagina es nuestro token de desarrollador para interactuar con la API. Se encuentra haciendo click en el [link de la documentación](https://developer.webex.com/getting-started.html), y dentro de la sección de autenticación. Es un string alfanumérico similar a este:
+Lo primero que debemos obtener de esta pagina es nuestro token de desarrollador para interactuar con la API. Se encuentra haciendo click en el [link de la documentación](https://developer.webex.com/docs/getting-started), y dentro de la sección de autenticación. Es un string alfanumérico similar a este:
 
 ```
-ODRhNzJjMDgtZWFhNS00MmNlLWF0NGYtN2U5NzIwNGJmNDRmZDA2MTIzZGEtOGEy
+OGRjMWFlNDUtNjViYi00YTJkLWIxZDMtZDVmMTg0NTQ1MDE3YzczYjM2MjMtMWM3_P0A1_ca15b8c5-ef01-466c-97b6-f9a8331887e4
 ```
 
 En la pagina de la documentación, se nos presentara el siguiente ejemplo de como utilizar la API utilizando `curl`. La idea ahora será reescribir este comando utilizando Ansible:
 
-```
+<!-- ```
 curl https://api.ciscospark.com/v1/messages -X POST -H "Authorization:Bearer <SU_TOKEN>" --data "toPersonId=Y2lzY29zcGFyazovL3VzL1BFT1BMRS83MjJiYjI3MS1kN2NhLTRiY2UtYTllMy00NzFlNDQxMmZhNzc" --data "text=Hi%20Sparky"
+``` -->
 ```
 
-El cual lo único que hace es enviarle un mensaje a un usuario ficticio de Webex Teams llamado Sparky.
+curl --location --request POST 'https://api.ciscospark.com/v1/messages' \
+--header 'Authorization: Bearer TOKENCLASA' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+  "roomId" : "IDROOMCURSO",
+  "text" : "Prueba de Mesanje"
+}'
 
 ```
-Y2lzY29zcGFyazovL3VzL1BFT1BMRS83MjJiYjI3MS1kN2NhLTRiY2UtYTllMy00NzFlNDQxMmZhNzc
-```
 
----
 
-### 🚨🚨🚨 Solo de Referencia 🚨🚨🚨 
+El cual lo  que hace es enviarle un mensaje al grupo de Webex Teams.
+
+
 
 A su vez, aprovecharemos este momento para explicar como podemos encriptar nuestras credenciales de acceso dentro de los `playbooks` de Ansible utilizando `ansible-vault`. 
 
@@ -1616,8 +1620,6 @@ webex_teams_token: <SU TOKEN>
 
 Si abrimos el archivo `secret/vars.yml` en un editor de texto veremos que su contenido este encriptado usando AES256. En caso de querer editarlo usamos el comando `ansible-vault edit secret/vars.yml`. Agregaremos el ID de Sparky en este mismo archivo por conveniencia.
 
-### 🚨🚨🚨 --- 🚨🚨🚨 
-
 ---
 
 Ahora escribiremos el comando de prueba ofrecido en la página de Webex Teams con Ansible, utilizando nuestro token. Las variables las configuraremos en un archivo llamado `secret/vars.yml`.
@@ -1630,16 +1632,16 @@ Ahora escribiremos el comando de prueba ofrecido en la página de Webex Teams co
 # Webex Teams.
 # ---
 webes_teams_token: <SU_TOKEN>
-person_id: Y2lzY29zcGFyazovL3VzL1BFT1BMRS83MjJiYjI3MS1kN2NhLTRiY2UtYTllMy00NzFlNDQxMmZhNzc
+roomId: Y2lzY29zcGFyazovL3VzL1BFT1BMRS83MjJiYjI3MS1kN2NhLTRiY2UtYTllMy00NzFlNDQxMmZhNzc
 ```
 
 El `playbook` puede implementarse de la siguiente manera.
 
 ```yaml
 # ---
-# hello_sparky.yml
+# hello_api.yml
 #
-# Envía un mensaje a Sparky utilizando la API de Webex Teams
+# Envía un mensaje utilizando la API de Webex Teams
 # ---
 
 - name: Ejemplo de uso del modulo `uri`.
@@ -1656,8 +1658,8 @@ El `playbook` puede implementarse de la siguiente manera.
         headers:
           Authorization: 'Bearer {{webex_teams_token}}'
         body:
-          toPersonId: '{{ person_id }}'
-          text: 'Hola Sparky!'
+          roomId: '{{ roomId }}'
+          text: 'Hola api!'
         body_format: json
         return_content: yes
       register: output
@@ -1668,7 +1670,7 @@ El `playbook` puede implementarse de la siguiente manera.
 Tras correr el `playbook`  de forma exitosa, veremos como aparece nuestro mensaje en nuestra configuración con Sparky.
 
 ```bash
-ansible-playbook hello_sparky.yml
+ansible-playbook hello_api.yml
 ```
 
 ---
