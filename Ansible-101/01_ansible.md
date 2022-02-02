@@ -1112,7 +1112,7 @@ Veamos como podemos manipular un documento JSON utilizando todos estos component
 Primero, copiemos el archivo `example.json` de la carpeta `/home/ubuntu/ansible_lab/net/json/example.json` al directorio donde estamos trabajando.
 
 ```bash
-cp /home/ubuntu/ansible_lab/net/json/example.json example.json
+cp ~/ansible_lab/net/json/example.json example.json
 ```
 
 Luego, creamos un nuevo `playbook` con la siguiente información:
@@ -1261,8 +1261,9 @@ _OBS: Recuerde correr el `playbook` con la opción `—diff`._
 
 <details>
 	<summary>Solución</summary>
-	<pre>
-	# ---
+  <pre class="language-yaml" lang="yaml">
+
+# ---
 # running_vs_startup_diff.yml
 #
 # Crea un archivo donde se almacenan las diferencias entre la Running config y
