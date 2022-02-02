@@ -726,7 +726,7 @@ Por defecto, cuando indiquemos el rol solo por su nombre, Ansible buscara la car
 ```yaml
 - hosts: webservers
   roles:
-    - role: /home/root/ansible/roles/apache2
+    - role: ~/ansible/roles/apache2
 ```
 
 Los roles puedes consumir variables definidas dentro del `playbook` a través de la opción `vars`. Las variables definidas de esta manera sobreescribirán los valores por defecto que se hayan configurado dentro del rol.
@@ -1109,7 +1109,7 @@ Tampoco indicaremos en este curso como desarrollar nuestros propios plugins, sim
 
 Veamos como podemos manipular un documento JSON utilizando todos estos componentes.
 
-Primero, copiemos el archivo `example.json` de la carpeta `/home/ubuntu/ansible_lab/net/json/example.json` al directorio donde estamos trabajando.
+Primero, copiemos el archivo `example.json` de la carpeta `~/ansible_lab/net/json/example.json` al directorio donde estamos trabajando.
 
 ```bash
 cp ~/ansible_lab/net/json/example.json example.json
@@ -1486,7 +1486,8 @@ all:
         ansible_user: ubuntu
         ansible_python_interpreter: /usr/bin/python3
   vars:
-    ansible_ssh_private_key_file: /home/ubuntu/.ssh/key_pair_X
+    ansible_ssh_private_key_file: ~/.ssh/ansible101-podX-key.pem
+
 
 ```
 
