@@ -1774,10 +1774,9 @@ module: ietf-interfaces
 
 Podemos construir una `url` de la siguiente manera:
 
-`https://ansible101-podX-hub-router.labs.conatest.click/restconf/data/ietf-interface:interfaces`
-
+`https://ansible101-podX-hub-router.labs.conatest.click/restconf/data/ietf-interfaces:interfaces-state`
 Y si queremos ver una interface en particular:
-
+TODO: No funcina esta segunda url y no encontre como ver la interfaz
 `https://ansible101-podX-hub-router.labs.conatest.click/restconf/data/ietf-interface:interface=<INTERFACE_NAME>`
 
 #### Prueba de funcionamiento
@@ -1817,11 +1816,11 @@ Verifiquemos que todos los equipos estén disponibles para responder a consultas
         output_filename: host-meta
 ```
 
-_OBS: Les recomendamos que copien el `role` `store_uri_output` del directorio `/home/ubuntu/ansible_lab/net`. El mismo les simplificara las tareas de visualizar las salidas de los comandos realizados a la interfaz de RESTCONF de los equipos._
+_OBS: Les recomendamos que copien el `role` `store_uri_output` del directorio `~/ansible_lab/net`. El mismo les simplificara las tareas de visualizar las salidas de los comandos realizados a la interfaz de RESTCONF de los equipos._
 
 ```bash
 mkdir roles
-cp -R /home/ubuntu/ansible_lab/net/roles/store_uri_output ./roles/store_uri_output
+cp -R ~/ansible_lab/net/roles/store_uri_output ./roles/store_uri_output
 ```
 
 El resultado anterior debería ser similar al siguiente:
@@ -1976,6 +1975,7 @@ container interfaces {
 ---
 
 ### Ejercicio #13
+TODO: Este ejercicio usa un rol para guardar que no funciona
 
 Cree un `playbook` que extraiga la información de ambos módulos, y los almacene en un mismo archivo, o en uno para cada módulo.
 
