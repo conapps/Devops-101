@@ -1516,7 +1516,8 @@ Construya un `playbook` que le permita crear un usuario en todos los routers con
 
 <details>
     <summary>Solución</summary>
-    <pre># ---
+      <pre class="language-yaml" lang="yaml">
+# ---
 # create_user.yml
 #
 # Crea un usuario conatel/conatel en todos los routers
@@ -1773,11 +1774,11 @@ module: ietf-interfaces
 
 Podemos construir una `url` de la siguiente manera:
 
-`https://hub-x.labs.conatest.click/restconf/data/ietf-interface:interfaces`
+`https://ansible101-podX-hub-router.labs.conatest.click/restconf/data/ietf-interface:interfaces`
 
 Y si queremos ver una interface en particular:
 
-`https://hub-x.labs.conatest.click/restconf/data/ietf-interface:interface=<INTERFACE_NAME>`
+`https://ansible101-podX-hub-router.labs.conatest.click/restconf/data/ietf-interface:interface=<INTERFACE_NAME>`
 
 #### Prueba de funcionamiento
 
@@ -1862,7 +1863,6 @@ Escriba un `playbook` que descargue todas las capabilities de cada equipo en un 
 
 ---
 
-### 🚨🚨🚨 Solo de Referencia 🚨🚨🚨 
 
 Cada equipo cuenta con una gran cantidad de `capabilities`. Podemos usar herramientas como `jq` (o el propio Ansible :D) para evaluar su resultado en la consola:
 
@@ -1913,7 +1913,7 @@ Escribir un `playbook` capaz de obtener una lista **filtrada** de `capabilities`
 
 <details>
 	<summary>Solución</summary>
-	<pre>
+      <pre class="language-yaml" lang="yaml">
 # filtered_capabilities.yml
 #
 # Obtiene las capabilities de todos los equipos filtradas segun el valor de la
@@ -1955,8 +1955,6 @@ Escribir un `playbook` capaz de obtener una lista **filtrada** de `capabilities`
       when: filter in item.name
 </details>
 
-### 🚨🚨🚨 --- 🚨🚨🚨 
-
 ---
 
 Por el momento vamos a trabajar con `Cisco-IOS-XE-interfaces-oper` e `ietf-interfaces` . Ambos módulos contienen información interesante sobre las interfaces de los equipos, sin embargo, presentan funcionalidades distintas. Por ejemplo, el primer módulo solo permite leer la información del equipo. Podemos identificar este comportamiento cuando analizamos la documentación del módulo y vemos que el único `container` que pública, cuenta con su opción `config` igual a `false`. El valor por defecto de esta opción es `true`. **Aquellos `containers` que no cuenten con esta opción en ` false` permiten la edición de sus datos.**
@@ -1985,7 +1983,7 @@ _OBS: Recuerde como se construían las URL en RESTCONF._
 
 <details>
 	<summary>Solución</summary>
-	<pre>
+      <pre class="language-yaml" lang="yaml">
 # ---
 # get_interface_modules.yml
 #
@@ -2016,7 +2014,7 @@ _OBS: Recuerde como se construían las URL en RESTCONF._
         - "ietf-interfaces:interfaces"
     - name: Almacena los resultados en un archivo de json
       include_role:
-        name: ../roles/store_uri_output
+        name: ./roles/store_uri_output
       vars:
         output_filename: '{{inventory_hostname}}_interface_modules'
 </pre>
@@ -2040,7 +2038,7 @@ Si vemos la salida del módulo `ietf` veremos algo así:
                 "type": "iana-if-type:ethernetCsmacd"
             },
             {
-                "description": "ConexiC3n con Red Spoke1",
+                "description": "Conexión con Red Spoke1",
                 "enabled": true,
                 "ietf-ip:ipv4": {
                     "address": [
@@ -2055,7 +2053,7 @@ Si vemos la salida del módulo `ietf` veremos algo así:
                 "type": "iana-if-type:ethernetCsmacd"
             },
             {
-                "description": "ConexiC3n con Red Spoke1",
+                "description": "Conexión con Red Spoke1",
                 "enabled": true,
                 "ietf-ip:ipv4": {
                     "address": [
@@ -2189,7 +2187,7 @@ Llamaremos luego a este rol utilizando este `playbook`:
   connection: local
   gather_facts: no
   roles:
-    - role: ../roles/restconf_interfaces
+    - role: ./roles/restconf_interfaces
   tasks:
     - name: Debug
       debug:
@@ -2201,7 +2199,7 @@ _OBS: Recuerde que ya creamos un `role` similar utilizando el módulo `ios_confi
 
 <details>
 	<summary>Solución</summary>
-	<pre>
+  <pre class="language-yaml" lang="yaml">
 # ---
 # roles/restconf_interfaces/tasks/main.yml
 #
@@ -2395,7 +2393,7 @@ Con esta información, estamos en condiciones de crear un `playbook` capaz de mo
 ---
 
 ### Ejercicio #15
-
+TODO: Evaluar quitar
 Cree un nuevo `playbook` capaz de configurar rutas estáticas utilizando el módulo `Cisco-IOS-XE-native`. El mismo consumiría una variable llamada `routes` que contendrá un objeto con una llave llamada `static`, la cual incluirá una lista de objetos representando una ruta estática. Las opciones de este objeto son:
 
 ```yaml
