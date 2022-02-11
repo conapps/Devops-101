@@ -15,12 +15,12 @@ NETWORK ID          NAME                DRIVER
 cf03ee007fb4        host                host
 ```
 
-Los contenedores pueden conectarse a estas redes al momento de su creación con la opción ```--network```.
+Los contenedores pueden conectarse a estas redes al momento de su creación, mediante la opción ```--network```.
 Si no especificamos ninguna opción, Docker conecta los contenedores a la red ```bridge``` por defecto.
-Estas tres redes utilizan drivers distintos y por tanto tienen comportamientos también distintos, a continuación veremos una breve explicación de cada una de ellas:
+Estas tres redes utilizan drivers diferentes y por tanto tienen comportamientos distintos, a continuación veremos una breve explicación de cada una de ellas:
 
 ### bridge
-La red ```bridge``` representa a la interface ```docker0``` en el host. Básicamente, al instalar Docker, se crea en el host una interface ```docker0``` que "mira" hacia los contenedores, se le asigna una dirección IP, y se la deja lista para que los contenedores que no definan ninguna red específica al momento de su creación se conecten a ella.
+La red ```bridge``` representa a la interface ```docker0``` en el host. Básicamente, al instalar Docker se crea en el host una interface de red ```docker0``` que "mira" hacia los contenedores, se le asigna una dirección IP, y se la deja lista para que los contenedores que no definan ninguna red específica al momento de su creación se conecten a ella.
 
 ```bash
 $ ifconfig
@@ -37,6 +37,7 @@ docker0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
 ```
 
 La red se llama ```bridge``` debido a que técnicamente es eso, un bridge, que interconecta en capa 2 a todos los contenedores que la utilizan, (y a la interface ```docker0``` del host). La interface ```docker0``` existe para que los contenedores conectados a la red ```bridge``` tengan conectividad con el exterior; esto se hace con un PAT utilizando la IP de dicha interface.
+Profundizaremos en este tipo de red un poco mas adelante.
 
 ### none
 La red tipo ```none``` básicamente deja al contenedor aislado del mundo.
@@ -61,6 +62,7 @@ lo        Link encap:Local Loopback
           RX bytes:0 (0.0 B)  TX bytes:0 (0.0 B)
 ```
 
+Como podemos ver, el contenedor se encuentra aislado y no tiene conectividad de red.
 
 ### host
 La red tipo ```host``` lo que hace es que el contenedor utiliza directamente el stack TCP/IP de la máquina host. Por lo que en lo que a red se refiere, el contenedor y el host son la misma cosa. Verfiquemos el funcionamiento de esta red con un ejercicio guiado.
