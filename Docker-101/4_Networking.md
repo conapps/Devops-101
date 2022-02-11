@@ -1,9 +1,6 @@
-| [<-- Volver](3_Storage.md) |
-
-[Siguiente -->](5_Docker-Compose.md) |
+| [<-- Volver](3_Storage.md) | [Siguiente -->](5_Docker-Compose.md) |
 
  
-
 ## Networking
 
 ### Introducción
@@ -537,6 +534,4 @@ $ docker run -d --rm --name prueba-web-server -p <ip-a-publicar>:80:2368 ghost
 
 
 
-| [<-- Volver](3_Storage.md) |
-
-[Siguiente -->](5_Docker-Compose.md) |
+| [<-- Volver](3_Storage.md) | [Siguiente -->](5_Docker-Compose.md) |
