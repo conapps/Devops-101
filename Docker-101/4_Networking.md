@@ -185,6 +185,7 @@ Notemos dentro de los campos del JSON retornado por el comando ```docker network
 4 - Comprobaremos ahora que los contenedores tienen conectividad IP entre si, con la interface ```docker0``` del host y con el mundo exterior.
 
 > **Nota-1:** se puede salir de la consola de un contenedor sin apagarlo con la secuencia de comandos ```ctl+p,ctl+q```
+> 
 > **Nota-2:** verficar además que no se puede resolver mediante DNS el nombre de los contenedores, en este caso ```c1```, ```c2``` y ```c3```
 
 
@@ -243,7 +244,7 @@ Repetir el procedimiento anterior para `c2` y `c3`.
 
 Adicional a las redes por defecto, ```bridge```, ```none``` y ```host```, que utilizan los drivers ```bridge```, ```null``` y ```host``` respectivamente, el usuario puede definir redes personalizadas utilizando no solo estos drivers sino otros que también están disponibles.
 Con esta funcionalidad se pueden armar topologías de red complejas y controlar de forma granular la conectividad entre containers.
-Veamos por ejemplo como podemos crear una un par de redes del tipo ```bridge``` y aislar los containers.
+Veamos por ejemplo como podemos crear un par de redes del tipo ```bridge``` y aislar los contenedores.
 
 #### Ejercicio 19
 
@@ -389,6 +390,7 @@ PING c2 (172.19.0.3) 56(84) bytes of data.
 --- c2 ping statistics ---
 2 packets transmitted, 2 received, 0% packet loss, time 1001ms
 rtt min/avg/max/mdev = 0.190/0.227/0.264/0.037 ms
+
 root@af8e9429257f:/# ping c3
 ping: unknown host c3
 root@af8e9429257f:/# ping 172.20.0.3
@@ -396,6 +398,7 @@ PING 172.20.0.3 (172.20.0.3) 56(84) bytes of data.
 ^C
 --- 172.20.0.3 ping statistics ---
 3 packets transmitted, 0 received, 100% packet loss, time 2030ms
+
 root@af8e9429257f:/# ping 8.8.8.8
 PING 8.8.8.8 (8.8.8.8) 56(84) bytes of data.
 64 bytes from 8.8.8.8: icmp_seq=1 ttl=51 time=258 ms
@@ -406,6 +409,7 @@ PING 8.8.8.8 (8.8.8.8) 56(84) bytes of data.
 3 packets transmitted, 3 received, 0% packet loss, time 2002ms
 rtt min/avg/max/mdev = 32.603/109.604/258.530/105.326 ms
 ```
+
 
 ```bash
 $ docker attach c3
@@ -418,13 +422,16 @@ PING c4 (172.20.0.3) 56(84) bytes of data.
 --- c4 ping statistics ---
 2 packets transmitted, 2 received, 0% packet loss, time 1005ms
 rtt min/avg/max/mdev = 0.142/0.162/0.183/0.024 ms
+
 root@0677541e82a7:/# ping c1
 ping: unknown host c1
+
 root@0677541e82a7:/# ping 172.19.0.2
 PING 172.19.0.2 (172.19.0.2) 56(84) bytes of data.
 ^C
 --- 172.19.0.2 ping statistics ---
 6 packets transmitted, 0 received, 100% packet loss, time 5114ms
+
 root@0677541e82a7:/# ping 8.8.8.8
 PING 8.8.8.8 (8.8.8.8) 56(84) bytes of data.
 64 bytes from 8.8.8.8: icmp_seq=1 ttl=51 time=59.4 ms
