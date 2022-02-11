@@ -1,5 +1,5 @@
 | [<-- Volver](20170801-Docker.md) |
-[Siguiente -->](20170815-Storage.md) |
+[Siguiente -->](3_Storage.md) |
 
 ## Imágenes y contenedores
 
@@ -473,4 +473,4 @@ La forma en que están estructurados los contenedores presenta un beneficio muy 
 ![alt text](Imagenes/sharing-layers.jpg "Varios contenedores utilizando una imagen")
 
 | [<-- Volver](20170801-Docker.md) |
-[Siguiente -->](20170815-Storage.md) |
+[Siguiente -->](3_Storage.md) |

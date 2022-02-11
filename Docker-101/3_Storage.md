@@ -1,5 +1,5 @@
-| [<-- Volver](20170803-Imagenes.md) |
-[Siguiente -->](20170807-Networking.md) |
+| [<-- Volver](2_Images.md) |
+[Siguiente -->](4_Networking.md) |
 
 ## Storage
 
@@ -375,5 +375,5 @@ helloWorldFromS3.txt
 
 Si aparece el archivo `helloWorldFromS3.txt` es porque todo está funcionando.
 
-| [<-- Volver](20170803-Imagenes.md) |
-[Siguiente -->](20170807-Networking.md) |
+| [<-- Volver](2_Images.md) |
+[Siguiente -->](4_Networking.md) |

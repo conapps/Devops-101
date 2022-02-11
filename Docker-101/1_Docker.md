@@ -10,10 +10,10 @@ _Fuentes:_
 ---
 
 - [Introducción](#introduccion)
-- [Imágenes y contenedores](20170803-Imagenes.md)
-- [Storage](20170815-Storage.md)
-- [Networking](20170807-Networking.md)
-- [Docker compose](20180815-Docker-Compose.md)
+- [Imágenes y contenedores](2_Images.md)
+- [Storage](3_Storage.md)
+- [Networking](4_Networking.md)
+- [Docker compose](5_Docker-Compose.md)
 
 ## Introduccion
 
@@ -233,7 +233,7 @@ Esta opción le indica a Docker que el contedor debe ser eliminado una vez que s
 
 ##### Opción `-p`
 
-Esta opción mapea un puerto del contenedor a un puerto del equipo host. Se utiliza cuando se necesita publicar externamente el servicio que proporciona el contenedor. Si por ejemplo tuvieramos un contenedor corriendo un servidor web esuchando en el puerto 8080 y quisieramos publicar dicho servicio en la máquina `host` utilizando el puerto 80, agregaríamos la opción `-p 80:8080`. Veremos la opción `-p` en mas detalle en la sección [Networking](20170807-Networking.md)
+Esta opción mapea un puerto del contenedor a un puerto del equipo host. Se utiliza cuando se necesita publicar externamente el servicio que proporciona el contenedor. Si por ejemplo tuvieramos un contenedor corriendo un servidor web esuchando en el puerto 8080 y quisieramos publicar dicho servicio en la máquina `host` utilizando el puerto 80, agregaríamos la opción `-p 80:8080`. Veremos la opción `-p` en mas detalle en la sección [Networking](4_Networking.md)
 
 ### Cómo listar los contenedores. `docker ps`
 
@@ -471,7 +471,7 @@ conatel/config-backup     <none>              a2186fa14acc        3 months ago  
 
 ```
 
-> **Nota:** estudiaremos las imágenes mas en profundidad el la sección [Imágenes y contenedores](20170803-Imagenes.md),
+> **Nota:** estudiaremos las imágenes mas en profundidad el la sección [Imágenes y contenedores](2_Images.md),
 
 ### Cómo borrar una imagen - `docker rmi`
 
@@ -525,4 +525,4 @@ Para finalizar, presentamos una lista de los requerimientos considerados necesar
 - Apagar el contenedor utilizando `docker stop` y verificar que el servicio ya no está publicado.
 - Encender el contenedor utilizando `docker start` y verificar que el servicio vuelve a estar online.
 
-[Siguiente-->](20170803-Imagenes.md)
+[Siguiente-->](2_Images.md)
