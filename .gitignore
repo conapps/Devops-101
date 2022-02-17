@@ -11,3 +11,5 @@ Contenedores/scripts/
 **/Cloud/aws/secret
 /Cloud/aws/cdk/node_modules
 .vscode/*
+.in
+.out
