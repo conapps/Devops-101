@@ -478,6 +478,29 @@ conatel/config-backup     <none>              a2186fa14acc        3 months ago  
 
 > **Nota:** estudiaremos las imágenes mas en profundidad el la sección [Imágenes y contenedores](2_Images.md),
 
+### Ejercicio 3
+
+Este ejercicio tiene como objetivo experimentar de primera mano la potencia de los contenedores a la hora de simplificar la puesta en producción de un servicio. Nos referimos mas concretamente al hecho de que una vez que la aplicación fue "contenerizada" tendremos la certeza absoluta que correrá sin problemas en cualquier plataforma que soporte Docker.
+
+Concretamente, el objetivo del ejercicio es poner en producción una aplicación, llamada Ghost, que permite registrarse y publicar Blogs al público en general. Esta plataforma ya fue "contenerizada" y su imagen está diponible en Dockerhub bajo el nombre `ghost`.
+
+Cuando corremos un contenedor a partir de dicha imagen este queda "escuchando" en el puerto 2368, pero para simplificar el acceso de los clientes a la aplicación, el `host` deberá estar escuchando en el puerto `80`.
+
+Para finalizar, presentamos una lista de los requerimientos considerados necesarios para dar por resuelto el ejercicio. Algunos ya fueron mencionados anteriormente, pero se dejan en la lista para facilitar la referencia:
+
+- La imagen a utilizar se llama `ghost.`
+- El contendor debe tener un nombre definido por el administrador.
+- El contenedor no debe ser eliminado al apagarse.
+- El servicio debe estar publicado al exterior en el puerto 80. (el puerto original es 2368)
+- El contenedor debe correr en segundo plano.
+- El comando a utilizar es el que viene por defecto con la imagen.
+
+#### Verificación:
+
+- Mediante un navegador acceder a http://servernumX.labs.conatest.click, se debería ver el servicio publicado.
+- Apagar el contenedor utilizando `docker stop` y verificar que el servicio ya no está publicado.
+- Encender el contenedor utilizando `docker start` y verificar que el servicio vuelve a estar online.
+
 ### Cómo borrar una imagen - `docker rmi`
 
 Anteriormente vimos como puede eliminarse un contenedor, pero ¿que sucede si además del contenedor quiero eliminar la copia local de la imagen de la cual proviene?
@@ -506,28 +529,5 @@ CONTAINER ID        IMAGE               COMMAND                  CREATED        
 $ docker rmi ghost --force
 b8fb2fac700b
 ```
-
-### Ejercicio 3
-
-Este ejercicio tiene como objetivo experimentar de primera mano la potencia de los contenedores a la hora de simplificar la puesta en producción de un servicio. Nos referimos mas concretamente al hecho de que una vez que la aplicación fue "contenerizada" tendremos la certeza absoluta que correrá sin problemas en cualquier plataforma que soporte Docker.
-
-Concretamente, el objetivo del ejercicio es poner en producción una aplicación, llamada Ghost, que permite registrarse y publicar Blogs al público en general. Esta plataforma ya fue "contenerizada" y su imagen está diponible en Dockerhub bajo el nombre `ghost`.
-
-Cuando corremos un contenedor a partir de dicha imagen este queda "escuchando" en el puerto 2368, pero para simplificar el acceso de los clientes a la aplicación, el `host` deberá estar escuchando en el puerto `80`.
-
-Para finalizar, presentamos una lista de los requerimientos considerados necesarios para dar por resuelto el ejercicio. Algunos ya fueron mencionados anteriormente, pero se dejan en la lista para facilitar la referencia:
-
-- La imagen a utilizar se llama `ghost.`
-- El contendor debe tener un nombre definido por el administrador.
-- El contenedor no debe ser eliminado al apagarse.
-- El servicio debe estar publicado al exterior en el puerto 80. (el puerto original es 2368)
-- El contenedor debe correr en segundo plano.
-- El comando a utilizar es el que viene por defecto con la imagen.
-
-#### Verificación:
-
-- Mediante un navegador acceder a http://servernumX.labs.conatest.click, se debería ver el servicio publicado.
-- Apagar el contenedor utilizando `docker stop` y verificar que el servicio ya no está publicado.
-- Encender el contenedor utilizando `docker start` y verificar que el servicio vuelve a estar online.
 
 [Siguiente-->](2_Images.md)

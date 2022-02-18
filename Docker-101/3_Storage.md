@@ -341,7 +341,7 @@ Si aparece el archivo `holaMundoSSH.txt` es porque todo está funcionando.
 
 #### REX-Ray - Volume plugin para montar storage en la nube.
 
-Como mencionamos anteriormente, una de las principales ventajas de utilizar _volumenes_ por sobre utilizar _bind mounts_ es la posibilidad de montar storage de proveedores de cloud. En el siguiente ejercicio guiado veremos como montar un bucket de S3 en uno, o varios, contenedores utilizando el plugin de [REX-Ray](https://rexray.io/).
+Como mencionamos anteriormente, una de las principales ventajas de utilizar _volumenes_ por sobre utilizar _bind mounts_ es la posibilidad de montar storage de proveedores de cloud. En el siguiente ejercicio guiado veremos como montar un bucket de S3 en uno, o varios, contenedores utilizando el plugin de [REX-Ray](https://rexray.readthedocs.io/en/stable/user-guide/schedulers/docker/plug-ins/aws/#aws-s3fs).
 
 #### Ejercicio 15
 
