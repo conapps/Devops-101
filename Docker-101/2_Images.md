@@ -111,7 +111,7 @@ La solución a los problemas planteados anteriormente es la utilización de un a
 Un archivo 'Dockerfile' es básicamente un archivo de texto que describe de forma unívoca cuál es el contenido de la imagen. Para entenderlo mejor, veamos como aplicaríamos esta técnica para la confección de la imagen del ejemplo anterior.
 El contenido del archivo 'Dockerfile' sería el siguiente:
 
-```
+```dockerfile
 FROM ubuntu
 LABEL maintainer="ialmandos@conatel.com.uy"
 ADD config.txt /settings/config.txt
@@ -127,6 +127,10 @@ RUN echo "mysql-server mysql-server/root_password password CursoDocker2022." | d
 RUN echo "mysql-server mysql-server/root_password_again password CursoDocker2022." | debconf-set-selections
 RUN apt-get install -y mysql-server
 RUN apt-get install -y tftpd-hpa
+ENV TZ=America/Montevideo
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+RUN apt-get install -y openssh-server
+RUN apt-get install -y nginx
 CMD bash
 ```
 
@@ -366,7 +370,7 @@ Get:6 http://security.ubuntu.com/ubuntu bionic-security/multiverse amd64 Package
 
 7. Ahora modificamos el Dockerfile colocando la sentencia `ADD config.txt /settings/config.txt` al final. El nuevo `Dockerfile` será:
 
-```docker
+```dockerfile
 FROM ubuntu
 LABEL maintainer="ialmandos@conatel.com.uy"
 RUN apt-get update
@@ -381,6 +385,8 @@ RUN echo "mysql-server mysql-server/root_password password CursoDocker2022." | d
 RUN echo "mysql-server mysql-server/root_password_again password CursoDocker2022." | debconf-set-selections
 RUN apt-get install -y mysql-server
 RUN apt-get install -y tftpd-hpa
+ENV TZ=America/Montevideo
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 RUN apt-get install -y openssh-server
 RUN apt-get install -y nginx
 # Ahora colocamos el archivo config.txt al final del Dockerfile
