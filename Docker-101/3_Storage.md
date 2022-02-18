@@ -292,7 +292,7 @@ mi-nuevo-volumen
 
 > **Bonus:** utilizando el comando `docker inspect <nombre_de_volumen>` identificar donde se encuentran almacenados los datos y acceder a los mismos desde la máquina host.
 
-> **Bonus2:** dado que la salida de los comandos del tipo `docker inspect` son del tipo JSON, podemos utilizarlos para tomar acciones de forma "programatica". En este Bonus proponemos instalar el paquete [jq](https://stedolan.github.io/jq/) `apt-get install -y jq` y utilizarlo para parsear la salida del comando `docker inspect <nombredelvolumen>` y hacer lo mismo que en el Bonus anterior, pero esta vez de forma automática de la siguiente manera: `ls $(docker volume inspect miVolumen | jq -r .[0].Mountpoint)`
+> **Bonus2:** dado que la salida de los comandos del tipo `docker inspect` son del tipo JSON, podemos utilizarlos para tomar acciones de forma "programatica". En este Bonus proponemos instalar el paquete [jq](https://stedolan.github.io/jq/) `sudo apt-get install -y jq` y utilizarlo para parsear la salida del comando `docker inspect <nombredelvolumen>` y hacer lo mismo que en el Bonus anterior, pero esta vez de forma automática de la siguiente manera: `sudo ls $(docker volume inspect miVolumen | jq -r .[0].Mountpoint)`
 
 ### Volumenes con drivers creados por los usuarios.
 
