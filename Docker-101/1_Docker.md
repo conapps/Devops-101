@@ -106,43 +106,48 @@ servernumN.labs.conatest.click
 
 Cada estudiante accederá únicamente al servidor asignado (la asignación la hará el instructor al momento de la capacitación).
 
+Previo al inicio del curso, debe haber recibido por mail los certificados para conectarse al equipo. Estos son `devops101-labs.pem` el cuál se utiliza directamente con ssh, y `devops101-labs.ppk` el cual se utiliza con el cliente Putty (en Windows). En caso de no haberlo recibido, consulte al instructor.
+
 #### Como acceder desde Linux/MacOS
 
-Para acceder al servidor de trabajo desde linux o Mac, se debe descargar el certificado recibido por correo previo al comienzo del curso y colocarle permisos de solo lectura unicamente para el usuario. Esto se hace de la siguiente manera:
+Para acceder al servidor de trabajo desde linux o Mac, se debe descargar el certificado (.pem) y colocarle permisos de solo lectura únicamente para el usuario. Esto se hace de la siguiente manera:
 
 ```bash
-$ chmod 400 devops_101_containers_linux.pem
+$ chmod 400 devops101-labs.pem
 ```
 
-Luego se puede utilizar el siguiente comando sustituyendo la X por el número de servidor asignado para acceder al servidor.
+Luego se utiliza el comando `ssh` para acceder al servidor, sustituyendo la X por el número de POD asignado, de acuerdo al mail recibido.
 
 ```bash
-$ ssh -i devops_101_containers_linux.pem ubuntu@servernumX.labs.conatest.click
+$ ssh -i devops101-labs.pem ubuntu@servernumX.labs.conatest.click
 ```
 
 #### Como acceder desde Windows
 
-1. Descargar a la notebook el certificado `devops_101_containers_windows.ppk` que fue recibido por correo previo al comienzo del curso.
+Desde Windows, se puede acceder de dos formas.
 
-2. Instalar [Putty](https://www.chiark.greenend.org.uk/~sgtatham/putty/).
+La primera es utilizando `Windows Power Shell`:
+- Descargar a la notebook el certificado (.pem) recibido y coloclarlo en una carpeta de fácil acceso.
+- Abrir la aplicación `Windows Power Shell`, y ubicarse en dicha carpeta.
+- Utilizar el comando `ssh` tal como lo haríamos para Linux en el caso anterior:
+  ```bash
+  > ssh -i devops101-labs.pem ubuntu@servernumX.labs.conatest.click
+  ```
 
-3. Abrir Putty
+La segunda opción es utilizando la herramienta `Putty`:
+- Descargar a la notebook el certificado (.ppk) recibido.
+- Instalar [Putty](https://www.chiark.greenend.org.uk/~sgtatham/putty/) y abrirlo.
+- Dentro del panel "Category" elegir "Session" y luego completar los siguientes campos:
 
-4. Dentro del panel "Category" elegir "Session" y luego completar los siguientes campos:
+  ```bash
+  hostname: ubuntu@servernumX.labs.conatest.click
+  connection-type: ssh
+  port: 22
+  ```
 
-```
-hostname: ubuntu@servernumX.labs.conatest.click
-connection-type: ssh
-port: 22
-```
-
-5. Dentro de "Category" --> "Connection" --> "SSH" --> "Auth" seleccionar "Browse" y elegir el certificado `devops_101_containers_windows.ppk`
-
-6. Seleccionar "Open" para conectarse.
-
-7. Seleccionar "Si"
-
-8. Utilizar el nombre de usuario `ubuntu` (opcional).
+-  Dentro de "Category" --> "Connection" --> "SSH" --> "Auth" seleccionar "Browse" y elegir el certificado `devops101-labs.ppk`
+- Opcional: puede grabar la configuración de la sesión mediante "Save" para poder volver a utilizarla luego. 
+- Seleccionar "Open" para conectarse, y luego "Accept" para aceptar la Security Alert. 
 
 ## Docker cli
 
