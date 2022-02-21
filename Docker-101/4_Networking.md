@@ -236,8 +236,7 @@ root@0d1697247d1d:/# ping c3
 ping: c3: Name or service not known
 ```
 
-Repetir el procedimiento anterior para `c2` y `c3`.
-
+Repetir el procedimiento anterior para `c2` y `c3`, y luego detener los tres contendores.
 
 
 ### Redes definidas por el usuario.
@@ -450,7 +449,7 @@ Dicho esto, si nuestro contenedor corriera por ejemplo un Web server, por defect
 
 ```bash
 $ docker run -d --rm --name prueba-web-server ghost
-$ docker ps
+$ docker container ls
 CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS               NAMES
 bf393d45a5b3        ghost               "docker-entrypoint..."   29 seconds ago      Up 28 seconds       2368/tcp            prueba-web-server
 ```
@@ -508,7 +507,7 @@ $ docker run -d --rm --name prueba-web-server -p 2368 ghost
 Docker publicará el puerto ```2368``` en un puerto alto (>30.000) **en todas las IPs** de la máquina host. Entre otros, se pueden utilizar estos comandos para identificar dicho puerto:
 
 ```bash
-$ docker ps
+$ docker container ls
 CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                     NAMES
 a1238d6842fa        ghost               "docker-entrypoint..."   2 minutes ago       Up 2 minutes        0.0.0.0:32768->2368/tcp   prueba-web-server
 ```
