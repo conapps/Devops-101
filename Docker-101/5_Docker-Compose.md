@@ -182,7 +182,6 @@ En este ejercicio vamos a crear dos servicios simples, llamados *db-server* y *w
     $ docker-compose ps
         Name           Command       State   Ports
     ----------------------------------------------
-    backupserver   /bin/sh -c bash   Up           
     dbserver01     /bin/sh -c bash   Up           
     webserver01    /bin/sh -c bash   Up  
     ```
@@ -299,7 +298,7 @@ Veamos con un ejemplo como acceder a un directorio local del host (*bind mount*)
          - ./data:/mnt/data
    ```
 
-   De esta forma, vamos a montamos el directorio local `./data` del host, en el direcotrio `/mnt/data` del contenedor `webserver01` que es creado para el servicio `web-server`.
+   De esta forma, vamos a montar el directorio local `./data` del host, en el direcotrio `/mnt/data` del contenedor `webserver01` que es creado para el servicio `web-server`.
 
 
 
@@ -676,7 +675,8 @@ Y dentro de la configuración de cada servicio, colocamos la *networks:* a las c
 #### Configuración de *custom networks*:
 Podemos establecer configuraciones adicionales para las redes que definimos.
 Por ej. especificar que rangos de direcciones IP queremos utilizar para cada red, dentro de la sección **networks:**
-   ```bash
+
+```bash
 networks:
   prod-network:
     driver: bridge
