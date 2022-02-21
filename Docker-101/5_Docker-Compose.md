@@ -96,7 +96,7 @@ En este ejercicio vamos a crear dos servicios simples, llamados *db-server* y *w
 
    ```bash
    FROM ubuntu
-   LABEL maintainer="fagis@conatel.com.uy"
+   LABEL maintainer="cdh@conatel.com.uy"
    RUN apt-get update
    RUN apt-get install -y net-tools
    RUN apt-get install -y dnsutils
@@ -143,7 +143,7 @@ En este ejercicio vamos a crear dos servicios simples, llamados *db-server* y *w
    Digest: sha256:586519e288b47ac3585061b424956418a0435e6469d9c02d6e9dc4ab03eed286
    Status: Downloaded newer image for ubuntu:latest
     ---> 16508e5c265d
-   Step 2/7 : LABEL maintainer="fagis@conatel.com.uy"
+   Step 2/7 : LABEL maintainer="cdh@conatel.com.uy"
     ---> Using cache
     ---> 7b6a16db23b6
    Step 3/7 : RUN apt-get update

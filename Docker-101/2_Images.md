@@ -113,7 +113,7 @@ El contenido del archivo 'Dockerfile' sería el siguiente:
 
 ```dockerfile
 FROM ubuntu
-LABEL maintainer="ialmandos@conatel.com.uy"
+LABEL maintainer="cdh@conatel.com.uy"
 ADD config.txt /settings/config.txt
 RUN apt-get update
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends tzdata
@@ -171,7 +171,7 @@ $ docker inspect prod-env:0.1
 ...
 ...
 "Labels": {
-    "maintainer": "ialmandos@conatel.com.uy"
+    "maintainer": "cdh@conatel.com.uy"
 }
 ...
 ...
@@ -277,7 +277,7 @@ IMAGE               CREATED             CREATED BY                              
 65e5f33f7859        18 minutes ago      /bin/sh -c apt-get update                       38.81 MB
 c2b62f673858        21 minutes ago      /bin/sh -c #(nop)  CMD ["/bin/sh" "-c" "bash"   0 B
 9c2c661471f1        21 minutes ago      /bin/sh -c #(nop) ADD file:f3324fde77ff764cb1   7 B
-afafd17c2c9c        26 hours ago        /bin/sh -c #(nop)  LABEL maintainer=ialmandos   0 B
+afafd17c2c9c        26 hours ago        /bin/sh -c #(nop)  LABEL maintainer=cdh   0 B
 6a2f32de169d        3 months ago        /bin/sh -c #(nop)  CMD ["/bin/bash"]            0 B
 <missing>           3 months ago        /bin/sh -c mkdir -p /run/systemd && echo 'doc   7 B
 <missing>           3 months ago        /bin/sh -c sed -i 's/^#\s*\(deb.*universe\)$/   2.759 kB
@@ -315,7 +315,7 @@ Cuando construímos nuestra imagen `prod-env:0.1` cargamos en ella una archivo d
 
 ```dockerfile
 FROM ubuntu
-LABEL maintainer="ialmandos@conatel.com.uy"
+LABEL maintainer="cdh@conatel.com.uy"
 # Colocamos el archivo config.txt al principio del Dockerfile
 ADD config.txt /settings/config.txt
 RUN apt-get update
@@ -358,7 +358,7 @@ $ docker build -t prod-env:0.3 .
 Sending build context to Docker daemon  3.584kB
 Step 1/17 : FROM ubuntu
  ---> 16508e5c265d
-Step 2/17 : LABEL maintainer="ialmandos@conatel.com.uy"
+Step 2/17 : LABEL maintainer="cdh@conatel.com.uy"
  ---> Using cache
  ---> 13023f512a0f
 Step 3/17 : ADD config.txt /settings/config.txt
@@ -378,7 +378,7 @@ Get:6 http://security.ubuntu.com/ubuntu bionic-security/multiverse amd64 Package
 
 ```dockerfile
 FROM ubuntu
-LABEL maintainer="ialmandos@conatel.com.uy"
+LABEL maintainer="cdh@conatel.com.uy"
 RUN apt-get update
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends tzdata
 RUN apt-get install -y python3
