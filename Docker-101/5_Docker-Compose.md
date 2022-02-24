@@ -443,7 +443,7 @@ volumes:
 
 
 Podemos en cambio, especificar que driver queremos utilizar, así como pasarle las opciones necesarias al mismo.
-Por ejemplo, podemos utilizar el driver *sshfs* que ya vimos anteriormente [aquí](https://github.com/conapps/Devops-101/blob/master/Contenedores/3_Storage.md#volumenes-con-drivers-creados-por-los-usuarios), para montar un volumen desde un servidor ssh. 
+Por ejemplo, podemos utilizar el driver *sshfs* que ya vimos anteriormente [aquí](https://github.com/conapps/Devops-101/blob/master/Docker-101/3_Storage.md#volumenes-con-drivers-creados-por-los-usuarios), para montar un volumen desde un servidor ssh. 
 
 ```
 volumes:
@@ -627,7 +627,7 @@ Y dentro de la configuración de cada servicio, colocamos la *networks:* a las c
 
 
 
-   Ambas redes las definimos con el driver `bridge` (el cuál vimos [aqui](https://github.com/conapps/Devops-101/blob/master/Contenedores/4_Networking.md#bridge)), y dado que no estamos indicando ninguna configuración adicional, es el engine de docker quien asignará los rangos de direcciones IP a las redes, y las direcciones IP específicas a los servicios.
+   Ambas redes las definimos con el driver `bridge` (el cuál vimos [aqui](https://github.com/conapps/Devops-101/blob/master/Docker-101/4_Networking.md#bridge)), y dado que no estamos indicando ninguna configuración adicional, es el engine de docker quien asignará los rangos de direcciones IP a las redes, y las direcciones IP específicas a los servicios.
 
    De esta forma, la red `prod-network` conecta únicamente los servicios *db-server* y *web-server*, mientras que la red `backup-network` conecta a *backup-server* y *db-server*; pero no hay ninguna red que conecte a *web-server* con *backup-server* por lo cual estos dos servicios no podrán comunicarse entre si.
 
@@ -707,7 +707,7 @@ services:
 
 #### Accediendo a redes externas:
 
-Si ya tenemos una red previamente definida en docker (algo que vimos [aqui](https://github.com/conapps/Devops-101/blob/master/Contenedores/4_Networking.md#redes-definidas-por-el-usuario)) y queremos utilizarla para nuestros servicios, podemos referenciarla de la siguiente manera:
+Si ya tenemos una red previamente definida en docker (algo que vimos [aqui](https://github.com/conapps/Devops-101/blob/master/Docker-101/4_Networking.md#redes-definidas-por-el-usuario)) y queremos utilizarla para nuestros servicios, podemos referenciarla de la siguiente manera:
 
 ```bash
 networks:
