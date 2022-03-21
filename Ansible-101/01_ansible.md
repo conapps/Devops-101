@@ -166,7 +166,7 @@ Por defecto, Ansible buscara el archivo de inventario en `/etc/ansible/hosts`, p
 Ansible es capaz de tomar hosts de múltiples inventarios al mismo tiempo, y puede también construirlos de forma dinámica previo a la realización de las tareas, mediante la utilización de [inventarios dinámicos](https://docs.ansible.com/ansible/latest/user_guide/intro_dynamic_inventory.html).
 
 
-## Acceso al ambiente de trabajo
+### Acceso al ambiente de trabajo
 En esta capacitación no trabajaremos directamente sobre las notebooks, sino que cada estudiante tendrá acceso a varios servidores en la nube desde donde se realizarán los laboratorios.
 
 Los servidores disponibles (del 1 al N depeniendo de la cantidad de estudiantes) siguen la siguiente convención de nombres:
@@ -225,7 +225,7 @@ La segunda opción es utilizando la herramienta `Putty`:
 
 
 
-## DEMO Lab #1 - Lanzar el laboratorio
+### DEMO Lab #1 - Lanzar el laboratorio
 
 El laboratorio consiste en un set contenedores que simularán una granja de servidores. 
 
@@ -256,11 +256,11 @@ Verifiquen que tienen conexión con los siguientes hosts utilizando `ping`:
 
 ### DEMO Lab #2 - Crear un archivo de inventario
 
-Vamos a definir un nuevo archivo de inventario. Dentro de la carpeta `/home/ubuntu/ansible_lab/docker/volume` vamos a crear un nuevo archivo llamado `inventory.yml`.
+Los inventarios de Ansible pueden contener múltiples grupos, y cada host puede pertenecer a uno o más grupos. En general, se comienza identificando un grupo llamado `all`  al cual pertenecerán todos los hosts, y todos los demás grupos que definamos. 
+Los hosts se definen como llaves de un objeto llamado `hosts`.
 
-Los inventarios de Ansible pueden contener múltiples grupos, y cada host puede pertenecer a uno o más grupos. En general, se comienza identificando un grupo llamado `all`  al cual pertenecerán todos los hosts, y todos los demás grupos. 
-
-Los hosts se definen como llaves de un objeto llamado `hosts` dentro del grupo `all`.
+Vamos a definir entonces un archivo de inventario inicial.
+Para esto, conectados al nodo master, dentro de la carpeta `/var/ans/` vamos a crear un nuevo archivo llamado `inventory.yml` con el siguiente contenido:
 
 ```yaml
 all:
@@ -269,8 +269,9 @@ all:
     host02:
     host03:
 ```
+>OBS: puede usar el editor _vi_ o _nano_ para editar los archivos. 
 
-A su vez, cada grupo o host puede contar con variables especificas para definir su conexión. Como ejemplo, vamos a agregar una variable que aplique a todos los hosts para evitar que Ansible verifique si el host al que nos estamos conectando esta identificado como un host conocido.
+A su vez, cada grupo o host puede contar con variables especificas para definir su conexión. Como ejemplo, vamos a agregar una variable que aplique a todos los hosts para evitar que Ansible verifique si el host al que nos estamos conectando esta identificado como un host conocido cuando se conecta por ssh:
 
 ```yaml
 all:
@@ -281,10 +282,9 @@ all:
     host02:
     host03:
 ```
+> OBS: tenga en cuenta la correcta indentación del archivo
 
-Ahora, cada vez que Ansible se quiera comunicar con cualquiera de estos hosts utilizará el argumento definido en la variable `ansible_ssh_common_args`.  La lista de variables que podemos configurar para modificar el comportamiento de Ansible se encuentran en el siguiente link:
-
-https://docs.ansible.com/ansible/latest/user_guide/intro_inventory.html#list-of-behavioral-inventory-parameters
+Ahora, cada vez que Ansible se quiera comunicar con cualquiera de estos hosts utilizará el argumento definido en la variable `ansible_ssh_common_args`.  La lista de variables que podemos configurar para modificar el comportamiento de Ansible se encuentran en el siguiente [link](https://docs.ansible.com/ansible/latest/user_guide/intro_inventory.html#connecting-to-hosts-behavioral-inventory-parameters).
 
 Las variables se pueden configurar a nivel global, por grupo, o por host. Siempre se terminara aplicando la más específica.
 
@@ -294,9 +294,9 @@ Una de las variables que es importante tener en cuenta es `ansible_connection`. 
 
 #### Ejercicio #1
 
-Para conseguir realizar la conexión por SSH, debemos configurar la llave privada que debemos utilizar. La misma se encuentra en la ubicación `/var/ans/master_key`.
+Para conseguir realizar la conexión por SSH hacia los hosts debemos configurar el método de autenticación necesario. En este caso vamos a utilizar una llave privada de ssh, que se encuentra disponible en `/var/ans/master_key`.
 
-Configure el inventario para que Ansible utilize el la llave privada almacenada en `./master_key`. 
+Configure el inventario para que Ansible utilize la llave privada almacenada en `./master_key` para todos los hosts. 
 
 <details>
 <summary>Pista #1</summary>
@@ -327,17 +327,19 @@ Para probar que efectivamente tenemos acceso a los hosts definidos en el inventa
 
 Los comandos `ad-hoc` se llaman a través del flag `-m` seguidos del módulo que queremos utilizar, o a través del flag `-a` seguidos del comando que queremos lanzar en los hosts remotos.
 
+Con el siguiente comando podemos realizar un ping sobre todos los hosts detallados en el inventario:
 ```bash
 ansible -i inventory.yml all -m ping
 ```
 
-Utilizando el comando anterior podemos realizar un ping sobre todos los hosts detallados en el inventario.
+>OBS: el comando anterior establece una conexión por ssh hacia cada hosts, por lo cual es muy útil para verificar que la autenticación ssh esté funcionando correctamente.
 
+También podemos ejecutar un comando directamente en los hosts, mediante:
 ```bash
 ansible -i inventory.yml all -a 'echo "Hello, World!"'
 ```
 
-Es importante identificar las comillas que envuelven el comando que ejecutara ansible a través del flag `-a`, especialmente si se quieren utilizar variables de entorno dentro del comando (las comillas simples `'` no resuelven variables, solo la hacen las comillas dobles `"`). Otro punto a tener en cuenta es que el flag `-a` no soporta comandos concatenados con un pipe (`|`). Para hacer esto tenemos que utilizar el módulo `shell`.
+Es importante identificar las comillas que envuelven el comando que ejecutará ansible a través del flag `-a`, especialmente si se quieren utilizar variables de entorno dentro del comando (las comillas simples `'` no resuelven variables, solo la hacen las comillas dobles `"`). Otro punto a tener en cuenta es que el flag `-a` no soporta comandos concatenados con un pipe (`|`). Para hacer esto tenemos que utilizar el módulo `shell`.
 
 ```bash
 ansible -i inventory.yml all -m shell -a 'ifconfig eth0 | grep "inet addr" | cut -d: -f2 | awk "{print $1}"'
@@ -353,7 +355,7 @@ Modifique el inventario actual de manera de que cuente con dos nuevos grupos: `a
 
 _OBS: Verificar la configuración de inventario utilizando el módulo `ping`_.
 
-[Documentación de Grupos en Inventarios](https://docs.ansible.com/ansible/latest/user_guide/intro_inventory.html#groups-of-groups-and-group-variables)
+[Documentación de Grupos en Inventarios](https://docs.ansible.com/ansible/latest/user_guide/intro_inventory.html#inventory-basics-formats-hosts-and-groups)
 
 <details>
     <summary>Pista #1</summary>
@@ -362,7 +364,7 @@ _OBS: Verificar la configuración de inventario utilizando el módulo `ping`_.
 
 <details>
     <summary>Pista #2</summary>
-    Para probar los hosts se puede utilizar el comando <code>ping</code> de la siguiente manera: <code>ansible -i inventory.yml db -m ping</code> o <code>ansible -i inventory.yml app -m ping</code>
+    Para probar los grupos de hosts se puede utilizar el comando <code>ping</code> de la siguiente manera: <code>ansible -i inventory.yml db -m ping</code> o <code>ansible -i inventory.yml app -m ping</code>
 </details>
 
 <details>
@@ -389,45 +391,32 @@ all:
 
 ---
 
-Utilizando los comandos `ad-hoc` podemos realizar una gran cantidad de tareas sobre múltiples hosts en simultáneo. Por ejemplo, utilizando el módulo `file` podemos compartir archivos, ó, podemos instalar aplicaciones utilizando los módulos `yum` o `apt` según la distribución que utilicemos.
+Utilizando los comandos `ad-hoc` podemos realizar una gran cantidad de tareas sobre múltiples hosts en simultáneo. Por ejemplo, utilizando el módulo `file` podemos compartir archivos, o podemos instalar aplicaciones utilizando los módulos `apt` o `yum` según la distribución de linux que utilicemos.
 
 ```
-# YUM - CentOS
-ansible -i inventory.yml app -m yum -a "name=jq state=present"
-
 # APT - Ubuntu
 ansible -i inventory.yml app -m apt -a "name=jq state=present"
-```
 
-Si entramos por `ssh` a alguno de los hosts podemos verificar que `jq` ahora esta instalado.
-
-```bash
-(controller) ssh -i docker/master_key root@host01
-(host01) echo '{"something": "awesome"}' | jq
-{
-  "something": "awesome"
-}
+# YUM - CentOS
+ansible -i inventory.yml app -m yum -a "name=jq state=present"
 ```
 
 Otros posible usos son:
+- Creación de usuarios
+- Clonar repositorios utilizando `git`
+- Administrar servicios remotos
+- Lanzar operaciones
+- Recopilar información
 
-- Creación de usuarios.
-- Clonar repositorios utilizando `git`.
-- Administrar servicios remotos.
-- Lanzar operaciones.
-- Recopilar información.
-
-Este último es particularmente útil. Lo ejecutamos realizando el siguiente comando:
-
+Este último es particularmente útil, podemos ejecutarlo mediante el siguiente comando:
 ```bash
 ansible -i inventory.yml all -m setup
 ```
 
-_OBS: También podemos utilizar el host controlador como target de los comandos de ansible._
 
 ### Aplicaciones
 
-Por ahora solo hemos utilizado la aplicación `ansible`. Sin embargo, no es la única aplicación que podemos utilizar tras instalar Ansible. En total tenemos:
+Por ahora solo hemos utilizado la aplicación `ansible`, sin embargo, no es la única que podemos utilizar, tenemos otras como:
 
 - `ansible`
   - Herramienta simple para correr una tarea en múltiples hosts remotos.
@@ -461,7 +450,7 @@ Durante el resto del curso nos enfocaremos en `ansible-playbook` y mencionaremos
 
 ## Ansible `playbooks`
 
-Los `playbooks` de son las herramientas con la cuales le indicaremos a Ansible lo que queremos hacer. Se pueden ver como manuales de instrucción que indican como trabajar la materia prima (infraestructura).
+Los `playbooks` son las herramientas con la cuales le indicaremos a Ansible lo que queremos hacer. Se pueden ver como manuales de instrucción que indican como trabajar la materia prima (infraestructura).
 
 Además de declarar configuraciones, los `playbooks` se pueden utilizar para orquestar cambios masivos en múltiples equipos de forma ordenada. 
 
@@ -471,11 +460,14 @@ Los `playbooks` se escriben en archivos `yaml` como una lista de `plays`. Cada `
 
 ### Variables de cada `play`
 
-Una de las variables que es usual configurar es el nombre del usuario remoto con el cual se deberán correr las tareas. En nuestro caso el nombre del usuario es `root`, que es además el valor que utilizara Ansible por defecto. Si las tareas que queremos realizar necesitan de permisos elevados podemos utilizar la opción `become`. Esta opción en conjunto con la opción `become_user`  permite cambiar de usuario durante la ejecución de la tarea. Para especificar el método con el cual necesitamos escalar los permisos lo hacemos con la opción `become_method`.
+Una de las variables que es usual configurar es el nombre del usuario remoto con el cual se deberán correr las tareas. En nuestro caso el nombre del usuario es `root`, que es además el valor que utilizará Ansible por defecto.
+
+Si las tareas que queremos realizar necesitan de permisos elevados podemos utilizar la opción `become`. Esta opción en conjunto con la opción `become_user`  permite cambiar de usuario durante la ejecución de la tarea. Para especificar el método con el cual necesitamos escalar los permisos lo hacemos con la opción `become_method`.
 
 ```yaml
 - hosts: all
   become: yes
+  become_user: root
   become_method: su
   tasks:
     # ...
@@ -492,22 +484,91 @@ Se sugiere que cada tarea tenga un nombre, especificado bajo la clave `name`. Es
 
 Si no nos importa que algún comando falle podemos configurar la opción `ignore_error`. 
 
-En el caso de que queramos configurar múltiples tareas sobre un mismo `play`, podemos hacerlo a través del comando `tasks`, que consume una lista de tareas.
+### Creando el primer playbook
+Comencemos creando un playbook muy simple, que hace un `ping` al grupo de hosts `app` que tenemos definido en nuestro inventario.
 
+Para esto, crear un archivo `primer-playbook.yml` con el siguiente contenido:
 ```yaml
 - hosts: app
-  name: Ping app hosts
+  name: Primer playbook
   tasks:
     - ping:
 ```
 
+Para correr un `playbook` utilizamos el comando `ansible-playbook`, al cuál podemos indicarle sobre que inventario queremos trabajar (luego veremos otra forma de indicar esto):
+
+```bash
+ansible-playbook -i inventory.yml playbook.yml
+```
+
+Si queremos comprobar que la sintaxis de nuestro `playbook` no tiene errores podemos utilizar el flag `--syntax-check`. Y, si queremos ver con más detalles las acciones que esta realizando Ansible para detectar errores, podemos correrlo con el comando con el flag `--verbose`.
+
+
+Ejecutemos entonces nuestro playbook:
+```bash
+root@master> ansible-playbook -i inventory.yml primer-playbook.yml
+
+PLAY [Primer playbook] ****************************************************************************************************
+
+TASK [Gathering Facts] *************************************************************************************************************************
+ok: [host02]
+ok: [host01]
+
+TASK [ping] ************************************************************************************************************************************
+ok: [host02]
+ok: [host01]
+
+PLAY RECAP *************************************************************************************************************************************
+host01                     : ok=2    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+host02                     : ok=2    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+
+```
+
+Si observamos la salida, podemos ver que la tarea se ejecutó en `host01`y `host02`lo cuál es correcto de acuerdo a nuestro inventario. Y sobre el final podemos ver un resumen de la ejecución, donde indica que se realizaron 2 tareas en forma correcta en cada equipo (ok=2), no se realizaron cambios en los equipos (changed=0), y no hubo errores (failed=0), además de otra información relevante.
+
+En el caso de que queramos correr múltiples tareas sobre un mismo `play`, podemos hacerlo dado que el comando `tasks` consume una lista de tareas:
+```yaml
+- hosts: app
+  name: Primer playbook
+  tasks:
+    - ping:
+    - ansible.builtin.user:
+        name: user1
+```
+
+Al ejecutarlo:
+```bash
+root@master> ansible-playbook -i inventory.yml primer-playbook.yml
+
+PLAY [Primer playbook] ****************************************************************************************************
+
+TASK [Gathering Facts] *************************************************************************************************************************
+ok: [host01]
+ok: [host02]
+
+TASK [ping] ************************************************************************************************************************************
+ok: [host02]
+ok: [host01]
+
+TASK [ansible.builtin.user] ********************************************************************************************************************
+changed: [host02]
+changed: [host01]
+
+PLAY RECAP *************************************************************************************************************************************
+host01                     : ok=3    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+host02                     : ok=3    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+ 
+```
+
+Podemos ver que en este caso se realizaron cambios en los hosts (changed=1) dado que se creó el usuario *user1* indicado.
+
+
 Dentro de cada tarea se pueden configurar opciones adicionales que modifican su comportamiento como: condicionales, loops, registros de salida, etc. A continuación mencionaremos algunas de las más importantes.
 
-**Se recomienda que durante esta demostración prueben los comandos en la consola.**
 
 ### Registros de salida
 
-Todas las tareas emiten por defecto un valor de salida, en donde se incluye información general sobre la ejecución de la misma, más el mensaje generado por el módulo durante su ejecución. Sin embargo, el valor entregado por la tarea no puede ser utilizado a menos que se requiera mediante la inclusión de la opción `register` en la definición de la tarea.
+Todas las tareas emiten por defecto una salida, en donde se incluye información general sobre la ejecución de la misma, más el mensaje generado por el módulo durante su ejecución. Sin embargo, el valor entregado por la tarea no puede ser utilizado a menos que se indique específicamente, mediante la opción `register`:
 
 ```yaml
 - name: Ejemplo de como utilizar la opción 'register'
@@ -518,35 +579,101 @@ Todas las tareas emiten por defecto un valor de salida, en donde se incluye info
     - shell: echo Hola
       register: result
     - debug:
-        msg: '{{result}}'
+        var: result
 ```
+La opción `register` almacena la salida de la tarea `shell` en una variable llamada `result` (si bien este nombre de variable es típicamente utilizado con este fin, podemos usar cualquier nombre de variable que querramos). Luego, la siguiente tarea `debug:` despliega el contenido de dicha variable.
+
+
+```bash
+root@master> ansible-playbook segundo-playbook.yml
+
+PLAY [Ejemplo de como utilizar la opción 'register'] *******************************************************************************************
+
+TASK [shell] ***********************************************************************************************************************************
+changed: [localhost]
+
+TASK [debug] ***********************************************************************************************************************************
+ok: [localhost] => {
+    "result": {
+        "changed": true,
+        "cmd": "echo Hola",
+        "delta": "0:00:00.002576",
+        "end": "2022-03-21 19:09:35.570745",
+        "failed": false,
+        "msg": "",
+        "rc": 0,
+        "start": "2022-03-21 19:09:35.568169",
+        "stderr": "",
+        "stderr_lines": [],
+        "stdout": "Hola",
+        "stdout_lines": [
+            "Hola"
+        ]
+    }
+}
+
+PLAY RECAP *************************************************************************************************************************************
+localhost                  : ok=2    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+```
+
+>OBS: notese que este playbook lo estamos ejecutando contra *localhost*, o sea, contra el mismo *controller host* de Ansible, y por tanto no necesitamos pasarle el inventario.
 
 ### Condicionales
 
-Como se comento anteriormente, Ansible esta desarrollado sobre Python pero las configuraciones se realizan a través de documentos escritos en YAML para simplificar su configuración. Sin embargo, el hecho de contar con Python trabajando detrás de escena, nos permite incorporar funcionalidades más avanzadas a nuestros `playbooks`. Los condicionales son uno de ellos.
+Como se comentó anteriormente, Ansible esta desarrollado sobre Pytho, pero las configuraciones se realizan a través de documentos escritos en YAML para simplificar su escritura. Sin embargo, el hecho de contar con Python trabajando detrás de escena, nos permite incorporar funcionalidades más avanzadas a nuestros `playbooks`. Los condicionales son uno de ellos.
 
 Mediante la utilización de la opción `when` en la definición de una tarea, podemos hacer que solo se ejecute la misma cuando se cumpla una determinada condición. El contenido de la opción `when` es una sentencia condicional de Python valida, que puede referenciar variables definidas de forma dinámica o estática.
 
-Por ejemplo, si queremos generalizar una tarea para que se ejecute tanto en servidores Ubuntu como en CentOS, podemos utilizar la variable `ansible_distribution` la cual se configura al momento de obtener los datos del servidor por Ansible:
+Por ejemplo, si queremos generalizar una tarea para que se ejecute tanto en servidores Ubuntu como en CentOS, podemos utilizar la variable `ansible_os_family` la cual se carga al momento de obtener los datos del servidor por Ansible, como paso inicial, previo a la ejecución de las tareas.
 
 ```yaml
-# OBS: La variable `ansible_distrubution` la resuelve Ansible previo
+# OBS: La variable `ansible_os_family` la resuelve Ansible previo
 #      a la ejecución de las tareas.
 # ---
 - name: Ejemplo, instalar `jq` con `apt` en Ubuntu y `yum` en CentOS
-  hosts: localhost
+  hosts: app
   tasks:
-    - name: Instalar `jq` en Ubuntu
+    - name: Instalar `jq` en Ubuntu con apt
       apt:
         name: jq
         update_cache: yes
       when: ansible_os_family == 'Debian'
-    - name: Instalar `jq` en CentOS
+    - name: Instalar `jq` en CentOS con yum
       yum:
         name: jq
         state: latest
       when: ansible_os_family == 'RedHat'
 ```
+
+Al ejecutar el playbook, podemos ver que se ejecutó la tarea de instalación para Ubuntu, pero la tarea de instalación para CentOS fue salteada (skipped=1).
+
+```bash
+root@master> ansible-playbook -i inventory.yml tercer-playbook.yml
+
+PLAY [Ejemplo, instalar `jq` con `apt` en Ubuntu y `yum` en CentOS] ****************************************************************************
+
+TASK [Gathering Facts] *************************************************************************************************************************
+ok: [host02]
+ok: [host01]
+
+TASK [Instalar `jq` en Ubuntu con apt] *********************************************************************************************************
+ok: [host02]
+ok: [host01]
+
+TASK [Instalar `jq` en CentOS con yum] *********************************************************************************************************
+skipping: [host01]
+skipping: [host02]
+
+PLAY RECAP *************************************************************************************************************************************
+host01                     : ok=2    changed=0    unreachable=0    failed=0    skipped=1    rescued=0    ignored=0   
+host02                     : ok=2    changed=0    unreachable=0    failed=0    skipped=1    rescued=0    ignored=0   
+
+
+```
+
+
+
+
 
 ### Loops
 
@@ -571,9 +698,9 @@ La opción `loop` toma una lista de opciones y ejecuta la tarea para cada uno de
         - tres
 ```
 
-No es conveniente definir variables con el nombre `item` porque la misma será reemplazada dentro del los loops.
+>OBS: No es conveniente definir variables con el nombre `item` porque la misma por defecto será reemplazada cuando se utilicen loops.
 
-Los elementos de cada lista pueden ser valores más complejos como objetos u otras listas. Por ejemplo:
+Los elementos de cada lista pueden ser valores más complejos, como objetos u otras listas. Por ejemplo:
 
 ```yaml
 - name: Ejemplo de como utilizar loop en un playbook de Ansible
@@ -587,6 +714,7 @@ Los elementos de cada lista pueden ser valores más complejos como objetos u otr
         - { name: 'testuser1', groups: 'wheel' }
         - { name: 'testuser2', groups: 'root' }
 ```
+En este caso, cada elemento del `loop` es una lista, que tiene dentro dos elementos (name y groups). Y cuando itero sobre los mismos, despliego únicamente el primero (name).
 
 En el caso de que no se conozca de antemano la cantidad de iteraciones que se necesita se pueden realizar `do-until` loops.
 
@@ -610,15 +738,9 @@ En el caso de que no se conozca de antemano la cantidad de iteraciones que se ne
 
 _OBS: El comando anterior fallará. En la siguiente sección veremos como podemos remediar esta situación utilizando `blocks`._
 
-**En el comando anterior se intento capturar la salida de una tarea que trabaja dentro de un loop. Lo que en realidad quedará registrado en la variable de salida es una lista con todas las salidas parciales.**
+En el comando anterior se intento capturar la salida de una tarea que trabaja dentro de un loop. Lo que en realidad quedará registrado en la variable de salida es una lista con todas las salidas parciales.
 
-Para correr un `playbook` utilizamos la aplicación de linea de comandos `ansible-playbook`. Al momento de correr un playbook podemos indicar sobre que inventario queremos trabajar, y debemos pasarle una ruta al `playbook` que queremos ejecutar.
 
-```bash
-ansible-playbook -i inventory.yml tmp/playbook.yml
-```
-
-Si queremos comprobar que la sintaxis de nuestro `playbook` no tiene errores podemos utilizar el flag `--syntax-check`. Y, si queremos ver con más detalles las acciones que esta realizando Ansible para detectar errores, podemos correr el comando con el flag `--verbose`  levantado.
 
 ### Ansible Config
 
@@ -676,6 +798,14 @@ Existen algunas limitaciones en el uso de `imports` e `include` que es important
 
 Cree un playbook para instalar SQLite3 y su paquete de desarrollo en los hosts identificados como `db`.   
 
+<details>
+    <summary>Pista #1</summary>
+    Los paquetes a instalar son: <code>sqlite3</code> y <code>libsqlite3-dev</code>
+</details>
+<details>
+    <summary>Pista #2</summary>
+    El módulo para instalar paquetes en Ubuntu es <code>apt</code>
+</details>
 <details>
     <summary>Solución</summary>
     <pre>
