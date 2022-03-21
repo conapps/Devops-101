@@ -741,6 +741,57 @@ _OBS: El comando anterior fallará. En la siguiente sección veremos como podemo
 En el comando anterior se intento capturar la salida de una tarea que trabaja dentro de un loop. Lo que en realidad quedará registrado en la variable de salida es una lista con todas las salidas parciales.
 
 
+### Ejercicio #3
+
+Cree un playbook para instalar SQLite3 y su paquete de desarrollo en los hosts identificados como `db`.   
+
+<details>
+    <summary>Pista 1</summary>
+    Los paquetes a instalar son: <code>sqlite3</code> y <code>libsqlite3-dev</code>
+</details>
+<details>
+    <summary>Pista 2</summary>
+    El módulo para instalar paquetes en Ubuntu es <code>apt</code>
+</details>
+<details>
+    <summary>Solución</summary>
+    <pre>
+# db_playbook.yml
+- hosts: db
+  tasks:
+    - name: Install SQLite
+      apt: 
+        name: sqlite3 
+        state: latest
+        update_cache: yes
+    - name: Install SQLite dev package
+      apt:
+        name: libsqlite3-dev
+        state: latest
+        update_cache: yes
+</pre>
+</details>
+
+<details>
+    <summary>Solución alternativa</summary>
+    <pre>
+# db_playbook.yml
+- hosts: db
+  tasks:
+    - name: Install software
+      apt:
+        name: '{{item}}'
+        state: latest
+        update_cache: yes
+      loop:
+        - sqlite3
+        - libsqlite3-dev
+</pre>
+</details>
+
+---
+
+
 
 ### Ansible Config
 
@@ -794,36 +845,6 @@ Existen algunas limitaciones en el uso de `imports` e `include` que es important
 
 ---
 
-### Ejercicio #3
-
-Cree un playbook para instalar SQLite3 y su paquete de desarrollo en los hosts identificados como `db`.   
-
-<details>
-    <summary>Pista #1</summary>
-    Los paquetes a instalar son: <code>sqlite3</code> y <code>libsqlite3-dev</code>
-</details>
-<details>
-    <summary>Pista #2</summary>
-    El módulo para instalar paquetes en Ubuntu es <code>apt</code>
-</details>
-<details>
-    <summary>Solución</summary>
-    <pre>
-# db_playbook.yml
-- hosts: db
-  tasks:
-    - name: Install SQLite
-      apt: 
-        name: sqlite3 
-        state: latest
-        update_cache: yes
-    - name: Install SQLite dev package
-      apt:
-        name: libsqlite3-dev
-        state: latest
-        update_cache: yes
-</pre>
-</details>
 
 ---
 
