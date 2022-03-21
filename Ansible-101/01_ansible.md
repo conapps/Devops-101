@@ -1,16 +1,14 @@
 # Ansible
 
-*Fecha: 2018-08 | Actualizado: 2022-02*
-
 ## Introducción
 
-Durante los últimos años la forma con la que configuramos la infraestructura y las aplicaciones que conforman nuestro sistema han ido cambiando. Con el tiempo hemos ido automatizando los procesos de configuración, y simplificando la forma en la que interactuamos con los dispositivos. Pasamos de escribir la configuración de todos los componentes de forma manual, a automatizar las mismas tareas a través de scripts. Hoy, hay un nuevo paradigma de automatización se ha empezado a utilizar conocido como `Infrastructure as Code` o `IaaS`.
+Durante los últimos años la forma con la que configuramos la infraestructura y las aplicaciones que conforman nuestro sistema han ido cambiando. Con el tiempo hemos ido automatizando los procesos de configuración y simplificando la forma en la que interactuamos con los dispositivos. Pasamos de escribir la configuración de todos los componentes de forma manual, a automatizar las mismas tareas a través de scripts. Hoy, hay un nuevo paradigma de automatización que se ha empezado a utilizar, conocido como `Infrastructure as Code` o `IaaS`.
 
 ![Desarrollo de la administración de Infraestrcutura](./imagenes/ansible_001.png)
 
-La idea es describir de forma declarativa mi sistema en funcionamiento, para que luego otro proceso independiente sigua esta especificación y aplique las modificaciones necesarias para que todos los elementos involucrados reflejen esta descripción.
+La idea es describir de forma declarativa mi sistema en funcionamiento, para que luego otro proceso independiente siga esta especificación, y aplique las modificaciones necesarias para que todos los elementos involucrados reflejen esta descripción.
 
-Existen muchas herramientas en el mercado que han intentado implementar este concepto enfocadas en distintas áreas:
+Existen muchas herramientas en el mercado que han intentado implementar este concepto, enfocadas en distintas áreas:
 
 - Administación de configuraciones
   - Chef
@@ -23,40 +21,44 @@ Existen muchas herramientas en el mercado que han intentado implementar este con
   - Heat
   - AWS Cloudformation
 
-Cualquiera de ellas son muy potentes en su área, pero poco utiles en las demás. Ansible es una de las pocas herramientas que permite implementar estas mismas ideas pero en todas estas áreas de forma eficiente.
+Cualquiera de ellas son muy potentes en su área, pero poco útiles en las demás.
+**Ansible** es una de las pocas herramientas que permite implementar estas mismas ideas pero en todas estas áreas de forma eficiente.
 
 ### Historia
 
 Ansible fue concebido y desarrollado inicialmente por Michael Dehaan, product manager de Puppet Labs. El estaba conforme con las funcionalidades de Puppet, pero creía que podía desarrollar algo más interesante. En el 2012, pública la primera versión de Ansible, la cual cuenta con muchas de las propiedades que lo hicieron exitoso.
 
-> **Ansible** - Maquina de ficción creada por Ursula K. Le Guin es el libro Rocanno's World, capaz de permitir comunicaciones a velocidades más rápidas que la velocidad de La Luz.
+> **Ansible** - Maquina de ficción creada por Ursula K. Le Guin es el libro Rocanno's World, capaz de permitir comunicaciones a velocidades más rápidas que la velocidad de la luz.
 
-De a poco Ansible fue superando en popularidad a otras herramientas similares, llamando la atención de grandes empresas. En 2015 Red Hat adquirío Ansible y desde ahí el éxito de la plataforma se ha acelerado. Red Hat indico al momento de la adquisición que mantendría las propiedades Open Source del software, y que ofrecería servicios de soporte y consultoría como herramienta de monetización. Hasta ahora la empresa ha mantenido esta promesa.
+De a poco Ansible fue superando en popularidad a otras herramientas similares, llamando la atención de grandes empresas. En 2015 Red Hat adquirió Ansible y desde ahí el éxito de la plataforma se ha acelerado. Red Hat indicó al momento de la adquisición que mantendría las propiedades Open Source del software, y que ofrecería servicios de soporte y consultoría como herramienta de monetización. Hasta ahora la empresa ha mantenido esta promesa.
 
 ### Propiedades
 
-Ansible esta escrito en su totalidad en `python`. Las configuraciones de todas las entidades de Ansible se realizan a través de archivos de texto, escritos en formato `YAML`. 
+Ansible esta escrito en su totalidad en `python`. Las configuraciones de todas las entidades de Ansible se realizan a través de archivos de texto, escritos en formato [YAML](https://es.wikipedia.org/wiki/YAML). 
 
-A diferencia de otros sistemas, Ansible no necesita de un cliente instalado en los hosts que va a administrar. Realiza todas las tareas a través de `SSH`, `WinRM`, o algún otro método configurado por el usuario. Esta forma de interactuar con los dispositivos finales, permite a Ansible trabajar en base a un modelo `push` en vez de un modelo `pull`.
+A diferencia de otros sistemas, Ansible no necesita de un cliente instalado en los equipos (hosts) que va a administrar. Realiza todas las tareas a través de `SSH`, `WinRM`, o algún otro método configurado por el usuario. Esta forma de interactuar con los dispositivos finales permite a Ansible trabajar en base a un modelo `push` en vez de un modelo `pull`.
 
 ![Push vs Pull](./imagenes/ansible_002.svg)
 
-_OBS: El servidor de control tiene que poder llegar a todos los componentes que va a administrar. Esto no debería ser un problema si se cuenta con una red de management._
+>_OBS: El servidor de control tiene que poder llegar a todos los componentes que va a administrar. Esto no debería ser un problema si se cuenta con una red de management._
+
 
 #### Módulos
 
-Para interactuar con el sinfín de sistemas que existen en el mercado, Ansible define Módulos para cada uno de ellos. Un módulo no es más que un script/programa escrito en algún lenguaje (usualmente Python) que cumple con una determinada interfaz. Ansible cuenta con una grán cantidad de módulos que comprenden sistemas de:
+Para interactuar con el sinfín de sistemas que existen en el mercado, Ansible define `Módulos` para cada uno de ellos. Un módulo no es más que un script/programa escrito en algún lenguaje (usualmente Python) que cumple con una determinada interfaz. Ansible cuenta con una gran cantidad de módulos que comprenden sistemas de:
 
 - Cloud
 - Herramientas de monitoreo
 - Herramientas de colaboración
-- Networking.
-- Containers.
-- Etc.
+- Sistemas
+- Networking
+- Containers
+- Bases de Datos
+- Etc, etc.
 
-_OBS: [Link a módulos de `ansible`](https://docs.ansible.com/ansible/2.9/modules/modules_by_category.html)._
+> _OBS: La lista de módulos oficiales se encuentra [aquí](https://docs.ansible.com/ansible/2.9/modules/modules_by_category.html)._
 
-Además, se pueden escribir módulos nuevos para utilizar contra sistemas que no estén en la lista, aunque vale la pena investigar si no existe al día de hoy un módulo en el repositorio de Ansible o en la comunidad que realice las mismas tareas (veremos `ansible-galaxy` más adelante que ayuda a encontrar estos módulos desarrollados por la comunidad).
+Además, de ser necesario se pueden escribir módulos nuevos, para utilizar contra sistemas que no estén en la lista. Aunque primero vale la pena investigar si no existe un módulo ya desarrollado, en el repositorio de Ansible o en la comunidad que realice la tarea requerida (veremos `ansible-galaxy` más adelante que ayuda a encontrar estos módulos desarrollados por la comunidad).
 
 **IaaC**
 
@@ -78,9 +80,9 @@ Usuario:
 
 **Separación del código de los datos**
 
-Otra de las ideas importantes que plantea Ansible es el hecho de mantener los datos separados de las tareas a realizar. Las variables de datos pueden ser cargadas de diversas maneras a la hora de ejecutar una tarea.
+Otra de las ideas importantes que plantea Ansible es el hecho de **mantener los datos separados de las tareas** a realizar. Las variables de datos pueden ser cargadas de diversas maneras a la hora de ejecutar una tarea.
 
-Por ejemplo, podemos crear una tarea que levante un servidor de Apache publicado en un determinado puerto, bajo un determinado usuario, cuyos logs serán almacenados en una determinada ubicación. Luego, creamos tres perfiles con la información de configuración de tres servidores distintos, con valores independientes de `user`, `port`, y directorio de `logs`.  Podemos entonces re-utilizar la misma tarea de creación de servidor Apache con estos tres perfiles, para crear tres servidores distintos.
+Por ejemplo, podemos crear una tarea que levante un servidor de Apache publicado en un determinado puerto, bajo un determinado usuario, cuyos logs serán almacenados en una determinada ubicación. Luego, creamos tres perfiles con la información de configuración de tres servidores distintos, con valores independientes de `user`, `port`, y directorio de `logs`.  De esta forma podemos reutilizar la misma tarea de creación del servidor Apache con estos tres perfiles, para crear tres servidores distintos, sin necesidad de reescribir nuestro código.
 
 ![Servidores Apache con múltiples configuraciones](./imagenes/ansible_004.svg)
 
@@ -88,15 +90,15 @@ Por ejemplo, podemos crear una tarea que levante un servidor de Apache publicado
 
 > "… propiedad de una operación matemática, que puede ser aplicada múltiples veces sin cambiar los resultados de la aplicación inicial."
 
-Cada vez que ejecutemos una acción de Ansible, primero va a verificar el estado actual del sistema a modificar con el estado deseado. **Solamente si existen diferencias entre los estados se termina realizando una acción.**
+Cada vez que ejecutemos una acción de Ansible, primero va a verificar el estado actual del sistema a modificar contra el estado deseado. **Solamente si existen diferencias entre los estados se termina realizando una acción.**
 
 ![Idempotente](./imagenes/ansible_005.svg)
 
-Dependiendo del estado del sistema con que vamos a interactuar, es la acción que terminará realizando Ansible sobre el mismo para llevarlo al estado deseado.
+Dependiendo del estado del sistema con que vamos a interactuar, es la acción que terminará realizando Ansible sobre el mismo, para llevarlo al estado deseado.
 
 ![Acciones según código](./imagenes/ansible_006.svg)
 
-_OBS: Puede ser necesario que tenga que realizar más de una acción para conseguir el resultado deseado. Además, **NO** todos los módulos cumplen con esta propiedad, en partícular los módulos de networking._
+>_OBS: **NO** todos los módulos cumplen con esta propiedad, en partícular los módulos de networking._
 
 ### Ejemplo de como interactuar con Ansible
 
@@ -104,14 +106,14 @@ Supongamos que estamos trabajando sobre una arquitectura tradicional de una apli
 
 ![Estructura de una Aplicación Web](./imagenes/ansible_007.svg)
 
-Ahora, necesitamos identifica que necesitamos para que esta infraestructura funcione.
+Identifiquemos que necesitamos para que esta infraestructura funcione:
 
 - ¿Que necesito en un servidor de aplicación?
-  - Un usuario.
-  - Dependencias.
-  - La aplicación.
-  - Configuracion de la aplicación.
-  - La aplicación en servicio.
+  - Un usuario
+  - Dependencias
+  - La aplicación
+  - Configuracion de la aplicación
+  - La aplicación en servicio
 - ¿Que módulos pueden realizar estas tareas?
   - `user`
   - `package`
@@ -121,57 +123,122 @@ Ahora, necesitamos identifica que necesitamos para que esta infraestructura func
 
 ![Propiedades por tarea](./imagenes/ansible_008.svg)
 
-Cada uno de estos módulos consumira distintas variables para cumplir con la tarea indicada.
+Cada uno de estos módulos consumirá distintas variables para cumplir con la tarea indicada.
 
-En general intentamos que cada archivo de tareas tenga un objetivo especifico que cumplir. Si una acción cuenta con múltiples objetivos, cada uno de ellos contará con un archivo de tareas independiente.
+En general intentamos que cada archivo de tareas tenga **un objetivo especifico** que cumplir (uno solo). Si una acción cuenta con múltiples objetivos, cada uno de ellos contará con un archivo de tareas independiente.
 
 Siguiendo las mejores prácticas de Ansible, conviene que separemos las variables de configuración de las tareas en archivos distintos. También debemos separar todos los archivos de configuración que necesitemos insertar en nuestros servidores.
 
-La combinación de las tareas, las variables, y los archivos los podemos englobar en una única estructura de orden superior conocido como un rol o `role`. El mismo presupone un cierto orden de carpetas para almacenar todos estos elementos.
+La combinación de las tareas, las variables, y los archivos los podemos englobar en una única estructura de orden superior conocido como un [Role](https://docs.ansible.com/ansible/latest/user_guide/playbooks_reuse_roles.html). El mismo presupone un cierto orden de carpetas para almacenar todos estos elementos.
 
 ![Rule](./imagenes/ansible_009.svg)
 
 Idealmente, cada acción contará con uno o más roles que se le aplicarán a cada host para configurarlo.
 
-Por ejemplo, podríamos construir la siguiente estructura de carpetas para ejecutar las acciones identificadas anteriormente.
+Por ejemplo, podríamos construir la siguiente estructura de carpetas para ejecutar las acciones identificadas anteriormente:
 
 ![Roles](./imagenes/ansible_010.svg)
 
-Ahora que tenemos la lista de roles que contienen todas las configuraciones de nuestros servicios, tenemos que construir la lista de hosts donde los implementaremos. En Ansible, creamos inventarios donde almacenamos la lista de nodos con los cuales queremos interactuar. El sistema de inventarios de Ansible es muy potente. Nos permite crear todo tipo de grupos de equipos, y configurar variables especifica para cada nodo o grupo de nodo. Hasta podemos utilizar inventarios dínamicos, que cumplan con una determinada interface para resolver la lista de nodos y sus variables.
+Ahora que tenemos la lista de roles que contienen todas las configuraciones de nuestros servicios, tenemos que construir la lista de hosts donde los implementaremos. En Ansible, creamos inventarios donde almacenamos la lista de nodos con los cuales queremos interactuar.
 
-Por ultimo, la union de hosts con las tareas o los roles los definimos en un `playbook`.  Los `playbooks` cuentan con múltiples `plays` que vinculan las tareas a realizar con los equipos correspondientes. Cada una de ellas cuenta con configuraciones adicionales que cambian el comportamiento del `play`.
+El sistema de [inventarios](https://docs.ansible.com/ansible/latest/user_guide/intro_inventory.html) de Ansible es muy potente. Nos permite crear todo tipo de grupos de equipos, y configurar variables específicas para cada nodo o grupo de nodos. Hasta podemos utilizar [inventarios dinámicos](https://docs.ansible.com/ansible/latest/user_guide/intro_dynamic_inventory.html), que cumplan con una determinada interface para resolver la lista de nodos y sus variables, lo cuál es muy útil por ej. cuando trabajamos sobre la cloud.
+
+Por último, la unión de los hosts con las tareas o los roles los definimos en un `playbook`.  Los [playbooks](https://docs.ansible.com/ansible/latest/user_guide/playbooks_intro.html) cuentan con múltiples `plays` que vinculan las tareas a realizar con los equipos correspondientes. Cada una de ellas cuenta con configuraciones adicionales que cambian el comportamiento del `play`.
 
 ![Playbook](./imagenes/ansible_011.svg)
 
-Luego ejecutaremos esta `playbook` utilizando Ansible. El sistema comenzara recabando datos de los hosts sobre los que debe operar, y luego pasara a ejecutar todos los `plays` de forma secuencial. Ansible decidirá al momento de ejecutar cada rol, las tareas que debe realizar para conseguir el estado desado. En caso de que se le proveea una lista de hosts sobre los cuales Ansible deba trabajar, Ansible realizará las configuraciones de forma paralela en todos los hosts.
+Luego ejecutaremos esta `playbook` utilizando Ansible. El sistema comenzara recabando datos de los hosts sobre los que debe operar, y luego pasará a ejecutar todos los `plays` de forma secuencial. Ansible decidirá al momento de ejecutar cada rol, las tareas que debe realizar para conseguir el estado desado. En caso de que se le proveea una lista de hosts sobre los cuales trabajar, Ansible realizará las configuraciones de forma paralela en todos los hosts.
 
 ## Comentarios Adicionales
 
 ### Conexión remota
 
-Ansible utiliza SSH para comunicarse con los host remotos. En particular utiliza la versión nativa de OpenSSH de la maquina de control. En caso de que la versión de OpenSSH a utilizar sea muy vieja, Ansible pasa a utilizar una implementación de OpenSSH programada en Python llamada `paramiko`
+Ansible utiliza SSH para comunicarse con los host remotos. En particular utiliza la versión nativa de OpenSSH de la maquina de control (equipo desde donde ejecuto los playbooks). En caso de que la versión de OpenSSH a utilizar sea muy vieja, Ansible pasa a utilizar una implementación de OpenSSH programada en Python llamada `paramiko`. Esta es utilizada muchas veces cuando se trabaja contra equipos de Networking.
 
 Se recomienda que la autenticación se realice a través de claves privadas, pero también se puede configurar Ansible para que pida credenciales de acceso al momento de ejecutar una tarea en el host remoto.
 
 ### Inventarios
 
-La lista de hosts sobre los cuales Ansible trabajara se almacenan en inventarios. Estos son archivos de texto escritos en formato `yaml` o `ini` conteniendo las IP o las URL de los hosts a administrar. También pueden contar con variables adicionales especificas para cada host. 
+La lista de hosts sobre los cuales Ansible trabajara se almacenan en [inventarios](https://docs.ansible.com/ansible/latest/user_guide/intro_inventory.html). Estos son archivos de texto escritos en formato `yaml` o `ini` conteniendo las IP o las URL de los hosts a administrar. También pueden contar con variables adicionales especificas para cada host. 
 
-Por defecto, Ansible buscara el archivo de inventario en `/etc/ansible/hosts`, pero también se puede especificar durante la invocación a través del parámetro`-i <host>`.
+Por defecto, Ansible buscara el archivo de inventario en `/etc/ansible/hosts`, pero también se puede especificar durante la invocación a través del parámetro`-i <host>`, o se puede cambiar el directorio por defecto mediante configuración.
 
-Ansible es capaz de tomar hosts de múltiples inventarios al mismo tiempo, y puede construirlos de forma dinámica previo a la realización de las tareas. Este tipo de inventarios se los conoce como "inventarios dinámicos".
+Ansible es capaz de tomar hosts de múltiples inventarios al mismo tiempo, y puede también construirlos de forma dinámica previo a la realización de las tareas, mediante la utilización de [inventarios dinámicos](https://docs.ansible.com/ansible/latest/user_guide/intro_dynamic_inventory.html).
 
-### DEMO Lab #1 - Lanzar el laboratorio
 
-El laboratorio consiste en un set contenedores que simularán una granja de servidores. Los mismos correrán en una maquina virtual en la nube de AWS. Las indicaciones para conectarse a su maquina virtual serán entregadas durante el workshop.
+## Acceso al ambiente de trabajo
+En esta capacitación no trabajaremos directamente sobre las notebooks, sino que cada estudiante tendrá acceso a varios servidores en la nube desde donde se realizarán los laboratorios.
+
+Los servidores disponibles (del 1 al N depeniendo de la cantidad de estudiantes) siguen la siguiente convención de nombres:
+
+```
+ansible101-pod1-master.labs.conatest.click
+ansible101-pod2-master.labs.conatest.click
+...
+ansible101-podN-master.labs.conatest.click
+```
+
+Cada estudiante accederá únicamente al servidor (Pod) asignado.
+
+Previo al inicio del curso, debe haber recibido por mail los certificados para conectarse al equipo. Estos son `ansible101-podX-key.pem` el cuál se utiliza directamente con ssh, y `ansible101-podX-key.ppk` el cuál se utiliza con el cliente Putty (en Windows). En caso de no haberlo recibido, consulte al instructor.
+
+#### Como acceder desde Linux/MacOS
+Para acceder al servidor de trabajo desde linux o Mac, se debe descargar el certificado (.pem) y colocarle permisos de solo lectura únicamente para el usuario. Esto se hace de la siguiente manera:
+
+```bash
+$ chmod 400 ansible101-podX-key.pem
+```
+
+Luego se utiliza el comando `ssh` para acceder al servidor, sustituyendo la X por el número de POD asignado, de acuerdo al mail recibido.
+
+```bash
+$ ssh -i ansible101-podX-key.pem ubuntu@ansible101-podX-master.labs.conatest.click
+```
+
+#### Como acceder desde Windows
+
+Desde Windows, se puede acceder de dos formas.
+
+La primera es utilizando `Windows Power Shell`:
+- Descargar a la notebook el certificado (.pem) recibido y coloclarlo en una carpeta de fácil acceso.
+- Abrir la aplicación `Windows Power Shell`, y ubicarse en dicha carpeta.
+- Utilizar el comando `ssh` tal como lo haríamos para Linux en el caso anterior:
+  ```bash
+  > ssh -i ansible101-podX-key.pem ubuntu@ansible101-podX-master.labs.conatest.click
+  ```
+
+La segunda opción es utilizando la herramienta `Putty`:
+- Descargar a la notebook el certificado (.ppk) recibido.
+- Instalar [Putty](https://www.chiark.greenend.org.uk/~sgtatham/putty/) y abrirlo.
+- Dentro del panel "Category" elegir "Session" y luego completar los siguientes campos:
+
+  ```bash
+  hostname: ubuntu@ansible101-podX-master.labs.conatest.click
+  connection-type: ssh
+  port: 22
+  ```
+
+-  Dentro de "Category" --> "Connection" --> "SSH" --> "Auth" seleccionar "Browse" y elegir el certificado `ansible101-podX-key.ppk`
+- Opcional: puede grabar la configuración de la sesión mediante "Save" para poder volver a utilizarla luego. 
+- Seleccionar "Open" para conectarse, y luego "Accept" para aceptar la Security Alert. 
+
+
+
+
+## DEMO Lab #1 - Lanzar el laboratorio
+
+El laboratorio consiste en un set contenedores que simularán una granja de servidores. 
 
 ![Diagrama de Lab en Docker](./imagenes/ansible_012.png)
 
-Una vez conectados a su VM, debemos levantar todos los contenedores, y luego debemos pasarnos al contenedor `master` desde donde correremos todos los comandos de Ansible. Los pasos a realizar son los siguientes:
+Una vez conectados al Pod, debemos levantar todos los contenedores, y luego debemos pasarnos al contenedor `master` desde donde correremos todos los comandos de Ansible. Los pasos a realizar son los siguientes:
 
 ```bash
 # Dirijirse al directorio /home/ubuntu/ansible_lab/docker
 cd /home/ubuntu/ansible_lab/docker
+
+# Inicializar el ambiente
+make up
 
 # Conectarnos con el nodo `master`
 make attach
