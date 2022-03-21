@@ -1,11 +1,12 @@
 # BASE image - used as a starting point by MASTER and HOST images
 
-FROM ubuntu:16.04
+FROM ubuntu:20.04
 
 # install required packages
-RUN apt-get update \
-  && apt-get install --no-install-recommends --no-install-suggests -y \
-  aptitude iputils-ping curl ca-certificates net-tools man vim openssh-server python locales nano \
+RUN apt-get update
+RUN DEBIAN_FRONTEND=noninteractive TZ=America/Montevideo apt-get -y install tzdata
+RUN apt-get install --no-install-recommends --no-install-suggests -y \
+  aptitude iputils-ping curl ca-certificates net-tools man vim openssh-server python3 locales nano \
   && rm -rf /var/lib/apt/lists/*
 
 # ensure that required directories are created
