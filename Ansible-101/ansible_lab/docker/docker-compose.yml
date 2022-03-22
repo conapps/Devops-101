@@ -3,13 +3,13 @@ services:
   base:
     build: ./base/
     image: ansible_base
-  master:
+  controller:
     links:
       - base
-    build: ./master/
-    image: ansible_master
-    container_name: control
-    hostname: control
+    build: ./controller/
+    image: ansible_controller
+    container_name: controller
+    hostname: controller
     ports:
       - "2222:22"
     command: ['/usr/sbin/sshd', '-D']
@@ -22,7 +22,7 @@ services:
   host01:
     links:
       - base
-      - master
+      - controller
     build: ./host/
     image: ansible_host
     container_name: host01
@@ -35,7 +35,7 @@ services:
   host02:
     links:
       - base
-      - master
+      - controller
       - host01
     image: ansible_host
     container_name: host02
@@ -48,7 +48,7 @@ services:
   host03:
     links:
       - base
-      - master
+      - controller
       - host02
     image: ansible_host
     container_name: host03
