@@ -17,7 +17,7 @@ services:
     volumes:
       - ./volume:/root/ansible
       - /home/ubuntu/.ssh:/root/.ssh
-      - /home/ubuntu/ansible_lab:/root/ansible_lab
+      # - /home/ubuntu/ansible_lab:/root/ansible_lab
   host01:
     links:
       - base

@@ -23,10 +23,13 @@ RUN sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/g' /etc/ssh
 RUN sed -i 's/#PasswordAuthentication yes/PasswordAuthentication yes/g' /etc/ssh/sshd_config
 RUN service ssh start
 EXPOSE 22
-CMD ["/usr/sbin/sshd","-D"]
 
 # change working directory
-WORKDIR /var/ans
+WORKDIR /root/ansible
+RUN echo "cd /root/ansible" >> ~/.profile
+
+CMD ["/usr/sbin/sshd","-D"]
+
 
 # generate RSA key pair to allow master to communicate with managed nodes
 # default private key passphrase is '12345'
