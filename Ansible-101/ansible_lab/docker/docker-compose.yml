@@ -8,11 +8,15 @@ services:
       - base
     build: ./master/
     image: ansible_master
-    container_name: master
-    hostname: master
+    container_name: control
+    hostname: control
+    ports:
+      - "2222:22"
     command: ['/usr/sbin/sshd', '-D']
+    working_dir: /root/ansible
     volumes:
-      - ./volume:/var/ans
+      - ./volume:/root/ansible
+      # - ./volume:/var/ans
       - /home/ubuntu/.ssh:/root/.ssh
       - /home/ubuntu/ansible_lab:/root/ansible_lab
   host01:
@@ -24,8 +28,10 @@ services:
     container_name: host01
     hostname: host01
     command: ['/var/run.sh']
+    working_dir: /root/ansible
     volumes:
-      - ./volume:/var/ans
+      - ./volume:/root/ansible
+      # - ./volume:/var/ans
   host02:
     links:
       - base
@@ -35,8 +41,10 @@ services:
     container_name: host02
     hostname: host02
     command: ['/var/run.sh']
+    working_dir: /root/ansible
     volumes:
-      - ./volume:/var/ans
+      - ./volume:/root/ansible
+      # - ./volume:/var/ans
   host03:
     links:
       - base
@@ -46,5 +54,7 @@ services:
     container_name: host03
     hostname: host03
     command: ['/var/run.sh']
+    working_dir: /root/ansible
     volumes:
-      - ./volume:/var/ans
+      - ./volume:/root/ansible
+      # - ./volume:/var/ans
