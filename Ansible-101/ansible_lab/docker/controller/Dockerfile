@@ -18,7 +18,12 @@ ENV LC_ALL en_US.UTF-8
 ADD .vimrc /root/.vimrc
 ADD .nanorc /root/.nanorc
 
-# COPY authorized_keys /root/.ssh/authorized_keys
+RUN echo 'root:Ansible-101' | chpasswd
+RUN sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/g' /etc/ssh/sshd_config
+RUN sed -i 's/#PasswordAuthentication yes/PasswordAuthentication yes/g' /etc/ssh/sshd_config
+RUN service ssh start
+EXPOSE 22
+CMD ["/usr/sbin/sshd","-D"]
 
 # change working directory
 WORKDIR /var/ans
