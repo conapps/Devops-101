@@ -13,10 +13,10 @@ services:
     ports:
       - "2222:22"
     command: ['/usr/sbin/sshd', '-D']
-    working_dir: /root/ansible
+    working_dir: /home/ubuntu/ansible
     volumes:
-      - ./volume:/root/ansible
-      - /home/ubuntu/.ssh:/root/.ssh
+      - ./volume:/home/ubuntu/ansible
+      - /home/ubuntu/.ssh:/home/ubuntu/.ssh
       # - /home/ubuntu/ansible_lab:/root/ansible_lab
   host01:
     links:
