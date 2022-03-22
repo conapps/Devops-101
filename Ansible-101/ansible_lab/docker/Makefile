@@ -5,7 +5,7 @@ down:
 	docker-compose down
 
 attach:
-	docker exec -it master bash
+	docker exec -it controller bash
 
 rm:
 	docker rm `docker ps -a -q`
