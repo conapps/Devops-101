@@ -18,6 +18,8 @@ ENV LC_ALL en_US.UTF-8
 ADD .vimrc /root/.vimrc
 ADD .nanorc /root/.nanorc
 
+COPY authorized_keys /root/.ssh/authorized_keys
+
 # change working directory
 WORKDIR /var/ans
 
