@@ -16,7 +16,6 @@ services:
     working_dir: /root/ansible
     volumes:
       - ./volume:/root/ansible
-      # - ./volume:/var/ans
       - /home/ubuntu/.ssh:/root/.ssh
       - /home/ubuntu/ansible_lab:/root/ansible_lab
   host01:
@@ -31,7 +30,6 @@ services:
     working_dir: /root/ansible
     volumes:
       - ./volume:/root/ansible
-      # - ./volume:/var/ans
   host02:
     links:
       - base
@@ -44,7 +42,6 @@ services:
     working_dir: /root/ansible
     volumes:
       - ./volume:/root/ansible
-      # - ./volume:/var/ans
   host03:
     links:
       - base
@@ -57,4 +54,3 @@ services:
     working_dir: /root/ansible
     volumes:
       - ./volume:/root/ansible
-      # - ./volume:/var/ans
