@@ -27,7 +27,7 @@ RUN sed -i 's/#PasswordAuthentication yes/PasswordAuthentication yes/g' /etc/ssh
 # Allow ssh connection for root with ssh-key 
 ADD authorized_keys /root/.ssh/authorized_keys
 RUN chown root /root/.ssh/authorized_keys
-RUN chomod 600 /root/.ssh/authorized_keys
+RUN chmod 600 /root/.ssh/authorized_keys
 
 # Add ubuntu user to container and configure as default
 # RUN useradd -m ubuntu
