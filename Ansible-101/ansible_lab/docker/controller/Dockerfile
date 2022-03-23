@@ -15,14 +15,19 @@ ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
 
+# Set environment
 ADD .vimrc /root/.vimrc
 ADD .nanorc /root/.nanorc
-RUN echo 'root:Ansible-101' | chpasswd
 
+# Allow ssh connection for root with password 
+RUN echo 'root:Ansible-101' | chpasswd
 RUN sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/g' /etc/ssh/sshd_config
 RUN sed -i 's/#PasswordAuthentication yes/PasswordAuthentication yes/g' /etc/ssh/sshd_config
-# RUN service ssh start
-# EXPOSE 22
+
+# Allow ssh connection for root with ssh-key 
+ADD authorized_keys /root/.ssh/authorized_keys
+RUN chown root /root/.ssh/authorized_keys
+RUN chomod 600 /root/.ssh/authorized_keys
 
 # Add ubuntu user to container and configure as default
 # RUN useradd -m ubuntu
@@ -34,6 +39,7 @@ RUN sed -i 's/#PasswordAuthentication yes/PasswordAuthentication yes/g' /etc/ssh
 # change working directory
 # RUN echo "cd /home/ubuntu/ansible" >> /home/ubuntu/.profile
 
+# Change default working directory when login
 WORKDIR /root/ansible
 RUN echo "cd /root/ansible" >> ~/.profile
 
