@@ -159,32 +159,32 @@ Se recomienda que la autenticación se realice a través de claves privadas, per
 ---
 
 ## Acceso al ambiente de trabajo
-En esta capacitación no trabajaremos directamente sobre las notebooks, sino que cada estudiante tendrá acceso a varios servidores en la nube desde donde se realizarán los laboratorios.
+En esta capacitación no trabajaremos directamente sobre las notebooks, sino que cada estudiante tendrá acceso a un Pod de equipos en la nube, desde donde se realizarán los laboratorios.
 
 Los servidores disponibles (del 1 al N depeniendo de la cantidad de estudiantes) siguen la siguiente convención de nombres:
 
 ```
-ansible101-pod1-master.labs.conatest.click
-ansible101-pod2-master.labs.conatest.click
+pod-1.labs.conatest.click
+pod-2.labs.conatest.click
 ...
-ansible101-podN-master.labs.conatest.click
+pod-N.labs.conatest.click
 ```
 
 Cada estudiante accederá únicamente al servidor (Pod) asignado.
 
-Previo al inicio del curso, debe haber recibido por mail los certificados para conectarse al equipo. Estos son `ansible101-podX-key.pem` el cuál se utiliza directamente con ssh, y `ansible101-podX-key.ppk` el cuál se utiliza con el cliente Putty (en Windows). En caso de no haberlo recibido, consulte al instructor.
+Previo al inicio del curso, debe haber recibido por mail los certificados para conectarse al equipo. Estos son `devops101-labs.pem` el cuál se utiliza directamente con ssh, y `devops101-labs.ppk` el cuál se utiliza con el cliente Putty (en Windows). En caso de no haberlo recibido, consulte al instructor.
 
 ### Como acceder desde Linux/MacOS
 Para acceder al servidor de trabajo desde linux o Mac, se debe descargar el certificado (.pem) y colocarle permisos de solo lectura únicamente para el usuario. Esto se hace de la siguiente manera:
 
 ```bash
-$ chmod 400 ansible101-podX-key.pem
+$ chmod 400 devops101-labs.pem
 ```
 
 Luego se utiliza el comando `ssh` para acceder al servidor, sustituyendo la X por el número de POD asignado, de acuerdo al mail recibido.
 
 ```bash
-$ ssh -i ansible101-podX-key.pem ubuntu@ansible101-podX-master.labs.conatest.click
+$ ssh -i devops101-labs.pem ubuntu@pod-X.labs.conatest.click
 ```
 
 ### Como acceder desde Windows
@@ -196,7 +196,7 @@ La primera es utilizando `Windows Power Shell`:
 - Abrir la aplicación `Windows Power Shell`, y ubicarse en dicha carpeta.
 - Utilizar el comando `ssh` tal como lo haríamos para Linux en el caso anterior:
   ```bash
-  > ssh -i ansible101-podX-key.pem ubuntu@ansible101-podX-master.labs.conatest.click
+  ssh -i devops101-labs.pem ubuntu@pod-X.labs.conatest.click
   ```
 
 La segunda opción es utilizando la herramienta `Putty`:
@@ -205,46 +205,84 @@ La segunda opción es utilizando la herramienta `Putty`:
 - Dentro del panel "Category" elegir "Session" y luego completar los siguientes campos:
 
   ```bash
-  hostname: ubuntu@ansible101-podX-master.labs.conatest.click
+  hostname: ubuntu@pod-X.labs.conatest.click
   connection-type: ssh
   port: 22
   ```
 
--  Dentro de "Category" --> "Connection" --> "SSH" --> "Auth" seleccionar "Browse" y elegir el certificado `ansible101-podX-key.ppk`
+-  Dentro de "Category" --> "Connection" --> "SSH" --> "Auth" seleccionar "Browse" y elegir el certificado `devops101-labs.ppk`
 - Opcional: puede grabar la configuración de la sesión mediante "Save" para poder volver a utilizarla luego. 
 - Seleccionar "Open" para conectarse, y luego "Accept" para aceptar la Security Alert. 
 
 
 
-
 ### DEMO Lab #1 - Lanzar el laboratorio
 
-El laboratorio consiste en un set contenedores que simularán una granja de servidores. 
+El laboratorio consiste en un set de contenedores que simulan una granja de servidores. 
 
 ![Diagrama de Lab en Docker](./imagenes/ansible_012.png)
 
-El servidor `master`es el que corre los contenedores, y solo accederá al mismo si desea reiniciar de cero el ambiente.
-El servidor `control` es donde escribirá y ejecutará los playbooks/comandos de Ansible, los cuales trabajarán contra los equipos `host01`, `host02` y `host03`. 
+El servidor `master` es el que corre los contenedores `controller`, `host1`, `host2` y `host3`. Este es el equipo al cual se accede cuando se hace `ssh` mediante al nombre: `pod-X.labs.conatest.click`. 
+En general no es necesario acceder al mismo, salvo que se desee reiniciar de cero el ambiente por algún motivo particular.
 
-Una vez conectados al Pod, debemos levantar todos los contenedores, y luego debemos pasarnos al contenedor `master` desde donde correremos todos los comandos de Ansible. Los pasos a realizar son los siguientes:
+Para verificar si el ambiente se encuentra levantado correctamente, conéctese al mismo y haga:
 
 ```bash
-# Pararse en el directorio /home/ubuntu/ansible_lab/docker
-cd /home/ubuntu/ansible_lab/docker
+# Pararse en el directorio /home/ubuntu/ansible_lab
+$ cd ansible_lab
 
-# Inicializar el ambiente
-make up
-
-# Conectarnos con el nodo `master`
-make attach
+# Verificar el estado del ambiente
+$ make status
+    Name             Command        State                   Ports                
+---------------------------------------------------------------------------------
+controller      /usr/sbin/sshd -D   Up       0.0.0.0:2222->22/tcp,:::2222->22/tcp
+docker_base_1   bash                Exit 0                                       
+host01          /var/run.sh         Up                                           
+host02          /var/run.sh         Up                                           
+host03          /var/run.sh         Up        
 ```
 
-_OBS: En caso de que sea necesario reiniciar el lab, pueden utilizar el comando `make down && make up` para eliminar todos los contenedores, y luego repetir los pasos expresados anteriormente._
+En caso de requerirlo, puede reiniciar el ambiente haciendo:
+```bash
+# Pararse en el directorio /home/ubuntu/ansible_lab
+$ cd ansible_lab
 
-Verifiquen que tienen conexión con los siguientes hosts utilizando `ping`:
+# Bajar el ambiente:
+$ make down
 
-- `host01`
-- `host02`
-- `host03`
+# Subior el ambiente:
+$ make up
+```
+
+Como explicamos antes, no debería ser necesario conectarse al equipo master.
+Sino que todos los laboratorios se realizarán desde el equipo `controller`. Aquí es donde escribirá y ejecutará los playbooks/comandos de Ansible, los cuáles trabajarán contra los equipos `host01`, `host02` y `host03`. 
+
+Para conectarse al equipo `controller` debe hacer un `ssh` a su pod (pod-X.labs.conatest.click) pero esta vez debe indicar el puerto `2222`y el usuario `root`.
+
+  ```bash
+  ssh -i devops101-labs.pem -p 2222 root@pod-X.labs.conatest.click
+  ```
+
+Pruebe de conectarse y verificar la conexión hacia los equipos `host1`, `host2`y `host3` utilizando `ping`.
+
+OBS: para facilitar la conexión a los equipos, puede agregar entradas como estas al archivo `config` de ssh, y luego simplemente hacer `ssh master.labs.conatest.click` o `ssh controller.labs.conatest.click` para acceder a cada uno de los equipos (debe cambiar el pod-X por el número de POD que le fué asignado, y referenciar en forma correcta el lugar donde se encuentra el archivo .pem).
+
+```bash
+Host master.labs.conatest.click
+  HostName pod-X.labs.conatest.click
+  IdentityFile ~/.ssh/devops101-labs.pem
+  Port 22
+  User ubuntu
+
+Host controller.labs.conatest.click
+  HostName pod-X.labs.conatest.click
+  IdentityFile ~/.ssh/devops101-labs.pem
+  Port 2222
+  User root
+```
+
+Este archivo de configuración se encuentra ubicado en `~/.ssh/config` en linux o en `~\.ssh\config` en Windows (si no existe, puede crearlo).
+Esto además resultará sumamente útil para conectarse por medio de Visual Studio Code al equipo `controller` y poder escribir los playbooks directamente en el servidor, utilizando este editor. 
 
 ---
+[Siguiente-->](02_ansible.md)
