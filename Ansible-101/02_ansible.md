@@ -1,20 +1,24 @@
 
-### Inventarios
+## Inventario
+Ref: [How to build your inventory](https://docs.ansible.com/ansible/latest/user_guide/intro_inventory.html)
 
-La lista de hosts sobre los cuales Ansible trabajara se almacenan en [inventarios](https://docs.ansible.com/ansible/latest/user_guide/intro_inventory.html). Estos son archivos de texto escritos en formato `yaml` o `ini` conteniendo las IP o las URL de los hosts a administrar. También pueden contar con variables adicionales especificas para cada host. 
+La lista de hosts sobre los cuales Ansible trabajará se almacenan en `inventarios`. Estos son archivos de texto escritos en formato `yaml` o `ini`, conteniendo las IPs o nombres de los hosts a administrar.
 
-Por defecto, Ansible buscara el archivo de inventario en `/etc/ansible/hosts`, pero también se puede especificar durante la invocación a través del parámetro`-i <host>`, o se puede cambiar el directorio por defecto mediante configuración.
+Por defecto, Ansible buscará el archivo de inventario en `/etc/ansible/hosts`, pero podemos especificar la ubicación del mismo durante la invocación a través del parámetro`-i <archivo_de_inventario>`.
+O también se puede indicar la ubicación por defecto del inventario en la [configuración de ansible](https://docs.ansible.com/ansible/latest/reference_appendices/config.html), en un archivo `ansible.cfg`.
 
 Ansible es capaz de tomar hosts de múltiples inventarios al mismo tiempo, y puede también construirlos de forma dinámica previo a la realización de las tareas, mediante la utilización de [inventarios dinámicos](https://docs.ansible.com/ansible/latest/user_guide/intro_dynamic_inventory.html).
 
+En el inventario podemos crear grupos y subgrupos de equipos, lo cuál nos permitirá luego ejecutar tareas contra un grupo y que se realicen contra todos sus equipos. También podemos definir variables en el inventario, que apliquen a un host, o a grupos de hosts.
 
 ### DEMO Lab #2 - Crear un archivo de inventario
 
-Los inventarios de Ansible pueden contener múltiples grupos, y cada host puede pertenecer a uno o más grupos. En general, se comienza identificando un grupo llamado `all`  al cual pertenecerán todos los hosts, y todos los demás grupos que definamos. 
-Los hosts se definen como llaves de un objeto llamado `hosts`.
+Los inventarios de Ansible pueden contener múltiples grupos, y cada host puede pertenecer a uno o más grupos.
+En general, se comienza identificando un grupo llamado `all`  al cual pertenecerán todos los equipos y todos los demás grupos que definamos. 
+Los equipos se definen como llaves de un objeto llamado `hosts`.
 
 Vamos a definir entonces un archivo de inventario inicial.
-Para esto, conectados al nodo master, dentro de la carpeta `/var/ans/` vamos a crear un nuevo archivo llamado `inventory.yml` con el siguiente contenido:
+Para esto, conectados al nodo `controller` de nuestro lab, dentro de la carpeta `/root/ansible/` vamos a crear un nuevo archivo llamado `inventory.yml` con el siguiente contenido:
 
 ```yaml
 all:
@@ -23,9 +27,12 @@ all:
     host02:
     host03:
 ```
->OBS: puede usar el editor _vi_ o _nano_ para editar los archivos. 
+>OBS: puede usar el editor _vi_ o _nano_ para editar los archivos, aunque recomendamos conectarse en forma remota al equipo mediante el editor Visual Studio Code. 
 
-A su vez, cada grupo o host puede contar con variables especificas para definir su conexión. Como ejemplo, vamos a agregar una variable que aplique a todos los hosts para evitar que Ansible verifique si el host al que nos estamos conectando esta identificado como un host conocido cuando se conecta por ssh:
+
+Cada host, o grupo, puede contar con variables especificas definidas a nivel de inventario, que pueden o bien modificar el comportamiento de Ansible o ser utilizadas luego como parte de nuestros playbooks.
+
+Por ejemplo, vamos a agregar una variable que aplique a todos los hosts, para evitar que Ansible verifique si el host al que nos estamos conectando esta identificado como un host conocido (known_host) cuando se conecta por ssh:
 
 ```yaml
 all:
@@ -36,19 +43,21 @@ all:
     host02:
     host03:
 ```
-> OBS: tenga en cuenta la correcta indentación del archivo
+> OBS: tenga en cuenta la correcta indentación del archivo.
 
-Ahora, cada vez que Ansible se quiera comunicar con cualquiera de estos hosts utilizará el argumento definido en la variable `ansible_ssh_common_args`.  La lista de variables que podemos configurar para modificar el comportamiento de Ansible se encuentran en el siguiente [link](https://docs.ansible.com/ansible/latest/user_guide/intro_inventory.html#connecting-to-hosts-behavioral-inventory-parameters).
+Ahora, cada vez que Ansible se quiera comunicar con cualquiera de los hosts (del grupo `all`) utilizará el argumento definido en la variable `ansible_ssh_common_args`.
 
-Las variables se pueden configurar a nivel global, por grupo, o por host. Siempre se terminara aplicando la más específica.
+La lista de variables que podemos configurar para modificar el comportamiento de Ansible se encuentran en el siguiente [link](https://docs.ansible.com/ansible/latest/user_guide/intro_inventory.html#connecting-to-hosts-behavioral-inventory-parameters).
 
-Una de las variables que es importante tener en cuenta es `ansible_connection`. La misma especifica que método de conexión utilizara Ansible para interactuar con el host. Por defecto, intentara comunicarse a través de SSH. Otros métodos de conexión interesantes son: `local` y `docker`.
+Las variables se pueden configurar a nivel global, por grupo, o por host; y siempre se terminará aplicando la más específica.
+
+Una de las variables que es importante tener en cuenta es `ansible_connection`. La misma especifica que método de conexión utilizará Ansible para interactuar con el host. Por defecto, intentara comunicarse a través de SSH, aunque otros métodos de conexión interesantes pueden ser por ej: `local` y `docker`.
 
 ---
 
 #### Ejercicio #1
 
-Para conseguir realizar la conexión por SSH hacia los hosts debemos configurar el método de autenticación necesario. En este caso vamos a utilizar una llave privada de ssh, que se encuentra disponible en `/var/ans/master_key`.
+Para conseguir realizar la conexión por SSH hacia los hosts debemos configurar el método de autenticación necesario. En este caso vamos a utilizar una llave privada de ssh, que se encuentra disponible en `~/ansible/master_key` del nodo `controller`.
 
 Configure el inventario para que Ansible utilize la llave privada almacenada en `./master_key` para todos los hosts. 
 
@@ -60,6 +69,7 @@ El nombre de la variable a configurar es <code>ansible_ssh_private_key_file</cod
 <details>
     <summary>Solución</summary>
     <pre>
+# inventory.yml
 all:
   vars:
     ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
@@ -73,20 +83,23 @@ all:
 
 ---
 
-Para probar que efectivamente tenemos acceso a los hosts definidos en el inventario vamos a utilizar comandos `ad-hoc`. Estos son comandos sencillos, de una sola línea, que no necesitan de un archivo individual para contenerlos, o que no tenemos intención de salvarlos para el futuro. Por ejemplo: `ping`, `echo`, etc.
+Para probar que efectivamente tenemos acceso a los hosts definidos en el inventario vamos a utilizar comandos `ad-hoc`. 
 
 ---
 
 ### Comandos ad-hoc
+Ref: [Introduction to ad hoc commands](https://docs.ansible.com/ansible/latest/user_guide/intro_adhoc.html)
 
-Los comandos `ad-hoc` se llaman a través del flag `-m` seguidos del módulo que queremos utilizar, o a través del flag `-a` seguidos del comando que queremos lanzar en los hosts remotos.
+Estos son comandos sencillos, de una sola línea, que no necesitan de un archivo individual para contenerlos, o que no tenemos intención de salvarlos para el futuro. Por ejemplo: `ping`, `echo`, etc.
+
+Los comandos `ad-hoc` se llaman a través del flag `-m` seguidos del módulo de ansible que queremos utilizar, o bien, a través del flag `-a` seguidos del comando que queremos lanzar en los hosts remotos.
 
 Con el siguiente comando podemos realizar un ping sobre todos los hosts detallados en el inventario:
 ```bash
 ansible -i inventory.yml all -m ping
 ```
 
->OBS: el comando anterior establece una conexión por ssh hacia cada hosts, por lo cual es muy útil para verificar que la autenticación ssh esté funcionando correctamente.
+>OBS: el comando anterior utiliza el módulo ping de Ansible (no el comando ping), el cuál establece una conexión por ssh hacia cada hosts, por lo cual es muy útil para verificar que la autenticación ssh esté funcionando correctamente.
 
 También podemos ejecutar un comando directamente en los hosts, mediante:
 ```bash
@@ -105,11 +118,11 @@ El comando anterior devuelve la dirección IP de la interfaz `eth0` de cada host
 
 ### Ejercicio #2
 
-Modifique el inventario actual de manera de que cuente con dos nuevos grupos: `app` y `db`. Dentro del grupo `app` se deben incluir los hosts `host01` y `host02`. En el grupo `db` se debe incluir solo el host `host03`.
+Modifique el inventario actual de manera de que cuente con dos nuevos grupos: `app` y `db`. Dentro del grupo `app` se deben incluir los hosts `host01` y `host02`. En el grupo `db` se debe incluir únicamente el host `host03`.
 
-_OBS: Verificar la configuración de inventario utilizando el módulo `ping`_.
+Verificar la configuración de inventario utilizando el módulo `ping`.
 
-[Documentación de Grupos en Inventarios](https://docs.ansible.com/ansible/latest/user_guide/intro_inventory.html#inventory-basics-formats-hosts-and-groups)
+ref: [Inventory basics: formats, hosts, and groups](https://docs.ansible.com/ansible/latest/user_guide/intro_inventory.html#inventory-basics-formats-hosts-and-groups)
 
 <details>
     <summary>Pista #1</summary>
@@ -124,6 +137,7 @@ _OBS: Verificar la configuración de inventario utilizando el módulo `ping`_.
 <details>
     <summary>Solución</summary>
     <pre>
+# inventory.yml
 all:
   vars:
     ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
@@ -160,6 +174,7 @@ Otros posible usos son:
 - Clonar repositorios utilizando `git`
 - Administrar servicios remotos
 - Lanzar operaciones
+- Apagar o reiniciar equipos
 - Recopilar información
 
 Este último es particularmente útil, podemos ejecutarlo mediante el siguiente comando:
