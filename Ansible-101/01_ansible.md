@@ -257,15 +257,15 @@ $ make up
 Como explicamos antes, no debería ser necesario conectarse al equipo master.
 Sino que todos los laboratorios se realizarán desde el equipo `controller`. Aquí es donde escribirá y ejecutará los playbooks/comandos de Ansible, los cuáles trabajarán contra los equipos `host01`, `host02` y `host03`. 
 
-Para conectarse al equipo `controller` debe hacer un `ssh` a su pod (pod-X.labs.conatest.click) pero esta vez debe indicar el puerto `2222`y el usuario `root`.
+Para conectarse al equipo `controller` debe hacer un `ssh` a su `pod-X.labs.conatest.click` pero esta vez debe indicar el puerto `2222` y el usuario `root`:
 
   ```bash
   ssh -i devops101-labs.pem -p 2222 root@pod-X.labs.conatest.click
   ```
 
-Pruebe de conectarse y verificar la conexión hacia los equipos `host1`, `host2`y `host3` utilizando `ping`.
+Pruebe de conectarse y verificar la conectividad desde el `controller` hacia los equipos `host1`, `host2`y `host3` utilizando `ping`.
 
-OBS: para facilitar la conexión a los equipos, puede agregar entradas como estas al archivo `config` de ssh, y luego simplemente hacer `ssh master.labs.conatest.click` o `ssh controller.labs.conatest.click` para acceder a cada uno de los equipos (debe cambiar el pod-X por el número de POD que le fué asignado, y referenciar en forma correcta el lugar donde se encuentra el archivo .pem).
+OBS: para facilitar la conexión a los equipos, puede agregar las siguientes entradas al archivo `config` de ssh, y luego simplemente hacer `ssh master.labs.conatest.click` o `ssh controller.labs.conatest.click` para acceder a cada uno de los equipos (debe cambiar el pod-X por el número de POD que le fué asignado, y referenciar en forma correcta el lugar donde se encuentra el archivo .pem).
 
 ```bash
 Host master.labs.conatest.click
@@ -282,7 +282,9 @@ Host controller.labs.conatest.click
 ```
 
 Este archivo de configuración se encuentra ubicado en `~/.ssh/config` en linux o en `~\.ssh\config` en Windows (si no existe, puede crearlo).
-Esto además resultará sumamente útil para conectarse por medio de Visual Studio Code al equipo `controller` y poder escribir los playbooks directamente en el servidor, utilizando este editor. 
+Esto además resultará sumamente útil para conectarse por medio de Visual Studio Code al equipo `controller` y poder escribir los playbooks directamente en el servidor desde el editor, cosa que recomendamos fuertemente para poder realizar los laboratorios. 
+
+En caso de que utilice `putty` puede grabar los profiles con la configuración de conexión a ambos equipos. 
 
 ---
 [Siguiente-->](02_ansible.md)
