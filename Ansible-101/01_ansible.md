@@ -287,4 +287,4 @@ Esto además resultará sumamente útil para conectarse por medio de Visual Stud
 En caso de que utilice `putty` puede grabar los profiles con la configuración de conexión a ambos equipos. 
 
 ---
-[Siguiente-->](02_ansible.md)
+[Siguiente-->](02_ansible_basics.md)
