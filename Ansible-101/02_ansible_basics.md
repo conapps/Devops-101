@@ -14,21 +14,23 @@ En el inventario podemos crear grupos y subgrupos de equipos, lo cuál nos permi
 ### DEMO Lab #2 - Crear un archivo de inventario
 
 Los inventarios de Ansible pueden contener múltiples grupos, y cada host puede pertenecer a uno o más grupos.
-En general, se comienza identificando un grupo llamado `all`  al cual pertenecerán todos los equipos y todos los demás grupos que definamos. 
-Los equipos se definen como llaves de un objeto llamado `hosts`.
+En general, se comienza identificando un grupo llamado `all`  al cual pertenecerán todos los equipos y todos los demás grupos que definamos. Los equipos se definen como llaves de un objeto llamado `hosts`.
 
-Vamos a definir entonces un archivo de inventario inicial.
-Para esto, conectados al nodo `controller` de nuestro lab, dentro de la carpeta `/root/ansible/` vamos a crear un nuevo archivo llamado `inventory.yml` con el siguiente contenido:
+Vamos a definir entonces un archivo de inventario inicial para nuestro **lab**.
+
+>Nota: puede usar el editor _vi_ o _nano_ para editar los archivos que iremos creando en el laboratorio, aunque recomendamos conectarse en forma remota al equipo `controller` mediante el editor Visual Studio Code utilizando la extensión *Remote SSH* o similar . 
+
+En el nodo `controller` de nuestro lab, dentro de la carpeta `~/ansible/` vamos a crear nuestro archivo de inventario llamado `hosts.yml`, con el siguiente contenido:
 
 ```yaml
+# archivo de inventario hosts.yml
 all:
   hosts:
     host01:
     host02:
     host03:
 ```
->OBS: puede usar el editor _vi_ o _nano_ para editar los archivos, aunque recomendamos conectarse en forma remota al equipo mediante el editor Visual Studio Code. 
-
+>OBS: el nombre del archivo puede ser cualquiera, e incluso podemos tener multiples archivos de inventarios. Pero como mejor práctica se recomienda utilizar el nombre `hosts.yml`, y es el que utilizaremos nosotros en nuestro lab.
 
 Cada host, o grupo, puede contar con variables especificas definidas a nivel de inventario, que pueden o bien modificar el comportamiento de Ansible o ser utilizadas luego como parte de nuestros playbooks.
 
@@ -69,7 +71,7 @@ El nombre de la variable a configurar es <code>ansible_ssh_private_key_file</cod
 <details>
     <summary>Solución</summary>
     <pre>
-# inventory.yml
+# Archivo de inventario: hosts.yml
 all:
   vars:
     ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
@@ -96,20 +98,20 @@ Los comandos `ad-hoc` se llaman a través del flag `-m` seguidos del módulo de 
 
 Con el siguiente comando podemos realizar un ping sobre todos los hosts detallados en el inventario:
 ```bash
-ansible -i inventory.yml all -m ping
+ansible -i hosts.yml all -m ping
 ```
 
 >OBS: el comando anterior utiliza el módulo ping de Ansible (no el comando ping), el cuál establece una conexión por ssh hacia cada hosts, por lo cual es muy útil para verificar que la autenticación ssh esté funcionando correctamente.
 
 También podemos ejecutar un comando directamente en los hosts, mediante:
 ```bash
-ansible -i inventory.yml all -a 'echo "Hello, World!"'
+ansible -i hosts.yml all -a 'echo "Hello, World!"'
 ```
 
 Es importante identificar las comillas que envuelven el comando que ejecutará ansible a través del flag `-a`, especialmente si se quieren utilizar variables de entorno dentro del comando (las comillas simples `'` no resuelven variables, solo la hacen las comillas dobles `"`). Otro punto a tener en cuenta es que el flag `-a` no soporta comandos concatenados con un pipe (`|`). Para hacer esto tenemos que utilizar el módulo `shell`.
 
 ```bash
-ansible -i inventory.yml all -m shell -a 'ifconfig eth0 | grep "inet addr" | cut -d: -f2 | awk "{print $1}"'
+ansible -i hosts.yml all -m shell -a 'ifconfig eth0 | grep "inet addr" | cut -d: -f2 | awk "{print $1}"'
 ```
 
 El comando anterior devuelve la dirección IP de la interfaz `eth0` de cada host.
@@ -131,13 +133,13 @@ ref: [Inventory basics: formats, hosts, and groups](https://docs.ansible.com/ans
 
 <details>
     <summary>Pista #2</summary>
-    Para probar los grupos de hosts se puede utilizar el comando <code>ping</code> de la siguiente manera: <code>ansible -i inventory.yml app -m ping</code> o <code>ansible -i inventory.yml db -m ping</code>
+    Para probar los grupos de hosts se puede utilizar el comando <code>ping</code> de la siguiente manera: <code>ansible -i hosts.yml app -m ping</code> o <code>ansible -i hosts.yml db -m ping</code>
 </details>
 
 <details>
     <summary>Solución</summary>
     <pre>
-# inventory.yml
+# archivo de inventario hosts.yml
 all:
   vars:
     ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
@@ -159,7 +161,7 @@ all:
 <details>
   <summary>Verificación</summary>
   <pre>
-# ansible -i inventory.yml app -m ping
+# ansible -i hosts.yml app -m ping
 host02 | SUCCESS => {
     "ansible_facts": {
         "discovered_interpreter_python": "/usr/bin/python3"
@@ -176,7 +178,7 @@ host01 | SUCCESS => {
 }
 </pre>
 <pre>
-# ansible -i inventory.yml db -m ping
+# ansible -i hosts.yml db -m ping
 host03 | SUCCESS => {
     "ansible_facts": {
         "discovered_interpreter_python": "/usr/bin/python3"
@@ -193,10 +195,10 @@ Utilizando los comandos `ad-hoc` podemos realizar una gran cantidad de tareas so
 
 ```
 # APT - Ubuntu
-ansible -i inventory.yml app -m apt -a "name=jq state=present"
+ansible -i hosts.yml app -m apt -a "name=jq state=present"
 
 # YUM - CentOS
-ansible -i inventory.yml app -m yum -a "name=jq state=present"
+ansible -i hosts.yml app -m yum -a "name=jq state=present"
 ```
 
 Otros posibles usos son:
@@ -209,7 +211,7 @@ Otros posibles usos son:
 
 Este último es particularmente útil, podemos ejecutarlo mediante el siguiente comando:
 ```bash
-ansible -i inventory.yml all -m setup
+ansible -i hosts.yml all -m setup
 ```
 
 
@@ -224,7 +226,7 @@ Por ahora solo hemos utilizado la aplicación `ansible`, sin embargo, no es la �
   - `ansible-config list`
 - `ansible-console`.
   - Un REPL para ejecutar múltiples tareas sobre un grupo de hosts.
-  - `ansible-console -i inventory.yml all`
+  - `ansible-console -i hosts.yml all`
 - `ansible-doc`.
   - Muestra información sobre los módulos de ansible instalados.
   - `ansible-doc ping`
@@ -233,8 +235,8 @@ Por ahora solo hemos utilizado la aplicación `ansible`, sin embargo, no es la �
   - Maneja roles compartidos en repositorios de terceros. Por defecto buscara los repositorios en [https://galaxy.ansible.com](https://galaxy.ansible.com).
 - `ansible-inventory`.
   - Util para validar el inventario con el que estamos trabajando.
-  - `ansible-inventory -i inventory.yml --list`
-  - `ansible-inventory -i inventory.yml --graph`
+  - `ansible-inventory -i hosts.yml --list`
+  - `ansible-inventory -i hosts.yml --graph`
 - `ansible-playbook`.
   - Aplicación capaz de ejecutar Ansible `playbooks`.
 - `ansible-pull`.
@@ -333,8 +335,9 @@ Comencemos creando un playbook muy simple, que hace un `ping` al grupo de hosts 
 
 Para esto, crear un archivo `primer-playbook.yml` con el siguiente contenido:
 ```yaml
-- hosts: app
-  name: Primer playbook
+# primer_playbook.yml
+- name: Primer playbook
+  hosts: app
   tasks:
     - ping:
 ```
@@ -342,7 +345,7 @@ Para esto, crear un archivo `primer-playbook.yml` con el siguiente contenido:
 Para correr un `playbook` utilizamos el comando `ansible-playbook`, al cuál podemos pasarle el inventario queremos utilizar (luego veremos otra forma de especificar el inventario):
 
 ```bash
-ansible-playbook -i inventory.yml playbook.yml
+ansible-playbook -i hosts.yml playbook.yml
 ```
 
 Si queremos comprobar que la sintaxis de nuestro `playbook` no tiene errores podemos utilizar el flag `--syntax-check`. Y, si queremos ver con más detalles las acciones que esta realizando Ansible para detectar errores (debug), podemos correrlo con el comando con el flag `--verbose`.
@@ -350,7 +353,7 @@ Si queremos comprobar que la sintaxis de nuestro `playbook` no tiene errores pod
 
 Ejecutemos entonces nuestro playbook:
 ```
-# ansible-playbook -i inventory.yml primer-playbook.yml
+# ansible-playbook -i hosts.yml primer-playbook.yml
 
 PLAY [Primer playbook] ****************************************************************************************************
 
@@ -372,8 +375,9 @@ Si observamos la salida, podemos ver que la tarea se ejecutó en `host01`y `host
 
 En el caso de que queramos correr múltiples tareas en un mismo `play`, podemos hacerlo, dado que el comando `tasks` consume una lista de tareas:
 ```yaml
-- hosts: app
-  name: Primer playbook
+# primer_playbook.yml
+- name: Primer playbook
+  hosts: app
   tasks:
     - ping:
     - ansible.builtin.user:
@@ -381,8 +385,8 @@ En el caso de que queramos correr múltiples tareas en un mismo `play`, podemos 
 ```
 
 Al ejecutarlo:
-```bash
-root@master> ansible-playbook -i inventory.yml primer-playbook.yml
+```
+# ansible-playbook -i hosts.yml primer-playbook.yml
 
 PLAY [Primer playbook] ****************************************************************************************************
 
@@ -408,66 +412,368 @@ En este caso podemos ver que se realizaron cambios en los hosts (changed=1) dado
 
 Dentro de cada tarea se pueden configurar opciones adicionales que modifican su comportamiento como: condicionales, loops, registros de salida, etc. A continuación mencionaremos algunas de las más importantes.
 
-### Estructura de directorios para las paybooks
+
+## Estructura de directorios para las paybooks
 A medida que los `playbooks` crecen en complejidad, es necesario crear una estructura de directorios que nos permita ubicar los diferentes componentes (tareas, roles, variables, inventarios, etc.) en forma ordenada.
 
 Existen ejemplos de mejores prácticas para dicha estructura, como el que se  puede encontrar [aquí](
 https://docs.ansible.com/ansible/latest/user_guide/sample_setup.html#sample-directory-layout).
 
-En nuestro lab, comenzarmos por colocar los `playbooks` en el directorio `~/ansible`, e iremos creando las estructuras de directos necesarias a medida que avancemos.
+En nuestro **lab**, comenzarmos por colocar los `playbooks` en el directorio `~/ansible`, e iremos creando las estructuras de directos necesarias a medida que avancemos. A medida que vayamos avanzando lo iremos indicando.
+
+``` bash
+# estructura del lab en ~/ansible
+primer_playbook.yml
+```
+
+## Ansible Config
+Ref: [Configuring Ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_configuration.html)
+
+Aunque podemos indicarle a Ansible donde buscar el inventario cada vez que ejecutamoso un `playbook`, este proceso se vuelve tedioso rapidamente. Además, existe un sinfin adicional de comportamientos de Ansible que podemos querer modificar, dependiendo del tipo de proyecto en el que estemos trabajando. 
+
+Ansible expone un archivo de configuración donde podemos definir su comportamiento, como por ejemplo, la ubicación del inventario, y así no tener que pasarselo por línea de comando.
+
+Por defecto, Ansible buscará el archivo de configuración de la siguiente manera, y con esta precedencia:
+1. En base a la configuración de la variable de entorno `ANSIBLE_CONFIG`.
+2. Dentro del directorio donde se esta ejecutando Ansible, en un archivo llamado `ansible.cfg`.
+3. En el directorio del usuario que ejecuta Ansible, bajo el nombre `~/.ansible.cfg`.
+4. En la ubicación `/etc/ansible/ansible.cfg`.
+
+>OBS: Recomendamos acompañar todos los proyectos de Ansible con un archivo de configuración `ansible.cfg` en el directorio raiz del proyecto. De esta manera podemos saber exactamente que configuraciones estamos aplicando, y tener diferentes configuraciones para diferentes proyectos.
+
+
+Para nuestro **lab** creamos entonces el archivo `ansible.cfg` en nuestro directorio raiz `~/ansible`, con el siguiente contenido:
+```YML
+# archivo de configuración ansible.cfg
+[defaults]
+inventory = ./inventory/hosts.yml
+```
+
+Y creamos la siguiente estructura de directorios:
+``` bash
+# estructura del lab en ~/ansible
+inventory/
+  hosts.yml
+ansible.cfg
+primer_playbook.yml
+```
+
+<details>
+    <summary>Comandos linux</summary>
+    <pre>
+# cd ~/ansible
+# mkdir inventory
+# mv hosts.yml inventory
+  </pre>
+  </details>
+
+Ahora, cuando ejecutemos nuestro `primer_playbook.yml` no será necesario pasarle el inventario con el flag `-i`, sino que por defecto lo tomará desde `./inventory/hosts.yml`.
+
+```
+# ansible-playbook primer-playbook.yml
+
+PLAY [Primer playbook] ****************************************************************************************************
+
+TASK [Gathering Facts] *************************************************************************************************************************
+ok: [host01]
+ok: [host02]
+
+TASK [ping] ************************************************************************************************************************************
+ok: [host02]
+ok: [host01]
+
+TASK [ansible.builtin.user] ********************************************************************************************************************
+ok: [host02]
+ok: [host01]
+
+PLAY RECAP *************************************************************************************************************************************
+host01                     : ok=3    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+host02                     : ok=3    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+```
+
+En el archivo `ansible.cfg` podemos definir muchas configuraciones que afectan el comportamiento de Ansible.
+A modo de ejemplo, algunas que nosotros solemos utilizar (aunque esto depende de cada proyecto) son:
+
+```
+[defaults]
+inventory = ./inventory/hosts.yml
+host_key_checking = False
+command_warnings = False
+deprecation_warnings = False
+remote_tmp = ~/.ansible/tmp
+display_skipped_hosts = False
+stdout_callback = yaml
+callback_whitelist  = profile_tasks
+```
 
 
 ### Variables
 Ref: [Using Variables](https://docs.ansible.com/ansible/latest/user_guide/playbooks_variables.html)
 
-Podemos utilizar variables para almacenar valores que se pueden consumir en los `Playbooks`. Ansible sustuye la variable por su valor al momento de ejecutar la tarea. Las variables se pueden definir en múltiples lugares, y dependiendo donde se haga, tendrán precedencia unas sobre las otras.
+Algo muy útil y potente es poder utilizar variables para almacenar valores que luego sean consumidos en nuestros `Playbooks`. Ansible sustuye la variable por su valor al momento de ejecutar la tarea. Las variables se pueden definir en múltiples lugares, y dependiendo donde se haga, tendrán precedencia unas sobre las otras.
 
 Las variables se definen en forma de clave-valor, por ej:
   ```yaml
-  application_path: /opt/my_app
+  mi_variable: valor
   ```
 y se referencian colocando el nombre de la variable entre llaves dobles:
   ```yaml
-  La aplicación se encuentra instalada en {{application_path}}
+  Este es el contenido de {{mi_variable}}
   ```
 
-Las variables y sus valores se pueden definir en varios lugares: el inventario, archivos de variables, pasarlas desde línea de comandos, etc.
+Las variables y sus valores se pueden definir en múltiples lugares, por ejemplo: en el inventario, en archivos específicos de variables, dentro de los `roles` (lo veremos mas adelante), o incluso pasarlas por línea de comando al ejecutar `ansible-playbook`, etc.
 
-La práctica recomendada para proporcionar variables en el inventario es definirlas en archivos ubicados en dos directorios denominados `host_vars` y `group_vars`:
+>OBS: las variables pueden definirse en múltiples lugares, lo cual si bien brinda mucha flexibilidad a la hora de escribir los playbooks, en proyectos grandes puede generar complejidad a la hora de mantener el código o hacer debug de errores.
 
-Por ejemplo, para definir variables para nuestro grupo de hosts `app`, creamos el archivo `group_vars/app.yml` con las definiciones de variables.
-Si queremos en cambio definir variables que apliquen a un único host, por ej. al `host01`, lo hacemos creando el archivo `host_vars/host01.yml` con las definiciones de variables.
+#### Variables definidas en un archivo específico
+Una opción simple es utilizar un archivo de variables general, donde podamos definir todas las variables que necesitemos para nuestro proyecto.
 
->OBS: las variables de `host` tienen prioridad sobre las variables de `group`, puede encontrar más infromación sobre la precedencia en la definición de variables [aquí](https://docs.ansible.com/ansible/latest/user_guide/playbooks_variables.html#understanding-variable-precedence).
+``` bash
+# estructura del lab en ~/ansible
+inventory/
+  hosts.yml
+vars/
+  variables.yml
+ansible.cfg
+primer_playbook.yml
+```
 
-
-También es posible definir variables en forma general, que puedan ser utilizadas independientemente del `host`/`group` sobre el cuál se ejecute el playbook. 
-Para esto, podemos crear un archivo por ejemplo: `vars/my_app.yml` y definir aquí todas las variables necesarias para mi aplicación.
 ```yaml
+# Archivo ./vars/variables.yml
 application_path: /opt/my_app
 ```
 
-Luego, al momento de escribir el `playbook` puedo incluir estas variables para que puedan ser referenciadas, mediante `var_files`:
-
-```yml
-- name: Desplegar mi aplicación
+Y en  nuestro `playbook` incluimos este archivo mediante `var_files`:
+```yaml
+# primer_playbook.yml
+- name: Primer playbook
   hosts: app
-  gather_facts: yes
   vars_files:
-    - ./vars/my_app.yml
+    - ./vars/variables.yml
   tasks:
-    - name: Copiar archivos de configuración
-      copy:
-        src: '/home/my_app//*.cfg'
-        dest: '{{application_path}}'
+    - ping:
+    - ansible.builtin.user:
+        name: user1
+    - debug:
+        msg: "La aplicación se encuentra instalada en {{application_path}}"
+```
+Al correrlo podemos ver que la variable `application_path` es sustituida por su valor `/opt/my_app`:
+```
+# ansible-playbook primer_playbook.yml 
+
+PLAY [Primer playbook] *************************************************************************************************************************
+
+TASK [Gathering Facts] *************************************************************************************************************************
+ok: [host01]
+ok: [host02]
+
+TASK [ping] ************************************************************************************************************************************
+ok: [host01]
+ok: [host02]
+
+TASK [ansible.builtin.user] ********************************************************************************************************************
+ok: [host01]
+ok: [host02]
+
+TASK [debug] ***********************************************************************************************************************************
+ok: [host01] => {
+    "msg": "La aplicación se encuentra instalada en /opt/my_app"
+}
+ok: [host02] => {
+    "msg": "La aplicación se encuentra instalada en /opt/my_app"
+}
+
+PLAY RECAP *************************************************************************************************************************************
+host01                     : ok=4    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+host02                     : ok=4    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
 ```
 
 
-### Registros de salida
 
-Todas las tareas emiten por defecto una salida, en donde se incluye información general sobre la ejecución de la misma, más el mensaje generado por el módulo durante su ejecución. Sin embargo, esta salida no puede ser accedida a menos que se indique específicamente, mediante la opción `register`:
+#### Variables definidas en el inventario
+Podemos definir variables particulares para nuestros hosts o grupos, dentro del propio archivo de inventario.
+
+```yml
+# archivo de inventario ./inventory/hosts.yml
+all:
+  vars:
+    ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
+    ansible_ssh_private_key_file: './master_key'
+  hosts:
+    host01:
+    host02:
+    host03:
+  children:
+    app:
+      vars:
+        application_name: prod_app
+      hosts:
+        host01:
+        host02:
+    db:
+      hosts:
+        host03:
+```
+
+Pero, **la práctica recomendada para proporcionar variables en el inventario** es definirlas en archivos ubicados en dos directorios específicos, denominados `host_vars` y `group_vars`:
+
+Por ejemplo, para definir variables para nuestro grupo de hosts `app`, creamos el archivo `group_vars/app.yml` con las definiciones de variables (notese que el nombre del archivo coincide con el nombre del grupo de hosts).
+Si queremos en cambio definir variables que apliquen a un único host, por ej. al `host01`, lo hacemos creando el archivo `host_vars/host01.yml` con las definiciones de variables.
+
+>OBS: las variables de `host` siempre tienen prioridad sobre las variables de `group`, puede encontrar más infromación sobre la precedencia en la definición de variables [aquí](https://docs.ansible.com/ansible/latest/user_guide/playbooks_variables.html#understanding-variable-precedence).
+
+
+Creamos los directorios `host_vars` y `group_vars` en nuestro proyecto, dentro de la carpeta `inventory`:
+``` bash
+# estructura del lab en ~/ansible
+inventory/
+  host_vars/
+    host01.yml
+  group_vars/
+    app.yml
+  hosts.yml
+vars/
+  variables.yml
+ansible.cfg
+primer_playbook.yml
+```
 
 ```yaml
+# Archivo ./host_vars/host01.yml
+application_env: produccion
+```
+
+```yaml
+# Archivo ./group_vars/app.yml
+envirapplication_env: desarrollo
+```
+
+Y en  nuestro `playbook`:
+```yaml
+# primer_playbook.yml
+- name: Primer playbook
+  hosts: app
+  vars_files:
+    - ./vars/variables.yml
+  tasks:
+    - ping:
+    - ansible.builtin.user:
+        name: user1
+    - debug:
+        msg: 
+          - "La aplicación {{application_name}} se encuentra instalada en {{application_path}}"
+          - "El ambiente para este equipo es: {{application_env}}"
+```
+
+Luego al correrlo podemos ver la precedencia que se aplica de `host_vars` sobre `group_vars`:
+```
+ansible-playbook primer_playbook.yml 
+
+PLAY [Primer playbook] *************************************************************************************************************************
+
+TASK [Gathering Facts] *************************************************************************************************************************
+ok: [host01]
+ok: [host02]
+
+TASK [ping] ************************************************************************************************************************************
+ok: [host02]
+ok: [host01]
+
+TASK [ansible.builtin.user] ********************************************************************************************************************
+ok: [host01]
+ok: [host02]
+
+TASK [debug] ***********************************************************************************************************************************
+ok: [host01] => {
+    "msg": [
+        "La aplicación prod_app se encuentra instalada en /opt/my_app",
+        "El ambiente para este equipo es: produccion"
+    ]
+}
+ok: [host02] => {
+    "msg": [
+        "La aplicación prod_app se encuentra instalada en /opt/my_app",
+        "El ambiente para este equipo es: desarrollo"
+    ]
+}
+
+PLAY RECAP *************************************************************************************************************************************
+host01                     : ok=4    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+host02                     : ok=4    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+
+```
+
+
+#### Variables definidas en el `playbook`
+También podemos definir variables en diferentes lugares de nuestro `playbook`:
+
+```yml
+# primer_playbook.yml
+- name: Primer playbook
+  hosts: app
+  vars_files:
+    - ./vars/variables.yml
+  vars:
+    - application_owner: conatel
+  tasks:
+    - ping:
+    - ansible.builtin.user:
+        name: user1
+    - debug:
+        msg: 
+          - "La aplicación {{application_name}} se encuentra instalada en {{application_path}}"
+          - "El ambiente para este equipo es: {{application_env}}"
+          - "El dueño de la aplicación es {{application_owner}} y corre en {{application_pod}}"
+      vars:
+        - application_pod: pod-1
+```
+
+```
+# ansible-playbook primer_playbook.yml 
+
+PLAY [Primer playbook] *************************************************************************************************************************
+
+TASK [Gathering Facts] *************************************************************************************************************************
+ok: [host01]
+ok: [host02]
+
+TASK [ping] ************************************************************************************************************************************
+ok: [host02]
+ok: [host01]
+
+TASK [ansible.builtin.user] ********************************************************************************************************************
+ok: [host02]
+ok: [host01]
+
+TASK [debug] ***********************************************************************************************************************************
+ok: [host01] => {
+    "msg": [
+        "La aplicación prod_app se encuentra instalada en /opt/my_app",
+        "El ambiente para este equipo es: produccion",
+        "El dueño de la aplicación es conatel y corre en pod-1"
+    ]
+}
+ok: [host02] => {
+    "msg": [
+        "La aplicación prod_app se encuentra instalada en /opt/my_app",
+        "El ambiente para este equipo es: desarrollo",
+        "El dueño de la aplicación es conatel y corre en pod-1"
+    ]
+}
+
+PLAY RECAP *************************************************************************************************************************************
+host01                     : ok=4    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+host02                     : ok=4    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+
+```
+
+
+
+### Registros de salida
+Todas las tareas que ejecuta Ansible, emiten por defecto una salida, en donde se incluye información general sobre la ejecución de la misma, más el mensaje generado por el módulo durante su ejecución. Sin embargo, esta salida no puede ser accedida a menos que se indique específicamente, mediante la opción `register`.
+
+```yaml
+# segundo_playbook.yml
 - name: Ejemplo de como utilizar la opción 'register'
   hosts: localhost
   connection: local
@@ -478,11 +784,12 @@ Todas las tareas emiten por defecto una salida, en donde se incluye información
     - debug:
         var: result
 ```
-La opción `register` almacena la salida de la tarea `shell` en una variable de entorno llamada `result` (si bien este nombre de variable es típicamente utilizado con este fin, podemos usar cualquier nombre de variable que querramos). Luego, la siguiente tarea `debug:` despliega el contenido de dicha variable.
+La opción `register` almacena la salida de la tarea `shell` en una variable de entorno llamada `result` (si bien este nombre de variable es típicamente utilizado con este fin, podemos usar cualquier otro nombre de variable que querramos). 
+Luego, la siguiente tarea `debug:` despliega el contenido de dicha variable.
 
 
-```bash
-root@master> ansible-playbook segundo-playbook.yml
+```
+# ansible-playbook segundo-playbook.yml
 
 PLAY [Ejemplo de como utilizar la opción 'register'] *******************************************************************************************
 
@@ -494,12 +801,12 @@ ok: [localhost] => {
     "result": {
         "changed": true,
         "cmd": "echo Hola",
-        "delta": "0:00:00.002576",
-        "end": "2022-03-21 19:09:35.570745",
+        "delta": "0:00:00.002527",
+        "end": "2022-03-25 13:40:48.141851",
         "failed": false,
         "msg": "",
         "rc": 0,
-        "start": "2022-03-21 19:09:35.568169",
+        "start": "2022-03-25 13:40:48.139324",
         "stderr": "",
         "stderr_lines": [],
         "stdout": "Hola",
@@ -513,7 +820,10 @@ PLAY RECAP *********************************************************************
 localhost                  : ok=2    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
 ```
 
->OBS: notese que este playbook lo estamos ejecutando contra *localhost*, o sea, contra el mismo *controller host* de Ansible, y por tanto no necesitamos pasarle el inventario.
+>OBS: notese que este playbook lo estamos ejecutando contra *localhost*, o sea, contra el mismo nodo *controller* y por tanto no esta utilizando el inventario que tenemos definido.
+
+Guardar esta salida es sumamente útil cuando estamos haciendo debug de nuestro código, dado que si un módulo o comando falla podemos ver información adicional que nos ayude a encontrar el problema.
+Pero aunque es recomendable almacenar esta información, no siempre es necesario desplegarla, para evitar sobrecargar la salida standard de nuestro `playbook` a pantalla.
 
 ---
 ### Condicionales
@@ -524,9 +834,9 @@ Mediante la utilización de la opción `when` en la definición de una tarea, po
 Por ejemplo, si queremos generalizar una tarea para que se ejecute tanto en servidores Ubuntu como en CentOS, podemos agregar un condicional `when`, de forma de poder invocar al módulo de ansible correcto dependiendo de cuál sea el sistema operativo del host.
 
 ```yaml
+# tercer_playbook.yml
 # OBS: la variable `ansible_os_family` es resuelta por Ansible previo a 
-#      la ejecución de las tareas en el host.
-# ---
+#      la ejecución de las tareas en el host (Gathering Facts).
 - name: Ejemplo, instalar `jq` con `apt` en Ubuntu y con `yum` en CentOS
   hosts: app
   tasks:
@@ -544,8 +854,8 @@ Por ejemplo, si queremos generalizar una tarea para que se ejecute tanto en serv
 ```
 
 Ejecutamos el playbook:
-```bash
-root@master> ansible-playbook -i inventory.yml tercer-playbook.yml
+```
+# ansible-playbook tercer-playbook.yml
 
 PLAY [Ejemplo, instalar `jq` con `apt` en Ubuntu y `yum` en CentOS] ****************************************************************************
 
@@ -568,9 +878,10 @@ host02                     : ok=2    changed=0    unreachable=0    failed=0    s
 
 ```
 
-Al ejecutarlo, podemos ver una tarea inicial llamada `[Gathering Facts]`. Esta tarea es ejecutada siempre por defecto (salvo que le indiquemos no hacerlo) para obtener información relevante de los `hosts`. Entre dicha información, se obtiene el tipo de sistema operativo del host, el cuál se devuelve en la variable `ansible_os_family`, que es la variable que utilizamos nosotros en la sentencia `when`. 
+Al ejecutarlo, podemos ver una tarea inicial llamada `[Gathering Facts]`. 
+Esta tarea es ejecutada siempre por Ansible (salvo que le indiquemos no hacerlo) para obtener información relevante de los `hosts` donde va a correr. Entre dicha información, se obtiene por ejemplo la familia de sistema operativo del host, la cuál la devuelve en la variable `ansible_os_family`. Esta es la variable que utilizamos nosotros luego en la sentencia `when` para chequear sobre que sistema operativo estamos ejecutando. 
 
-Luego de la ejecución, podemos ver que la tarea de instalación fue ejecutada para Ubuntu, pero fue salteada para CentOS (skipped=1), dado que ninguno de nuestros hosts tiene CentOS.
+Podemos ver entonces, que la tarea de instalación fue ejecutada para Ubuntu pero fue salteada (`skipping`) para CentOS, dado que ninguno de nuestros hosts del laborotorio tiene CentOS instalado.
 
 ---
 ## Loops
@@ -654,7 +965,7 @@ Cree un playbook para instalar SQLite3 y su paquete de desarrollo en los hosts i
 <details>
     <summary>Solución</summary>
     <pre>
-# db_playbook.yml
+# ejer3_playbook.yml
 - hosts: db
   tasks:
     - name: Install SQLite
@@ -673,7 +984,7 @@ Cree un playbook para instalar SQLite3 y su paquete de desarrollo en los hosts i
 <details>
     <summary>Solución alternativa</summary>
     <pre>
-# db_playbook.yml
+# ejer3_playbook.yml
 - hosts: db
   tasks:
     - name: Install software
@@ -687,211 +998,27 @@ Cree un playbook para instalar SQLite3 y su paquete de desarrollo en los hosts i
 </pre>
 </details>
 
----
-
-
-
-## Ansible Config
-Ref: [Configuring Ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_configuration.html)
-
-Aunque podemos indicarle a Ansible donde buscar el inventario cada vez que ejecutamoso un `playbook`, este proceso se vuelve tedioso rapidamente. Además, existe un sinfin adicional de comportamientos de Ansible que podemos querer modificar, dependiendo del tipo de proyecto en el que estemos trabajando. 
-
-Ansible expone un archivo de configuraciones donde podemos definir su comportamiento.
-Por defecto, Ansible buscará el archivo de configuración de la siguiente manera, y con esta precedencia:
-
-1. En base a la configuración de la variable de entorno `ANSIBLE_CONFIG`.
-2. Dentro del directorio donde se esta ejecutando Ansible, en un archivo llamado `ansible.cfg`.
-3. En el directorio del usuario que ejecuta Ansible, bajo el nombre `~/.ansible.cfg`.
-4. En la ubicación `/etc/ansible/ansible.cfg`.
-
->OBS: Nosotros recomendamos acompañar todos los proyectos de Ansible con un archivo de configuración `ansible.cfg` en la raiz del proyecto. De esta manera podemos saber exactamente que configuraciones estamos modificando, y tener diferentes configuraciones para diferentes proyectos.
-
-
-
-## Reutilización de `playbooks`
-
-Dada la forma de configuración que provee Ansible, es útil poder reutilizar el codigo de cada tarea o `playbook`. En Ansible hay tres formas de reutilizar codigo: `includes`, `import`, y `roles`. A continuación, mencionaremos como funcionan las tres, pero nos concentraremos en al utilización de roles.
-
-Ansible cuenta con dos modos de operación:
-
-- `static`: Ansible pre-procesa todos los archivos y referencias antes de comenzar a trabajar.
-- `dynamic`: Ansible procesa los archivos a medida que comienza a operar.
-
-Esta distinción es fundamental para entender el funcionamiento de los comandos de `imports` y los comandos de `include`. Ambos son utilizados para separar `playbooks` complejos o largos en multiples archivos más pequeños, que pueden ser reutilizados con mayor facilidad.
-
-Si queremos que Ansible funcione en modo `static` debemos referenciar los archivos  pertinentes utilizando comandos de `import*`. Y si queremos que se comporte de forma dinámica, utilizamos comandos de `include*`.
-
-Existen algunas limitaciones en el uso de `imports` e `include` que es importante tener en cuenta:
-
-- Loops solo pueden realizarse con comandos de `include`. 
-- Las variables definidas a nivel de inventario no serán consumidas por un `import`.
-
-```yaml
-# webservers.yml
-- hosts: app
-  tasks:
-    - name: Install apache2
-      apt: 
-        name: apache2
-        state: latest
-        update_cache: yes
-        
-# three_tier_app.yml
-- import_playbook: webservers.yml
-```
-
----
-
-## Roles
-
-Los roles permiten importar de forma automática: archivos de variables, tareas, y handlers, basado en una estructura de directorios. Estos roles puede ser compartido en multiples `playbooks` .
-
-La estructura de directorios que se debe utilizar es la siguiente:
-
-```
-roles/
-  role01/
-    tasks/
-    handlers/
-    files/
-    templates/
-    vars/
-    defaults/
-    meta/
-  role02/
-    ...
-...
-```
-
-Al menos uno de estos directorios debe existir dentro de la carpeta del rol, sin embargo, no es necesario que existan todos. Dentro de cada carpeta en uso debe existir un archivo llamado `main.yml` en donde se encuentra la información útil correspondiente a esa carpeta.
-
-Dentro de los archivos `main.yml` podemos referencias otros archivos para simplificar su lectura. Esto es usual, por ejemplo, cuando se quiere que un rol sea capaz de interactuar con multiples sistemas operativos, los cuales pueden requerir de la realización de distintas tareas para cumplir con el mismo objetivo. En la documentación de Ansible se presenta el siguiente ejemplo para demostrar esta práctica:
-
-```yaml
-# roles/apache2/tasks/main.yml
-- import_tasks: redhat.yml
-  when: ansible_os_family|lower == 'redhat'
-- import_tasks: debian.yml
-  when: ansible_os_family|lower == 'debian'
-# roles/apache2/tasks/redhat.yml
-- yum:
-    name: "httpd"
-    state: present
-
-# roles/apache2/tasks/debian.yml
-- apt:
-    name: "apache2"
-    state: present
-```
-
-Una vez definido el rol, puede ser agregado a un `playbook` a través de la opción `roles` la consume una lista de `roles` a ejecutar.
-
----
-
-### Ejercicio #4
-
-<!--
-EJERCICIO 4 Y 5 DUPLICADOS
- Cree un rol capaz de instalar `apache2` y otro capaz de instalar `sqlite3`. Luego cree un nuevo `playbook` que instale `apache2` en los servidores identificados como `app` e instale `sqlite3` en los servidores identificados como `db` utilizando los roles previamente creados. -->
-
-Cree dos roles, uno llamado `apache2` y otro `sqlite3`, que instalen `apache` y `sqlite3` respectivamente. Luego, cree un `playbook` que aplique el rol `apache2` a los servidores del grupo `app` y el rol `sqlite3` a los servidores del grupo `db`.
-
 <details>
-	<summary>
-		Pista #1
-	</summary>
-	Recuerde que los roles deben ser crados dentro de la carpeta `/roles`.
-</details>
-<details>
-	<summary>
-		Pista #2
-	</summary>
-	Las carpetas activas dentro de los roles, cuentan con un archivo llamado `main.yml`.
-</details>
-<details>
-	<summary>
-		Pista #3
-	</summary>
-	Las tareas dentro del archivo `tasks/main.yml` se definen dentro de una lista.
-</details>
-
-<details>
-    <summary>Solución</summary>
+    <summary>Verificación</summary>
     <pre>
-- name: "Instalar los servidores web"
-  hosts: app
-  roles:
-    - apache2
-- name: "Instalar los servidores de bases de datos"
-  hosts: db
-  roles:
-    - sqlite3    
+# ansible-playbook ejer3_playbook.yml 
+
+PLAY [db] **************************************************************************************************************************************
+
+TASK [Gathering Facts] *************************************************************************************************************************
+ok: [host03]
+
+TASK [Install software] ************************************************************************************************************************
+changed: [host03] => (item=sqlite3)
+changed: [host03] => (item=libsqlite3-dev)
+
+PLAY RECAP *************************************************************************************************************************************
+host03                     : ok=2    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
 </pre>
 </details>
 
 ---
 
-_OBS: También se puede correr un rol desde una tarea a través del comando `import_role`_
-
-Por defecto, cuando indiquemos el rol solo por su nombre, Ansible buscara la carpeta del rol en la siguiente ubicación `./roles/<nombre_de_rol>`. En caso de que el rol al cual queramos hacer referencia se encuentre en otra ubicación, podemos utilizar una dirección al directorio en vez de su nombre. La única diferencia es que tenemos que utilizar la llave `role` dentro de la lista de roles.
-
-```yaml
-- hosts: webservers
-  roles:
-    - role: ~/ansible/roles/apache2
-```
-
-Los roles puedes consumir variables definidas dentro del `playbook` a través de la opción `vars`. Las variables definidas de esta manera sobreescribirán los valores por defecto que se hayan configurado dentro del rol.
 
 
-
----
-
-## Ansible galaxy
-
-[Ansibe galaxy](https://galaxy.ansible.com/) es un sitio gratuito mantenido por Red Hat que permite descargar roles desarrollados por la comunidad. Es una excelente forma de simplificar la configuración de nuestros `playbooks`. 
-
-Utilizando la aplicación `ansible-galaxy` podemos:
-
-- Descargar roles.
-- Construir templates para armar nuestros propios roles.
-- Buscar roles.
-
-Aunque es posible buscar por roles desde la consola utilizando `ansible-galaxy`, es mucho más sencillo cuando lo realizamos la búsqueda a través de la aplicación web.
-
-Una vez que encontremos el rol que queremos usar, lo podemos importar a la aplicación a través del comando `ansible-galaxy install`.
-
-Por ejemplo, el siguiente comando instala un rol capaz de interactuar con dispositivos CISCO que utilicen IOS como sistema operativo:
-
-```bash
-ansible-galaxy install ansible-network.cisco_ios
-```
-
-Por defecto los roles descargados desde `ansible-galaxy` se instalarán en `~/.ansible/roles`. Sin embargo, podemos cambiar el directorio donde queremos que se instale el rol utilizando la opción `-p`.
-
----
-
-### Ejercicio #5
-
-Construya el mismo `playbook` que en el ejercicio 4 pero utilizando roles obtenidos de `ansible-galaxy`.
-
-_OBS: para evitar problemas de permisos, configuren la opción `ansible_become` como `false` en las variables del inventario. Esto es necesario porque estamos accediendo a los servidores como `root` y muchos `roles` online presuponen que por defecto los usuarios con los cuales se van a ejecutar las tareas no tienen este rol._
-
-<details>
-    <summary>Solución</summary>
-    <pre>
-- name: "Instalar los servidores web"
-  hosts: app
-  roles:
-    - role: asianchris.apache2
-- name: "Instalar sqlite"
-  hosts: db
-  roles:
-	- manala.sqlite    
-  </pre>
-</details>
-
----
-
-
-[Siguiente >](./03_ansible_networking.md)
+[Siguiente >](./03_ansible_codigo.md)
