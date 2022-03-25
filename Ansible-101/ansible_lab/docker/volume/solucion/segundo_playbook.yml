@@ -1,0 +1,9 @@
+- name: Ejemplo de como utilizar la opción 'register'
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  tasks:
+    - shell: echo Hola
+      register: result
+    - debug:
+        var: result

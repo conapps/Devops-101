@@ -1,0 +1,10 @@
+- hosts: db
+  tasks:
+    - name: Install software
+      apt:
+        name: '{{item}}'
+        state: latest
+        update_cache: yes
+      loop:
+        - sqlite3
+        - libsqlite3-dev

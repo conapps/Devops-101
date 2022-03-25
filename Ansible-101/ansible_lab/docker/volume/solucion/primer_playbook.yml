@@ -1,0 +1,18 @@
+# primer_playbook.yml
+- name: Primer playbook
+  hosts: app
+  vars_files:
+    - ./vars/variables.yml
+  vars:
+    - application_owner: conatel
+  tasks:
+    - ping:
+    - ansible.builtin.user:
+        name: user1
+    - debug:
+        msg: 
+          - "La aplicación {{application_name}} se encuentra instalada en {{application_path}}"
+          - "El ambiente para este equipo es: {{application_env}}"
+          - "El dueño de la aplicación es {{application_owner}} y corre en {{application_pod}}"
+      vars:
+        - application_pod: pod-1
