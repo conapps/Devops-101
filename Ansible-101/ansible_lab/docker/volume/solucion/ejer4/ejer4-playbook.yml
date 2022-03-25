@@ -1,0 +1,8 @@
+- name: "Instalar los servidores web"
+  hosts: app
+  roles:
+    - apache2
+- name: "Instalar los servidores de bases de datos"
+  hosts: db
+  roles:
+    - sqlite3    
