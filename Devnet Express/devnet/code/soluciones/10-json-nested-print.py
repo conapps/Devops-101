@@ -90,29 +90,11 @@ VAR4 = {
 
 print(VAR3)
 
-for first_variable in VAR3:
-    print(first_variable, "{")
-    for second_variable in VAR3[first_variable]:
-        print(" ", second_variable, "{")
-        for third_variable in VAR3[first_variable][second_variable]:
-            print("   ", third_variable)
-        print("  }")
-    print("}\n")
+for exercise in VAR3["exercise"]["high impact"]:
+  print(exercise)
 
 print(VAR4)
 
-for first_variable in VAR4:
-    if first_variable == "author":
-        print(first_variable, ":", VAR4[first_variable])
-    else:
-        print(first_variable, "{")
-        for second_variable in VAR4[first_variable]:
-            print(" ", second_variable, "{")
-            for third_variable in VAR4[first_variable][second_variable]:
-                for fourth_variable in third_variable:
-                    print(
-                        "  ",
-                        fourth_variable,
-                        ":",
-                        str(third_variable[fourth_variable])
-                    )
+print('Famous Works:')
+for novel in VAR4["famous works"]["novels"]:
+  print('\tId:', novel['id'], 'Title:', novel['title'])
