@@ -371,7 +371,7 @@ Deleted branch desarrollo (was 88c2543).
 
 ## Almacenar repositorio en GitHub
 
-Una forma de compartir y almacenar nuestro codigo es a través de servicios como GitHub. Para poder sincronizar nuestro codigo en GitHub, debemos crear un repositorio en GitHun y luego agregar el endpoint que nos proveen en la carpeta local de nuestro proyecto. Esto lo hacemos utilizando el comando `git remote`. La comunicación con GitHub puede realizarse a través de SSH o HTTPS. La primera es más segura pero requiere de la creación de una clave RSA que debe ser cargada en GitHub, mientras que para usar HTTPS solo debemos utilizar nuestras credenciales cada vez que queramos comunicarnos con GitHub, ya sea para subir o descargar archivos.
+Una forma de compartir y almacenar nuestro codigo es a través de servicios como GitHub. Para poder sincronizar nuestro codigo en GitHub, debemos crear un repositorio en GitHub y luego agregar el endpoint que nos proveen en la carpeta local de nuestro proyecto. Esto lo hacemos utilizando el comando `git remote`. La comunicación con GitHub puede realizarse a través de SSH o HTTPS. La primera es más segura pero requiere de la creación de una clave RSA que debe ser cargada en GitHub, mientras que para usar HTTPS solo debemos utilizar nuestras credenciales cada vez que queramos comunicarnos con GitHub, ya sea para subir o descargar archivos.
 
 En la carpeta de nuestro proyecto debemos registrar el endpoint de GitHub. Usualmente lo denominamos como "origin" para identificarlo.
 
