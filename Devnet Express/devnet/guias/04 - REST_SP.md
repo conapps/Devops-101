@@ -25,7 +25,7 @@ Para poder explorar e interactuar con la API es necesario tener una cuenta de de
 
 Para obtener nuestro access token:
 
-1.  Ir al sitio de desarrollador de Webex, ![Webex developer site][https://developer.webex.com/].
+1.  Ir al sitio de desarrollador de Webex, [Webex developer site](https://developer.webex.com/).
 2.  Click en ´Signup´ para crear una cuenta (en caso de no contar con una).
 3.  Login con las credenciales generadas en el punto anterior.
 4.  Click en 'Go to Docs'
