@@ -865,7 +865,7 @@ Veámoslo con un ejemplo:
 limite = 10
 contador = 0
 while contador < limite:
-  print('Quiero imprimir esto 5 veces')
+  print('Quiero imprimir esto 10 veces')
   contador = contador + 1
 
 Quiero imprimir esto 10 veces
