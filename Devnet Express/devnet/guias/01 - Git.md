@@ -288,7 +288,7 @@ index d1962cd..ffe9678 100644
 
 Un "branch" (como referencia su nombre en ingles) es una rama del árbol de commits que construye `git` para almacenar las modificaciones realizadas sobre el proyecto. Crear múltiples "branches" dentro de un proyecto puede ser beneficioso en alguna instancias. Por ejemplo, buenas prácticas indican que la "branch" `master` contenga el cofigo de producción, mientras que el desarrollo de nuevas funcionalidades se realiza en "branches" paralelas. Una vez que este codigo construido paralelamente es testeado y aprobado para entrar en producción se realiza un "branch merge" (una "union").
 
-Para crear una nueva "branch" usamos el comando `git branch` seguido por un nombre que se le asignara a la nueva "branch". Una vez creada, podemos pasarnos a esta nueva "branch" utilizando el comando `git checkout` más el nombre de la "branch" objetivo. Los "commits" realizados en esta nueva "branch" no serán aplicados en las otras "branches". Esto nos permite compartemizar el proyecto en instancias aisladas.
+Para crear una nueva "branch" usamos el comando `git branch` seguido por un nombre que se le asignara a la nueva "branch". Una vez creada, podemos pasarnos a esta nueva "branch" utilizando el comando `git checkout` más el nombre de la "branch" objetivo. Los "commits" realizados en esta nueva "branch" no serán aplicados en las otras "branches". Esto nos permite dividir el proyecto en instancias aisladas.
 
 **OBS: Es importante tener presente que si se realiza un `git checkout` y existen modificaciones que no fueron aplicadas a un commit en la "branch" actual, los mismos se transladarán a la otra "branch".**
 
