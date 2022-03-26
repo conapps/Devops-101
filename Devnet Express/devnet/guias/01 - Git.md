@@ -21,9 +21,9 @@ Los sistemas de control de versiones de archivo existen desde la invención del 
 - Etc.
 
 `Git` es el sistema de control de versiones más popular en el mundo, desarrollado por Linus Torvalds, fundador del kernel de linux.
-Se creó como  alternativa al sistema SCM BitKeeper, cuando el propietario decidió no permitir el uso gratuito del sistema para el desarrollo del kernel de Linux. Sin opciones de código abierto existentes que satisficieran sus necesidades, Torvalds creó su propio sistema de control de versiones distribuido y lo llamó Git.
- 
-Git es un sistema de control de versiones distribuido creado teniendo en cuenta la escalabilidad. Utiliza una estructura arbolescente en ramas (branch) milar a un filesystem. 
+Se creó como alternativa al sistema SCM BitKeeper, cuando el propietario decidió no permitir el uso gratuito del sistema para el desarrollo del kernel de Linux. Sin opciones de código abierto existentes que satisficieran sus necesidades, Torvalds creó su propio sistema de control de versiones distribuido y lo llamó Git.
+
+Git es un sistema de control de versiones distribuido creado teniendo en cuenta la escalabilidad. Utiliza una estructura de árbol compuesto por ramas (branch) similar a un filesystem.
 
 Git realiza un seguimiento de tres estructuras principales:
 
@@ -56,9 +56,9 @@ También se puede compilar directamente a partir del codigo fuente.
 apt-get install libcurl4-gnutls-dev libexpat1-dev gettext libz-dev libssl-dev wget
 
 // Luego descargamos la versión más reciente (2.11.0 al día de redacción de este texto).
-wget https://www.kernel.org/pub/software/scm/git/git-2.34.1.tar.gz 
+wget https://www.kernel.org/pub/software/scm/git/git-2.34.1.tar.gz
 // Por último compilamos e instalamos el software
-tar -zxf git-2.34.1.tar.gz 
+tar -zxf git-2.34.1.tar.gz
 cd git-2.34.1
 make configure
 ./configure --prefix=/usr
