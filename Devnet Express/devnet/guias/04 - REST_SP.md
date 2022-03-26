@@ -34,7 +34,7 @@ Para obtener nuestro access token:
 
 ![Spark developer key](../imagenes/access_token.png)
 
-| Nota: se puede llegar al mismo sitio a través de https://developer.webex.com/docs/getting-started
+> Nota: se puede llegar al mismo sitio a través de https://developer.webex.com/docs/getting-started
 
 The token allows you to make Spark API calls.
 
