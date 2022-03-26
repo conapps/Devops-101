@@ -922,7 +922,7 @@ for postre in comida['postres']:
 
 ### Script #7 - `nested-data-type-loops.py`
 
-La idea es ver con este script algunos metodos básicos para iterar sobre una estructura de python, y así operar facilmentoe con los valores almacenados.
+La idea es ver con este script algunos metodos básicos para iterar sobre una estructura de python, y así operar fácilmente con los valores almacenados.
 
 Dadas las estructuras de datos encontradas en el archivo `code/07-nested-data-type-loops.py`, escriba los `loops` necesarios para:
 
