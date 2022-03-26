@@ -55,12 +55,10 @@ VAR3 = {
 print(VAR2)
 
 for variable in VAR2:
-    print(variable, ":", VAR2[variable])
+    print(VAR2[variable])
 
 print()
 print(VAR3)
 
-for first_variable in VAR3:
-    print(first_variable)
-    for second_variable in VAR3[first_variable]:
-        print(" ", second_variable)
+for animal in VAR3["animal"]:
+    print(animal)
