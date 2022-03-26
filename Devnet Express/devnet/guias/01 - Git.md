@@ -23,7 +23,7 @@ Los sistemas de control de versiones de archivo existen desde la invención del 
 `Git` es el sistema de control de versiones más popular en el mundo, desarrollado por Linus Torvalds, fundador del kernel de linux.
 Se creó como alternativa al sistema SCM BitKeeper, cuando el propietario decidió no permitir el uso gratuito del sistema para el desarrollo del kernel de Linux. Sin opciones de código abierto existentes que satisficieran sus necesidades, Torvalds creó su propio sistema de control de versiones distribuido y lo llamó Git.
 
-Git es un sistema de control de versiones distribuido creado teniendo en cuenta la escalabilidad. Utiliza una estructura de árbol compuesto por ramas (branch) similar a un filesystem
+Git es un sistema de control de versiones distribuido creado teniendo en cuenta la escalabilidad. Utiliza una estructura de árbol compuesto por ramas (branch) similar a un filesystem.
 
 Git realiza un seguimiento de tres estructuras principales:
 
