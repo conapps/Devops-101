@@ -784,9 +784,9 @@ autos = {
 }
 
 >>> print("Mi auto deportivo favorito es el Dodge " + autos["deportivos"]["Dodge"])
->>> Viper
+>>> Mi auto deportivo favorito es el Dodge Viper
 >>> print("Mi auto clasico favorito es el Lincoln " + autos["clasicos"]["Lincoln"])
->>> Continental
+>>> Mi auto clasico favorito es el Lincoln Continental
 ```
 
 ### Script #6 - `nested-data-types.py`
