@@ -36,15 +36,13 @@ Para obtener nuestro access token:
 
 > Nota: se puede llegar al mismo sitio a través de https://developer.webex.com/docs/getting-started
 
-The token allows you to make Spark API calls.
+Ahora que ya tenemos nuestro Access Token, comencemos!
 
-Great! Now that we have the basics of APIs down, let's dive into REST APIs to see how they work.
+## ¿Qué es servicio web (Web service) REST?
 
-## What is a REST web service?
+En general, un servicio web es un mecanismo para que dos sistemas informáticos se comuniquen. En los últimos 20 años se han utilizado dos tipos principales de servicios web - REST y SOAP. Sin embargo, en los últimos 10 años, el enfoque planteado por REST se ha vuelto cada vez mas popular.
 
-In general, a web service is a way for two systems to communicate through a defined interface. In the past 20 years, there have been two major types of Web Services – REST or SOAP. In the last 10 years, the REST approach has become increasingly popular.
-
-What is REST? REST (Representational State Transfer) is an architecture style for designing networked applications. A REST web service is a web service that is as easy to call as making an HTTP request.
+Entonces ¿Qué es REST?. REST (Representational State Transfer) es una arquitectura para desarrollar aplicaciones en red. Los servicios Web REST son sencillos de utilizar a través de requests HTTP.
 
 Look at the diagram below. It shows how a browser retrieves web pages. Normally, after a user requests a particular resource in a browser, the appropriate web server responds with the proper HTML to display the page to your client browser.
 
