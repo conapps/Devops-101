@@ -111,10 +111,10 @@ ansible -i hosts.yml all -a 'echo "Hello, World!"'
 Es importante identificar las comillas que envuelven el comando que ejecutará ansible a través del flag `-a`, especialmente si se quieren utilizar variables de entorno dentro del comando (las comillas simples `'` no resuelven variables, solo la hacen las comillas dobles `"`). Otro punto a tener en cuenta es que el flag `-a` no soporta comandos concatenados con un pipe (`|`). Para hacer esto tenemos que utilizar el módulo `shell`.
 
 ```bash
-ansible -i hosts.yml all -m shell -a 'ifconfig eth0 | grep "inet addr" | cut -d: -f2 | awk "{print $1}"'
+ansible -i hosts.yml all -m shell -a 'ifconfig eth0 | grep "inet" '
 ```
 
-El comando anterior devuelve la dirección IP de la interfaz `eth0` de cada host.
+El comando anterior devuelve el direccionamiento IP de la interfaz `eth0` de cada host.
 
 ---
 
