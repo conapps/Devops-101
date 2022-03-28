@@ -6,7 +6,6 @@ Comenzaremos nuestra discusión de `network programmability` analizando qué es 
 
 Una API (Application Programming Interface) es una forma para que dos piezas de software intercambien información. Se puede hacer un paralelismo con las interfaces Web que los usuarios utilizamos para interactuar con las aplicaciones; estas interfaces nos presentan un flujo de trabajo determinado que nos permite visualizar información o ejecutar acciones. Del mismo modo, la API de una pieza de software presenta un flujo de trabajo determinado que hace posible que otra pieza de software pueda intercambiar información o ejecutar acciones.
 
-
 Una API es similar en concepto. En lugar de que los humanos interactúen con el software, el software interactúa con el software. En lugar de tener un punto humano y hacer clic en un flujo de trabajo, una API expone la funcionalidad a otra aplicación.
 
 Para qué hacer esto? Una de las razones es que esto permite el desarrollo de aplicaciones ricas con una amplia variedad de funciones. Veamos un ejemplo.
@@ -19,29 +18,31 @@ Un buen ejemplo es un servidor de mapas. En lugar de crear la funcionalidad de m
 
 ![API example](../imagenes/REST-18.jpg)
 
+## Obtener acceso a la API REST de Webex Teams
 
-## Get Access To The Webex Teams REST APIs
+Durante el resto del curso estaremos utilizando la API REST de Webex, una herramienta de colaboración de Cisco, para interactuar con ella de forma programática.
+Para poder explorar e interactuar con la API es necesario tener una cuenta de desarrollador y un access Token. Los access Tokens son credenciales para autenticar a programas de computadoras que interactúan con otros a través de APIs. En este curso cada quien tendrá su propio access token individual y lo utilizará para autenticar sus scripts contra la API de Webex.
 
-We are going to use the Spark REST API to start our programmability journey. Spark is a collaboration tool that allows people to chat and share files, plus other capabilities.
+Para obtener nuestro access token:
 
-You need to set up a Spark developer account in order to explore the Spark REST API!
+1.  Ir al sitio de desarrollador de Webex, [Webex developer site](https://developer.webex.com/).
+2.  Click en `Signup` para crear una cuenta (en caso de no contar con una).
+3.  Login con las credenciales generadas en el punto anterior.
+4.  Click en 'Go to Docs'
+5.  En el menú de la izquierda seleccionar 'APIs --> Getting Started'
+6.  Copiar y guardar su Token personal.
 
-1.  Go to the Spark Developer website.
-2.  Click on Sign Up button to create an account.
-3.  Log in with your new credentials and click on the member icon located on the top right corner of the page and click on the 'Copy' button to copy your Access Token.
+![Spark developer key](../imagenes/access_token.png)
 
-![Spark developer key](../imagenes/REST-17.png)
-![Spark developer key](../imagenes/webexlogin.png)
+> Nota: se puede llegar al mismo sitio a través de https://developer.webex.com/docs/getting-started
 
-The token allows you to make Spark API calls.
+Ahora que ya tenemos nuestro Access Token, comencemos!
 
-Great! Now that we have the basics of APIs down, let's dive into REST APIs to see how they work.
+## ¿Qué es servicio web (Web service) REST?
 
-## What is a REST web service?
+En general, un servicio web es un mecanismo para que dos sistemas informáticos se comuniquen. En los últimos 20 años se han utilizado dos tipos principales de servicios web - REST y SOAP. Sin embargo, en los últimos 10 años, el enfoque planteado por REST se ha vuelto cada vez mas popular.
 
-In general, a web service is a way for two systems to communicate through a defined interface. In the past 20 years, there have been two major types of Web Services – REST or SOAP. In the last 10 years, the REST approach has become increasingly popular.
-
-What is REST? REST (Representational State Transfer) is an architecture style for designing networked applications. A REST web service is a web service that is as easy to call as making an HTTP request.
+Entonces ¿Qué es REST?. REST (Representational State Transfer) es una arquitectura para desarrollar aplicaciones en red. Los servicios Web REST son sencillos de utilizar a través de requests HTTP.
 
 Look at the diagram below. It shows how a browser retrieves web pages. Normally, after a user requests a particular resource in a browser, the appropriate web server responds with the proper HTML to display the page to your client browser.
 

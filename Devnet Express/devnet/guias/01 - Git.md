@@ -21,9 +21,9 @@ Los sistemas de control de versiones de archivo existen desde la invención del 
 - Etc.
 
 `Git` es el sistema de control de versiones más popular en el mundo, desarrollado por Linus Torvalds, fundador del kernel de linux.
-Se creó como  alternativa al sistema SCM BitKeeper, cuando el propietario decidió no permitir el uso gratuito del sistema para el desarrollo del kernel de Linux. Sin opciones de código abierto existentes que satisficieran sus necesidades, Torvalds creó su propio sistema de control de versiones distribuido y lo llamó Git.
- 
-Git es un sistema de control de versiones distribuido creado teniendo en cuenta la escalabilidad. Utiliza una estructura arbolescente en ramas (branch) milar a un filesystem. 
+Se creó como alternativa al sistema SCM BitKeeper, cuando el propietario decidió no permitir el uso gratuito del sistema para el desarrollo del kernel de Linux. Sin opciones de código abierto existentes que satisficieran sus necesidades, Torvalds creó su propio sistema de control de versiones distribuido y lo llamó Git.
+
+Git es un sistema de control de versiones distribuido creado teniendo en cuenta la escalabilidad. Utiliza una estructura de árbol compuesto por ramas (branch) similar a un filesystem.
 
 Git realiza un seguimiento de tres estructuras principales:
 
@@ -56,9 +56,9 @@ También se puede compilar directamente a partir del codigo fuente.
 apt-get install libcurl4-gnutls-dev libexpat1-dev gettext libz-dev libssl-dev wget
 
 // Luego descargamos la versión más reciente (2.11.0 al día de redacción de este texto).
-wget https://www.kernel.org/pub/software/scm/git/git-2.34.1.tar.gz 
+wget https://www.kernel.org/pub/software/scm/git/git-2.34.1.tar.gz
 // Por último compilamos e instalamos el software
-tar -zxf git-2.34.1.tar.gz 
+tar -zxf git-2.34.1.tar.gz
 cd git-2.34.1
 make configure
 ./configure --prefix=/usr
@@ -288,7 +288,7 @@ index d1962cd..ffe9678 100644
 
 Un "branch" (como referencia su nombre en ingles) es una rama del árbol de commits que construye `git` para almacenar las modificaciones realizadas sobre el proyecto. Crear múltiples "branches" dentro de un proyecto puede ser beneficioso en alguna instancias. Por ejemplo, buenas prácticas indican que la "branch" `master` contenga el cofigo de producción, mientras que el desarrollo de nuevas funcionalidades se realiza en "branches" paralelas. Una vez que este codigo construido paralelamente es testeado y aprobado para entrar en producción se realiza un "branch merge" (una "union").
 
-Para crear una nueva "branch" usamos el comando `git branch` seguido por un nombre que se le asignara a la nueva "branch". Una vez creada, podemos pasarnos a esta nueva "branch" utilizando el comando `git checkout` más el nombre de la "branch" objetivo. Los "commits" realizados en esta nueva "branch" no serán aplicados en las otras "branches". Esto nos permite compartemizar el proyecto en instancias aisladas.
+Para crear una nueva "branch" usamos el comando `git branch` seguido por un nombre que se le asignara a la nueva "branch". Una vez creada, podemos pasarnos a esta nueva "branch" utilizando el comando `git checkout` más el nombre de la "branch" objetivo. Los "commits" realizados en esta nueva "branch" no serán aplicados en las otras "branches". Esto nos permite dividir el proyecto en instancias aisladas.
 
 **OBS: Es importante tener presente que si se realiza un `git checkout` y existen modificaciones que no fueron aplicadas a un commit en la "branch" actual, los mismos se transladarán a la otra "branch".**
 
@@ -371,7 +371,7 @@ Deleted branch desarrollo (was 88c2543).
 
 ## Almacenar repositorio en GitHub
 
-Una forma de compartir y almacenar nuestro codigo es a través de servicios como GitHub. Para poder sincronizar nuestro codigo en GitHub, debemos crear un repositorio en GitHun y luego agregar el endpoint que nos proveen en la carpeta local de nuestro proyecto. Esto lo hacemos utilizando el comando `git remote`. La comunicación con GitHub puede realizarse a través de SSH o HTTPS. La primera es más segura pero requiere de la creación de una clave RSA que debe ser cargada en GitHub, mientras que para usar HTTPS solo debemos utilizar nuestras credenciales cada vez que queramos comunicarnos con GitHub, ya sea para subir o descargar archivos.
+Una forma de compartir y almacenar nuestro codigo es a través de servicios como GitHub. Para poder sincronizar nuestro codigo en GitHub, debemos crear un repositorio en GitHub y luego agregar el endpoint que nos proveen en la carpeta local de nuestro proyecto. Esto lo hacemos utilizando el comando `git remote`. La comunicación con GitHub puede realizarse a través de SSH o HTTPS. La primera es más segura pero requiere de la creación de una clave RSA que debe ser cargada en GitHub, mientras que para usar HTTPS solo debemos utilizar nuestras credenciales cada vez que queramos comunicarnos con GitHub, ya sea para subir o descargar archivos.
 
 En la carpeta de nuestro proyecto debemos registrar el endpoint de GitHub. Usualmente lo denominamos como "origin" para identificarlo.
 

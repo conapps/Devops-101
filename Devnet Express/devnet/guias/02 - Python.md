@@ -784,9 +784,9 @@ autos = {
 }
 
 >>> print("Mi auto deportivo favorito es el Dodge " + autos["deportivos"]["Dodge"])
->>> Viper
+>>> Mi auto deportivo favorito es el Dodge Viper
 >>> print("Mi auto clasico favorito es el Lincoln " + autos["clasicos"]["Lincoln"])
->>> Continental
+>>> Mi auto clasico favorito es el Lincoln Continental
 ```
 
 ### Script #6 - `nested-data-types.py`
@@ -865,7 +865,7 @@ Veámoslo con un ejemplo:
 limite = 10
 contador = 0
 while contador < limite:
-  print('Quiero imprimir esto 5 veces')
+  print('Quiero imprimir esto 10 veces')
   contador = contador + 1
 
 Quiero imprimir esto 10 veces
@@ -922,7 +922,7 @@ for postre in comida['postres']:
 
 ### Script #7 - `nested-data-type-loops.py`
 
-La idea es ver con este script algunos metodos básicos para iterar sobre una estructura de python, y así operar facilmentoe con los valores almacenados.
+La idea es ver con este script algunos metodos básicos para iterar sobre una estructura de python, y así operar fácilmente con los valores almacenados.
 
 Dadas las estructuras de datos encontradas en el archivo `code/07-nested-data-type-loops.py`, escriba los `loops` necesarios para:
 
