@@ -1,24 +1,24 @@
 
 ## Reutilización del código
 
-A medida que querramos realizar tareas mas complejas, el contenido de nuestro playbook será mas extenso. Y si bien es posible escribir todo el playbook en un único archivo `.yml` grande, eventualmente vamos a querer partirlo en secciones mas pequeñas, que nos permitan no solo gestionarlo de mejor manera, sino además reutilizar código en otros playbooks, algo que a la larga nos resultará muy útil.
+A medida que queremos realizar tareas mas complejas, el contenido de nuestro playbook será mas extenso. Y si bien es posible escribir todo el playbook en un único archivo `.yml` grande, eventualmente vamos a querer partirlo en secciones mas pequeñas, que nos permitan no solo gestionarlo de mejor manera, sino además reutilizar código en otros playbooks, algo que a la larga nos resultará muy útil.
 
 En Ansible, hay tres formas de hacer esto: `includes`, `imports`, and `roles`. 
-Si bien mencionaremos como funcionan las tres, nos concentraremos en al utilización de `roles`.
+Si bien mencionaremos como funcionan las tres, nos concentraremos en al utilización de `roles`, que es sin dudas uno de los puntos fuertes de Ansible.
 
-Mediante `include` e `import` podemos dividir nuestro código complejo o largo, en múltiples archivos mas pequeños, con funciones específicas, y luego invocarlos desde otros playbooks, pudiendo así simplificar las escritura de los mismos y reutilizar nuestro código.
+Mediante `include` e `import` podemos dividir nuestro código complejo o largo, en múltiples archivos mas pequeños, con funciones específicas, y luego invocarlos desde otros playbooks.
 
-Los `roles` van mas lejos, dado que además del código, permiten incluir definiciones adicionales, como ser variables, handlers, modulos, plugins, etc. Los roles pueden además ser subidos y compartidos por medio de Ansible Galaxy (lo veremos mas adelante).
+Los `roles` van mas lejos, dado que además del código, permiten incluir definiciones adicionales, como ser variables, handlers, templates, plugins, etc. Los roles pueden además ser subidos y compartidos por medio de [Ansible Galaxy](https://galaxy.ansible.com/).
 
 Es necesario entender primero que Ansible cuenta con dos modos de operación:
-- `static`: Ansible pre-procesa todos los archivos y referencias antes de comenzar a ejecutar las taeas.
-- `dynamic`: Ansible procesa los archivos durante la ejecución, es decir, a medida que va encontrando las tareas y leyendo los archivos.
+- `static`: Ansible pre-procesa todos los archivos (ej. playbooks) y sus referencias, antes de comenzar a ejecutar las taeas en los hosts.
+- `dynamic`: Ansible procesa los archivos durante la ejecución, es decir, a medida que va encontrando las tareas, leyendo los archivos y ejecutandolas en los hosts.
 
-Si queremos que Ansible funcione en modo `static` debemos referenciar los archivos por medio de `import`. Mientras si queremos que se comporte de forma dinámica, utilizaremos `include`.
+Si queremos que Ansible funcione en modo `static` debemos referenciar los archivos de nuestro código por medio de `import`. Mientras si queremos que se comporte de forma dinámica, utilizaremos `include`.
 
 Existen algunas limitaciones en el uso de `import` e `include` que es importante tener en cuenta:
-- Loops solo pueden realizarse con comandos de `include`. 
-- Las variables definidas a nivel de inventario no serán consumidas por un `import`.
+- Solo podemos realizar `Loops` en modalidad `dinámica`, esto es, con `include`. 
+- Las variables definidas a nivel de inventario no serán consumidas en modalidad `estática`, con `import`.
 
 Por ejemplo, podemos tener un `playbook` que instale una determinada aplicación:
 ```yaml
@@ -32,7 +32,7 @@ Por ejemplo, podemos tener un `playbook` que instale una determinada aplicación
         update_cache: yes
 ```
 
-y luego en otro `playbook` importarlo para poder ejecutarlo, sin necesidad de tener que reescribir el código:
+y luego en otro `playbook` importar el anterior, para poder ejecutarlo:
 ```yaml        
 # three_tier_app.yml
 - import_playbook: webservers.yml
@@ -41,53 +41,57 @@ y luego en otro `playbook` importarlo para poder ejecutarlo, sin necesidad de te
 ---
 
 ## Roles
+[Ref: Ansible Roles](https://docs.ansible.com/ansible/latest/user_guide/playbooks_reuse_roles.html)
+
 Los roles son un elemento fundamental a la hora de escribir nuestro código en forma mas sencilla y estructurada, y poder además reutilizarlo e incluso compartirlo.
 
 Los roles permiten importar de forma automática no solo las tareas a ejecutar, sino también variables, handlers, templates, y otros componentes, basado en una estructura de directorios especifica. Los roles puede ser luego utilizados en multiples `playbooks`, o compartidos a traves de Ansible Galaxy.
 
 Los `roles` requieren cierta estructura de directorios definida para su funcionamiento. Para empezar, deben ubicarse siempre dentro del directorio `./roles` de nuestro proyecto.
-Allí, se crea un directorio para cada `role` con el nombre que querramos darle, el cuál se referencia luego para su invocación desde el `playbook`. Dentro del rol se crea la siguiente estrucutura de directorios:
+Allí, se crea un directorio para cada `role` con el nombre que querramos darle, el cuál se referenciará luego para su invocación desde el `playbook`. 
+
+Dentro del rol se crea la siguiente estrucutura de directorios:
 
 ```
 roles/
-  nombre-de-mi-rol/
+  nombre-del-rol/
     defaults/
     files/
     handlers/
+    library/
     meta/
-    README.md
     tasks/
     templates/
     vars/
+    README.md
 ```
 
-Al menos uno de estos directorios debe existir dentro de la carpeta del rol, sin embargo, no es necesario que existan todos. Para cada directorio que creemos dentro del rol, debe existir un archivo llamado `main.yml` en donde se encuentra la información por defecto correspondiente a ese directorio.
+Al menos uno de estos directorios debe existir dentro de la carpeta del rol, sin embargo, no es necesario que existan todos. Típicamente se utiliza por lo menos el directorio `tasks`, que contiene el código con las tareas a ejecutar, y `defaults` (o `vars`) que contiene las variables predefinidas para el rol.
 
-```
-roles/
-  nombre-de-mi-rol/
-    tasks/
-      main.yml
-    vars/
-      main.yml
-```
-Dentro del archivo `tasks/main.yml` se colocan las tareas a ejecutar por defecto para el rol, esto es, lo que queremos ejecutar. En caso de querer incluir múltiples tareas, podemos colocarlas en forma de lista:
+Para cada directorio que creemos dentro del rol, debe existir un archivo llamado `main.yml`, en donde se encuentra la información por defecto que va ir a buscar Ansible para ese directorio. Los principales son:
+
+- `tasks/main.yml`: contiene el código con las tareas a ejecutar por defecto para el rol.
+- `defaults/main.yml`: contiene la definición de las variable utilizadas por defecto para el rol. Las variables que aquí se definan tienen la menor prioridad posible, y serán sobreescritas por cualquier definición de variable realizada en cualquier otro lugar de nuestro código.
+- `vars/main.yml`: otras variables definidas para el rol, que tienen mayor precedencia a las definidas en el directorio anterior.
+- `files/main.yml`: archivos que utilice el rol para su ejecución.
+- `templates/main.yml`: templates que despliegue el rol.
+- `meta/main.yml` - metadata para el rol, por ejemplo para definir dependencias con otros roles.
+
+
+Dentro de `tasks/main.yml`, se encuentran las tareas a ejecutar por defecto para el rol, y en caso de querer incluir múltiples tareas podemos hacerlo en forma de lista:
 ```yaml
-# tasks/main.yml
+# ./roles/nombre-del-rol/tasks/main.yml
 - tarea1
 - tarea2
 - tarea3
 ```
 
-Dentro del archivo `vars/main.yml` se colocan las variables que queremos cargar por defecto cada vez que se invoque el rol.
-Y así sucesivamente con el resto de los componentes/directorios del rol, y su archivo `main.yml` correspondiente.
+Podemos escribir todo nuestro código de corrido en `tasks/main.yml`, o bien podemos separarlo en varios archivos e invocarlos según los necesitemos, lo cual nos permite simplificar la escritura en caso de roles más complejos. 
 
-Dentro del archivo `tasks/main.yml` podemos poner todo nuestro código de corrido, o bien podemos separarlo en varios archivos, y referenciarlos según corresponda, lo que nos permite simplificar la escritura en caso de roles complejos. 
-Esto es usual, por ejemplo, cuando se quiere que un rol sea capaz de interactuar con multiples sistemas operativos, los cuales pueden requerir de la realización de distintas tareas y utilización de distintos módulos, para cumplir con un mismo objetivo final. 
+Por ejemplo, cuando se quiere que un rol sea capaz de interactuar con multiples sistemas operativos, los cuales pueden requerir realizar distintas tareas y utilizar distintos módulos, para cumplir con un mismo objetivo final. En la documentación de Ansible se presenta un ejemplo similar al siguiente, para demostrar esta práctica:
 
-En la documentación de Ansible se presenta el siguiente ejemplo para demostrar esta práctica:
-
-```
+```yml
+# estructura de directorios
 roles/
   apache2/
     tasks/
@@ -118,7 +122,7 @@ roles/
     state: present
 ```
 
-Una vez definido el rol, puede ser invocado desde una `playbook` a través de la opción `roles`, la cuál consume una lista de `roles` a ejecutar.
+Una vez definido el rol, el mismo puede ser invocado desde un `playbook` a través de la sentencia `roles:`, la cuál consume una lista de roles a ejecutar:
 
 ```yml
 # playbook.yml
@@ -127,7 +131,16 @@ Una vez definido el rol, puede ser invocado desde una `playbook` a través de la
   roles:
     - apache2
     - update-web-content
-    - xxx
+    - verify-web-services
+
+# estructura de directorios
+roles/
+  apache2/
+    tasks/main.yml
+  update-web-content
+    tasks/main.yml
+  verify-web-services
+    tasks/main.yml
 ```
 
 ---
@@ -139,19 +152,19 @@ Cree dos roles, uno llamado `apache2` y otro `sqlite3`, que instalen `apache` y 
 	<summary>
 		Pista #1
 	</summary>
-	Recuerde que los roles deben ser crados dentro del directorio <code>/roles</code> del proyecto.
+	Recuerde que los roles deben ubicarse dentro del directorio <code>/roles</code> del proyecto, comience por crear la estructura de directorios necesaria.
 </details>
 <details>
 	<summary>
 		Pista #2
 	</summary>
-	Las carpetas creadas para el rol, deben contrar al menos con un archivo llamado <code>main.yml</code> , que es el que Ansible va a ir a buscar por defecto.
+	Las carpetas creadas para el rol deben contrar con el archivo <code>main.yml</code>, que es el que Ansible irá a buscar por defecto.
 </details>
 <details>
 	<summary>
 		Pista #3
 	</summary>
-	Las tareas a ejecutar por defecto para el rol, se definen dentro del archivo <code>tasks/main.yml</code> .
+	Debe crear dos roles diferentes, y luego en el playbook invocar un rol para el grupo de hosts <code>app</code> y otro rol para el grupo de hosts <code>db</code>.
 </details>
 
 <details>
@@ -198,31 +211,80 @@ ejer4-playbook.yml
 
 ---
 
-_OBS: También se puede correr un rol desde una tarea a través del comando `import_role`_
-
-Por defecto, cuando indiquemos el rol solo por su nombre, Ansible buscara la carpeta del rol en la siguiente ubicación `./roles/<nombre_de_rol>`. En caso de que el rol al cual queramos hacer referencia se encuentre en otra ubicación, podemos utilizar una dirección al directorio en vez de su nombre. La única diferencia es que tenemos que utilizar la llave `role` dentro de la lista de roles.
-
+En nuestro playbook, podemos también invocar los roles desde nuestra lista de tareas, por medio de `import_role` o `include_role`:
 ```yaml
-- hosts: webservers
-  roles:
-    - role: ~/ansible/roles/apache2
+# playbook.yml
+- name: install apache2 
+  hosts: web
+  tasks:
+    - import_role:
+        name: apache2
 ```
 
-Los roles puedes consumir variables definidas dentro del `playbook` a través de la opción `vars`. Las variables definidas de esta manera sobreescribirán los valores por defecto que se hayan configurado dentro del rol.
+Como vimos antes, cuando se llama a un rol desde un playbook Ansible ejecutará por defecto las tareas que se encuentren en el archivo `task/main.yml`. Pero puede suceder que en realidad querramos ejecutar tareas que se encuentren en otro archivo `.yml`. Esto podemos hacerlo utilizando la sentencia `tasks_from`:
+
+```yaml
+# playbook.yml
+- name: install apache2 
+  hosts: web
+  tasks:
+    - import_role:
+        name: apache2
+    - import_role:
+        name: apache2
+        tasks_from: update-web-content
+    - import_role:
+        name: apache2
+        tasks_from: verify-web-services
 
 
+# estructura de directorios
+roles/
+  apache2/
+    tasks/
+      main.yml
+      update-web-content.yml
+      verify-web-services.yml
+```
+
+Por defecto los roles consumiran siempre las variables que definamos dentro de `./defaults/main.yml`.
+
+Pero si queremos, podemos pasarle variables al rol desde nuestro `playbook` en el momento de su invocación, utilizando la sentencia `vars:`. Esto hará que se sobreescriban los valores por defecto del rol, con los que pasemos a nivel del playbook:
 
 
+```yaml
+# roles/apache2/defaults/main.yml
+webserver_document_root: "/var/www/html"
 
+# playbook.yml
+- name: install apache2 
+  hosts: web
+  tasks:
+    - import_role:
+        name: apache2
+    - vars:
+        webserver_document_root: "/home/apache/main/html"
+
+# estructura de directorios
+roles/
+  apache2/
+    defaults/main.yml
+    tasks/main.yml
+playbook.yml
+```
+En el caso anterior, la variable `webserver_document_root` tomará el valor `/home/apache/main/html` definido a nivel del playbook, el cual sobreescribirá el valor por defecto definido en el rol. Esto se debe a la forma en que Ansible maneja la [precedencia de variables](https://docs.ansible.com/ansible/latest/user_guide/playbooks_variables.html#understanding-variable-precedence) de acuerdo al lugar donde éstas sean definidas.
+
+>OBS: recordemos que las variables definidas en `./defaults/main.yml` siempre van a tener el `menor nivel de precedencia posible` respecto a variables definidas en cualquier otro lugar de nuestro código.
 
 ---
 ---
+
 
 ---
 
 ## Ansible galaxy
 
-[Ansibe galaxy](https://galaxy.ansible.com/) es un sitio gratuito mantenido por Red Hat que permite descargar roles desarrollados por la comunidad. Es una excelente forma de simplificar la configuración de nuestros `playbooks`. 
+[Ansibe Galaxy](https://galaxy.ansible.com/) es un sitio gratuito mantenido por Red Hat que permite descargar roles desarrollados por la comunidad. Es una excelente forma de simplificar la configuración de nuestros `playbooks`. 
 
 Utilizando la aplicación `ansible-galaxy` podemos:
 
