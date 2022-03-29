@@ -855,7 +855,7 @@ Por ejemplo, si queremos generalizar una tarea para que se ejecute tanto en serv
 
 Ejecutamos el playbook:
 ```
-# ansible-playbook tercer-playbook.yml
+# ansible-playbook tercer_playbook.yml
 
 PLAY [Ejemplo, instalar `jq` con `apt` en Ubuntu y `yum` en CentOS] ****************************************************************************
 
@@ -886,7 +886,7 @@ Podemos ver entonces, que la tarea de instalación fue ejecutada para Ubuntu per
 ---
 ## Loops
 
-También podemos incluir loops en el código utilizando las opciones `loop`.
+También podemos realizar iteraciones en el código utilizando la sentencia `loop`.
 
 La opción `loop` toma una lista de opciones y ejecuta la tarea para cada uno de los elementos de la lista. Podemos acceder a los elementos de la lista durante la ejecución a través de la variable `item`.
 
@@ -918,37 +918,34 @@ Los elementos de cada lista pueden ser valores más complejos, como objetos u ot
   gather_facts: no
   tasks:
     - debug:
-        msg: '{{item["name"]}}'
+        msg: 'Nombre: {{item.name}} - Grupo: {{item.groups}}'
       loop:
         - { name: 'testuser1', groups: 'wheel' }
         - { name: 'testuser2', groups: 'root' }
 ```
-En este caso, cada elemento del `loop` es una lista, que tiene dentro dos elementos (name y groups). Y cuando itero sobre los mismos, despliego únicamente el primero (name).
+En este caso, cada elemento del `loop` es una lista, que tiene dentro dos elementos (name y groups). Y cuando itero sobre los mismos despliego ambos valores.
 
-En el caso de que no se conozca de antemano la cantidad de iteraciones que se necesita se pueden realizar `do-until` loops.
+**until-loops**
+Otro tipo de iteración que podemos realizar es `until` loops. Este tipo de loop es utilizado para reintentar una tarea hasta que se cumpla cierta condición.
+
+Para utilizar este loop se necesitan básicamente tres argumentos en la tarea:
+- `until`: condición que se debe cumplir para que el loop finalice. Ansible va a continuar ejecutando la tarea hasta que la expresión utilizada para evaluar el loop se cumpla: `true`.
+- `retry`: cuantas veces queremos correr la tarea antes de que Ansible se rinda y la de por terminada (sin que se cumpla la condición anterior).
+- `delay`: el tiempo de espera, en segundo,s entre cada reintento de la tarea.
+
+Por ejemplo, la siguiente tarea va a consultar una aplicación en determinada URL, hasta que la misma responda con un código 200 (OK). Ansible va a realizar 10 intentos en total, con una demora de 1 segundo entre cada intento. Si dentro de esos intentos la aplicación responde con código 200, el loop finaliza y se continua con la siguiente tarea. Pero si luego de los 10 intentos la respuesta sigue sin ser "200", el loop finaliza con error y la tarea devolverá un `fail`.
 
 ```yaml
-# OBS: La idea es que el comando utilizado en la tarea falle
-#      para ver funcionar el loop.
-# ...
-- name: Ejemplo de como crear un do-until loop.
-  hosts: localhost
-  connection: local
-  gather_facts: no
-  tasks:
-    - shell: /usr/bin/no-exite-este-comando
-      register: result
-      until: result.stdout.find('todo bien') != -1
-      retries: 5
-      delay: 1
-    - debug:
-        msg: '{{result}}'
+  - name: Wait until web app status is "READY"
+    uri:
+      url: "{{ app_url }}/status"
+    register: result
+    until: result.status = 200
+    retries: 10
+    delay: 1
 ```
 
-_OBS: El comando anterior fallará. En la siguiente sección veremos como podemos remediar esta situación utilizando `blocks`._
-
-En el comando anterior se intento capturar la salida de una tarea que trabaja dentro de un loop. Lo que en realidad quedará registrado en la variable de salida es una lista con todas las salidas parciales.
-
+>OBS: esta tarea se muestra a modo de ejemplo para explicar el uso de `loop`, no podrá ejecutarla en el laboratorio dado que no contamos con la aplicación (URL) que devuelva el `status` necesario.
 
 ### Ejercicio #3
 
