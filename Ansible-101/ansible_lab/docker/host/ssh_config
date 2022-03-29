@@ -1,0 +1,21 @@
+Host *
+  StrictHostKeyChecking no
+  UserKnownHostsFile /dev/null
+
+Host host01
+  HostName host01
+  IdentityFile ~/ansible/master_key
+  Port 22
+  User root
+
+Host host02
+  HostName host02
+  IdentityFile ~/ansible/master_key
+  Port 22
+  User root
+
+Host host03
+  HostName host03
+  IdentityFile ~/ansible/master_key
+  Port 22
+  User root
