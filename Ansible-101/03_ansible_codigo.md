@@ -277,7 +277,88 @@ En el caso anterior, la variable `webserver_document_root` tomará el valor `/ho
 >OBS: recordemos que las variables definidas en `./defaults/main.yml` siempre van a tener el `menor nivel de precedencia posible` respecto a variables definidas en cualquier otro lugar de nuestro código.
 
 ---
+## Templates
+Ref: [Ansible Templates (jinja2)](https://docs.ansible.com/ansible/latest/user_guide/playbooks_templating.html)
+
+[Jinja2](https://jinja.palletsprojects.com/en/3.1.x/) es un lenguaje de templating desarrollado sobre python. El mismo se utiliza en varios frameworks importantes de Python como Django para crear páginas web por ejemplo, sin embargo, se puede usar para crear todo tipo de documentos.
+
+Ansible utiliza `Jinja2` para modificar archivos antes de que estos sean distrubuidos a los `hosts`, siendo una de las herramientas más utilizadas para el manejo de templates. 
+
+Por ejemplo, podemos crear un `template` para un archivo de configuración, y por medio de un playbook desplegar ese archivo de configuración a múltiples hosts, pero modificando algunas partes del mismo al momento de copiarlo, para poder colocarle la información correcta de cada host, como ser dirección IP, hostname, etc.
+De esta forma evitamos tener que escribir un archivo de configuración específico para cada host, y reutilizamos el mismo código, modificando su contenido en forma dinámica por medio de variables.
+
+La conversión del `template` se realiza en el Ansible controller, antes de que la tarea sea enviada y ejecutada en el host. Esto evita la necesidad de tener instalado `jinja2` en el host destino, sino que el mismo solo es requerido en el controller, es decir, donde corre Ansible.
+
+Los templates pueden ubicarse dentro del directorio `./templates` de nuestro proyecto, o en caso de ser parte de un rol, dentro de `roles/nombre-del-rol/templates` y son archivos con extensión `.j2`.
+
+### Demo Lab: Templates
+A modo de ejemplo, tomemos la funcionalidad de poder desplegar un mensaje de bienvenida en Linux cuando un usuario se conecta, algo conocido como [motd](https://manpages.ubuntu.com/manpages/trusty/man5/motd.5.html) (message of the day). Para esto, es necesario crear un archivo con el texto que queremos desplegar, y ubicarlo en `/etc/motd` dentro del host.
+
+Pero supongamos que queremos colocar información específica del host donde se está corriendo, dentro de ese mensaje, como ser su dirección IP y nombre del host, etc.
+
+Creamos el archivo de template:
+```yml
+# ./templates/motd.j2
+
+----------------------------------------------------------------------------------
+Welcome to {{ course_name }} on {{ ansible_hostname }}.
+Running {{ ansible_distribution }} {{ ansible_distribution_version}} on {{ ansible_architecture }} architecture.
+Have a nice day!!
+----------------------------------------------------------------------------------
+
+```
+Luego creamos nuestro `playbook` que copiará el `template` anterior a los hosts, sustituyendo las variables definidas de forma que quede customizado para cada uno.
+
+```yml
+# motd-playbook.yml
+- name: Configurar message-of-the-day 
+  hosts: all
+  gather_facts: yes
+  vars:
+    - course_name: "Ansible-101"
+  tasks:
+    - template:
+        src: motd.j2
+        dest: /etc/motd
+        owner: root
+        group: root
+        mode: 0644
+```
+
+>OBS: puede ver los detalles del módulo `template` en el siguiente [link](https://docs.ansible.com/ansible/latest/collections/ansible/builtin/template_module.html#template-module)
+
+Luego corremos el playbook (ya deberíamos saber como hacerlo), y cuando nos conectemos a alguno de nuestros `hosts` mediante ssh vamos a ver nuestro mensaje como parte del mensaje de bienvenida:
+```
+(controller) # ssh host01
+(...)
+----------------------------------------------------------------------------------
+Welcome Ansible-101 on host01.
+Running Ubuntu 20.04 on x86_64 architecture.
+Have a nice day!!
+----------------------------------------------------------------------------------
+(...)
+```
+
+El `template` que creamos mas arriba consume la variable `course_name` desde el propio playbook.
+El resto de las variables son cargadas por Ansible en forma automática previo a la ejecución de las tareas en cada uno de los `hosts`, gracias a la ejecución del modulo [gather_facts](https://docs.ansible.com/ansible/2.9/modules/gather_facts_module.html). Puede ver la información que este último trae, mediante el comando `ansible host01 -m gather_facts`, contra cualquiera de los hosts.
+
+Las variables del `template` son sustituidas por su valor al momento de ejecutar el playbook, y antes de copiar el archivo al `host` remoto. De hecho, si se conecta por ssh a uno de los hosts y hace un `cat /etc/motd` verá el archivo modificado.
+
 ---
+## CONTENIDO ACTUALIZADO HASTA ACA 
+---
+
+### Ejercicio #5 - Templates??
+
+
+
+---
+
+
+### Ansible Vault
+
+
+
 
 
 ---
@@ -306,7 +387,7 @@ Por defecto los roles descargados desde `ansible-galaxy` se instalarán en `~/.a
 
 ---
 
-### Ejercicio #5
+### Ejercicio #?
 
 Construya el mismo `playbook` que en el ejercicio 4 pero utilizando roles obtenidos de `ansible-galaxy`.
 
@@ -329,8 +410,6 @@ _OBS: para evitar problemas de permisos, configuren la opción `ansible_become` 
 ---
 
 
-## Templates
-https://github.com/ansible/workshops/tree/devel/exercises/ansible_rhel/1.6-templates
 
 
 [Siguiente >](./03_ansible_networking.md)
