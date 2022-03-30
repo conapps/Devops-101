@@ -1,0 +1,6 @@
+- name: "Configurar los servidores web"
+  hosts: app
+  tasks:
+    - include_role:
+        name: apache2
+        tasks_from: configure_web_server
