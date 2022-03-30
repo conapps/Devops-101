@@ -310,7 +310,7 @@ Have a nice day!!
 Luego creamos nuestro `playbook` que copiará el `template` anterior a los hosts, sustituyendo las variables definidas de forma que quede customizado para cada uno.
 
 ```yml
-# motd-playbook.yml
+# motd_playbook.yml
 - name: Configurar message-of-the-day 
   hosts: all
   gather_facts: yes
