@@ -26,6 +26,8 @@ services:
     image: ansible_host
     container_name: host01
     hostname: host01
+    ports:
+      - "8001:80"
     command: ['/var/run.sh']
     working_dir: /root/ansible
     volumes:
@@ -38,6 +40,8 @@ services:
     image: ansible_host
     container_name: host02
     hostname: host02
+    ports:
+      - "8002:80"
     command: ['/var/run.sh']
     working_dir: /root/ansible
     volumes:
