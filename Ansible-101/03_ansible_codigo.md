@@ -373,7 +373,7 @@ Ejemplo de la página a desplegar, en HTML:
 </html>
 ```
 
-:warning: Tenga en cuenta que debe iniciar los servicios de Apache en cada host para que el servidor web responda, dado que por defecto se encuentran bajos. Esto puede hacerlo ejecutando el comando `service apache2 restart</code>`. Pruebe de incluir este paso como una tarea más del rol, para no tener que realizarlo en forma manual. Puede utilizar el módulo `service:` de Ansible, cuya documentación se encuentra [aqui](https://docs.ansible.com/ansible/latest/collections/ansible/builtin/service_module.html).
+:warning: Tenga en cuenta que debe iniciar los servicios de Apache en cada host para que el servidor web responda, dado que por defecto se encuentra apagado. Esto puede hacerlo ejecutando el comando `service apache2 restart`. Pruebe de incluir este paso como una tarea más del rol, para no tener que realizarlo en forma manual. Puede utilizar el módulo `service:` de Ansible, cuya documentación se encuentra [aqui](https://docs.ansible.com/ansible/latest/collections/ansible/builtin/service_module.html).
 
 
 
