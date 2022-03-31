@@ -1,5 +1,6 @@
 - name: "Configurar los servidores web"
   hosts: app
+  gather_facts: yes
   tasks:
     - include_role:
         name: apache2
