@@ -212,7 +212,7 @@ ejer4_playbook.yml
 
 ---
 
-#### include_role: e import_role:
+#### include_role: / import_role:
 En nuestro playbook, podemos también invocar los roles desde nuestra lista de `tasks:`, por medio de `include_role:` (en forma dinámica) o `import_role:` (en forma estática).  En general es mucho más común hacerlo de esta forma, en lugar de invocarlos mediante `roles:` como vimos mas [arriba](#roles). 
 ```yaml
 # playbook.yml
@@ -373,7 +373,7 @@ Ejemplo de la página a desplegar, en HTML:
 </html>
 ```
 
-:warning: Tenga en cuenta que debe iniciar los servicios de Apache en cada host para que el servidor web responda, dado que se encuentran apagados por defecto. Esto puede hacerlo ejecutando el comando <code>service apache2 restart</code> en cada host. Pruebe de incluir este paso como una tarea más del rol, para no tener que realizarlo a mano. Puede utilizar el módulo `service:` de Ansible, cuya documentación se encuentra [aqui](https://docs.ansible.com/ansible/latest/collections/ansible/builtin/service_module.html).
+:warning: Tenga en cuenta que debe iniciar los servicios de Apache en cada host para que el servidor web responda, dado que se encuentran apagados por defecto. Esto puede hacerlo ejecutando el comando `service apache2 restart</code>`. Pruebe de incluir este paso como una tarea más del rol, para no tener que realizarlo en forma manual. Puede utilizar el módulo `service:` de Ansible, cuya documentación se encuentra [aqui](https://docs.ansible.com/ansible/latest/collections/ansible/builtin/service_module.html).
 
 
 
