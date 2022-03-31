@@ -40,7 +40,7 @@ y luego en otro `playbook` importar el anterior, para poder ejecutarlo:
 
 ---
 
-## Roles
+## Ansible Roles
 [Ref: Ansible Roles](https://docs.ansible.com/ansible/latest/user_guide/playbooks_reuse_roles.html)
 
 Los roles son un elemento fundamental a la hora de escribir nuestro código en forma mas sencilla y estructurada, y poder además reutilizarlo e incluso compartirlo.
@@ -122,7 +122,7 @@ roles/
     state: present
 ```
 
-#### role:
+#### roles:
 Una vez definido el rol, el mismo puede ser invocado desde un `playbook` a través de la sentencia `roles:`, la cuál consume una lista de roles a ejecutar:
 
 ```yml
@@ -213,7 +213,7 @@ ejer4_playbook.yml
 ---
 
 #### include_role: / import_role:
-En nuestro playbook, podemos también invocar los roles desde nuestra lista de `tasks:`, por medio de `include_role:` (en forma dinámica) o `import_role:` (en forma estática).  En general es mucho más común hacerlo de esta forma, en lugar de invocarlos mediante `roles:` como vimos mas [arriba](https://github.com/conapps/Devops-101/blob/master/Ansible-101/03_ansible_codigo.md#roles). 
+En nuestro playbook, podemos también invocar los roles desde nuestra lista de `tasks:`, por medio de `include_role:` (en forma dinámica) o `import_role:` (en forma estática).  En general es mucho más común hacerlo de esta forma, en lugar de invocarlos mediante `roles:` como vimos mas [arriba](#role). 
 ```yaml
 # playbook.yml
 - name: install apache2 
@@ -355,7 +355,7 @@ Las variables del `template` son sustituidas por su valor al momento de ejecutar
 
 ### Ejercicio #5 
 
-Tomando como base el [Ejercicio #4](https://github.com/conapps/Devops-101/blob/master/Ansible-101/03_ansible_codigo.md#ejercicio-4) modifique el rol `apache2`, para que cambie el contenido de la página web por defecto dependiendo en que `host` se encuentre. El servidor web deberá desplegar una página similar a la siguiente:
+Tomando como base el [Ejercicio #4](#ejercicio-4) modifique el rol `apache2`, para que cambie el contenido de la página web por defecto dependiendo en que `host` se encuentre. El servidor web deberá desplegar una página similar a la siguiente:
 ```bash
   Este sitio web se encuentra corriendo en el nodo <host01|host02>.
   Este es el ambiente de <produccion|desarrollo>!!
