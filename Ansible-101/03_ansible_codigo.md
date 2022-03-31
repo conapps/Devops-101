@@ -332,12 +332,13 @@ Luego creamos nuestro `playbook` que copiará el `template` anterior a los hosts
         mode: 0644
 ```
 
->:point_right: puede ver los detalles del módulo `template` en el siguiente [link](https://docs.ansible.com/ansible/latest/collections/ansible/builtin/template_module.html#template-module)
+:point_right: Puede encontrar la documentación del módulo `template` en el siguiente [link](https://docs.ansible.com/ansible/latest/collections/ansible/builtin/template_module.html#template-module).
 
 Luego corremos el playbook (ya deberíamos saber como hacerlo), y cuando nos conectemos a alguno de nuestros `hosts` mediante ssh vamos a ver nuestro mensaje como parte del mensaje de bienvenida:
 ```
 (controller) # ssh host01
-(...)
+(...parte de la salida omitida para mayor claridad...)
+
 ----------------------------------------------------------------------------------
 Welcome Ansible-101 on host01.
 Running Ubuntu 20.04 on x86_64 architecture.
@@ -360,20 +361,20 @@ Tomando como base el [Ejercicio #4](#ejercicio-4) modifique el rol `apache2`, pa
   Este sitio web se encuentra corriendo en el nodo <host01|host02>.
   Este es el ambiente de <produccion|desarrollo>!!
 ```
-Utilice un `template` para modificar el contenido de la página, según se encuentre en `host01 | produccion` o `host02 | desarrollo`. 
+Utilice un `template` para modificar el contenido de esta página, según se encuentre en `host01 | produccion` o `host02 | desarrollo`. 
 
-:warning: Tenga en cuenta que debe iniciar los servicios de Apache en cada host para que el servidor web responda, dado que se encuentran apagados por defecto. Esto puede hacerlo ejecutando el comando <code>service apache2 restart</code> en cada host. Pruebe de incluir este paso como una tarea más del rol, para no tener que realizarlo a mano. Puede utilizar el módulo `service:` de Ansible, que puede ver [aqui](https://docs.ansible.com/ansible/latest/collections/ansible/builtin/service_module.html).
-
-
-Este sería un contenido básico de la página, escrito en HTML:
+Ejemplo de la página a desplegar, en HTML:
 ```html
 <html>
 <body>
-  <p> Este sitio web se encuentra corriendo en el nodo <hostX>.
+  <p> Este sitio web se encuentra corriendo en el nodo <host01|host02>.
   <p> Este es el ambiente de <produccion/desarrollo>!!
 </body>
 </html>
 ```
+
+:warning: Tenga en cuenta que debe iniciar los servicios de Apache en cada host para que el servidor web responda, dado que se encuentran apagados por defecto. Esto puede hacerlo ejecutando el comando <code>service apache2 restart</code> en cada host. Pruebe de incluir este paso como una tarea más del rol, para no tener que realizarlo a mano. Puede utilizar el módulo `service:` de Ansible, cuya documentación se encuentra [aqui](https://docs.ansible.com/ansible/latest/collections/ansible/builtin/service_module.html).
+
 
 
 <details>
@@ -394,7 +395,7 @@ Este sería un contenido básico de la página, escrito en HTML:
 	<summary>
 		Pista #3
 	</summary>
-	Recuerde que es posible definir tareas dentro del rol en archivos adicionales por fuera del <code>tasks/main.yml</code>. Luego puede invocar estas tareas, mediante <code>include_role:</code> o <code>import_role:</code> con la opción <code>tasks_from:</code>.  
+	Recuerde que es posible definir tareas dentro del rol en otros archivos por fuera del <code>tasks/main.yml</code>. Luego puede invocar estas tareas, mediante <code>include_role:</code> o <code>import_role:</code> con la opción <code>tasks_from:</code>.  
 </details>
 
 <details>
