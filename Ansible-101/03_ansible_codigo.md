@@ -508,7 +508,9 @@ Confirm New Vault password:
 ```
 En el editor, ingresamos un texto y salimos del mismo grabando su contenido, por ejemplo:
 ```
+--- editor de texto ---------------------
 Esta información se encuentra encriptada.
+-----------------------------------------
 ```
 También podemos encriptar el contenido de un archivo existente, mediante `ansible-vault encrypt <nombre-del-archivo.yml>`
 
@@ -525,14 +527,14 @@ $ANSIBLE_VAULT;1.1;AES256
 3939313166353033343530323837616434336630623938346339
 ```
 
-Para ver el contenido del archivo, debemos usar la opción `view`, por ejemplo:
+Para poder ver realmente el contenido del archivo, debemos usar la opción `view`:
 ```
 # ansible-vault view archivo-encriptado.yml
 Vault password: 
 Este contenido se encuentra encriptado
 ```
 
-Para editar su contenido, usamos `edit` el cuál nuevamente nos abre el editor de texto por defecto con el contenido del archivo visible para que podamos modificarlo:
+Y para editarlo, usamos `edit` el cuál nuevamente nos abre el editor de texto por defecto para que podamos modificarlo:
 ```
 # ansible-vault edit archivo-encriptado.yml
 Vault password: 
