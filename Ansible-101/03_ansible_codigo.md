@@ -489,12 +489,6 @@ application_env: produccion
 
 
 ---
-
----
-## CONTENIDO ACTUALIZADO HASTA ACA 
----
-
-
 ## Ansible Vault
 Ref: [Encrypting content with Ansible Vault](https://docs.ansible.com/ansible/2.8/user_guide/vault.html)
 
@@ -504,62 +498,111 @@ También, es lógico y súmamente útil, comenzar a utilizar repositorios de con
 
 Para poder resguardar la información sensible de nuestro código, Ansible nos provee de Ansible Vault, que permite cifrar nuestros archivos y así protegerlos. El comando `ansible-vault` gestiona el contenido encriptado en Ansible, y nos permite encriptar inicialmente un archivo, así como luego poder verlo, editarlo o incluso desencriptarlo.
 
-#### Crear un archivo encriptado
+#### Utilizando ansible-vault
 Para crear un archivo nuevo con su contenido encriptado, utilizamos la opción `create` y el nombre del archivo.
 Nos pedirá una contraseña, y luego nos abrirá el editor que tengamos configurado por defecto, para que ingresemos el contenido del archivo:
-```bash
+```
 # ansible-vault create archivo-encriptado.yml
 New Vault password: 
 Confirm New Vault password:
 ```
 En el editor, ingresamos un texto y salimos del mismo grabando su contenido, por ejemplo:
-```bash
+```
 Esta información se encuentra encriptada.
 ```
+También podemos encriptar el contenido de un archivo existente, mediante `ansible-vault encrypt <nombre-del-archivo.yml>`
 
-.
-.
-.
-.
-.
 
-Para no dejar registrado en texto plano nuestro token, vamos a utilizar `ansible-vault` para encriptarlo.  Comenzamos editando la configuración de Ansible en nuestro entorno. En el archivo `ansible.cfg` le indicaremos a Ansible donde puede encontrar la contraseña utilizada para encriptar.
+Si luego intentamos ver el contenido del archivo, en encontraremos con algo del estilo:
+```
+# cat archivo-encriptado.yml 
+$ANSIBLE_VAULT;1.1;AES256
+37613739316533623030323435616439333433616161666163343730316561393535666235646665
+3766653961633035363432653664373234616637636538310a623333633035353439346339623065
+30343165303136326236643638646163336431653166303032616531396266653962336534636564
+6464393762343665320a396333656663393062346136626333363434396539333365313738303064
+37383632346363643236663062306235616231363265666333366532333237386338646138373730
+3939313166353033343530323837616434336630623938346339
+```
 
+Para ver el contenido del archivo, debemos usar la opción `view`, por ejemplo:
+```
+# ansible-vault view archivo-encriptado.yml
+Vault password: 
+Este contenido se encuentra encriptado
+```
+
+Para editar su contenido, usamos `edit` el cuál nuevamente nos abre el editor de texto por defecto con el contenido del archivo visible para que podamos modificarlo:
+```
+# ansible-vault edit archivo-encriptado.yml
+Vault password: 
+
+--- editor de texto ---------------------
+Este contenido se encuentra encriptado.
+Le agrego otra línea.
+-----------------------------------------
+```
+
+Y para desencriptarlo, usamos la opción `decrypt`, algo que normalmente no haremos pues deja el contenido visible nuevamente:
+```
+# ansible-vault decrypt archivo-encriptado.yml
+Vault password: 
+Decryption successful
+
+# cat archivo-encriptado.yml
+Este contenido se encuentra encriptado.
+Le agrego otra línea.
+
+```
+
+#### Almacenando la contraseña
+Para evitar tener que ingresar a mano nuestra contraseña cada vez que utilizamos el comando `ansible-vaul`, podemos crear un archivo aparte que contenga la misma.
+
+El archivo con la contraseña quedará legible y en texto plano, por lo que tenemos que, en primer lugar ubicarlo en otro lugar por fuera del proyecto, y debe tener los permisos correctos:
+
+```
+# mkdir /root/secret
+echo "micontraseña" > /root/secret/vault-password
+chmod 600 /root/secret/vault-password
+```
+:point_right: El nombre y la ubicación del archivo puede ser la que nosotros querramos. Pero el archivo debe contener únicamente la contraseña a utilizar, y solo una (si usamos varias contraseñas debemos tener varios archivos).
+
+Para utilizar luego la contraseña, tenemos dos opciones. La primera es pasarlo por línea de comando, con la opción `--vault-password-file`: 
+
+```
+# ansible-vault encrypt --vault-password-file /root/secret/vault-password archivo-encriptado.yml 
+Encryption successful
+
+# cat archivo-encriptado.yml 
+$ANSIBLE_VAULT;1.1;AES256
+62346535653562383838643332656564626366623932303033366661383739626666633039653865
+6534363366386331313062393564613461393366643831330a333731326361303763356532343039
+32303939643538383366393138333833613134623065363964373231326237643964333332656661
+3934326539343665610a386531616133643063636662623664373639326431353735313339303739
+64366136316261353438346166623663303530323632633563363632613662313664623764313131
+61313537343163623566613535396535363835343362393233326461633164663561643438666665
+343661303234623639356263653330323765
+
+# ansible-vault view --vault-password-file /root/secret/vault-password archivo-encriptado.yml 
+Este contenido se encuentra encriptado
+Le agrego otra línea
+```
+
+La otra alternativa es modificar nuestra configuración de ansible, editando el archivo `ansible.cfg` e indicarle a donde debe ir a buscar la contraseña:
 ```ìni
 [defaults]
-
-inventory = ./inventory.yml
-host_key_checking = False
-retry_files_enabled = False
-vault_password_file = ./secret/password
+inventory = ./inventory/hosts.yml
+vault_password_file = /root/secret/vault-password
 ```
 
-Esto indica que Ansible deberá buscar la contraseña de todos los archivos encriptados en el archivo `./secret/password`. Los datos en este archivo quedarán en text plano, por lo que tenemos que tener cuidado con los permisos del mismo.
-
-```bash
-mkdir secret
-echo "conatel" > secret/password
-chmod 600 secret/password
+De esta forma no es neceario pasarld la contraseña al ejecutar el comando `ansible-vault`:
+```
+# ansible-vault view archivo-encriptado.yml 
+Este contenido se encuentra encriptado
+Le agrego otra línea
 ```
 
-Ahora podemos crear un archivo a encriptar donde almacenaremos todas las variables secretas utilizando `ansible_vault`.
-
-```bash
-ansible-vault create secret/vars.yml
-```
-
-Ansible nos abrira el editor de text por defecto. Dentro de este archivo almacenaremos el token de desarrollador de Webex Teams. Por ejemplo:
-
-```yaml
-# ---
-# secret/vars.yml
-#
-# Almacenamiento de variables con datos sensibles.
-# ---
-webex_teams_token: <SU TOKEN>
-```
-
-Si abrimos el archivo `secret/vars.yml` en un editor de texto veremos que su contenido este encriptado usando AES256. En caso de querer editarlo usamos el comando `ansible-vault edit secret/vars.yml`. Agregaremos el ID de Sparky en este mismo archivo por conveniencia.
+#### Utilizando archivos encryptados en nuestros playbooks
 
 
 
@@ -573,7 +616,9 @@ Si abrimos el archivo `secret/vars.yml` en un editor de texto veremos que su con
 
 
 
-
+---
+## CONTENIDO ACTUALIZADO HASTA ACA 
+---
 
 
 ---
