@@ -495,7 +495,82 @@ application_env: produccion
 ---
 
 
-### Ansible Vault
+## Ansible Vault
+Ref: [Encrypting content with Ansible Vault](https://docs.ansible.com/ansible/2.8/user_guide/vault.html)
+
+A medida que creamos `playbooks` mas complejos, y comenzamos a interactuar con múltiples sistemas ya sea locales o en la nube, nos damos cuenta que comenzamos a almacenar en nuestros archivos un montó de información sensible, como usuarios, contraseñas, claves de acceso a la nube, información sensible de nuestras aplicaciones, etc.
+
+También, es lógico y súmamente útil, comenzar a utilizar repositorios de control de versiones para nuestro código, tales como [Github](https://github.com/) que almacenan nuestro código en la nube. Pero que, dependiendo de como tengamos configurados nuestros repositorios, podrían brindar acceso público a los mismos, exponiendo así nuestra información.
+
+Para poder resguardar la información sensible de nuestro código, Ansible nos provee de Ansible Vault, que permite cifrar nuestros archivos y así protegerlos. El comando `ansible-vault` gestiona el contenido encriptado en Ansible, y nos permite encriptar inicialmente un archivo, así como luego poder verlo, editarlo o incluso desencriptarlo.
+
+#### Crear un archivo encriptado
+Para crear un archivo nuevo con su contenido encriptado, utilizamos la opción `create` y el nombre del archivo.
+Nos pedirá una contraseña, y luego nos abrirá el editor que tengamos configurado por defecto, para que ingresemos el contenido del archivo:
+```bash
+# ansible-vault create archivo-encriptado.yml
+New Vault password: 
+Confirm New Vault password:
+```
+En el editor, ingresamos un texto y salimos del mismo grabando su contenido, por ejemplo:
+```bash
+Esta información se encuentra encriptada.
+```
+
+.
+.
+.
+.
+.
+
+Para no dejar registrado en texto plano nuestro token, vamos a utilizar `ansible-vault` para encriptarlo.  Comenzamos editando la configuración de Ansible en nuestro entorno. En el archivo `ansible.cfg` le indicaremos a Ansible donde puede encontrar la contraseña utilizada para encriptar.
+
+```ìni
+[defaults]
+
+inventory = ./inventory.yml
+host_key_checking = False
+retry_files_enabled = False
+vault_password_file = ./secret/password
+```
+
+Esto indica que Ansible deberá buscar la contraseña de todos los archivos encriptados en el archivo `./secret/password`. Los datos en este archivo quedarán en text plano, por lo que tenemos que tener cuidado con los permisos del mismo.
+
+```bash
+mkdir secret
+echo "conatel" > secret/password
+chmod 600 secret/password
+```
+
+Ahora podemos crear un archivo a encriptar donde almacenaremos todas las variables secretas utilizando `ansible_vault`.
+
+```bash
+ansible-vault create secret/vars.yml
+```
+
+Ansible nos abrira el editor de text por defecto. Dentro de este archivo almacenaremos el token de desarrollador de Webex Teams. Por ejemplo:
+
+```yaml
+# ---
+# secret/vars.yml
+#
+# Almacenamiento de variables con datos sensibles.
+# ---
+webex_teams_token: <SU TOKEN>
+```
+
+Si abrimos el archivo `secret/vars.yml` en un editor de texto veremos que su contenido este encriptado usando AES256. En caso de querer editarlo usamos el comando `ansible-vault edit secret/vars.yml`. Agregaremos el ID de Sparky en este mismo archivo por conveniencia.
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -505,17 +580,16 @@ application_env: produccion
 
 ## Ansible galaxy
 
-[Ansibe Galaxy](https://galaxy.ansible.com/) es un sitio gratuito mantenido por Red Hat que permite descargar roles desarrollados por la comunidad. Es una excelente forma de simplificar la configuración de nuestros `playbooks`. 
+[Ansibe Galaxy](https://galaxy.ansible.com/) es un sitio gratuito mantenido por Red Hat que permite descargar roles desarrollados por la comunidad. Es una excelente forma de simplificar nuestros `playbooks` y poder reutilizar nuestro código, o cófigo de terceros.
 
-Utilizando la aplicación `ansible-galaxy` podemos:
-
+Utilizando el comando `ansible-galaxy` podemos:
 - Descargar roles.
 - Construir templates para armar nuestros propios roles.
 - Buscar roles.
 
-Aunque es posible buscar por roles desde la consola utilizando `ansible-galaxy`, es mucho más sencillo cuando lo realizamos la búsqueda a través de la aplicación web.
+Aunque es posible buscar por roles desde la consola utilizando `ansible-galaxy`, es mucho más sencillo cuando realizamos la búsqueda a través de la web.
 
-Una vez que encontremos el rol que queremos usar, lo podemos importar a la aplicación a través del comando `ansible-galaxy install`.
+Una vez que encontremos el rol que queremos usar, lo podemos importar a nuestro código a través del comando `ansible-galaxy install`.
 
 Por ejemplo, el siguiente comando instala un rol capaz de interactuar con dispositivos CISCO que utilicen IOS como sistema operativo:
 
@@ -525,27 +599,7 @@ ansible-galaxy install ansible-network.cisco_ios
 
 Por defecto los roles descargados desde `ansible-galaxy` se instalarán en `~/.ansible/roles`. Sin embargo, podemos cambiar el directorio donde queremos que se instale el rol utilizando la opción `-p`.
 
----
 
-### Ejercicio #?
-
-Construya el mismo `playbook` que en el ejercicio 4 pero utilizando roles obtenidos de `ansible-galaxy`.
-
-_OBS: para evitar problemas de permisos, configuren la opción `ansible_become` como `false` en las variables del inventario. Esto es necesario porque estamos accediendo a los servidores como `root` y muchos `roles` online presuponen que por defecto los usuarios con los cuales se van a ejecutar las tareas no tienen este rol._
-
-<details>
-    <summary>Solución</summary>
-    <pre>
-- name: "Instalar los servidores web"
-  hosts: app
-  roles:
-    - role: asianchris.apache2
-- name: "Instalar sqlite"
-  hosts: db
-  roles:
-	- manala.sqlite    
-  </pre>
-</details>
 
 ---
 
