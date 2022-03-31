@@ -122,6 +122,7 @@ roles/
     state: present
 ```
 
+#### role:
 Una vez definido el rol, el mismo puede ser invocado desde un `playbook` a través de la sentencia `roles:`, la cuál consume una lista de roles a ejecutar:
 
 ```yml
@@ -211,7 +212,8 @@ ejer4_playbook.yml
 
 ---
 
-En nuestro playbook, podemos también invocar los roles desde nuestra lista de tareas, por medio de `import_role` o `include_role`:
+#### include_role: / import_role:
+En nuestro playbook, podemos también invocar los roles desde nuestra lista de `tasks:`, por medio de `include_role:` (en forma dinámica) o `import_role:` (en forma estática).  En general es mucho más común hacerlo de esta forma, en lugar de invocarlos mediante `roles:` como vimos mas [arriba](https://github.com/conapps/Devops-101/blob/master/Ansible-101/03_ansible_codigo.md#roles). 
 ```yaml
 # playbook.yml
 - name: install apache2 
@@ -221,6 +223,11 @@ En nuestro playbook, podemos también invocar los roles desde nuestra lista de t
         name: apache2
 ```
 
+
+:point_right: Aquí puede ver la documentación oficial de los módulos [include_role](https://docs.ansible.com/ansible/latest/collections/ansible/builtin/include_role_module.html) e [import_role](https://docs.ansible.com/ansible/latest/collections/ansible/builtin/import_role_module.html).
+
+
+####tasks_from:
 Como vimos antes, cuando se llama a un rol desde un playbook Ansible ejecutará por defecto las tareas que se encuentren en el archivo `task/main.yml`. Pero puede suceder que en realidad querramos ejecutar tareas que se encuentren en otro archivo `.yml`. Esto podemos hacerlo utilizando la sentencia `tasks_from`:
 
 ```yaml
@@ -228,12 +235,12 @@ Como vimos antes, cuando se llama a un rol desde un playbook Ansible ejecutará 
 - name: install apache2 
   hosts: web
   tasks:
-    - import_role:
+    - include_role:
         name: apache2
-    - import_role:
+    - include_role:
         name: apache2
         tasks_from: update-web-content
-    - import_role:
+    - include_role:
         name: apache2
         tasks_from: verify-web-services
 
@@ -348,14 +355,14 @@ Las variables del `template` son sustituidas por su valor al momento de ejecutar
 
 ### Ejercicio #5 
 
-Partiendo del [Ejercicio #4](https://github.com/conapps/Devops-101/blob/master/Ansible-101/03_ansible_codigo.md#ejercicio-4) modifique el `role` llamado `apache2`, para que cambie el contenido de la página web por defecto dependiendo en que `host` se encuentre. El servidor web deberá desplegar una página similar a la siguiente:
+Tomando como base el [Ejercicio #4](https://github.com/conapps/Devops-101/blob/master/Ansible-101/03_ansible_codigo.md#ejercicio-4) modifique el rol `apache2`, para que cambie el contenido de la página web por defecto dependiendo en que `host` se encuentre. El servidor web deberá desplegar una página similar a la siguiente:
 ```bash
   Este sitio web se encuentra corriendo en el nodo <host01|host02>.
   Este es el ambiente de <produccion|desarrollo>!!
 ```
 Utilice un `template` para modificar el contenido de la página, según se encuentre en `host01 | produccion` o `host02 | desarrollo`. 
 
-:warning: Tenga en cuenta que debe iniciar los servicios de Apache en cada host para que el servidor web responda. Esto puede hacerlo ejecutando el comando <code>service apache2 restart</code> en cada host. Pruebe de incluir este paso dentro de las tareas del role, utilizando el módulo `service:` de Ansible, que puede encontrar [aqui](https://docs.ansible.com/ansible/latest/collections/ansible/builtin/service_module.html).
+:warning: Tenga en cuenta que debe iniciar los servicios de Apache en cada host para que el servidor web responda, dado que se encuentran apagados por defecto. Esto puede hacerlo ejecutando el comando <code>service apache2 restart</code> en cada host. Pruebe de incluir este paso como una tarea más del rol, para no tener que realizarlo a mano. Puede utilizar el módulo `service:` de Ansible, que puede ver [aqui](https://docs.ansible.com/ansible/latest/collections/ansible/builtin/service_module.html).
 
 
 Este sería un contenido básico de la página, escrito en HTML:
@@ -381,6 +388,13 @@ Este sería un contenido básico de la página, escrito en HTML:
 		Pista #2
 	</summary>
 	Recuerde que puede definir las <code>variables</code> a utilizar en múltiples lugares del proyecto, incluyendo un archivo específico de variables, en el inventario dentro de <code>host_vars/group_vars</code>, en los directorios <code>./defaults ./vars</code> del rol, entre otros.  
+</details>
+
+<details>
+	<summary>
+		Pista #3
+	</summary>
+	Recuerde que es posible definir tareas dentro del rol en archivos adicionales por fuera del <code>tasks/main.yml</code>. Luego puede invocar estas tareas, mediante <code>include_role:</code> o <code>import_role:</code> con la opción <code>tasks_from:</code>.  
 </details>
 
 <details>
