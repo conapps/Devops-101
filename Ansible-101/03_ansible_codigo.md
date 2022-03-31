@@ -361,17 +361,26 @@ Tomando como base el [Ejercicio #4](#ejercicio-4) modifique el rol `apache2`, pa
   Este sitio web se encuentra corriendo en el nodo <host01|host02>.
   Este es el ambiente de <produccion|desarrollo>!!
 ```
-Utilice un `template` para modificar el contenido de esta página, según se encuentre en `host01 | produccion` o `host02 | desarrollo`. 
 
-Ejemplo de la página a desplegar, en HTML:
-```html
-<html>
-<body>
-  <p> Este sitio web se encuentra corriendo en el nodo <host01|host02>.
-  <p> Este es el ambiente de <produccion/desarrollo>!!
-</body>
+<details>
+  <summary>
+HTML
+  </summary>
 </html>
-```
+<pre>
+&lt;html>
+&lt;body>
+  &lt;p> Este sitio web se encuentra corriendo en el nodo &lt;host01|host02>.
+  &lt;p> Este es el ambiente de &lt;produccion/desarrollo>!!
+&lt;/body>
+&lt;/body>
+&lt;/html>
+</pre>
+</details>
+
+
+.
+Utilice un `template` para modificar el contenido de esta página, según se encuentre en `host01 | produccion` o `host02 | desarrollo`. 
 
 :warning: Tenga en cuenta que debe iniciar los servicios de Apache en cada host para que el servidor web responda, dado que por defecto se encuentra apagado. Esto puede hacerlo ejecutando el comando `service apache2 restart` en cada host. Pruebe de incluir este paso como una tarea más del rol, para no tener que realizarlo en forma manual. Puede utilizar el módulo `service:` de Ansible, cuya documentación se encuentra [aqui](https://docs.ansible.com/ansible/latest/collections/ansible/builtin/service_module.html).
 
@@ -422,6 +431,7 @@ roles/
       configure_web_server.yml
     templates/
       index.html.j2
+ejer4_playbook.yml
 ejer5_playbook.yml
 </pre>
 
@@ -454,13 +464,13 @@ application_env: produccion
 
 <pre>
 # ./roles/apache2/templates/index.html.j2
-<html>
-<body>
-  <p> Este sitio web se encuentra corriendo en el nodo {{ ansible_hostname }}
-  <p> Este es el ambiente de {{ application_env }}!!
-</body>
-</body>
-</html>
+&lt;html>
+&lt;body>
+  &lt;p> Este sitio web se encuentra corriendo en el nodo {{ ansible_hostname }}
+  &lt;p> Este es el ambiente de {{ application_env }}!!
+&lt;/body>
+&lt;/body>
+&lt;/html>
 </pre>
 
 <pre>
