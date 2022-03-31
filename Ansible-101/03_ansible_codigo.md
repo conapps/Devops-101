@@ -476,6 +476,7 @@ application_env: produccion
 <pre>
 # ejer5_playbook.yml
 - name: "Configurar los servidores web"
+  gather_facts: yes
   hosts: app
   tasks:
     - include_role:
