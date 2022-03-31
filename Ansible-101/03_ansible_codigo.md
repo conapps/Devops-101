@@ -180,7 +180,7 @@ roles/
   sqlite3/
     tasks/
       main.yml
-ejer4-playbook.yml
+ejer4_playbook.yml
 </pre>
 <pre>
 # ./roles/apache2/tasks/main.yml
@@ -197,7 +197,7 @@ ejer4-playbook.yml
     update_cache: yes
 </pre>
 <pre>
-# ejer4-playbook.yml
+# ejer4_playbook.yml
 - name: "Instalar los servidores web"
   hosts: app
   roles:
@@ -325,7 +325,7 @@ Luego creamos nuestro `playbook` que copiará el `template` anterior a los hosts
         mode: 0644
 ```
 
->OBS: puede ver los detalles del módulo `template` en el siguiente [link](https://docs.ansible.com/ansible/latest/collections/ansible/builtin/template_module.html#template-module)
+>:point_right: puede ver los detalles del módulo `template` en el siguiente [link](https://docs.ansible.com/ansible/latest/collections/ansible/builtin/template_module.html#template-module)
 
 Luego corremos el playbook (ya deberíamos saber como hacerlo), y cuando nos conectemos a alguno de nuestros `hosts` mediante ssh vamos a ver nuestro mensaje como parte del mensaje de bienvenida:
 ```
@@ -345,13 +345,131 @@ El resto de las variables son cargadas por Ansible en forma automática previo a
 Las variables del `template` son sustituidas por su valor al momento de ejecutar el playbook, y antes de copiar el archivo al `host` remoto. De hecho, si se conecta por ssh a uno de los hosts y hace un `cat /etc/motd` verá el archivo modificado.
 
 ---
-## CONTENIDO ACTUALIZADO HASTA ACA 
+
+### Ejercicio #5 
+
+Partiendo del [Ejercicio #4](https://github.com/conapps/Devops-101/blob/master/Ansible-101/03_ansible_codigo.md#ejercicio-4) modifique el `role` llamado `apache2`, para que cambie el contenido de la página web por defecto dependiendo en que `host` se encuentre. El servidor web deberá desplegar una página similar a la siguiente:
+```bash
+  Este sitio web se encuentra corriendo en el nodo <host01|host02>.
+  Este es el ambiente de <produccion|desarrollo>!!
+```
+Utilice un `template` para modificar el contenido de la página, según se encuentre en `host01 | produccion` o `host02 | desarrollo`. 
+
+:warning: Tenga en cuenta que debe iniciar los servicios de Apache en cada host para que el servidor web responda. Esto puede hacerlo ejecutando el comando <code>service apache2 restart</code> en cada host. Pruebe de incluir este paso dentro de las tareas del role, utilizando el módulo `service:` de Ansible, que puede encontrar [aqui](https://docs.ansible.com/ansible/latest/collections/ansible/builtin/service_module.html).
+
+
+Este sería un contenido básico de la página, escrito en HTML:
+```html
+<html>
+<body>
+  <p> Este sitio web se encuentra corriendo en el nodo <hostX>.
+  <p> Este es el ambiente de <produccion/desarrollo>!!
+</body>
+</html>
+```
+
+
+<details>
+	<summary>
+		Pista #1
+	</summary>
+	El directorio <code>document root</code> de Apache se encuentra ubicado en <code>/var/www/html/</code>, y tiene el archivo <code>index.html</code> que se carga por defecto al acceder al servidor web con un navegador.
+</details>
+
+<details>
+	<summary>
+		Pista #2
+	</summary>
+	Recuerde que puede definir las <code>variables</code> a utilizar en múltiples lugares del proyecto, incluyendo un archivo específico de variables, en el inventario dentro de <code>host_vars/group_vars</code>, en los directorios <code>./defaults ./vars</code> del rol, entre otros.  
+</details>
+
+<details>
+	<summary>
+		Verificación
+	</summary>
+	Puede acceder con un navegador web para verificar que la página es desplegada correctamente, mediante la url <code>http://pod-X.labs.conatest.click:8001/</code> para el <code>host01</code> y <code>http://pod-X.labs.conatest.click:8002/</code> para el <code>host02</code>, donde la <code>X</code> corresponde a su número de pod asignado.
+</details>
+
+<details>
+    <summary>Solución</summary>
+    <pre>
+# estructura de directorios
+inventory/
+  group_vars/
+    app.yml
+  host_vars/
+    host01.yml
+  hosts.yml
+roles/
+  apache2/
+    tasks/
+      main.yml
+      configure_web_server.yml
+    templates/
+      index.html.j2
+  sqlite3/
+    tasks/
+      main.yml
+ejer4_playbook.yml
+ejer5_playbook.yml
+</pre>
+
+<pre>
+# ./inventory/group_vars/app.yml
+application_env: desarrollo
+</pre>
+
+<pre>
+# ./inventory/host_vars/host01.yml
+application_env: produccion
+</pre>
+
+<pre>
+#./roles/apache2/tasks/configure_web_server.yml 
+- name: Copy index.html template to web server document root folder 
+  template:
+        src: index.html.j2
+        dest: /var/www/html/index.html
+        owner: root
+        group: root
+        mode: 0644
+        backup: yes        # opcional, resplada el archivo anterior
+
+- name: Restart apache2 services
+  service: 
+    name: apache2
+    state: restarted
+</pre>
+
+<pre>
+# ./roles/apache2/templates/index.html.j2
+<html>
+<body>
+  <p> Este sitio web se encuentra corriendo en el nodo {{ ansible_hostname }}
+  <p> Este es el ambiente de {{ application_env }}!!
+</body>
+</body>
+</html>
+</pre>
+
+<pre>
+# ejer5_playbook.yml
+- name: "Configurar los servidores web"
+  hosts: app
+  tasks:
+    - include_role:
+        name: apache2
+        tasks_from: configure_web_server
+</pre>
+</details>
+
+
+
+
 ---
 
-### Ejercicio #5 - Templates??
-
-
-
+---
+## CONTENIDO ACTUALIZADO HASTA ACA 
 ---
 
 
