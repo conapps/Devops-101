@@ -213,7 +213,7 @@ ejer4_playbook.yml
 ---
 
 #### include_role: / import_role:
-En nuestro playbook, podemos también invocar los roles desde nuestra lista de `tasks:`, por medio de `include_role:` (en forma dinámica) o `import_role:` (en forma estática).  En general es mucho más común hacerlo de esta forma, en lugar de invocarlos mediante `roles:` como vimos mas [arriba](#role). 
+En nuestro playbook, podemos también invocar los roles desde nuestra lista de `tasks:`, por medio de `include_role:` (en forma dinámica) o `import_role:` (en forma estática).  En general es mucho más común hacerlo de esta forma, en lugar de invocarlos mediante `roles:` como vimos mas [arriba](#roles). 
 ```yaml
 # playbook.yml
 - name: install apache2 
@@ -380,7 +380,7 @@ Este sería un contenido básico de la página, escrito en HTML:
 	<summary>
 		Pista #1
 	</summary>
-	El directorio <code>document root</code> de Apache se encuentra ubicado en <code>/var/www/html/</code>, y tiene el archivo <code>index.html</code> que se carga por defecto al acceder al servidor web con un navegador.
+	El directorio <code>document root</code> del servidor web Apache se encuentra ubicado en <code>/var/www/html/</code>, y tiene el archivo <code>index.html</code> que se carga por defecto al acceder al mismo con un navegador.
 </details>
 
 <details>
