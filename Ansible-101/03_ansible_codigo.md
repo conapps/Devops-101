@@ -212,7 +212,7 @@ ejer4_playbook.yml
 
 ---
 
-#### include_role: / import_role:
+#### include_role: e import_role:
 En nuestro playbook, podemos también invocar los roles desde nuestra lista de `tasks:`, por medio de `include_role:` (en forma dinámica) o `import_role:` (en forma estática).  En general es mucho más común hacerlo de esta forma, en lugar de invocarlos mediante `roles:` como vimos mas [arriba](#roles). 
 ```yaml
 # playbook.yml
