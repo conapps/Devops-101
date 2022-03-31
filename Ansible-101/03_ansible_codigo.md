@@ -422,10 +422,6 @@ roles/
       configure_web_server.yml
     templates/
       index.html.j2
-  sqlite3/
-    tasks/
-      main.yml
-ejer4_playbook.yml
 ejer5_playbook.yml
 </pre>
 
