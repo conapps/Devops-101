@@ -499,7 +499,7 @@ También, es lógico y súmamente útil, comenzar a utilizar repositorios de con
 Para poder resguardar la información sensible de nuestro código, Ansible nos provee de Ansible Vault, que permite cifrar nuestros archivos y así protegerlos. El comando `ansible-vault` gestiona el contenido encriptado en Ansible, y nos permite encriptar inicialmente un archivo, así como luego poder verlo, editarlo o incluso desencriptarlo.
 
 #### Utilizando ansible-vault
-Para crear un archivo nuevo con su contenido encriptado, utilizamos la opción `create` y el nombre del archivo.
+Para **crear un archivo nuevo encriptado** utilizamos la opción `create` y el nombre del archivo.
 Nos pedirá una contraseña, y luego nos abrirá el editor que tengamos configurado por defecto, para que ingresemos el contenido del archivo:
 ```
 # ansible-vault create archivo-encriptado.yml
@@ -512,8 +512,6 @@ En el editor, ingresamos un texto y salimos del mismo grabando su contenido, por
 Esta información se encuentra encriptada.
 -----------------------------------------
 ```
-También podemos encriptar el contenido de un archivo existente, mediante `ansible-vault encrypt <nombre-del-archivo.yml>`
-
 
 Si luego intentamos ver el contenido del archivo, en encontraremos con algo del estilo:
 ```
@@ -527,14 +525,14 @@ $ANSIBLE_VAULT;1.1;AES256
 3939313166353033343530323837616434336630623938346339
 ```
 
-Para poder ver realmente el contenido del archivo, debemos usar la opción `view`:
+Para poder **ver el contenido** real del archivo, debemos usar la opción `view`:
 ```
 # ansible-vault view archivo-encriptado.yml
 Vault password: 
 Este contenido se encuentra encriptado
 ```
 
-Y para editarlo, usamos `edit` el cuál nuevamente nos abre el editor de texto por defecto para que podamos modificarlo:
+Y para **editar el contenido**, usamos `edit` el cuál nuevamente nos abre el editor de texto por defecto para que podamos modificarlo:
 ```
 # ansible-vault edit archivo-encriptado.yml
 Vault password: 
@@ -545,7 +543,16 @@ Le agrego otra línea.
 -----------------------------------------
 ```
 
-Y para desencriptarlo, usamos la opción `decrypt`, algo que normalmente no haremos pues deja el contenido visible nuevamente:
+También tenemos la posibilidad de **cambiar la contraseña** de encriptación de un archivo, mediante `rekey`:
+```
+# ansible-vault rekey archivo-encriptado.yml
+Vault password: 
+New Vault password:
+Confirm New Vault password:
+Rekey successful
+```
+
+Para **desencriptarlo**, podemos usar la opción `decrypt`:
 ```
 # ansible-vault decrypt archivo-encriptado.yml
 Vault password: 
@@ -554,61 +561,147 @@ Decryption successful
 # cat archivo-encriptado.yml
 Este contenido se encuentra encriptado.
 Le agrego otra línea.
+```
+
+:warning: Esto es algo que normalmente no haremos, pues deja el contenido del archivo visible nuevamente. Para ver o editar el contenido de un archivo encriptado debemos utilizar las opciones `view` o `edit` que vimos antes.
+
+Y por último, podemos **encriptar un archivo existente**, mediante la opción `encrypt`
+```
+# ansible-vault encrypt archivo-encriptado.yml
+New Vault password: 
+Confirm New Vault password: 
+Encryption successful
+```
+
+
+
+#### Utilizando archivos encryptados en nuestros playbooks
+Ahora bien, hemos visto como encriptar nuestros archivos, pero como hacemos para ejecutar un `playbook` y que Ansible pueda desencriptarlo y leer su contenido? Tenemos varias opciones para esto.
+
+La primera es **ingresando la contraseña a mano** al momento de ejecutar el `playbook`.
+Esto lo hacemos agregando la opción `--ask-vault-pass` al comando `ansible-playbook`. 
+
+Por ejemplo, el siguiente playbook copia nuestro `archivo-encriptado.yml` a los hosts `app`:
+```bash
+# ./vault_playbook.yml 
+- name: Ejemplo de Ansible Vault
+  hosts: app
+  gather_facts: no
+  tasks:
+    - name: Copiar archivo encriptado
+      ansible.builtin.copy:
+        src: ~/ansible/archivo-encriptado.yml
+        dest: /root/
+        owner: root
+        group: root
+        mode: '0600'
+```
+
+Pero si intentamos ejecutarlo como siempre, nos va a dar un error, pues Ansible se da cuenta que el archivo se encuentra encriptado, y no tiene forma de abrirlo:
+```
+# ansible-playbook vault_playbook.yml 
+
+PLAY [Ejemplo de Ansible Vault] ****************************************************************************************************************
+
+TASK [Copiar archivo encriptado] ***************************************************************************************************************
+fatal: [host01]: FAILED! => {"msg": "A vault password or secret must be specified to decrypt /root/ansible/archivo-encriptado.yml"}
+fatal: [host02]: FAILED! => {"msg": "A vault password or secret must be specified to decrypt /root/ansible/archivo-encriptado.yml"}
+
+PLAY RECAP *************************************************************************************************************************************
+host01                     : ok=0    changed=0    unreachable=0    failed=1    skipped=0    rescued=0    ignored=0   
+host02                     : ok=0    changed=0    unreachable=0    failed=1    skipped=0    rescued=0    ignored=0   
+```
+
+Para poder ejecutarlo, le agregamos la opción `--ask-vault-pass`, y nos pedirá que ingresemos la contraseña antes de ejecutarlo:
+```
+# ansible-playbook --ask-vault-pass vault_playbook.yml 
+Vault password: 
+
+PLAY [Ejemplo de Ansible Vault] ****************************************************************************************************************
+
+TASK [Copiar archivo encriptado] ***************************************************************************************************************
+changed: [host02]
+changed: [host01]
+
+PLAY RECAP *************************************************************************************************************************************
+host01                     : ok=1    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+host02                     : ok=1    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+
 
 ```
 
-#### Almacenando la contraseña
-Para evitar tener que ingresar a mano nuestra contraseña cada vez que utilizamos el comando `ansible-vaul`, podemos crear un archivo aparte que contenga la misma.
+:point_right: Tenga en cuenta que todos los archivos que utilice el `playbook` deberán estar encriptados con la misma contraseña.
+.
 
-El archivo con la contraseña quedará legible y en texto plano, por lo que tenemos que, en primer lugar ubicarlo en otro lugar por fuera del proyecto, y debe tener los permisos correctos:
+#### Almacenando la contraseña en un archivo
+Para evitar tener que ingresar a mano nuestra contraseña cada vez que utilizamos el comando `ansible-vaul`, podemos crear un archivo que contenga la misma.
+
+:warning: El archivo con la contraseña quedará legible y en texto plano, por lo que debemos ubicarlo fuera de nuestro proyecto, y con permisos que restringan su acceso:
 
 ```
 # mkdir /root/secret
 echo "micontraseña" > /root/secret/vault-password
 chmod 600 /root/secret/vault-password
 ```
-:point_right: El nombre y la ubicación del archivo puede ser la que nosotros querramos. Pero el archivo debe contener únicamente la contraseña a utilizar, y solo una (si usamos varias contraseñas debemos tener varios archivos).
 
-Para utilizar luego la contraseña, tenemos dos opciones. La primera es pasarlo por línea de comando, con la opción `--vault-password-file`: 
+:point_right: El nombre y la ubicación del archivo puede ser la que nosotros querramos. Pero el archivo debe contener únicamente la contraseña a utilizar, y solo una, si usamos varias contraseñas debemos tener varios archivos separados.
+
+Luego podemos **pasar la ubicación del archivo de contraseña** desde línea de comando, con la opción `--vault-password-file`: 
 
 ```
 # ansible-vault encrypt --vault-password-file /root/secret/vault-password archivo-encriptado.yml 
 Encryption successful
-
-# cat archivo-encriptado.yml 
-$ANSIBLE_VAULT;1.1;AES256
-62346535653562383838643332656564626366623932303033366661383739626666633039653865
-6534363366386331313062393564613461393366643831330a333731326361303763356532343039
-32303939643538383366393138333833613134623065363964373231326237643964333332656661
-3934326539343665610a386531616133643063636662623664373639326431353735313339303739
-64366136316261353438346166623663303530323632633563363632613662313664623764313131
-61313537343163623566613535396535363835343362393233326461633164663561643438666665
-343661303234623639356263653330323765
 
 # ansible-vault view --vault-password-file /root/secret/vault-password archivo-encriptado.yml 
 Este contenido se encuentra encriptado
 Le agrego otra línea
 ```
 
-La otra alternativa es modificar nuestra configuración de ansible, editando el archivo `ansible.cfg` e indicarle a donde debe ir a buscar la contraseña:
+Y al momento de ejecutar nuestro `playbook`:
+```
+# ansible-playbook --vault-password-file=/root/secret/vault-password vault_playbook.yml 
+
+PLAY [Ejemplo de Ansible Vault] ****************************************************************************************************************
+
+TASK [Copiar archivo encriptado] ***************************************************************************************************************
+ok: [host02]
+ok: [host01]
+
+PLAY RECAP *************************************************************************************************************************************
+host01                     : ok=1    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+host02                     : ok=1    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+```
+
+Otra alternativa es **establecer la ubicación del archivo de contraseña en la configuración de ansible**, indicándolo en el archivo `ansible.cfg` de nuestro proyecto con la opción `vault_passord_file`:
 ```ìni
 [defaults]
 inventory = ./inventory/hosts.yml
 vault_password_file = /root/secret/vault-password
 ```
 
-De esta forma no es neceario pasarld la contraseña al ejecutar el comando `ansible-vault`:
+De esta forma Ansible sabrá donde encontrar la contraseña por defecto, y no será necesario ingresarla ni referenciar el archivo a mano:
 ```
 # ansible-vault view archivo-encriptado.yml 
 Este contenido se encuentra encriptado
 Le agrego otra línea
 ```
 
-#### Utilizando archivos encryptados en nuestros playbooks
+```
+# ansible-playbook vault_playbook.yml 
+
+PLAY [Ejemplo de Ansible Vault] ****************************************************************************************************************
+
+TASK [Copiar archivo encriptado] ***************************************************************************************************************
+ok: [host02]
+ok: [host01]
+
+PLAY RECAP *************************************************************************************************************************************
+host01                     : ok=1    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+host02                     : ok=1    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+```
 
 
-
-
+También es posible pasarle a Ansible la ubicación del archivo de contraseña, **exportando una variable de entorno** de linux `ANSIBLE_VAULT_PASSWORD_FILE` con la ubicación del mismo. Por ejemplo con el comando `export ANSIBLE_VAULT_PASSWORD_FILE=/root/secret/vault-password`.
 
 
 
