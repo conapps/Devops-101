@@ -489,6 +489,96 @@ application_env: produccion
 
 
 ---
+
+## Ansible galaxy
+
+[Ansibe Galaxy](https://galaxy.ansible.com/) es un sitio gratuito mantenido por Red Hat que permite descargar roles desarrollados por la comunidad. Es una excelente forma de simplificar nuestros `playbooks` y poder reutilizar nuestro código, o cófigo de terceros.
+
+Utilizando el comando `ansible-galaxy` podemos:
+- Descargar roles.
+- Construir templates para armar nuestros propios roles.
+- Buscar roles.
+
+Aunque es posible buscar por roles desde la consola utilizando `ansible-galaxy`, es mucho más sencillo cuando realizamos la búsqueda a través de la web.
+
+Por ejemplo el siguiente rol instala docker en Linux: https://galaxy.ansible.com/geerlingguy/docker
+Dentro del sitio podemos ver los detalles de como instalarlo. Y en `Read Me`, en general se indica información detallada del rol, como usarlo, si requiere definir variables, si tiene dependencias, etc.
+
+Una vez que encontremos el rol, lo podemos instalar a través del comando `ansible-galaxy install`:
+```
+# ansible-galaxy install geerlingguy.docker
+```
+
+:point_right: Por defecto los roles descargados desde `ansible-galaxy` se instalarán en `~/.ansible/roles`. Sin embargo, podemos cambiar el directorio donde queremos que se instale utilizando la opción `-p`.
+
+Para usar el rol en nuestra `playbook` alcanza con invocarlo como cualquier otro rol que hayamos escrito nosotros:
+```yml
+- hosts: all
+  roles:
+    - geerlingguy.docker
+```
+
+
+---
+### Ejercicio #6: Ansible Galaxy
+
+Tomando como base el [Ejercicio #4](#ejercicio-4) instale MySQL en el grupo de hosts `db`, utilizando un rol existente de [Ansibe Galaxy](https://galaxy.ansible.com/).
+
+
+<details>
+	<summary> Pista #1 </summary>
+	La cantidad de roles disponibles en Ansible Galaxy es enorme. Cuando realice una busqueda en el sitio web utilice los filtros disponibles (por ej. para buscar solo dentro de roles), e ingrese palabras claves adicionales para acotar la busqueda. 
+
+  Por ejemplo en este caso pruebe de buscar: <code>mysql install role ubuntu</code>. 
+  En la lista de roles que aparecen como resultado de la busqueda, puede ver la cantidad de veces que se descargó cada rol, o el puntaje que tiene asignado, datos que pueden ser utiles al momento de elegir cual de ellos usar. También puede seleccionar roles de determinado usuario, como por ejemplo `geerlingguy`, quien es muy conocido en la comunidad y cuyos roles hemos usado nosotros frecuentemente: https://galaxy.ansible.com/geerlingguy/mysql
+</details>
+
+<details>
+	<summary> Pista #2 </summary>
+	Recuerde que debe instalar el <code>rol</code> antes de poder usarlo. Vea la documentación del mismo para saber como instalarlo, como usarlo, y verificar si tiene requerimientos previos como definición de variables, dependencias con otros roles, etc.
+</details>
+
+<details>
+	<summary> Pista #3 </summary>
+	Para invocar un <code>rol</code> descargado de Ansible Galaxy, puede usar los mismos módulos que utilizamos con roles escritos por nosotros mismos, como ser: <code>roles: include_role: import_role:</code>
+  </details>
+
+<details>
+	<summary> Verificación </summary>
+	Puede verificar si <code>mySql</code> fue instalado correctamente en el host, mediante el comando <code> mysql --version </code>, el cuál debe responder algo del estilo: 
+
+  <code>mysql  Ver 8.0.28-0ubuntu0.20.04.3 for Linux on x86_64 ((Ubuntu)) </code>
+</details>
+
+<details>
+    <summary>Solución</summary>
+    Instalar el rol de Ansible Galaxy:
+<pre>
+# ansible-galaxy install geerlingguy.mysql
+Starting galaxy role install process
+- downloading role 'mysql', owned by geerlingguy
+- downloading role from https://github.com/geerlingguy/ansible-role-mysql/archive/3.3.2.tar.gz
+- extracting geerlingguy.mysql to /root/.ansible/roles/geerlingguy.mysql
+- geerlingguy.mysql (3.3.2) was installed successfully
+</pre>
+
+<pre>
+# ejer6-playbook.yml 
+- name: "Ejercicio 6 - Ansible Galaxy"
+  hosts: db
+  gather_facts: yes
+  become: yes
+  tasks:
+    - name: Install mysql using ansible-galaxy role 
+      include_role:
+        name: geerlingguy.mysql
+</pre>
+
+
+
+
+
+---
 ## Ansible Vault
 Ref: [Encrypting content with Ansible Vault](https://docs.ansible.com/ansible/2.8/user_guide/vault.html)
 
@@ -716,28 +806,150 @@ También es posible pasarle a Ansible la ubicación del archivo de contraseña, 
 ---
 
 
----
 
-## Ansible galaxy
 
-[Ansibe Galaxy](https://galaxy.ansible.com/) es un sitio gratuito mantenido por Red Hat que permite descargar roles desarrollados por la comunidad. Es una excelente forma de simplificar nuestros `playbooks` y poder reutilizar nuestro código, o cófigo de terceros.
 
-Utilizando el comando `ansible-galaxy` podemos:
-- Descargar roles.
-- Construir templates para armar nuestros propios roles.
-- Buscar roles.
+### Ejercicio #6  --- falta
 
-Aunque es posible buscar por roles desde la consola utilizando `ansible-galaxy`, es mucho más sencillo cuando realizamos la búsqueda a través de la web.
-
-Una vez que encontremos el rol que queremos usar, lo podemos importar a nuestro código a través del comando `ansible-galaxy install`.
-
-Por ejemplo, el siguiente comando instala un rol capaz de interactuar con dispositivos CISCO que utilicen IOS como sistema operativo:
-
+Tomando como base el [Ejercicio #4](#ejercicio-4) modifique el rol `db`, para que cambie el contenido de la página web por defecto dependiendo en que `host` se encuentre. El servidor web deberá desplegar una página similar a la siguiente:
 ```bash
-ansible-galaxy install ansible-network.cisco_ios
+  Este sitio web se encuentra corriendo en el nodo <host01|host02>.
+  Este es el ambiente de <produccion|desarrollo>!!
 ```
 
-Por defecto los roles descargados desde `ansible-galaxy` se instalarán en `~/.ansible/roles`. Sin embargo, podemos cambiar el directorio donde queremos que se instale el rol utilizando la opción `-p`.
+<details>
+  <summary>
+HTML
+  </summary>
+</html>
+<pre>
+&lt;html>
+&lt;body>
+  &lt;p> Este sitio web se encuentra corriendo en el nodo &lt;host01|host02>.
+  &lt;p> Este es el ambiente de &lt;produccion/desarrollo>!!
+&lt;/body>
+&lt;/body>
+&lt;/html>
+</pre>
+</details>
+
+
+.
+Utilice un `template` para modificar el contenido de esta página, según se encuentre en `host01 | produccion` o `host02 | desarrollo`. 
+
+:warning: Tenga en cuenta que debe iniciar los servicios de Apache en cada host para que el servidor web responda, dado que por defecto se encuentra apagado. Esto puede hacerlo ejecutando el comando `service apache2 restart` en cada host. Pruebe de incluir este paso como una tarea más del rol, para no tener que realizarlo en forma manual. Puede utilizar el módulo `service:` de Ansible, cuya documentación se encuentra [aqui](https://docs.ansible.com/ansible/latest/collections/ansible/builtin/service_module.html).
+
+
+
+<details>
+	<summary>
+		Pista #1
+	</summary>
+	El directorio <code>document root</code> del servidor web Apache se encuentra ubicado en <code>/var/www/html/</code>, y tiene el archivo <code>index.html</code> que se carga por defecto al acceder al mismo con un navegador.
+</details>
+
+<details>
+	<summary>
+		Pista #2
+	</summary>
+	Recuerde que puede definir las <code>variables</code> a utilizar en múltiples lugares del proyecto, incluyendo un archivo específico de variables, en el inventario dentro de <code>host_vars/group_vars</code>, en los directorios <code>./defaults ./vars</code> del rol, entre otros.  
+</details>
+
+<details>
+	<summary>
+		Pista #3
+	</summary>
+	Recuerde que es posible definir tareas dentro del rol en otros archivos por fuera del <code>tasks/main.yml</code>. Luego puede invocar estas tareas, mediante <code>include_role:</code> o <code>import_role:</code> con la opción <code>tasks_from:</code>.  
+</details>
+
+<details>
+	<summary>
+		Verificación
+	</summary>
+	Puede acceder con un navegador web para verificar que la página es desplegada correctamente, mediante la url <code>http://pod-X.labs.conatest.click:8001/</code> para el <code>host01</code> y <code>http://pod-X.labs.conatest.click:8002/</code> para el <code>host02</code>, donde la <code>X</code> corresponde a su número de pod asignado.
+</details>
+
+<details>
+    <summary>Solución</summary>
+    <pre>
+# estructura de directorios
+inventory/
+  group_vars/
+    app.yml
+  host_vars/
+    host01.yml
+  hosts.yml
+roles/
+  apache2/
+    tasks/
+      main.yml
+      configure_web_server.yml
+    templates/
+      index.html.j2
+ejer4_playbook.yml
+ejer5_playbook.yml
+</pre>
+
+<pre>
+# ./inventory/group_vars/app.yml
+application_env: desarrollo
+</pre>
+
+<pre>
+# ./inventory/host_vars/host01.yml
+application_env: produccion
+</pre>
+
+<pre>
+#./roles/apache2/tasks/configure_web_server.yml 
+- name: Copy index.html template to web server document root folder 
+  template:
+        src: index.html.j2
+        dest: /var/www/html/index.html
+        owner: root
+        group: root
+        mode: 0644
+        backup: yes        # opcional, resplada el archivo anterior
+
+- name: Restart apache2 services
+  service: 
+    name: apache2
+    state: restarted
+</pre>
+
+<pre>
+# ./roles/apache2/templates/index.html.j2
+&lt;html>
+&lt;body>
+  &lt;p> Este sitio web se encuentra corriendo en el nodo {{ ansible_hostname }}
+  &lt;p> Este es el ambiente de {{ application_env }}!!
+&lt;/body>
+&lt;/body>
+&lt;/html>
+</pre>
+
+<pre>
+# ejer5_playbook.yml
+- name: "Configurar los servidores web"
+  gather_facts: yes
+  hosts: app
+  tasks:
+    - include_role:
+        name: apache2
+        tasks_from: configure_web_server
+</pre>
+</details>
+
+
+
+
+
+
+
+
+
+
+
 
 
 
