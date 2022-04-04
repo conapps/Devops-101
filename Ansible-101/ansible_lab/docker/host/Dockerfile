@@ -3,10 +3,12 @@
 # use builded ansible_base (defined in ../base/Dockerfile) as a starting point
 FROM ansible_base:latest
 
-# copy script from local disk to file system inside Docker image
+# copy files from local disk to file system inside Docker image
 COPY run.sh /var/
-
 COPY authorized_keys /root/.ssh/authorized_keys
+COPY ssh_config /root/.ssh/config
+RUN chmod 600 /root/.ssh/authorized_keys
+RUN chmod 600 /root/.ssh/config
 
 # Generally a good idea to have these, extensions sometimes need them
 RUN locale-gen en_US.UTF-8

@@ -1,0 +1,5 @@
+Host host01 host02 host03
+  IdentityFile ~/ansible/master_key
+  StrictHostKeyChecking no
+  UserKnownHostsFile /dev/null
+

@@ -1,0 +1,11 @@
+- name: Ejemplo de Ansible Vault
+  hosts: app
+  gather_facts: no
+  tasks:
+    - name: Copiar archivo encriptado
+      ansible.builtin.copy:
+        src: ~/ansible/archivo-encriptado.yml
+        dest: /root/
+        owner: root
+        group: root
+        mode: '0600'

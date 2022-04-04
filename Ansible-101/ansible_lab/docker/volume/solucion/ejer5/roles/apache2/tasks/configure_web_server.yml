@@ -1,0 +1,13 @@
+- name: Copy index.html template to web server document root folder 
+  template:
+        src: index.html.j2
+        dest: /var/www/html/index.html
+        owner: root
+        group: root
+        mode: 0644
+        backup: yes
+
+- name: Restart apache2 services
+  service: 
+    name: apache2
+    state: restarted

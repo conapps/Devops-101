@@ -29,15 +29,9 @@ ADD authorized_keys /root/.ssh/authorized_keys
 RUN chown root /root/.ssh/authorized_keys
 RUN chmod 600 /root/.ssh/authorized_keys
 
-# Add ubuntu user to container and configure as default
-# RUN useradd -m ubuntu
-# RUN echo 'ubuntu:Ansible-101' | chpasswd
-# RUN mkdir -p /home/ubuntu/.ssh
-# ADD .vimrc /home/ubuntu/.vimrc
-# ADD .nanorc /home/ubuntu/.nanorc
-# RUN chown -R ubuntu /home/ubuntu
-# change working directory
-# RUN echo "cd /home/ubuntu/ansible" >> /home/ubuntu/.profile
+# Allow ssh connection to hosts with ssh-key directly
+COPY ssh_config /root/.ssh/config
+RUN chmod 600 /root/.ssh/config
 
 # Change default working directory when login
 WORKDIR /root/ansible
