@@ -44,103 +44,106 @@ En general, un servicio web es un mecanismo para que dos sistemas informáticos 
 
 Entonces ¿Qué es REST?. REST (Representational State Transfer) es una arquitectura para desarrollar aplicaciones en red. Los servicios Web REST son sencillos de utilizar a través de requests HTTP.
 
-Look at the diagram below. It shows how a browser retrieves web pages. Normally, after a user requests a particular resource in a browser, the appropriate web server responds with the proper HTML to display the page to your client browser.
+En el siguiente diagrama puede verse como cuando un navegador solicita mediante un request HTTP una página Web al servidor, este devuelve el código HTML para mostrar en el navegador.
 
 ![Rest web service](../imagenes/REST-16.jpg)
 
-Behind the scenes, HTTP(S) uses CRUD (Create, Read, Update, Delete) operations on the wire to request data. In the example below, our browser is issuing a GET operation to read the associated web page. The web server returns the associated data and an HTTP response to the client browser.
+Detrás de escena, HTTP(S) utiliza un mecanismo conocido como CRUD por sus siglas en inglés (Create, Read, Update, Delete). En particular, en el ejemplo anterior, el navegador está utilizando una operación GET para leer la página Web en cuestión.
 
 ![Rest web service 2](../imagenes/REST-15.jpg)
 
-RESTful interfaces offer these same CRUD (Create, Read, Update, Delete) operations using HTTP(S). Browsers are replaced by software to interface with the RESTful service. The diagram below illustrates the same concept; however, browsers are replaced by software leveraging the REST API.
+Las interfaces REST ofrecen las mismas operaciones CRUD (Create, Read, Update, Delete) sobre HTTP(S). Solo que en lugar de intercambiar código HTML que se utiliza luego para construir la visualización de la página que será vista por un ser humano, en REST se intercambia información, típicamente en formato JSON, que será utilizada por el programa cliente o servidor para ejecutar alguna acción. El diagrama a continuación ilustra lo mencionado anteriormente.
 
 ![Rest web service 3](../imagenes/REST-14.jpg)
 
 [Cool REST tutorial](http://rest.elkstein.org/)
 
-## What is so great about REST?
+## ¿Cuales son las ventajas de REST?
 
-REST is easy to use on any platform!
+¡REST es simple de utilizar en cualquier plataforma!
 
-Let's talk about what makes REST APIs so great. First off, the concepts are transferable across a number of platforms. This lab shall focus on the Spark REST API as a tool to learn REST APIs. Spark is a communication platform for collaboration.
+Los conceptos de REST son universales, una vez que nos familiaricemos con este tipo de interfaces, podremos utilizarlas para recibir o enviar información desde o hacia cualquier plataforma. En este curso utilizaremos la API REST de Webex, que es una plataforma de colaboración, para introducirnos a los diferentes conceptos, pero lo aprendido servirá luego para interactuar con otras plataformas que cumplen propósitos diferentes.
 
 ![Spark REST API](../imagenes/REST-13.jpg)
 
-However, REST is also used by a number of networking platforms such as Cisco's APIC-EM controller. While the API and data model of APIC-EM differs, the underlying tools are the same.
+## Entonces ¿Cómo funciona REST?
 
-![APIC-EM REST API](../imagenes/REST-12.jpg)
-
-## How does this work?
-
-Now let's cover how REST APIs work. REST is centered around the HTTP request and response model. Consuming an API is just as simple as making an HTTP request.
+Comencemos a analizar como funcionan las APIs REST.
+REST está funciona utilizando el modelo de Request/Response de HTTP como protocolo de comunicación.
+Interactuar con una API, es tan simple como ejecutra un request HTTP.
 
 ![How does REST works?](../imagenes/REST-11.jpg)
 
-For example, if we make a request to an API Service, then result of the request will be returned to us in the response. The data returned in the response is usually JSON or XML.
+Cuando ejecutamos un request contra una API, esta ejecuta la acción prevista para este tipo de request y luego envía de vuelta el resultado de dicha acción como una respuesta HTTP con los datos codificados en JSON o XML.
 
 (JSON -- JavaScript Object Notation, is a lightweight text-based open standard designed for human-readable data interchange.)
 
-## Examine the Anatomy of a REST API Query
+## Anatomía de una query a una API REST
 
-To construct a request, you need to know the following information for the API that you are calling. You can find this information in the API reference documentation.
+Para poder construir un request, se necesita previamente conocer la siguiente información de la API a consultar. Esta información se puede encontrar en la documentación de la propia API.
 
-- Method
-  - GET - Retrieve data
-  - POST - Create something new
-  - PUT - Update data
-  - DELETE - Delete data
+- Método
+  - GET - Consultar datos
+  - POST - Crear algo nuevo
+  - PUT - Actualizar datos
+  - DELETE - Borrar datos
 - URL
-  - The URL for the endpoint you want to call
-  - Example: http://api.ciscospark.com/v1/rooms
-- URL Parameters
-  - The parameters that you can pass as part of the URL.
-- Authentication
-  - You need to know the authentication type to use. Basic HTTP, token based, and OAuth are common types.
-  - Authentication credentials
-- Custom Headers
-  - Does the API require you to send any HTTP Headers?
-  - Example: Content-Type: application/json
-- Request Body
-  - JSON or XML containing data that is needed to complete request can be sent in the body of the request
+  - La URL completa del "endpoint" al que se quiere llamar
+  - Ejemplo: https://webexapis.com/v1/people
+- Parámetros de URL
+  - Los parámetros que se pueden pasar a la API como parte de la URL.
+- Autenticación
+  - Es necesario conocer el tipo de autenticación a utilizar. Basica HTTP, basada en token, y OAuth son tipos comunes.
+  - Credenciales
+- Encabezados personalizados
+  - ¿Requiere la API que se envíe algún encabezado específico?
+  - Ejemplo: Content-Type: application/json
+- Cuerpo del request (body)
+  - JSON o XML conteniendo los datos a ser enviados
 
 ![Anatomy of a REST API query](../imagenes/REST-10.png)
 
-## A Little About Authentication
+> La documentación es parte integral de la API. Una API sin su documentación completa no tiene ninguna utilidad.
 
-There are different types of authentication for REST APIs. Authentication is used to control access and access rights to the REST APIs. For example, some users might have read-only access which means that they can use only the parts of the API that read data. Other users might have both read and write access. This means they can use the API to perform operations that not only read data but also add, edit, and delete data. These access rights are typically based on user assigned roles such as Administrator where a user would have full rights to change the data. For example, a plain User role might have read-only access rights.
+## Autenticación en las APIs
 
-## Types of Authentication Controls
+Hay diferentes tipos de autenticación en las APIs REST.
+La autenticación es utilizada para identificar a quien realiza la consulta y posteriormente controlar cuales acciones puede ejecutar y cuales no.
+Por ejemplo, algunos usuarios pueden tener acceso de solo lectura a algunos recursos, por lo que solo podrán ejecutar GETs, mientras que otros pueden tener permisos de escritura, lo que les permite ejecturar POST, PUT y DELETE.
+Estos permisos son típicamente gestionados por el administrador de la API.
 
-- None: the Web API resource is public, anybody can place call. Generally the case for GET methods, rarely for POST, PUT, DELETE.
-- Basic HTTP: The username and password are passed to the server in an encoded string.
+## Tipos de autenticación
+
+- None: la API es pública, cualquiera puede ejecutar un request. Generalmente GETs, rara vez se permiten POST, PUT o DELETE en una API pública.
+- Basic HTTP: El usuario y password se envian al servidor en un string codificado, generalmente en Base64.
   - Authorization: Basic ENCODEDSTRING
-  - See Basic Authentication for more information.
-- Token: A secret key generally retrieved from the Web API developer portal.
-  - The keyword may change from one Web API to another: Bearer, token..
-  - Passed with each API call.
-  - See Token Based Authentication for more information.
-- OAuth: A sequence flow is initiated to retrieve an access token from an Identity Provider. The token is then passed with each API call.
-  - Open standard. User rights are associated with the token (OAuth scope).
-  - The token expires. It can be revoked. It can also be re-issued via a refresh token.
-  - See OAuth for more information.
+- Token: una llave secreta que se obtiene de diferentes maneras, típicamente del portal de desarrollador de la API.
+  - La forma de enviar el token puede cambiar de una API a otra: Bearer, token..
+  - Los tokens se envían con cada llamada a la API.
+- OAuth: El token se obtiene desde un proveedor de identidad. El token se utiliza luego en cada llamada a la API.
+  - Es un estándar abierto. Los privilegios de usuario se asocian al token (OAuth scope).
+  - Los tokens expiran y pueden también ser revocados por el administrador. Al expirar se pueden obtener nuevos tokens de acceso mediante el uso de refresh tokens.
 
-## API Reference Documentation
+## Documentación de la API
 
-The API Reference Documentation lists all of the publicly available API methods and provides the details on how to make each request. When you start to work with a new API, the API Reference is one of the most important sources of information. [Here's the API Reference Guide for Spark](https://developer.ciscospark.com/resource-people.html).
+La documentación de la API contiene información sobre todas las consultas posibles que se pueden realizar y explica en detalle como se debe hacer cada una. Entre otras cosas, contiene información sobre las URLs correspondientes a cada endpoint, la autenticación a utilizar, los parámetros permitidos, qué formato debe tener el cuerpo del mensaje, cual será el formato de la respuesta, etc.
+En general, todas las documentaciones siguen patrones de diseño similares por lo que una vez que aprendemos a leer la documentación de una API en particular, es generalmente sencillo comenzar a trabajar con otra. Aprender a leer la documentación de la API es una de las habilidades escenciales que debemos desarrollar para trabajar con este tipo de tecnología.
 
-## What is in the Response?
+[Aquí está la documentación de la API de Webex](https://developer.webex.com/docs).
 
-The API Reference Guide includes information about the attributes to be sent and returned. The returned data is defined in the Response portion which includes the HTTP status codes along with the data format and attributes.
+## ¿Qué hay en la respuesta?
+
+En la sección "Response" la documentación de la API incluye información sobre el formato de la respuesta. En particular, identifica los "status codes" esperables así como el formato del cuerpo de la respuesta con sus correspondientes atributos.
 
 - HTTP Status Codes
-- HTTP status codes are used to return success, error, or other statuses. http://www.w3.org/Protocols/HTTP/HTRESP.html
-- Some common examples are:
+- Los HTTP status codes son utilizados para indicar éxito, o error en diferentes circunstancias. http://www.w3.org/Protocols/HTTP/HTRESP.html
+- Algunos ejemplos comunes son:
   - 200 OK
   - 202 Accepted/Processing
   - 401 Not Authorized
-- Content
-  - Often returned in different formats based upon the request. Common formats are: JSON, XML and Text.
-    - JSON (most commonly used)
+- Contenido
+  - Puede venir en diferentes formatos según lo soportado por la API y lo solicitado en el request: JSON, XML y Texto.
+    - JSON es el formato mas comunmente utilizado
 
 ```json
 {
@@ -159,58 +162,59 @@ The API Reference Guide includes information about the attributes to be sent and
 }
 ```
 
-Here is an example that shows a REST API request and response all in the same window:
+Aquí hay un ejemplo que muestra un request y una respuesta, todo en la misma ventana de POSTMAN (veremos Postman mas adelante):
 
 ![REST API Postman example](../imagenes/REST-09.png)
 
-## Use Postman to Call the Spark API
+## Usando Postman para interactuar con la API de Webex
 
-As briefly mentioned earlier Postman is an HTTP web user interface (Web UI) client that allows you to make HTTP calls. There are many Web UI clients that have similar functionality, but for our purposes we'll focus on Postman.
+### What is Postman?
 
-## What is Postman?
+Postman es un cliente WEB que permite al desarrollador realizar requests HTTP de forma muy amigable. En el resto del curso utilizaremos Postman para interactuar las diferntes APIs.
 
-Postman is a Google Chrome application. It provides an easy-to-use interface for learning and interacting with REST APIs.
+Postman permite realzar un request y visualizar la respuesta de forma clara e inmediata en la misma ventana. Al mismo tiempo, permite autogenerar código en diferentes lenguajes de programación para implementar el request en cuestión de forma programática. Estas particularidades lo hacen la herramienta ideal para quienes están aprendiendo a interactuar con APIs así como una herramienta indispensable para desarrolladores experimentados a la hora de hacer troubleshooting.
 
-Users can send API calls and receive responses in the same window. This application can also be used to generate codes for different languages such as python. Postman is useful for entry-level users. To download and run Postman follow this link. We'll use Postman throughout this and following modules. Take a minute to make sure it is installed on your workstation.
+### La ventana de Postman
 
-## The Postman Window
-
-Postman has three main working areas. On the left side of the window you can see History and Collections tabs. The History tab shows a list of your previous calls. If you want to save a particular API call from your History tab, you can click on the call to highlight it and then click the Save to collection link to specify where you want to save it.
+Postman tiene tres areas de trabajo. A la izquierda de la ventana se encuentra el historial de llamadas y las colecciones. El historial de llamadas muestra muestra todas las llamadas que se han realizado en el pasado y permite volver a utilizarlas si fuera necesario.
+Si se quiere guardar una llamada particular para ser utilizada luego con facilidad, esto se puede hacer utilizando el botón `Save`. Las llamadas guardadas se pueden organizar en colecciones.
 
 ![Postman sidebar](../imagenes/REST-08.png)
 
-In the middle of the screen is where all the magic happens. This is where you make the API calls by setting the call method and providing URL information. Under the Headers tab you should define all of the necessary key-value pairs to make a successful call. When all of the parameters are set, click the Send button.
+En el centro de la ventana es donde se realiza todo el trabajo. Aquí es donde se pueden hacer las llamadas a las APIs una vez configurados el método correspondiente y la URL a consultar. Dentro de la pestaña `Headers` se deben definir todos los pares llave-valor necesarios para que la llamada sea exitosa de acuerdo a la documentación. Cuando todos los parámetros están configurados correctamente, para hacer la llamada a la API, se hace click en `Send`.
 
 ![Postman url bar](../imagenes/REST-07.png)
 
-If the request is correctly formed, after you click Send you should see a response on the bottom section of the window. The Response pane gives you information such as the Status code of the response, how it is formatted (JSON, XML, etc.), as well as the body of the response message.
+Si la llamada a la API fue configurada correctamente, luego de hacer click en `Send`, la respuesta aparecerá en la parte inferior de la ventana. El panel de respuesta brinda información como el `status code` de la respuesta, como está formateada la misma (JSON, XML, etc.), así como el cuerpo del mensaje.
 
 ![Postman request/response box](../imagenes/REST-06.png)
 
-## Postman Test Run: Call the Spark API
+### Postman - Llamada de prueba a la API de Webex
 
-Let's make a call to the Spark API. Look at the screenshot below, it depicts an API call to Spark server. The letters show each step and explain the areas of the Postman window.
+Hagamos una llamada de prueba a la API de Webex. Las letras a continuación muestran cada paso y las configuraciones e información a tener en cuenta:
 
-A. Shows the REST method to use to send the request. You can select the method from a drop down list. As previously discussed the most common methods are: `GET`, `POST`, `PUT` and `DELETE`. In this case we want to read in a list of messages posted by a particular user to a particular room. That means for this example we want to use the `GET` method.
+A. Muestra el método a utilizar en la llamada. El mismo se puede seleccionar de una lista desplegable. Como se mencionó anteriormente, los métodos mas comunes son: `GET`, `POST`, `PUT` y `DELETE`. En este caso lo que queremos es listar las salas que el usuario tiene disponibles; utilizaremos por tanto el método `GET`.
 
-B. The `URL` to be called is specified here. The base `URL` for SPARK is `https://api.ciscospark.com/v1/` . What follows next is the function to be called which is messages. Next is the `roomId` follow by the `ID` itself in the format of `?roomid=<the room ID>`
+B. La `URL` a donde dirigir el llamado se especifica aquí. En la imagen se puede ver `{{BASE_URL}}`, esto es una variable configurada en el POSTMAN que se utilizó en este ejemplo, la misma contiene el valor de la URL base de la API de Webex: `https://webexapis.com/v1`. Lo que sigue a la URL base es el `endpoint` que indica el recurso de la API a consultar, en este caso `/rooms`.
 
-C. Spark requires an Access Token in order to make function calls. For that reason, we have added the key named Authorization to the header. We entered the value `Bearer <the access token>`. The `Content-Type` key specifies what type of formatted content is being sent to the HTTP Server which is designated in the URL by `api.ciscospark.com`. In this case no content is being sent so this header, though commonly used, is unnecessary. At this point the request is ready to be sent and the user would press the Send button.
+C. Webex requiere utilizar un `access-token` para autenticar al usuario que hace la consulta. Para ello se debe de utilizar el encabezado `Authorization` con el valor `Bearer <the access token>`. En el ejemplo de la imagen se está utilizando una variable para el `access-token`; dicha variable contiene el token correspondiente al usuario
 
-D and E. The Body contains the data returned from the request. Because the returned format has been selected to be JSON, there's various types of ways to format this output. Raw output displays the data in the format received. Pretty output which is selected here, reformats the data to make it much easier to read.
+> En este punto, el request está listo para ser enviado a la API. Esto se hace haciendo click en el botón `Send`.
 
-F. The returned JSON content in Pretty format.
+D. En este caso la respuesta de la API vino en formato JSON. Para esto, Postman tiene una serie de filtros que permiten al usuario visualizar los datos de acuerdo a sus necesidades. En el ejemplo se está utilizando el filtro `Pretty` que hace que el contenido del cuerpo del mensaje se visualice en un formato fácil de leer.
 
-![Postman spark example](../imagenes/REST-05.png)
+E. El cuerpo del mensaje formateado `Pretty`.
+
+![Postman Webex example](../imagenes/postman_first_call_blured_with_circles.png)
 
 ### Ejercicio de Postman #1
 
-La idea de este ejercicio es conseguir una lista de todos los `rooms` a los cuales estamos asociados.
+La idea de este ejercicio es replicar lo que se hizo en el ejemplo anterior y conseguir una lista de todos los `rooms` a los cuales estamos asociados.
 
 #### Instrucciones
 
 1.  Crear una cuenta con Cisco Webex.
-2.  Acceder a https://developer.webex.com/getting-started.html y conseguir su token de desarrollador:
+2.  Acceder a https://developer.webex.com/docs/getting-started y conseguir su token de desarrollador:
 
 >    <a name="rememberthetoken">
 
@@ -222,16 +226,15 @@ La idea de este ejercicio es conseguir una lista de todos los `rooms` a los cual
 
 3.  Ir a Postman.
 4.  Seleccionar `GET` del dropdown.
-5.  Escribir la siguiente URL: `https://api.ciscospark.com/v1/rooms`
+5.  Escribir la siguiente URL: `https://webexapis.com/v1/rooms`
 6.  Agregar un encabezado `Authorization` con el token de desarrollador precedido por `Bearer`.
 7.  Agregar un encabezado `Content-Type` con el valor `application/json; charset=utf-8`.
     ![Headers](../imagenes/REST-03.png)
 8.  Presionar `Send` y verificar el resultado.
-    ![Resultado](../imagenes/REST-02.jpg)
 
 ### Ejercicio de Postman #2
 
-Ahora vamos a interactuar directamente con CISCO Spark utilizando su API. Vamos a crear un nuevo `room`.
+Ahora vamos a interactuar directamente con Webex utilizando su API. Vamos a crear un nuevo `room`.
 
 #### Instrucciones
 
@@ -244,57 +247,36 @@ Ahora vamos a interactuar directamente con CISCO Spark utilizando su API. Vamos 
 
 ```json
 {
-  "title": "Spark API via Postman"
+  "title": "Mi primer sala Webex creada con Postman"
 }
 ```
 
-7.  Verifique en la documentación de Spark (https://developer.webex.com) para incluir todos los parámetros necesarios.
-8.  Confirme que el nuevo `room` se haya creado en su cuenta de Spark.
+7.  Verifique en la documentación de la API (https://developer.webex.com/docs/api/v1/rooms/create-a-room) para incluir todos los parámetros necesarios.
+8.  Confirme que el nuevo `room` se haya creado en su cuenta de Webex.
 
-## Generating Code Using Postman
+## Generar código utilizando Postman
 
-In the previous lab, we showed you how to make API requests using the Postman application. Also, we mentioned that it is possible to generate code for different coding languages using Postman. In this step we will show you how to do exactly that.
+En las secciones anteriores hicimos algunas llamadas a la API a través de Postman. Ahora mostraremos como Postman nos permite generar código escrito en diferentes lenguajes de programación para realizar exactamente la misma llamada a la API que se configuró en Postman.
 
-We assume that you already have the Postman application installed on your workstation and you know how to use it. If not, please take a minute and review previous lab since it covers that topic.
+1.  Volver a configurar Postman para listar todas las salas. (Idéntico al `Ejercicio de Postman #1`).
 
-To generate code, we need to populate all fields in Postman. Lets begin.
+2.  Hacer click en el símbolo de código `</>` que se encuentra arriba a la derecha.
 
-1.  From your workstation open Postman application.
+![Postman code](../imagenes/postman_generate_code.png)
 
-![Postman application](../imagenes/REST-01.png)
+3. Seleccionar `Python-Requests` de la lista desplegable.
 
-2.  Our plan is to get a list of the rooms associated with the user making the inquiry. To do that we need to set the method to GET and URL to https://api.ciscospark.com/v1/rooms
+![Postman Python code](../imagenes/postman_python_code.png)
 
-![Postman GET](../imagenes/REST-19.png)
-
-3.  Now, we need to define request headers information. Click on the headers tab and provide two key value pairs. For this step you need to have access token obtained from Spark Developer website
-
-- `Content-Type` and `application/json; charset=utf-8`.
-- `Authorization` and `Bearer {access token}`.
-
-![Postman Body](../imagenes/REST-20.png)
-
-4.  Good! We are ready to generate the code using Postman. Under the Save button you should find Generate Code link. Click on it. In the Generate Code Snippets window select Python -> requests language.
-
-![Postman create code](../imagenes/REST-21.png)
-
-5.  Now the entries are converted to Python code using request module to make the API call. Click Copy to Clipboard button to copy the code.
-
-![Postman python code](../imagenes/REST-22.png)
-
-6.  Paste the contents of the clipboard to your favorite text editor and save it as a Python file in your working directory.
+4.  Pegar el contenido en un editor de texto y salvarlo como un script de Python.
 
 ![Postman paste code](../imagenes/REST-23.png)
 
-7.  Lets give it a try and see if it works. Open the command line terminal and navigate to your working directory. Issue py -3 <FILE-NAME.py> command. You should see a response from the Spark server.
+7.  ¡Probémoslo para ver como funciona!. Abrir una terminal, navegar hasta el directorio donde se encuentra el script y ejecutar `py -3 <FILE-NAME.py>`. Se debería ver la respuesta proveniente de la API de Webex.
 
-![Postman console](../imagenes/REST-24.png)
+## Escribiendo scripts de Python
 
-Terrific! You just learned how to generate code using Postman. In the next section of this lab we will show you how to write the code yourself.
-
-## Writing Python Script
-
-Ahora escribiremos el código nosotros mismos. Lo haremos paso a paso y eventualmente el código hará una llamada a la API de Spark para traer el nombre y apellido del usuario basado en el correo electrónico. En el código utilizaremos la llamada a /people.
+Ahora escribiremos el código nosotros mismos. Lo haremos paso a paso y eventualmente el código hará una llamada a la API de Webex para traer el nombre y apellido del usuario basado en el correo electrónico. En el código utilizaremos la llamada a /people.
 
 Antes de continuar, necesitamos el "access-token" que obtuvimos [aquí](#rememberthetoken).
 
@@ -317,10 +299,10 @@ requests.packages.urllib3.disable_warnings()
 ```python
 # Variables
 
-URL = "https://api.ciscospark.com/v1"
+URL = "https://webexapis.com/v1"
 ENDPOINT ="/people"
 #Replace the {access-token} with your personal access token.
-TOKEN = "Bearer {access-token}"
+MY_TOKEN = "Bearer {access-token}"
 ```
 
 4.  Es hora de definir nuestro encabezado y los parámetros:
@@ -329,10 +311,10 @@ TOKEN = "Bearer {access-token}"
 # Header information
 HEADERS = {
   "content-type": "application/json; charset=utf-8",
-  "authorization": access_token
+  "authorization": MY_TOKEN
 }
 # Parameter variable
-PARAM = "?email=sqtest-ciscospark-travisuser@squared.example.com"
+PARAM = "?email=tunombre@tudominio"
 ```
 
 5.  Asignaremos la respuesta a la llamada a una variable:
@@ -363,18 +345,18 @@ for item in RESPONSE["items"]:
 
 ![Results 2](../imagenes/REST-27.png)
 
-Felicitaciones! Has escrito un script de Python que puede hacer una llamada a una API REST para obtener información de Spark. Si aún no entiendes completamente el código utilizado, no te preocupes, el próximo laboratorio se encargará de ver en detalle todos los conceptos que hemos aplicado.
+Felicitaciones! Has escrito un script de Python que puede hacer una llamada a una API REST para obtener información de Webex. Si aún no entiendes completamente el código utilizado, no te preocupes, el próximo laboratorio se encargará de ver en detalle todos los conceptos que hemos aplicado.
 
 ### Script #11 - `11-fist-python-spark-api-call.py`
 
-Este script inicialmente no hace nada. Solamente cuenta con la imporación de los módulos necesarios así como un metodo para crear el diccionario de encabezados que necesitamos para construir nuestro request. La idea es agregar las instrucciones necesarias para recuperar todos los `rooms` a los cuales estamos asociados.
+Este script inicialmente no hace nada. Solamente cuenta con la incorporación de los módulos necesarios así como un metodo para crear el diccionario de encabezados que necesitamos para construir nuestro request. La idea es agregar las instrucciones necesarias para recuperar todos los `rooms` a los cuales estamos asociados.
 
 #### Instrucciones
 
 1.  Ir al archivo `code/11-fist-python-spark-api-call.py`.
 2.  Verificar que su contenido este alineado con lo mencionado anteriormente.
 3.  Ingrese en la variable `TOKEN` su clave de Spark.
-4.  Escriba las instrucciones necesarias para obtener todos los `rooms` a los cuales esta actualmente registrado su usuario. La URL del endpoint que deben acceder es: `htts://api.ciscospark.com/v1/rooms`.
+4.  Escriba las instrucciones necesarias para obtener todos los `rooms` a los cuales esta actualmente registrado su usuario. La URL del endpoint que deben acceder es: `https://webexapis.com/v1/rooms`.
 
 #### Notas
 
@@ -394,10 +376,10 @@ La idea de este script es lograr escribir un mensaje en un grupo determinado uti
 5.  Agregar un usuario de prueba.
 6.  Postear un mensaje.
 7.  Imprimir los detalles del room.
-8.  Correr el script y verificar que la información impresa en la consola sea correcta, y que el mensaje se ha escrito en el grupo de Spark correspondiente.
+8.  Correr el script y verificar que la información impresa en la consola sea correcta, y que el mensaje se ha escrito en el grupo de Webex correspondiente.
 
 #### Notas
 
 - Puede encontrar información de referencia sobre la API de Spark desde el siguiente link:
 
-[https://developer.webex.com/getting-started.html](https://developer.webex.com/getting-started.html)
+[https://developer.webex.com/docs/getting-started](https://developer.webex.com/docs/getting-started)

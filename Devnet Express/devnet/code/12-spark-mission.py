@@ -23,7 +23,7 @@ def get_headers():
 def find_room_id(room_name):
     """ Encuentra la id de un room a partir de su nombre. """
     room_id = None
-    url = "https://api.ciscospark.com/v1/rooms"
+    url = "https://webexapis.com/v1/rooms"
     response = requests.get(url, headers=get_headers(), verify=False)
     json_response = response.json()
     for room in json_response["items"]:
@@ -40,7 +40,7 @@ def create_room(room_name):
     room_id = find_room_id(room_name)
     if room_id is None:
         data = {"title": room_name}
-        url = "https://api.ciscospark.com/v1/rooms"
+        url = "https://webexapis.com/v1/rooms"
         response = requests.post(url, json=data, headers=get_headers())
         json_response = response.json()
         print("\nCreated room:", json_response)
@@ -56,7 +56,7 @@ def add_test_member(room_id):
         "personEmail": "test@test.com",
         "isModerator": False
     }
-    url = "https://api.ciscospark.com/v1/memberships"
+    url = "https://webexapis.com/v1/memberships"
     response = requests.post(url, json=data, headers=get_headers())
     print("\nAdded test member:", response.json())
 
@@ -66,7 +66,7 @@ def post_message(room_id, message):
         "roomId": room_id,
         "text": message
     }
-    url = "https://api.ciscospark.com/v1/messages"
+    url = "https://webexapis.com/v1/messages"
     response = requests.post(url, json=data, headers=get_headers())
     print("\nPosted message:", response.json())
 
