@@ -6,7 +6,7 @@ FROM ubuntu:20.04
 RUN apt-get update
 RUN DEBIAN_FRONTEND=noninteractive TZ=America/Montevideo apt-get -y install tzdata
 RUN apt-get install --no-install-recommends --no-install-suggests -y \
-  aptitude iputils-ping curl ca-certificates net-tools man vim openssh-server python3 locales nano \
+  aptitude iputils-ping curl ca-certificates net-tools man vim openssh-server python3 locales nano sudo \
   && rm -rf /var/lib/apt/lists/*
 
 # ensure that required directories are created
