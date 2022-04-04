@@ -527,32 +527,31 @@ Tomando como base el [Ejercicio #4](#ejercicio-4) instale MySQL en el grupo de h
 
 <details>
 	<summary> Pista #1 </summary>
-	La cantidad de roles disponibles en Ansible Galaxy es enorme. Cuando realice una busqueda en el sitio web utilice los filtros disponibles (por ej. para buscar solo dentro de roles), e ingrese palabras claves adicionales para acotar la busqueda. 
+	La cantidad de roles disponibles en Ansible Galaxy es enorme. Cuando realice una busqueda en el sitio web puede utilizar los filtros disponibles (por ej. para buscar solo dentro de roles), o ingresar palabras claves adicionales para acotar la busqueda. 
 
   Por ejemplo en este caso pruebe de buscar: <code>mysql install role ubuntu</code>. 
-  En la lista de roles que aparecen como resultado de la busqueda, puede ver la cantidad de veces que se descargó cada rol, o el puntaje que tiene asignado, datos que pueden ser utiles al momento de elegir cual de ellos usar. También puede seleccionar roles de determinado usuario, como por ejemplo `geerlingguy`, quien es muy conocido en la comunidad y cuyos roles hemos usado nosotros frecuentemente: https://galaxy.ansible.com/geerlingguy/mysql
+  En la lista de roles que aparecen como resultado, puede ver la cantidad de veces que se descargó cada rol o el puntaje que tiene asignado, estos datos pueden ser utiles al momento de elegir cual de ellos usar. También puede seleccionar roles de determinado usuario, como por ejemplo `geerlingguy`, quien es muy conocido en la comunidad y cuyos roles hemos usado nosotros frecuentemente, en este caso: https://galaxy.ansible.com/geerlingguy/mysql
 </details>
 
 <details>
 	<summary> Pista #2 </summary>
-	Recuerde que debe instalar el <code>rol</code> antes de poder usarlo. Vea la documentación del mismo para saber como instalarlo, como usarlo, y verificar si tiene requerimientos previos como definición de variables, dependencias con otros roles, etc.
+	Recuerde que debe instalar el <code>rol</code> antes de poder usarlo. Revise la documentación del rol para saber como utilizarlo, y verificar si tiene requerimientos previos como definición de variables, dependencias con otros roles, etc.
 </details>
 
 <details>
 	<summary> Pista #3 </summary>
-	Para invocar un <code>rol</code> descargado de Ansible Galaxy, puede usar los mismos módulos que utilizamos con roles escritos por nosotros mismos, como ser: <code>roles: include_role: import_role:</code>
-  </details>
+	Para invocar un <code>rol</code> descargado de Ansible Galaxy en nuestro <code>playbook</code>, puede usar los mismos módulos que utilizamos con roles escritos por nosotros mismos, como ser: <code>roles:</code>, <code>include_role:</code>, o <code>import_role:</code>.
+
+  Verifique en la documentación del rol si requiere escalar los privilegios de usuario, aunque recuerde que en nuestro caso ya estamos corriendo todas las tareas con el usuario <code>root</code>, por lo cuál esto no sería necesario.
+</details>
 
 <details>
 	<summary> Verificación </summary>
-	Puede verificar si <code>mySql</code> fue instalado correctamente en el host, mediante el comando <code> mysql --version </code>, el cuál debe responder algo del estilo: 
-
-  <code>mysql  Ver 8.0.28-0ubuntu0.20.04.3 for Linux on x86_64 ((Ubuntu)) </code>
+	Puede verificar si <code>mySQL</code> fue instalado correctamente en el host mediante el comando: <code>mysql --version </code>, el cuál debe responder algo del estilo: <code>mysql  Ver 8.0.28-0ubuntu0.20.04.3 for Linux on x86_64 ((Ubuntu)) </code>
 </details>
 
 <details>
     <summary>Solución</summary>
-    Instalar el rol de Ansible Galaxy:
 <pre>
 # ansible-galaxy install geerlingguy.mysql
 Starting galaxy role install process
@@ -563,17 +562,17 @@ Starting galaxy role install process
 </pre>
 
 <pre>
-# ejer6-playbook.yml 
+# ./ejer6-playbook.yml 
 - name: "Ejercicio 6 - Ansible Galaxy"
   hosts: db
   gather_facts: yes
-  become: yes
+  #become: yes           # no es necesario porque estamos corriendo como root
   tasks:
     - name: Install mysql using ansible-galaxy role 
       include_role:
         name: geerlingguy.mysql
 </pre>
-
+</details>
 
 
 
@@ -795,9 +794,47 @@ También es posible pasarle a Ansible la ubicación del archivo de contraseña, 
 
 
 
+#### Encriptando variables
+Cuando desplegamos una aplicación o servicio, suele ser necesario definir ciertas variables requeridas, con información sensible como ser nombres de usuarios, contraseñas, etc. 
 
+Para encriptar estas variables, podemos por ejemplo **colocar la definición de las variables en un archivo de variables encriptadas** específico, y encriptar todo el archivo. Esto nos permite asegurar su contenido, pero tiene como contra que a la hora de leer nuestro código perdemos la referencia a estas variable. Es decir, como nuestro achivo de variables estará encriptado, no podremos ver que variables hay definidas y mucho menos cual es su valor. 
 
+:warning: esta opción - encriptar el archivo de variables completo - es totalmente válida y utilizable. Solo debemos ser claros en nuestro código para indicar que esas variables son requeridas y se encuentran encriptadas. Podemos aprovechar la precedencia de variables que maneja Ansible, definir variables genéricas por ej. en nuestro `role/defaults/` para saber que las mismas existen, y definir los valores reales que utilizamos en nuestro archivo encriptado, por ejemplo en `role/vars`, que sobreescribirán a las primeras.
 
+Dentro de esta opción, recuerde que también es posible tener mas de un archivo con definición de variables, por ej., uno con las variables encriptadas, y otro con variables en texto plano cuyo contenido no es sensible.
+
+Como alternativa a lo anterior, si trabajamos sobre nuestro código con un editor potente como `Visual Studio Code`, podemos **instalar una extensión que desencripta automáticamente en el editor** nuestros archivos y nos muestra el contenido legible. Por ejemplo la siguiente: [ansible-vault vscode](https://marketplace.visualstudio.com/items?itemName=dhoeric.ansible-vault), puede buscar el archivo de contraseñas desde la ubicación configurada en `ansible.cfg`, por lo cual solo alcanza con instalar la extensión y podemos ver los archivos encriptados directamente en el editor. Lo malo de esto, que dependemos de una extensión `no-oficial` escrita por un desarrollador que no conocemos, por lo cuál podría no ser la mejor opción para nuestros ambientes de producción.
+
+Otra opción puede ser **solamente encriptar el contenido de la variable**, dentro de nuestro archivo de definición de variables. De esta forma, queda visible el nombre de la variable, pero para ver el contenido debemos desencriptarlo. Esto nos permite leer nuestro código de forma más facil, pero, debemos tener en cuenta que estamos igual dejando en texto plano el nombre de la variable, y asegurarnos que ese nombre no tenga información sensible.
+
+Esto lo hacemos encriptando el contenido de la variable primero, con la opción `encrypt_string` del comando `ansbile-vault`, y luego, en la definición de la variable, precediendo el texto encriptado con la opción `!vault`.
+
+Por ejemplo, para definir una variable `username: root` con el contenido encriptado, hacemos:
+```
+# ansible-vault encrypt_string 'root' --name 'username'
+username: !vault |
+          $ANSIBLE_VAULT;1.1;AES256
+          30643737653162623734663334613434353063636336356234336663396136306465623031633139
+          3335333161386235313166313832633337376434663135640a623063393964613334383861633439
+          31653439653034643931373566313732653830653733383562343634363832653739343130313063
+          3435383633333338350a306632343934363363343534663336613935653333636565346633376162
+          3932
+Encryption successful
+```
+
+Y luego en el archivo `.yml` donde definimos las variables, la misma se define así:
+```
+username: !vault |
+          $ANSIBLE_VAULT;1.1;AES256
+          37303037366239653137663731636565623337653164306631363861663137623865623731393865
+          6530623534653135663738613863343334626464636638320a373664633635386336373236383835
+          34643938373036636266356364663831336137666336313664653466373739663166343966383738
+          3635363861616463350a363664336264316330653935343939333935386434613262616533336666
+          3635
+
+```
+
+:point_right: puede tener varias variables definidas en el mismo archivo, algunas encriptadas y otras en texto plano, según se requiera. Y como siempre, dependiendo donde se definan, se aplica la precedencia de variables de Ansible, como con cualquier otra variable.
 
 
 
@@ -809,9 +846,9 @@ También es posible pasarle a Ansible la ubicación del archivo de contraseña, 
 
 
 
-### Ejercicio #6  --- falta
+### Ejercicio #7  - Ansible Galaxy 
 
-Tomando como base el [Ejercicio #4](#ejercicio-4) modifique el rol `db`, para que cambie el contenido de la página web por defecto dependiendo en que `host` se encuentre. El servidor web deberá desplegar una página similar a la siguiente:
+Tomando como base el [Ejercicio #6](#ejercicio-6) modifique el rol `db`, para que cambie el contenido de la página web por defecto dependiendo en que `host` se encuentre. El servidor web deberá desplegar una página similar a la siguiente:
 ```bash
   Este sitio web se encuentra corriendo en el nodo <host01|host02>.
   Este es el ambiente de <produccion|desarrollo>!!
