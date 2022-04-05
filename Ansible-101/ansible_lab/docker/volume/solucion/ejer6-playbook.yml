@@ -1,0 +1,23 @@
+- name: "Ejercicio 6 - Ansible Galaxy"
+  hosts: db
+  gather_facts: yes
+  tasks:
+    - name: Install mysql using ansible-galaxy role 
+      include_role:
+        name: geerlingguy.mysql
+      vars:
+        - mysql_user_name: root
+        - mysql_user_password: root
+        - mysql_root_password_update: true
+    - name: Change the authentication plugin of MySQL root user to mysql_native_password
+      shell: mysql -u root -e 'UPDATE mysql.user SET plugin="mysql_native_password" WHERE user="root" AND host="localhost"'
+    - name: Flush Privileges
+      shell: mysql -u root -e 'FLUSH PRIVILEGES'
+    - name: Set MySQL root password
+      mysql_user:
+        login_host: 'localhost'
+        login_user: 'root'
+      #  login_password: ''
+        name: 'root'
+        password: 'nuevapass'
+        state: present
