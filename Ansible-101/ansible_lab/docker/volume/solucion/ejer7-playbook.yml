@@ -1,0 +1,13 @@
+- name: "Ejercicio 7 - Ansible Vault"
+  hosts: db
+  gather_facts: yes
+  tasks:
+    - name: Install PostgreSQL using ansible-galaxy role 
+      include_role:
+        name: geerlingguy.postgresql
+      vars:
+        - postgresql_databases:
+            - name: example_db
+        - postgresql_users:
+            - name: example
+              password: supersecure
