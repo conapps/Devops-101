@@ -1,0 +1,13 @@
+- name: "Ejercicio 7 - Ansible Vault"
+  hosts: db
+  gather_facts: yes
+  tasks:
+      - name: configure mysql authentication
+        mysql_user:
+          name: '{{mysql_user_name}}'
+          password: '{{mysql_user_password}}'
+          plugin: mysql_native_password
+          state: present
+   
+
+

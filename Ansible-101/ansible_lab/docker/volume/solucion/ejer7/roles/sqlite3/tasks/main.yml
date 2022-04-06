@@ -1,0 +1,4 @@
+- apt:
+    name: sqlite3
+    state: present
+    update_cache: yes
