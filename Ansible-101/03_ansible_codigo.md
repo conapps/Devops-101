@@ -872,7 +872,7 @@ username: !vault |
 Tomando como base el [Ejercicio #6](#ejercicio-6-ansible-galaxy) configure MySQL para que solicite usuario y contraseña al intentar acceder con el comando `mysql`. 
 Ni el nombre de usuario ni la contraseña deben estar visibles en nuestro código.
 
-:point_right: debe configurar el usuario de MySQL estableciéndole una contraseña, y configurarle como plugin de autenticación: `mysql_user_password`. Para esto puede utilizar el módulo `mysql_user` de Ansible, cuya documentación se encuentra [aquí](https://docs.ansible.com/ansible/latest/collections/community/mysql/mysql_user_module.html). 
+:point_right: Debe configurar el usuario de MySQL estableciéndole una contraseña, y configurarle como plugin de autenticación: `mysql_user_password`. Para esto puede utilizar el módulo `mysql_user` de Ansible, cuya documentación se encuentra [aquí](https://docs.ansible.com/ansible/latest/collections/community/mysql/mysql_user_module.html). 
 
 <details>
 	<summary>
