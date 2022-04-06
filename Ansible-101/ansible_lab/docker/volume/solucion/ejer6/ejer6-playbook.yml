@@ -1,0 +1,7 @@
+- name: "Ejercicio 6 - Ansible Galaxy"
+  hosts: db
+  gather_facts: yes
+  tasks:
+    - name: Install mysql using ansible-galaxy role 
+      include_role:
+        name: geerlingguy.mysql
