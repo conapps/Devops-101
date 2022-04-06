@@ -490,7 +490,7 @@ application_env: produccion
 
 ---
 
-## Ansible galaxy
+## Ansible Galaxy
 
 [Ansibe Galaxy](https://galaxy.ansible.com/) es un sitio gratuito mantenido por Red Hat que permite descargar roles desarrollados por la comunidad. Es una excelente forma de simplificar nuestros `playbooks` y poder reutilizar nuestro código, o cófigo de terceros.
 
@@ -547,7 +547,37 @@ Tomando como base el [Ejercicio #4](#ejercicio-4) instale MySQL en el grupo de h
 
 <details>
 	<summary> Verificación </summary>
-	Puede verificar si <code>mySQL</code> fue instalado correctamente en el host mediante el comando: <code>mysql --version </code>, el cuál debe responder algo del estilo: <code>mysql  Ver 8.0.28-0ubuntu0.20.04.3 for Linux on x86_64 ((Ubuntu)) </code>
+	Puede verificar si <code>mySQL</code> fue instalado correctamente en el host, conectandose al mismo con el comando <code>mysql</code>:
+  <pre>
+(host03) # mysql
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 9
+Server version: 8.0.28-0ubuntu0.20.04.3 (Ubuntu)
+
+Copyright (c) 2000, 2022, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| mysql              |
+| performance_schema |
+| sys                |
++--------------------+
+4 rows in set (0.01 sec)
+
+mysql> quit;
+
+</pre>
+
+
 </details>
 
 <details>
@@ -664,7 +694,7 @@ Encryption successful
 
 
 
-#### Utilizando archivos encryptados en nuestros playbooks
+#### Utilizando archivos encriptados en nuestros playbooks
 Ahora bien, hemos visto como encriptar nuestros archivos, pero como hacemos para ejecutar un `playbook` y que Ansible pueda desencriptarlo y leer su contenido? Tenemos varias opciones para esto.
 
 La primera es **ingresando la contraseña a mano** al momento de ejecutar el `playbook`.
@@ -797,17 +827,17 @@ También es posible pasarle a Ansible la ubicación del archivo de contraseña, 
 #### Encriptando variables
 Cuando desplegamos una aplicación o servicio, suele ser necesario definir ciertas variables requeridas, con información sensible como ser nombres de usuarios, contraseñas, etc. 
 
-Para encriptar estas variables, podemos por ejemplo **colocar la definición de las variables en un archivo de variables encriptadas** específico, y encriptar todo el archivo. Esto nos permite asegurar su contenido, pero tiene como contra que a la hora de leer nuestro código perdemos la referencia a estas variable. Es decir, como nuestro achivo de variables estará encriptado, no podremos ver que variables hay definidas y mucho menos cual es su valor. 
+Para encriptar estas variables, podemos por ejemplo **colocar la definición de las variables en un archivo de variables encriptadas** por separado, y encriptar todo ese archivo. Esto nos permite asegurar su contenido, pero tiene como contra que a la hora de leer nuestro código perdemos la referencia a estas variable. Es decir, como nuestro achivo de variables estará encriptado, no podremos ver fácilmente que variables hay definidas, y mucho menos cual es su valor. 
 
-:warning: esta opción - encriptar el archivo de variables completo - es totalmente válida y utilizable. Solo debemos ser claros en nuestro código para indicar que esas variables son requeridas y se encuentran encriptadas. Podemos aprovechar la precedencia de variables que maneja Ansible, definir variables genéricas por ej. en nuestro `role/defaults/` para saber que las mismas existen, y definir los valores reales que utilizamos en nuestro archivo encriptado, por ejemplo en `role/vars`, que sobreescribirán a las primeras.
+Esta opción es totalmente válida y utilizable. Solo debemos ser claros en nuestro código para indicar que esas variables son requeridas y se encuentran encriptadas. Podemos aprovechar la precedencia de variables que maneja Ansible, definir variables genéricas por ej. en nuestro `role/defaults/` para saber que las mismas existen, y definir los valores reales que utilizamos en nuestro archivo encriptado, por ejemplo en `role/vars`, que sobreescribirán a las primeras.
 
-Dentro de esta opción, recuerde que también es posible tener mas de un archivo con definición de variables, por ej., uno con las variables encriptadas, y otro con variables en texto plano cuyo contenido no es sensible.
+Recuerde que también es posible tener mas de un archivo con definición de variables, por ej., uno con las variables encriptadas, y otro con variables en texto plano cuyo contenido no es sensible.
 
-Como alternativa a lo anterior, si trabajamos sobre nuestro código con un editor potente como `Visual Studio Code`, podemos **instalar una extensión que desencripta automáticamente en el editor** nuestros archivos y nos muestra el contenido legible. Por ejemplo la siguiente: [ansible-vault vscode](https://marketplace.visualstudio.com/items?itemName=dhoeric.ansible-vault), puede buscar el archivo de contraseñas desde la ubicación configurada en `ansible.cfg`, por lo cual solo alcanza con instalar la extensión y podemos ver los archivos encriptados directamente en el editor. Lo malo de esto, que dependemos de una extensión `no-oficial` escrita por un desarrollador que no conocemos, por lo cuál podría no ser la mejor opción para nuestros ambientes de producción.
+:point_right: si trabajamos con un editor como Visual Studio Code podemos instalar una extensión que desencripta el contenido de un archivo y nos muestra el contenido legible directamente en el editor. Por ejemplo: [ansible-vault vscode](https://marketplace.visualstudio.com/items?itemName=dhoeric.ansible-vault), mediante la combinación de teclas `ctrl-alt-0` nos permite desencriptar (o encriptar) un archivo utilizando `ansible-vault` por detrás. 
 
-Otra opción puede ser **solamente encriptar el contenido de la variable**, dentro de nuestro archivo de definición de variables. De esta forma, queda visible el nombre de la variable, pero para ver el contenido debemos desencriptarlo. Esto nos permite leer nuestro código de forma más facil, pero, debemos tener en cuenta que estamos igual dejando en texto plano el nombre de la variable, y asegurarnos que ese nombre no tenga información sensible.
+Si queremos mantener el mismo archivo de variables, y colocar allí las que están encriptadas y las que no, podemos **encriptar solamente el contenido de la variable**. De esta forma, queda visible el nombre de la variable, pero no el contenido. Esto nos permite leer nuestro código de forma más facil, pero, debemos tener en cuenta que estamos igual dejando en texto plano el nombre de la variable, y asegurarnos que ese nombre no tenga información sensible.
 
-Esto lo hacemos encriptando el contenido de la variable primero, con la opción `encrypt_string` del comando `ansbile-vault`, y luego, en la definición de la variable, precediendo el texto encriptado con la opción `!vault`.
+Esto lo hacemos encriptando el contenido de la variable con `ansible-vault encrypt_string`, y luego cuando definimos la variable debempos preceder el valor encriptado con la opción `!vault`.
 
 Por ejemplo, para definir una variable `username: root` con el contenido encriptado, hacemos:
 ```
@@ -834,7 +864,7 @@ username: !vault |
 
 ```
 
-:point_right: puede tener varias variables definidas en el mismo archivo, algunas encriptadas y otras en texto plano, según se requiera. Y como siempre, dependiendo donde se definan, se aplica la precedencia de variables de Ansible, como con cualquier otra variable.
+:point_right: puede tener varias variables definidas en el mismo archivo, algunas encriptadas y otras en texto plano, según se desee. Y como siempre, dependiendo donde se definan, se aplica la precedencia de variables de Ansible, como con cualquier otra variable.
 
 
 
@@ -848,151 +878,111 @@ username: !vault |
 
 ### Ejercicio #7  - Ansible Galaxy 
 
-Tomando como base el [Ejercicio #6](#ejercicio-6) modifique el rol `db`, para que cambie el contenido de la página web por defecto dependiendo en que `host` se encuentre. El servidor web deberá desplegar una página similar a la siguiente:
-```bash
-  Este sitio web se encuentra corriendo en el nodo <host01|host02>.
-  Este es el ambiente de <produccion|desarrollo>!!
-```
+Tomando como base el [Ejercicio #6](#ejercicio-6-ansible-galaxy) configure MySQL para que solicite usuario y contraseña al intentar acceder con `mysql`. Ni el nombre de usuario ni la contraseña deben estar visibles en nuestro código.
 
-<details>
-  <summary>
-HTML
-  </summary>
-</html>
-<pre>
-&lt;html>
-&lt;body>
-  &lt;p> Este sitio web se encuentra corriendo en el nodo &lt;host01|host02>.
-  &lt;p> Este es el ambiente de &lt;produccion/desarrollo>!!
-&lt;/body>
-&lt;/body>
-&lt;/html>
-</pre>
-</details>
-
-
-.
-Utilice un `template` para modificar el contenido de esta página, según se encuentre en `host01 | produccion` o `host02 | desarrollo`. 
-
-:warning: Tenga en cuenta que debe iniciar los servicios de Apache en cada host para que el servidor web responda, dado que por defecto se encuentra apagado. Esto puede hacerlo ejecutando el comando `service apache2 restart` en cada host. Pruebe de incluir este paso como una tarea más del rol, para no tener que realizarlo en forma manual. Puede utilizar el módulo `service:` de Ansible, cuya documentación se encuentra [aqui](https://docs.ansible.com/ansible/latest/collections/ansible/builtin/service_module.html).
-
-
+:point_right: debe configurar el usuario de MySQL estableciéndole una contraseña, y configurarle como plugin de autenticación: `mysql_user_password`. Para esto puede utilizar el módulo `mysql_user` de Ansible, cuya documentación se encuentra [aquí](https://docs.ansible.com/ansible/latest/collections/community/mysql/mysql_user_module.html). 
 
 <details>
 	<summary>
 		Pista #1
 	</summary>
-	El directorio <code>document root</code> del servidor web Apache se encuentra ubicado en <code>/var/www/html/</code>, y tiene el archivo <code>index.html</code> que se carga por defecto al acceder al mismo con un navegador.
+	Recuerde definir y encriptar las variables que va a utilizar, tanto para el nombre de usuario como para la contraseña. Decida si va a encriptar solo el contenido de la variables o todo el archivo con la definición de las mismas.
 </details>
 
 <details>
 	<summary>
 		Pista #2
 	</summary>
-	Recuerde que puede definir las <code>variables</code> a utilizar en múltiples lugares del proyecto, incluyendo un archivo específico de variables, en el inventario dentro de <code>host_vars/group_vars</code>, en los directorios <code>./defaults ./vars</code> del rol, entre otros.  
-</details>
-
-<details>
-	<summary>
-		Pista #3
-	</summary>
-	Recuerde que es posible definir tareas dentro del rol en otros archivos por fuera del <code>tasks/main.yml</code>. Luego puede invocar estas tareas, mediante <code>include_role:</code> o <code>import_role:</code> con la opción <code>tasks_from:</code>.  
+	Cuando instaló <code>MySQL</code> se creó por defecto el usuario <code>root</code>. Debe asingarle una contraseña y cambiar el plugin de autenticación, utilizando el módulo de ansible:
+  <pre>
+    mysql_user:
+      name: root
+      password: contraseña
+      plugin: mysql_native_password
+      state: present
+  </pre>
 </details>
 
 <details>
 	<summary>
 		Verificación
 	</summary>
-	Puede acceder con un navegador web para verificar que la página es desplegada correctamente, mediante la url <code>http://pod-X.labs.conatest.click:8001/</code> para el <code>host01</code> y <code>http://pod-X.labs.conatest.click:8002/</code> para el <code>host02</code>, donde la <code>X</code> corresponde a su número de pod asignado.
+	Intente acceder a <code>mySQL</code> como hicimos antes y debería darle error: <code>Access denied</code>. 
+<pre>
+(host03) # mysql
+ERROR 1045 (28000): Access denied for user 'root'@'localhost' (using password: YES)
+</pre>
+
+Para poder ingresar tiene que especificar usuario y contraseña:
+<pre>
+(host3) # mysql -u root -p
+Enter password: 
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 17
+Server version: 8.0.28-0ubuntu0.20.04.3 (Ubuntu)
+(...)
+</pre>
 </details>
 
 <details>
     <summary>Solución</summary>
-    <pre>
-# estructura de directorios
-inventory/
-  group_vars/
-    app.yml
-  host_vars/
-    host01.yml
-  hosts.yml
-roles/
-  apache2/
-    tasks/
-      main.yml
-      configure_web_server.yml
-    templates/
-      index.html.j2
-ejer4_playbook.yml
-ejer5_playbook.yml
+<pre>
+# ansible-vault encrypt_string 'root' --name 'mysql_user_name'
+mysql_user_name: !vault |
+          $ANSIBLE_VAULT;1.1;AES256
+          63373062383835633935646331356334333261316332646365353032613038613736623564613661
+          3731363362396262643266353035326364646465363038330a373562336262643933663665666232
+          32623334623465623339393062646366383635653939653166663534376666393164643165623230
+          3161306436383831390a396534336365663962346532636531646234343434353261616461666130
+          3830
+Encryption successful
 </pre>
 
 <pre>
-# ./inventory/group_vars/app.yml
-application_env: desarrollo
+# ansible-vault encrypt_string 'nuevapass' --name 'mysql_user_password'
+mysql_user_password: !vault |
+          $ANSIBLE_VAULT;1.1;AES256
+          38613237613736633031373265363838383038633330333336613761373966376438616133346362
+          3339303739313663376262373738396230353164303964630a323336346137623135633834666663
+          31353062336164366366613430366339373764313637343165356130353764396233336464393831
+          3139313035636230340a633763336538383266346536313361653562393966663161366633623761
+          3065
+Encryption successful
 </pre>
 
 <pre>
-# ./inventory/host_vars/host01.yml
-application_env: produccion
+# ./inventory/group_vars/db.yml
+mysql_user_name: !vault |
+          $ANSIBLE_VAULT;1.1;AES256
+          63373062383835633935646331356334333261316332646365353032613038613736623564613661
+          3731363362396262643266353035326364646465363038330a373562336262643933663665666232
+          32623334623465623339393062646366383635653939653166663534376666393164643165623230
+          3161306436383831390a396534336365663962346532636531646234343434353261616461666130
+          3830
+
+mysql_user_password: !vault |
+          $ANSIBLE_VAULT;1.1;AES256
+          38613237613736633031373265363838383038633330333336613761373966376438616133346362
+          3339303739313663376262373738396230353164303964630a323336346137623135633834666663
+          31353062336164366366613430366339373764313637343165356130353764396233336464393831
+          3139313035636230340a633763336538383266346536313361653562393966663161366633623761
+          3065
 </pre>
 
 <pre>
-#./roles/apache2/tasks/configure_web_server.yml 
-- name: Copy index.html template to web server document root folder 
-  template:
-        src: index.html.j2
-        dest: /var/www/html/index.html
-        owner: root
-        group: root
-        mode: 0644
-        backup: yes        # opcional, resplada el archivo anterior
-
-- name: Restart apache2 services
-  service: 
-    name: apache2
-    state: restarted
-</pre>
-
-<pre>
-# ./roles/apache2/templates/index.html.j2
-&lt;html>
-&lt;body>
-  &lt;p> Este sitio web se encuentra corriendo en el nodo {{ ansible_hostname }}
-  &lt;p> Este es el ambiente de {{ application_env }}!!
-&lt;/body>
-&lt;/body>
-&lt;/html>
-</pre>
-
-<pre>
-# ejer5_playbook.yml
-- name: "Configurar los servidores web"
-  gather_facts: yes
-  hosts: app
+- name: "Ejercicio 7 - Ansible Vault"
+  hosts: db
   tasks:
-    - include_role:
-        name: apache2
-        tasks_from: configure_web_server
+      - name: configure mysql authentication
+        mysql_user:
+          name: '{{mysql_user_name}}'
+          password: '{{mysql_user_password}}'
+          plugin: mysql_native_password
+          state: present
+
 </pre>
 </details>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 ---
-
-
-
 
 [Siguiente >](./03_ansible_networking.md)
