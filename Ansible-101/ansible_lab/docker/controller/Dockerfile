@@ -8,6 +8,8 @@ RUN apt-get install --no-install-recommends --no-install-suggests -y software-pr
 RUN apt-add-repository ppa:ansible/ansible
 RUN apt-get update
 RUN apt-get install --no-install-recommends --no-install-suggests -y ansible git tmux
+RUN apt-get install --no-install-recommends --no-install-suggests -y pip
+RUN pip install paramiko
 
 # Generally a good idea to have these, extensions sometimes need them
 RUN locale-gen en_US.UTF-8
