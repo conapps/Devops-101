@@ -39,6 +39,9 @@ RUN chmod 600 /root/.ssh/config
 COPY devops101-labs.pem /root/.ssh/devops101-labs.pem
 RUN chmod 600 /root/.ssh/devops101-labs.pem
 
+# Install Cisco IOS Ansible Collection
+RUN ansible-galaxy collection install cisco.ios
+
 # Change default working directory when login
 WORKDIR /root/ansible
 RUN echo "cd /root/ansible" >> ~/.profile
