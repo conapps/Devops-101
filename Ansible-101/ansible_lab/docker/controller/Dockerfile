@@ -33,6 +33,10 @@ RUN chmod 600 /root/.ssh/authorized_keys
 COPY ssh_config /root/.ssh/config
 RUN chmod 600 /root/.ssh/config
 
+# Copy ssh-key file to allow ssh direct login to router hub
+COPY devops101-labs.pem /root/.ssh/devops101-labs.pem
+RUN chmod 600 /root/.ssh/devops101-labs.pem
+
 # Change default working directory when login
 WORKDIR /root/ansible
 RUN echo "cd /root/ansible" >> ~/.profile
