@@ -2,60 +2,61 @@
 
 ## Networking con Ansible
 
-Como mencionamos antes, Ansible puede utilizarse para configurar más que servidores. De aquí en más nos concentraremos en la configuración de equipos de red utilizando Ansible, específicamente, routers Cisco. Sin embargo, todo lo que veamos en las próximas secciones puede trasladarse a equipos de otros vendors.
+Como mencionamos antes, Ansible puede utilizarse para configurar más que servidores. En esta sección nos concentraremos en la configuración de equipos de red, específicamente, trabajando con routers Cisco. Sin embargo, todo lo que veamos puede trasladarse a equipos de otras marcas.
 
-### Módulos de Networking de Ansible
+:point_right: Dentro de la lista de módulos que tiene Ansible para interactuar con otros sistemas, existe una categoría exclusiva para networking, que puede ver [aquí](https://docs.ansible.com/ansible/2.9/modules/list_of_network_modules.html).
 
-Dentro de la lista de modulos con los que cuenta Ansible para interactuar con otros sistemas, existe una categoría exclusiva para módulos de networking. Pueden encontrar la lista entera en [la siguiente ubicación](https://docs.ansible.com/ansible/2.9/modules/list_of_network_modules.html).
+La lista es extensa y contiene módulos para la mayoría de los vendors más importantes del mercado. Sin embargo, es posible que algún módulo en particular no exista. En este caso podemos desarrollar nostros nuestro propio módulo, y si queremos, ofrecerlo luego al resto de la comunidad. Esta es una de las ventajas que tiene el software de código abierto.
 
-La lista es muy extensa y contiene módulos para la mayoría de los vendors de Networking más importantes del mercado. Sin embargo, es posible que algún módulo en particular no exista y no este en la lista. En este caso, lo que podemos hacer es desarrollar nuestro proximo módulo, y si queremos, ofrecerlo luego al resto de la comunidad. Esta es una de las ventajas que tiene el software de código abierto.
+Nosotros nos concentraremos en los módulos para [Cisco IOS](https://www.cisco.com/c/en/us/products/ios-nx-os-software/index.html), que puede encontrar [aquí](https://docs.ansible.com/ansible/2.9/modules/list_of_network_modules.html#ios).
 
-Nosotros solamente nos concentraremos en los módulos para IOS.
 
----
-
-### DEMO Lab #3 - Configurar el ambiente de desarrollo
-
+### Ambiente de Laboratorio de Networking
+Para los laboratorios de esta parte del curso, utilizaremos los siguientes equipos:
 ![Diagrama de Lab](./imagenes/ansible_013.png)
 
-Cada Pod cuenta con 3 routers configurados como Hub & Spoke. El Hub, se encuentra en la red de `management` y es el único que puede ser accedido a través de Internet, aunque se recomienda acceder a el desde la maquina de control a través de la IP privada `10.X.254.254`. Los demás se encuentran en redes privadas, y conseguiremos acceder a ellos a medida que avanzamos con el laboratorio. 
+Cada Pod cuenta con 3 routers configurados Hub & Spoke. El `hub` se encuentra en la red de `management` y es el único que puede ser accedido directamente a través de Internet. Aunque recomendamos conectarse al mismo desde nuestro equipo `controller`, que utilizamos para Ansible. Los dos equipos `spoke` se encuentran en redes privadas, y conseguiremos acceder a ellos a medida que avanzamos con el laboratorio. 
 
-Recomendamos que para los siguientes ejercicios abran más de una consola para acceder al servidor de control y al router, o utilicen `tmux`. 
+:point_right: La idea de esta parte del curso es realizar las configuraciones de los routers a través de `Ansible`, y no con la `cli` conectado a la consola. Sin embargo, puede resultar útil conectarse a la consola para ver como se aplican los cambios, verificar configuraciones, etc.
 
-Desde el servidor de control podemos acceder a la consola del router principal por ssh:
-
+Para **conectarnos al router `hub` recomendamos hacerlo desde el equipo `controller`**, ya sea por nombre `hub-X.labs.conatest.click` o por IP `10.X.254.254`, dado que ya tenemos preconfigurado el ssh para que la conexión sea sencilla:
 ```bash
-ssh -i ~/.ssh/ansible101-podX-key.pem -o KexAlgorithms=diffie-hellman-group-exchange-sha1 ec2-user@ansible101-podX-hub-router.labs.conatest.click
-```
+$ ssh hub-X.labs.conatest.click
 
-_OBS: La `X` corresponde al número del pod que esta utilizando._
-
-Si todo funcionan ok debería entrar en la consola de configuración en modo `EXEC`. El prompt de bienvenida debería verse algo así.
-
-```bash
 ip-10-X-254-254#
 ```
 
-Podemos verificar que nos encontramos en un router de CISCO utilizando el comando `show version`.
+Al conectarse al router queda parado en la consola de configuración en modo `EXEC`. Podemos verificar que nos encontramos en un router CISCO utilizando el comando `show version`:
 
-La idea de este workshop es realizar las configuraciones de este equipo a través de Ansible, y no de la `cli`. Sin embargo, puede resultar util ver como se aplican los cambios en el equipo.
+```
+ip-10-1-254-254# show version
+Cisco IOS XE Software, Version 16.12.06
+Cisco IOS Software [Gibraltar], Virtual XE Software (X86_64_LINUX_IOSD-UNIVERSALK9-M), Version 16.12.6, RELEASE SOFTWARE (fc3)
+Technical Support: http://www.cisco.com/techsupport
+Copyright (c) 1986-2021 by Cisco Systems, Inc.
+Compiled Sun 05-Sep-21 00:37 by mcpre
 
-Para poder establecer la conexión a través de Ansible con el router, tenemos que realizar algunos pasos previos. Comenzaremos por crear un nuevo directorio en el servidor de control.
-
-```bash
-mkdir ~/net-lab
+(...)
 ```
 
-Dentro de este directorio incluiremos todos los archivos necesarios para interactuar con los equipos de red. 
+Si queremos **conectarnos al router `hub` directamente por internet**, debemos hacer:
+```bash
+$ ssh -i devops101-labs.pem -o KexAlgorithms=diffie-hellman-group-exchange-sha1 ec2-user@hub-X.labs.conatest.click
+```
+> OBS: Si al intentar conectarnos nos tira para afuera sin nungún mensaje, puede deberse a que el router busca el certificado ssh en el primer lugar de la lista de hosts conocidos de nuestra máquina, la cuál puede ver con: `ssh-add -l`. Si este es el caso, intente agregar el certificado a la lista de host conocidos mediante `ssh-add devops101-lab.pem` y vuelva a probar. Si el problema persiste, recomendamos conectarse desde el equipo `controller` que ya se encuentra preconfigurado para facilitar la conexión.
 
-Empezamos configurando el inventario.
+
+Para poder **establecer la conexión a los routers a través de Ansible** tenemos que realizar algunos pasos previos, los cuales haremos en el siguiente **Demo Lab**.
+
+>OBS: si lo prefiere, en lugar de modificar los archivos que venimos utilizando de los labs anteriores, puede crear un nuevo directorio para comenzar desde cero, y trabajar en el mismo creando un nuevo archivo de inventario, nuevos directorios según sean requeridos, etc. También puede reinicial el ambiente desde cero, borrando su contenido, como vimos [aqui](https://github.com/conapps/Devops-101/blob/master/Ansible-101/01_ansible.md#demo-lab-1---lanzar-el-laboratorio).
+
+
+### Demo Lab #3 - Configurar el ambiente requerido para Ansible
+
+Lo primero que debemos hacer es agregar nuestros equipos de Networking al inventario.
 
 ```yaml
-# ---
-# inventory.yml
-#
-# Lista de equipos de Networking
-# ---
+# ./inventory/hosts.yml
 all:
   children:
     routers:
@@ -63,10 +64,10 @@ all:
         10.X.254.254:
 ```
 
-La mayoría de los equipos de red no cuentan con una interfaz programática para interactuar con ellos. En general, solamente podemos configurarlos a través de una consola. Además, tampoco permiten correr scripts de python dentro de la caja, ejecutados a través de ssh, que es lo que realizamos con Ansible en los ejemplos anteriores. Por lo tanto, tenemos que indicarle a Ansible como debe interactuar con estos equipos. Comenzaremos por configurar algunas variables a aplicar a todos los dispositivos del inventario.
+La mayoría de los equipos de red no cuentan con una interfaz programática para interactuar con ellos. En general, solamente podemos configurarlos a través de una consola. Además, tampoco permiten correr scripts de python a través de ssh, que es lo que realizamos con Ansible en los ejemplos anteriores. Por lo tanto, tenemos que indicarle a Ansible como debe interactuar con estos equipos. Comenzaremos por configurar algunas variables a aplicar a todos los dispositivos `routers` del inventario:
 
 ```yaml
-# inventory.yml
+# ./inventory/hosts.yml
 all:
   children:
     routers:
@@ -74,7 +75,7 @@ all:
         # Nombre de usuario
         ansible_user: ec2-user
         # Llave privada a utilizar
-        ansible_ssh_private_key_file: ~/.ssh/ansible101-podX-key.pem
+        ansible_ssh_private_key_file: ~/.ssh/devops101-labs.pem
         # Sistema operativo a utilizar
         ansible_network_os: ios
         # Permitir elevación de permisos
@@ -87,54 +88,50 @@ all:
         10.X.254.254:
 ```
 
-Para simplificar la escritura de comandos en la consola, también vamos a crear un archivo de configuración en la raíz del directorio `net-lab`  llamado `ansible.cfg`. Las opciones detalladas dentro de este archivo reemplazarán las opciones generales de Ansible
+Además, en el `ansible.cfg` del proyecto, configuramos las siguientes opciones:
 
-```ansible.cfg
+```yml
+# ./ansible.cfg
 [defaults]
-
-inventory = ./inventory.yml
+inventory = ./inventory/hosts.yml               
+vault_password_file = /root/secret/vault-password   # estaba de antes
 host_key_checking = False
 retry_files_enabled = False
 ```
 
-Para verificar que este todo funcionando corremos el siguiente comando ad-hoc
+Para verificar que este todo funcionando correctamente, hacemos un `ansible ping` a grupo `routers`, siempre trabajando desde el `controller`:
 
-```bash
-ansible all -m ping
+```
+# ansible routers -m ping
+10.1.254.254 | SUCCESS => {
+    "changed": false,
+    "ping": "pong"
+}
 ```
 
-Deberíamos ver una salida satisfactoria.
-
-También podemos verificar que el grupo `routers` que definimos también funciona correctamente.
-
-```bash
-ansible routers -m ping
-```
-
-Por ahora solamente tenemos un equipo en el inventario, pero potencialmente podríamos llegar a tener mucho más. Por lo tanto, vamos a realizar un pequeño cambio en el archivo de inventario, para tener más control sobre los equipos a los que aplicaremos nuestros `playbooks`.  El archivo de inventario completo es el siguiente:
+Ahora que sabemos que la conectividad funciona, agreguemos los routers `spoke` al inventario, separándolos en dos grupos:
 
 ```yaml
 all:
   children:
     routers:
+      vars:
+        ansible_user: ec2-user
+        ansible_ssh_private_key_file: ~/.ssh/devops101-labs.pem
+        ansible_network_os: ios
+        ansible_become: yes
+        ansible_become_method: enable
+        ansible_connection: network_cli
       children:
         hub:
           hosts:
-            10.X.254.254:
+            10.1.254.254:
         spokes:
           hosts:
-            10.X.201.253:
-            10.X.202.253:
-  vars:
-    ansible_user: ec2-user
-    ansible_ssh_private_key_file: ~/.ssh/ansible101-podX-key.pem
-    ansible_network_os: ios
-    ansible_become: yes
-    ansible_become_method: enable
-    ansible_connection: network_cli
+            10.1.201.253:
+            10.1.202.253:
 ```
-
-En producción idealmente contaríamos con alguna base de datos para almacenar los equipos y un inventario dinámico para consultarla.
+---
 
 ### `ios_config`
 
