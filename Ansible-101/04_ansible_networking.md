@@ -19,7 +19,7 @@ Cada Pod cuenta con 3 routers configurados Hub & Spoke. El `hub` se encuentra en
 
 :point_right: La idea de esta parte del curso es realizar las configuraciones de los routers a través de `Ansible`, y no con la `cli` conectado a la consola. Sin embargo, puede resultar útil conectarse a la consola para ver como se aplican los cambios, verificar configuraciones, etc.
 
-Para **conectarnos al router `hub` recomendamos hacerlo desde el equipo `controller`**, ya sea por nombre `hub-X.labs.conatest.click` o por IP `10.X.254.254`, dado que ya tenemos preconfigurado el ssh para que la conexión sea sencilla:
+Para **conectarnos al router `hub` recomendamos hacerlo desde el equipo `controller`**, ya sea por nombre `hub-X.labs.conatest.click` o por IP `10.X.254.254`, dado que ya tenemos preconfigurado el ambiente para que la conexión sea sencilla:
 ```bash
 $ ssh hub-X.labs.conatest.click
 
@@ -109,7 +109,7 @@ Para verificar que este todo funcionando correctamente, hacemos un `ansible ping
 }
 ```
 
-Ahora que sabemos que la conectividad funciona, agreguemos los routers `spoke` al inventario, separándolos en dos grupos:
+Ahora que sabemos que la conectividad funciona, agreguemos los routers `spoke` al inventario, separándolos en dos grupos `hub` y `spokes`. En caso que estemos usando el mismo inventario que habíamos definido antes, movamos los servidores linux a otro grupo `servers` con sus propias variables definidas dentro.
 
 ```yaml
 all:
@@ -130,6 +130,24 @@ all:
           hosts:
             10.1.201.253:
             10.1.202.253:
+    servers:
+      vars:
+        ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
+        ansible_ssh_private_key_file: '~/ansible/master_key'
+      hosts:
+        host01:
+        host02:
+        host03:
+      children:
+        app:
+          vars:
+            application_name: prod_app
+          hosts:
+            host01:
+            host02:
+        db:
+          hosts:
+            host03:
 ```
 ---
 
@@ -137,7 +155,7 @@ all:
 
 Uno de los módulos más comunes para utilizar con equipos `ios` es `ios_config`, cuya documentación encontramos [aquí](https://docs.ansible.com/ansible/latest/modules/ios_config_module.html).
 
-El primer `playbook` que vamos a crear permitira almacenar un respaldo de las configuraciones del equipo:
+El primer `playbook` que vamos a crear permitira almacenar un respaldo de las configuraciones de los `routers` en el directorio indicado:
 
 ```yaml
 # ---
@@ -153,17 +171,20 @@ El primer `playbook` que vamos a crear permitira almacenar un respaldo de las co
     - name: Comandos para respaldar las configuraciones
       ios_config:
         backup: yes
+        backup_options:
+          dir_path: ./respaldo-routers
 ```
+Pruebe de correr el `playbook` y verificar que se realizó el respaldo.
 
 ---
 
-### Ejercicio #6
+### Ejercicio #8
 
 Cree un `playbook` que le permita modificar el `hostname` del `hub`, solo en el caso de que la variable `hostname` este definida para cada host.
 
 <details>
     <summary>Pista #1</summary>
-    El módulo <code>ios_config</code> permite ejecutar lineas de configuración definidas en la opción <code>lines.</code>
+    El módulo <code>ios_config</code> permite ejecutar lineas de configuración definidas en la opción <code>lines.</code> Vea la documentación del módulo y los ejemplos.
 </details>
 
 <details>
@@ -173,18 +194,38 @@ Cree un `playbook` que le permita modificar el `hostname` del `hub`, solo en el 
 
 <details>
     <summary>Pista #3</summary>
-    Recuerde utilizar la opción `when` dentro de una `task` para ejecutarla solo cuando se cumpla una condición. Las condiciones aceptadas son aquellas validas en Python.
+    Recuerde utilizar la opción <code>when</code> dentro de una <code>task</code> para ejecutarla sólo cuando se cumpla determinada condición. Las condiciones aceptadas son aquellas validas en Python.
+</details>
+
+<details>
+    <summary>Pista #4</summary>
+    Recuerde definir la variable <code>hostname</code> con el nombre a asignar. Pero pruebe definirla solo para algún router, sólo para <code>hub</code>, de esta forma el playbook debería cambiarlo son en ese equipo pero no en los <code>spokes</code>. Recuerde que hay varios lugares donde puede definir dicha variable.
+</details>
+
+<details>
+    <summary>Verificación</summary>
+    Conectese al <code>router</code> y verifique que el <code>prompt</code> se modificó con el valor indicado.
+<pre class="language-yaml" lang="yaml">
+(controller) # ssh hub-1.labs.conatest.click
+hub-X#
+</pre>
 </details>
 
 <details>
     <summary>Solución</summary>
-    <pre class="language-yaml" lang="yaml"># ---
-# update_hostnames.yml
+<pre class="language-yaml" lang="yaml">
+# ./inventory/group_vars/hub.yml
+hostname: hub-X
+</pre>
+
+<pre class="language-yaml" lang="yaml">
+# routers-update-hostnames.yml
 #
-# Modifica el hostname de los equipos de acuerdo al valor definido
-# en la variable `hostname` del inventario.
+# Modifica el hostname de los routers de acuerdo al valor definido
+# en la variable `hostname`, solo si la misma se encuentra definida.
 # ---
-- name: Modificar el hostname
+
+- name: Ejercicio 8 - Modificar hostname de los routers
   hosts: routers
   connection: local
   gather_facts: no
@@ -193,29 +234,8 @@ Cree un `playbook` que le permita modificar el `hostname` del `hub`, solo en el 
       ios_config:
         lines: 'hostname {{hostname}}'
       when: hostname is defined
-# ---
-# inventory.yml
-all:
-  children:
-    routers:
-      children:
-        hub:
-          vars:
-            hostname: nombre_host
-          hosts:
-            10.X.254.254:
-        spokes:
-          hosts:
-            10.X.201.253:
-            10.X.202.253:
-  vars:
-    ansible_user: ec2-user
-    ansible_ssh_private_key_file: ~/.ssh/ansible101-podX-key.pem
-    ansible_network_os: ios
-    ansible_become: yes
-    ansible_become_method: enable
-    ansible_connection: network_cli
-  </pre>
+</pre>
+
 </details>
 
 ---
