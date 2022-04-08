@@ -35,8 +35,8 @@ COPY ssh_config /root/.ssh/config
 RUN chmod 600 /root/.ssh/config
 
 # Copy ssh-key file to allow ssh direct login to router hub
-COPY devops101-labs.pem /root/.ssh/devops101-labs.pem
-RUN chmod 600 /root/.ssh/devops101-labs.pem
+# COPY devops101-labs.pem /root/.ssh/devops101-labs.pem
+# RUN chmod 600 /root/.ssh/devops101-labs.pem
 
 # Install Ansible Collections
 RUN ansible-galaxy collection install community.general
