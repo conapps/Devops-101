@@ -93,8 +93,8 @@ Además, en el `ansible.cfg` del proyecto, configuramos las siguientes opciones:
 ```yml
 # ./ansible.cfg
 [defaults]
-inventory = ./inventory/hosts.yml               
-vault_password_file = /root/secret/vault-password   # estaba de antes
+inventory = ./inventory/hosts.yml      
+#vault_password_file = /root/secret/vault-password   # estaba de antes, podemos comentarla por ahora
 host_key_checking = False
 retry_files_enabled = False
 ```
@@ -135,20 +135,17 @@ all:
 
 ### `ios_config`
 
-Uno de los módulos más comunes para utilizar con equipos `ios` es `ìos_config`. La documentación de este módulo la encontramos en el siguiente link:
+Uno de los módulos más comunes para utilizar con equipos `ios` es `ios_config`, cuya documentación encontramos [aquí](https://docs.ansible.com/ansible/latest/modules/ios_config_module.html).
 
-[https://docs.ansible.com/ansible/latest/modules/ios_config_module.html](https://docs.ansible.com/ansible/latest/modules/ios_config_module.html)
-
-El primer `playbook` que vamos a crear permitira almacenar un respaldo de las configuraciones del dispositivo:
+El primer `playbook` que vamos a crear permitira almacenar un respaldo de las configuraciones del equipo:
 
 ```yaml
 # ---
-# backup_config.yml
+# routers-backup-config.yml
 #
-# Crea un respaldo de las configuraciones de los equipos
+# Crea un respaldo de las configuraciones de los equipos IOS
 # ---
-
-- name: Respaldo de configuraciones
+- name: Respaldo de configuraciones IOS
   hosts: routers
   connection: local
   gather_facts: no
