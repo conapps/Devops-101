@@ -1,0 +1,15 @@
+# routers-update-hostnames.yml
+#
+# Modifica el hostname de los routers de acuerdo al valor definido
+# en la variable `hostname`, solo si la misma se encuentra definida.
+# ---
+
+- name: Ejercicio 8 - Modificar hostname de los routers
+  hosts: routers
+  connection: local
+  gather_facts: no
+  tasks:
+    - name: Modificar el hostname
+      ios_config:
+        lines: 'hostname {{hostname}}'
+      when: hostname is defined
