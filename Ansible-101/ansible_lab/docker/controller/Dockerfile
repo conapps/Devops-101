@@ -7,9 +7,8 @@ RUN apt-get update
 RUN apt-get install --no-install-recommends --no-install-suggests -y software-properties-common
 RUN apt-add-repository ppa:ansible/ansible
 RUN apt-get update
-RUN apt-get install --no-install-recommends --no-install-suggests -y ansible git tmux
-RUN apt-get install --no-install-recommends --no-install-suggests -y pip
-RUN pip install paramiko
+RUN apt-get install --no-install-recommends --no-install-suggests -y ansible python3-pip git tmux
+RUN pip3 install paramiko==2.4.2           
 
 # Generally a good idea to have these, extensions sometimes need them
 RUN locale-gen en_US.UTF-8
@@ -39,12 +38,13 @@ RUN chmod 600 /root/.ssh/config
 COPY devops101-labs.pem /root/.ssh/devops101-labs.pem
 RUN chmod 600 /root/.ssh/devops101-labs.pem
 
-# Install Cisco IOS Ansible Collection
+# Install Ansible Collections
+RUN ansible-galaxy collection install community.general
 RUN ansible-galaxy collection install cisco.ios
 
 # Change default working directory when login
-WORKDIR /root/ansible
 RUN echo "cd /root/ansible" >> ~/.profile
+WORKDIR /root/ansible
 
 CMD ["/usr/sbin/sshd","-D"]
 
