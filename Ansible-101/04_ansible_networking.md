@@ -180,11 +180,11 @@ Pruebe de correr el `playbook` y verificar que se realizó el respaldo.
 
 ### Ejercicio #8
 
-Cree un `playbook` que le permita modificar el `hostname` del `hub`, solo en el caso de que la variable `hostname` este definida para cada host.
+Cree un `playbook` que le permita modificar el `hostname` de los `routers`, solo en el caso de que la variable `hostname` este definida para cada host.
 
 <details>
     <summary>Pista #1</summary>
-    El módulo <code>ios_config</code> permite ejecutar lineas de configuración definidas en la opción <code>lines.</code> Vea la documentación del módulo y los ejemplos.
+    El módulo <code>ios_config</code> permite ejecutar lineas de configuración definidas en la opción <code>lines</code>. Revise la documentación del módulo y los ejemplos allí incluidos.
 </details>
 
 <details>
@@ -194,19 +194,19 @@ Cree un `playbook` que le permita modificar el `hostname` del `hub`, solo en el 
 
 <details>
     <summary>Pista #3</summary>
-    Recuerde utilizar la opción <code>when</code> dentro de una <code>task</code> para ejecutarla sólo cuando se cumpla determinada condición. Las condiciones aceptadas son aquellas validas en Python.
+    Recuerde utilizar la opción <code>when</code> dentro de una <code>task</code> para ejecutarla sólo cuando se cumpla determinada condición. La condición deberá evaluar si la variable <code>hostname</code> existe.
 </details>
 
 <details>
     <summary>Pista #4</summary>
-    Recuerde definir la variable <code>hostname</code> con el nombre a asignar. Pero pruebe definirla solo para algún router, sólo para <code>hub</code>, de esta forma el playbook debería cambiarlo son en ese equipo pero no en los <code>spokes</code>. Recuerde que hay varios lugares donde puede definir dicha variable.
+    Recuerde definir la variable <code>hostname</code> con el nombre que quiere asignarle al <code>router</code>. Pero pruebe definirla solo para el <code>hub</code>, de esta forma el playbook debería hacer el cambio solo en ese equipo y no en los <code>spokes</code>. Recuerde que hay varios lugares donde puede definir dicha variable.
 </details>
 
 <details>
     <summary>Verificación</summary>
-    Conectese al <code>router</code> y verifique que el <code>prompt</code> se modificó con el valor indicado.
+    Conectese al <code>hub</code> y verifique que el <code>prompt</code> se modificó con el valor establecido.
 <pre class="language-yaml" lang="yaml">
-(controller) # ssh hub-1.labs.conatest.click
+(controller) # ssh hub-X.labs.conatest.click
 hub-X#
 </pre>
 </details>
