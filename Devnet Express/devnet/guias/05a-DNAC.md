@@ -25,18 +25,18 @@ Por defecto, se encuentran definidos los siguientes roles y privilegios:
 
 Un token de seguridad, comunmente llamado "service token", encapsula el rol y la identidad del usuario en una única entidad.
 
-La API del DNAC, o cualquier API que funcione con RBAC, utiliza los service tokens para tomar decisiones de control de acceso. Por tal motivo, para comenzar a interactuar con la misma, necesitamos obtener nuestro token. Para ello debemos enviar un POST a la url `/token` indicando en el `BODY` nuestro usuario y password. En caso de que la autenticación resulte exitosa, el DNAC nos devolvera un service token que podremos utilizar luego para acceder a recursos y ejecutar acciones.
+La API del DNAC, o cualquier API que funcione con RBAC, utiliza los service tokens para tomar decisiones de control de acceso. Por tal motivo, para comenzar a interactuar con la misma, necesitamos obtener nuestro token. Para ello debemos enviar un POST a la url `/token` indicando en un encabezado nuestro usuario y password. En caso de que la autenticación resulte exitosa, el DNAC nos devolvera un service token que podremos utilizar luego para acceder a recursos y ejecutar acciones.
 
 Es importante tener el cuenta que el service token se debe incluir **en cada una** de las interacciones que tengamos con la API.
 
 ### Script #15 - Obtener el service token.
 
-Leer la documentación [API documentation](https://developer.cisco.com/site/dna-center-rest-api/) para entender en detalle cual es el procedimiento para obtener un service token. Tener en cuenta que estaremos utilizando `Token based authentication`.
+Leer la documentación [API documentation](https://developer.cisco.com/docs/dna-center/#!cisco-dna-1-3-3-x-api-overview/how-to-send-dna-center-api-requests-to-a-devnet-always-on-sandbox) para entender en detalle cual es el procedimiento para obtener un service token. Tener en cuenta que estaremos utilizando `Token based authentication`.
 
 Siga los pasos a continaución para obtener un token utilizando POSTMAN:
 
 1.  Conigurar el método como "POST"
-2.  Configurar la URL como: https://sandboxdnac.cisco.com/api/system/v1/auth/token
+2.  Configurar la URL como: https://sandboxdnac2.cisco.com/dna/system/api/v1/auth/token
 3.  Agregar un Header `{"Content-Type":"application/json"}`
 4.  Agregar un Header `{"Authorization":"Basic <username:password>"}`
     Prestar atención al espacio luego de "Basic".
@@ -47,7 +47,7 @@ Siga los pasos a continaución para obtener un token utilizando POSTMAN:
 Ahora veamos como obtener un token de forma programática utilizando Python:
 
 1.  Ubicar el script 15-DNAC-get-token.py.
-2.  Correr el script utilizando el intérprete de Pyhont. Por ejemplo:
+2.  Correr el script utilizando el intérprete de Python. Por ejemplo:
     - En Linux o Mac OS: `python3 15-DNAC-get-token.py`
     - En Windows: `py -3 15-DNAC-get-token.py or python 14a-DNAC-get-token.py`
 3.  Copiar al portapapeles el service token que se imprime en la consola.
