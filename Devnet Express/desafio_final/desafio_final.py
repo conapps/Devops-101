@@ -9,7 +9,7 @@ UMBRAL = int(sys.argv[1])
 TIME_SPAN = 2592000
 
 # Clave para poder autenticar con la API de Meraki
-MERAKI_KEY = "c3c60821f6c5e1c7928f76fd5b1e1305184a24f5"
+MERAKI_KEY = "definir el día del laboratorio"
 
 # Nombre de la organización en Meraki que contiene la red para la cuál hay que obtener estadísticas
 ORG_NAME = 'C008 - Preventa Conatel'
@@ -17,9 +17,9 @@ ORG_NAME = 'C008 - Preventa Conatel'
 # Nombre de la red para cuál hay que obtener estadísticas
 NETWORK_NAME = 'X001 - LAB CONATEL'
 
-# Clave para poder autenticar con la API de Spark
-SPARK_KEY = 'MDE5NmViZWItMzc4ZS00YzEwLTlhNzUtYjQ0NDQ2ZDlhMmRlNDFlNDhkY2MtNDQ5'
+# Clave para poder autenticar con la API de Webex
+WEBEX_KEY = 'definir el día del laboratorio'
 
 # Nombre de la sala donde hay que publicar las alarmas de tráfico
-SPARK_ROOM_NAME = 'CONATEL - Devnet Express 2018'
+WEBEX_ROOM_NAME = 'definir el día del laboratorio'
 
