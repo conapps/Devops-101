@@ -57,7 +57,7 @@ Ahora veamos como obtener un token de forma programática utilizando Python:
 
 **Bonus:**
 
-Leer la sección **token-based-authnz-api-eft** de la [API documentation](https://developer.cisco.com/site/dna-center-rest-api/). Modificar el script anterior de la siguiente manera:
+Modificar el script anterior para que no utilice la función `HTTPBasicAuth`. El objetivo es codificar usuario y password en `base64` y enviarlos en el encabezado `Authorization`:
 
 1.  `import base64`
 2.  utilizar la función `base64.b64encode(bytes(username + ':' + password, 'utf-8')).decode('utf-8')` para codificar `username:password` en base64 y obtener el token **sin** utilizar `HTTPBasicAuth`.
@@ -79,7 +79,7 @@ Para incluir el service token en la llamada se debe utilizar el encabezado HTTP 
 Mientras no hayan expirado, los tokens pueden re-utilizarse en tantas llamadas como sea necesario. En este laboratorio, por simplicidad, obtendremos un nuevo token por cada request que vayamos a hacer.
 
 A continuación haremos una llamada simple a la API para ver la autenticación mediante token en funcionamiento.
-En concreto, enviaremos un request HTTP del tipo `GET` al endpoint `/host`. Esto debería devolvernos la lista de **hosts** presentes en la topología que se muesrta a continuación de acuerdo a los permisos del usuario (reflejados en el service token).
+En concreto, enviaremos un request HTTP del tipo `GET` al endpoint `/host`. Esto debería devolvernos la lista de **hosts** presentes en la topología del laboratorio (similar a la que se encuentra a continuación) de acuerdo a los permisos del usuario (reflejados en el service token).
 
 ![Toplogia DNAC](../imagenes/DNAC_topology.png)
 
@@ -89,7 +89,7 @@ La llamada `GET` a `/host` no requiere ningún argumento adicional, únicamente 
 
 Partir desde el archivo `16-DNAC-get-hosts.py` y modificarlo donde se indica en los comentarios para que obtener una lista de hosts del DNAC.
 
-## API endopoints referentes dispositivos de red.
+## API endopoints referentes a dispositivos de red.
 
 ### Objetivos
 
@@ -108,7 +108,7 @@ En el próximo laboratorio, trabajaremos con un script que hace las siguiente ll
 En esta sección, crearemos una aplicación simple para:
 
 - Solicitar al usuario que seleccione un dispsitivo de red.
-- Mostrar la configuración del dispositivo generado por el usuario.
+- Mostrar la configuración del dispositivo seleccionado por el usuario.
 
 Pseudo-código:
 

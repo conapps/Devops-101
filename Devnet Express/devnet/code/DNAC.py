@@ -11,9 +11,9 @@ import json       # Import JSON encoder and decode module
 requests.packages.urllib3.disable_warnings()  # Disable warnings
 
 # Hardcoded URL data
-dnac_ip = "sandboxdnac.cisco.com"
+dnac_ip = "sandboxdnac2.cisco.com"
 version = "v1"
-api_root_system_url = "https://" + dnac_ip + "/api/system/" + version
+api_root_system_url = "https://" + dnac_ip + "/dna/system/api/" + version
 api_root_url = "https://" + dnac_ip + "/api/" + version
 api_endpoint = "/auth/token"
 post_url = api_root_system_url + api_endpoint
