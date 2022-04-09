@@ -11,14 +11,14 @@ import json       # Import JSON encoder and decode module
 requests.packages.urllib3.disable_warnings()  # Disable warnings
 
 # DNAC IP, modify these parameters if you are using your own DNAC
-dnac_ip = "sandboxdnac.cisco.com"
+dnac_ip = "sandboxdnac2.cisco.com"
 username = "devnetuser"
 password = "Cisco123!"
 version = "v1"
 
 
 # POST token API URL
-post_url = "https://" + dnac_ip + "/api/system/" + version + "/auth/token"
+post_url = "https://" + dnac_ip + "/dna/system/api/" + version + "/auth/token"
 
 # All DNAC REST API request and response content type is JSON.
 headers = {'content-type': 'application/json'}
