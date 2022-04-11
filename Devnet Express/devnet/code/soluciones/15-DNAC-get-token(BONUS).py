@@ -15,13 +15,13 @@ import base64
 requests.packages.urllib3.disable_warnings()  # Disable warnings
 
 # DNAC IP, modify these parameters if you are using your own DNAC
-dnac_ip = "sandboxdnac.cisco.com"
+dnac_ip = "sandboxdnac2.cisco.com"
 username = "devnetuser"
 password = "Cisco123!"
 version = "v1"
 
 # POST token API URL
-post_url = "https://" + dnac_ip + "/api/system/" + version + "/auth/token"
+post_url = "https://" + dnac_ip + "/dna/system/api/" + version + "/auth/token"
 
 # Encoding username:password in base64
 encoded_user_pass = base64.b64encode(
