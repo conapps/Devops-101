@@ -199,23 +199,50 @@ Cree un `playbook` que le permita modificar el `hostname` de los `routers`, solo
 
 <details>
     <summary>Pista #4</summary>
-    Recuerde definir la variable <code>hostname</code> con el nombre que quiere asignarle al <code>router</code>. Pero pruebe definirla solo para el <code>hub</code>, de esta forma el playbook debería hacer el cambio solo en ese equipo y no en los <code>spokes</code>. Recuerde que hay varios lugares donde puede definir dicha variable.
+    Recuerde definir la variable <code>hostname</code> con el nombre que quiere asignarle a los <code>routers</code>. Recuerde que hay varios lugares donde puede definir dicha variable.
 </details>
 
 <details>
     <summary>Verificación</summary>
-    Conectese al <code>hub</code> y verifique que el <code>prompt</code> se modificó con el valor establecido.
+    Conectese al <code>router</code> y verifique que el <code>prompt</code> se modificó con el valor establecido, por ej:.
 <pre class="language-yaml" lang="yaml">
-(controller) # ssh hub-X.labs.conatest.click
-hub-X#
+(controller) # ssh hub-1.labs.conatest.click
+hub#
 </pre>
 </details>
 
 <details>
     <summary>Solución</summary>
 <pre class="language-yaml" lang="yaml">
-# ./inventory/group_vars/hub.yml
-hostname: hub-X
+# ./inventory/group_vars/routers.yml
+hostname: '{{inventory_hostname}}'
+</pre>
+
+<pre class="language-yaml" lang="yaml">
+# ./inventory/hosts.
+# archivo de inventario ./inventory/hosts.yml
+all:
+  children:
+    routers:
+      vars:
+        ansible_user: ec2-user
+        ansible_ssh_private_key_file: ~/.ssh/devops101-labs.pem
+        ansible_network_os: ios
+        ansible_become: yes
+        ansible_become_method: enable
+        ansible_connection: network_cli
+      hosts:
+          hub:
+            ansible_host: 10.1.254.254
+          spoke01:
+            ansible_host: 10.1.201.253
+          spoke02:
+            ansible_host: 10.1.202.253
+      children:
+        spokes:
+          hosts:
+            spoke01:
+            spoke02:
 </pre>
 
 <pre class="language-yaml" lang="yaml">
