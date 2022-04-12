@@ -9,3 +9,10 @@ Host 10.*.254.254 hub-*.labs.conatest.click
   StrictHostKeyChecking no
   UserKnownHostsFile /dev/null
   user ec2-user
+
+Host 10.*.20?.253 spoke?-*.labs.conatest.click
+  KexAlgorithms diffie-hellman-group-exchange-sha1
+  IdentityFile ~/.ssh/devops101-labs.pem
+  StrictHostKeyChecking no
+  UserKnownHostsFile /dev/null
+  user ec2-user
