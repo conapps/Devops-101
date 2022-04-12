@@ -19,7 +19,7 @@ Cada Pod cuenta con 3 routers configurados Hub & Spoke. El `hub` se encuentra en
 
 :point_right: La idea de esta parte del curso es realizar las configuraciones de los routers a través de `Ansible`, y no con la `cli` conectado a la consola. Sin embargo, puede resultar útil conectarse a la consola para ver como se aplican los cambios, verificar configuraciones, etc.
 
-Para **conectarnos al router `hub` recomendamos hacerlo desde el equipo `controller`**, ya sea por nombre `hub-X.labs.conatest.click` o por IP `10.X.254.254`, dado que ya tenemos preconfigurado el ambiente para que la conexión sea sencilla:
+Para **conectarnos al router `hub` recomendamos hacerlo desde el equipo `controller`**, dado que ya tenemos preconfigurado para conectarnos por nombre (la X corresponde al número de POD asignado):
 ```bash
 $ ssh hub-X.labs.conatest.click
 
@@ -29,7 +29,7 @@ ip-10-X-254-254#
 Al conectarse al router queda parado en la consola de configuración en modo `EXEC`. Podemos verificar que nos encontramos en un router CISCO utilizando el comando `show version`:
 
 ```
-ip-10-1-254-254# show version
+ip-10-X-254-254# show version
 Cisco IOS XE Software, Version 16.12.06
 Cisco IOS Software [Gibraltar], Virtual XE Software (X86_64_LINUX_IOSD-UNIVERSALK9-M), Version 16.12.6, RELEASE SOFTWARE (fc3)
 Technical Support: http://www.cisco.com/techsupport
@@ -39,11 +39,25 @@ Compiled Sun 05-Sep-21 00:37 by mcpre
 (...)
 ```
 
-Si queremos **conectarnos al router `hub` directamente por internet**, debemos hacer:
+También podemos **conectarnos a los routers `spoke1` y `spoke2` desde `controller`** de forma similar (la X corresponde al número de POD asignado):
+```bash
+$ ssh spoke1-X.labs.conatest.click
+
+ip-10-X-201-253#
+```
+```bash
+$ ssh spoke2-X.labs.conatest.click
+
+ip-10-X-202-253#
+```
+
+
+
+Si queremos **conectarnos a los routers directamente por internet**, debemos incluir opciones adicionales al ssh:
 ```bash
 $ ssh -i devops101-labs.pem -o KexAlgorithms=diffie-hellman-group-exchange-sha1 ec2-user@hub-X.labs.conatest.click
 ```
-> OBS: Si al intentar conectarnos nos tira para afuera sin nungún mensaje, puede deberse a que el router busca el certificado ssh en el primer lugar de la lista de hosts conocidos de nuestra máquina, la cuál puede ver con: `ssh-add -l`. Si este es el caso, intente agregar el certificado a la lista de host conocidos mediante `ssh-add devops101-lab.pem` y vuelva a probar. Si el problema persiste, recomendamos conectarse desde el equipo `controller` que ya se encuentra preconfigurado para facilitar la conexión.
+> OBS: Si al intentar conectarnos nos tira para afuera sin nungún mensaje, puede deberse a que el router busca el certificado ssh en la lista de hosts conocidos de nuestra máquina, la cuál puede ver con: `ssh-add -l`. Si este es el caso, intente agregar el certificado a la lista de host conocidos mediante `ssh-add devops101-lab.pem` y vuelva a probar. Si el problema persiste, recomendamos conectarse desde el equipo `controller` que ya se encuentra preconfigurado para facilitar la conexión.
 
 
 Para poder **establecer la conexión a los routers a través de Ansible** tenemos que realizar algunos pasos previos, los cuales haremos en el siguiente **Demo Lab**.
@@ -209,6 +223,11 @@ Cree un `playbook` que le permita modificar el `hostname` de los `routers`, solo
 (controller) # ssh hub-1.labs.conatest.click
 hub#
 </pre>
+<pre class="language-yaml" lang="yaml">
+(controller) # ssh spoke1-1.labs.conatest.click
+spoke1#
+
+</pre>
 </details>
 
 <details>
@@ -219,7 +238,7 @@ hostname: '{{inventory_hostname}}'
 </pre>
 
 <pre class="language-yaml" lang="yaml">
-# ./inventory/hosts.
+# ./inventory/hosts.yml
 # archivo de inventario ./inventory/hosts.yml
 all:
   children:
@@ -262,6 +281,11 @@ all:
         lines: 'hostname {{hostname}}'
       when: hostname is defined
 </pre>
+
+Referencias:
+- special variable <code>inventory_hostname</code>: https://docs.ansible.com/ansible/latest/reference_appendices/special_variables.html
+- inventory aliases <code>ansible_host</code>:
+https://docs.ansible.com/ansible/latest/user_guide/intro_inventory.html#inventory-aliases
 
 </details>
 
@@ -325,21 +349,21 @@ TASK [Comando para hallar las diferencias] *************************************
 ---
 
 ## Cambios masivos
-Como ya vimos, es sencillo realizar configuraciones en múltiples equipos utilizando Ansible.
+Como ya vimos, es sencillo realizar configuraciones en múltiples equipos utilizando Ansible. Alcanza con aplicar el mismo `playbook` a múltiples `hosts` y Ansible se encarga de ejecutar las tareas sobre todos ellos.
 
-Los routers ya están configurados para poder comunicarse entre sí. Sin embargo, no podemos llegar a las redes `10.X.1.0/24` y `10.X.2.0/24` por que las interfaces de los routers dentro de estas redes no están configuradas. Vamos a ver como podemos realizar estas configuraciones de forma masiva, utilizando Ansible.
+Los routers del laboratorio ya están configurados para poder comunicarse entre sí. Sin embargo, no podemos llegar a las redes `10.X.1.0/24` y `10.X.2.0/24` porque las interfaces de los routers `spokes` que se encuentran en dichas redes no están configuradas. Esto implcia que tampoco tenemos conectividad con los equipos `slave1` y `slave2`, que se encuentran en esas redes. Veamos entonces como solucionar esto.
 
-_OBS: La `X` corresponde al número de su POD._
+Nuevamente, para configurar las interfaces del router utilizamos el módulo `ios_config` de Ansible, cuya documentación se encuentra [aquí](https://docs.ansible.com/ansible/latest/collections/cisco/ios/ios_config_module.html).
 
-Los routers ya están configurados para poder comunicarse entre sí. Sin embargo, no podemos llegar a las redes `10.X.1.0/24` y `10.X.2.0/24` por que las interfaces de los routers dentro de estas redes no están configuradas. Vamos a ver como podemos realizar estas configuraciones de forma masiva, utilizando Ansible.
+Por ejemplo, si quisieramos configurar una interfaz del router `hub`, lo podríamos hacer mediante el siguiente `playbook`.
 
-Primero, veamos como se vería un `playbook` para configurar una interfaz **solo** en el router **hub**.
+:warning: No es necesario modificar la configuración del `hub`, dado que éste ya se encuentra configurado y tenemos conectividad con los `spokes`.
 
 ```yaml
 # ---
-# configure_interface_on_spoke_01.yml
+# configure_router_interface.yml
 #
-# Configura la interface GigabitEthernet2 del router Spoke01
+# Configura la interface GigabitEthernet2 del router hub
 # ...
 - name: Configuracion de interface GigabitEthernet2
   hosts: hub
@@ -348,26 +372,36 @@ Primero, veamos como se vería un `playbook` para configurar una interfaz **solo
   tasks:
     - ios_config:
         lines:
-          - description "Conexión con Red Spoke #1"
+          - description "Conexión con Red Tunnel 01"
           - ip address 10.X.201.254 255.255.255.0
           - no shutdown
         parents: interface GigabitEthernet2
 ```
 
-_OBS: Note como le indicamos al módulo `ios_config` cual es el `parent` sobre el cual debemos realizar los comandos._
+:point_right: Note como le indicamos al módulo `ios_config` cual es el `parent` sobre el cual debemos realizar los comandos, en este caso, la `interface GigabitEthernet2`. Y básicamente, escribimos las líneas que ingresaríamos en el router, para aplicar la configuración sobre dicha interface.
 
-Básicamente, escribe las líneas que le indicamos en el router, en la ubicación indicada. Esta claro que con este `playbook` no podríamos realizar cambios en múltiples equipos. Para poder generalizarlo tenemos que crear primero un `role`. 
+
+Esta claro que con este `playbook` no podríamos realizar cambios en múltiples equipos. Para poder generalizarlo tenemos que crear un `role`. 
 
 ---
 
-### Ejercicio #8
+### Ejercicio #9
 
-Cree un nuevo rol llamado `configure_interfaces` que configure una interfaz de un router consumiendo una lista de objetos llamada `interfaces` con las siguientes llaves:
+Cree un nuevo rol llamado `configure_interfaces` que configure las interfaces de un router, a partir de una **lista** llamada `interfaces`, con las siguiente estructura:
 
-- `interface`
-- `ip_address`
-- `net mask`
-- `description`
+```yml
+interfaces:
+  - interface: GigabitEhernet1
+    ip_address: x.x.x.x
+    netmask: -.-.-.-
+    description: <descripción 1>
+  - interface: GigabitEthernet2
+    ip_address: y.y.y.y
+    netmask: -.-.-.-
+    description: <descripción 2>
+    (...)
+```
+
 
 El rol luego será llamado a través del siguiente `playbook`
 
@@ -375,11 +409,9 @@ El rol luego será llamado a través del siguiente `playbook`
 # ---
 # configure_interfaces_with_role.yml
 #
-# Configura interfaces utilizando un rol
+# Configura interfaces de un router Cisco IOS
 # 
-# OBS:
-#   Dentro del inventario, se configurará una variable llamada
-#    `interfaces` con una lista de interfaces. Por ejemplo:
+# OBS: se debe definir una lista con los valores a configurar para el router
 #   interfaces:
 #     - interface: GigabitEthernet2
 #       ip_address: '10.X.201.254'
@@ -387,131 +419,181 @@ El rol luego será llamado a través del siguiente `playbook`
 #       description: Configurado desde el nuevo rol
 # ...
 - name: Configuración de interface
-  hosts: hub
+  hosts: spokes
   connection: local
   gather_facts: no
   roles:
-    - role: ../roles/configure_interfaces
+    - configure_interfaces
 ```
 
 <details>
-    <summary>Pista #1</summary>
-    Recuerde la estructura de carpetas que necesita un rol<pre>
-roles
-\ tasks
-  \ main.yml
-\ defaults
-  \ main.yml
-\ files
-\ ...
-    </pre>
+<summary>Pista #1</summary>
+Recuerde la estructura de carpetas que necesita un rol, por ejemplo:
+<pre>
+roles/
+  nombre-del-rol/
+    defaults/
+      main.yml
+    files/
+      main.yml
+    tasks/
+      main.yml
+    templates/
+      main.yml
+    vars/
+      main.yml   
+</pre>
 </details>
 
 <details>
-    <summary>Pista #2</summary>
-    Recuerde la estructura de carpetas que debe tener un <code>role</code> dentro del directorio <code>roles</code>.
-    <pre>
-    \configure_interfaces
-      \tasks
-        main.yml
-      \defaults
-      	main.yml
-      ...
-    </pre>
+<summary>Pista #2</summary>
+El router <code>hub</code> tiene tres interfaces <code>GigabitEthernet1</code>, <code>GigabitEthernet2</code> y <code>GigabitEthernet3</code>. Mientras que cada router <code>spoke</code> tienen dos interfaces <code>GigabitEthernet1</code>, <code>GigabitEthernet2</code> 
 </details>
 
+<details>
+<summary>Pista #3</summary>
+Debe definir la lista de <code>interfaces</code> con la información requerida para cada uno de los routers. Esto puede definirlo en diversos lugares (host_vars/group_vars/inventory vars/etc.).
+
+Por ej, para <code>hub</code>:
+<pre>
+interfaces:
+  - interface: GigabitEthernet1
+    ip_address: 10.X.254.254
+    netmask: 255.255.255.0
+    description: Conexion con red Hub
+  - interface: GigabitEthernet2
+    ip_address: 10.X.201.254
+    netmask: 255.255.255.0
+    description: Conexión con red Tunnel 01
+  - interface: GigabitEthernet3
+    ip_address: 10.X.202.254
+    netmask: 255.255.255.0
+    description: Conexión con red Tunnel 02
+</pre>
+</details>
+
+<details>
+<summary>Pista #4</summary>
+Tenga en cuenta que la lista de <code>interfaces</code> de cada router tendrá una cantidad indefinida de ítems (algún router puede tener solo una interface, otros dos, tres, cinco, etc.). Para referenciar los valores de configuración, deberá iterar sobre dicha lista, por ejemplo utilizando <code>loop:</code> 
+</details>
+
+
 <details>	
-    <summary>Solución</summary>
-    <pre>
-# ---
+<summary>Solución</summary>
+
+<pre class="language-yaml" lang="yaml">
+# ./inventory/hosts.yml
+all:
+  children:
+    routers:
+      vars:
+        ansible_user: ec2-user
+        ansible_ssh_private_key_file: ~/.ssh/devops101-labs.pem
+        ansible_network_os: ios
+        ansible_become: yes
+        ansible_become_method: enable
+        ansible_connection: network_cli
+      hosts:
+          hub:
+            ansible_host: 10.1.254.254
+          spoke01:
+            ansible_host: 10.1.201.253
+          spoke02:
+            ansible_host: 10.1.202.253
+      children:
+        spokes:
+          hosts:
+            spoke01:
+            spoke02:
+</pre>
+
+<pre class="language-yaml" lang="yaml">
+# ./inventory/host_vars/hub.yml
+hostname: hub
+interfaces:
+  - interface: GigabitEthernet1
+    ip_address: 10.1.254.254
+    netmask: 255.255.255.0
+    description: Conexion con red Hub
+  - interface: GigabitEthernet2
+    ip_address: 10.1.201.254
+    netmask: 255.255.255.0
+    description: Conexión con red Tunnel-01
+  - interface: GigabitEthernet3
+    ip_address: 10.1.202.254
+    netmask: 255.255.255.0
+    description: Conexión con red Tunnel-02
+</pre>
+
+<pre class="language-yaml" lang="yaml">
+# ./inventory/host_vars/spoke01.yml
+hostname: spoke01
+interfaces:
+  - interface: GigabitEthernet2
+    ip_address: 10.1.201.253
+    netmask: 255.255.255.0
+    description: Conexion con red Tunnel-01
+  - interface: GigabitEthernet1
+    ip_address: 10.1.1.254
+    netmask: 255.255.255.0
+    description: Conexión con red Spoke-01
+</pre>
+
+<pre class="language-yaml" lang="yaml">
+# ./inventory/host_vars/spoke02.yml
+hostname: spoke02
+interfaces:
+  - interface: GigabitEthernet1
+    ip_address: 10.1.202.253
+    netmask: 255.255.255.0
+    description: Conexion con red Tunnel-02
+  - interface: GigabitEthernet2
+    ip_address: 10.1.2.254
+    netmask: 255.255.255.0
+    description: Conexión con red Spoke-02
+</pre>
+
+
+<pre class="language-yaml" lang="yaml">
 # ./roles/configure_interfaces/tasks/main.yml
 #
 # Tareas para configurar la interfaz de un equipo.
 # ---
-- name: Configuración de interfaces
-  loop: '{{ interfaces }}'
+- name: 'Configuro interfaces de router Cisco IOS'
   ios_config:
     lines:
       - 'description {{ item.description }}'
       - 'ip address {{ item.ip_address }} {{ item.netmask }}'
       - no shutdown
     parents: 'interface {{ item.interface }}'
+  loop: '{{ interfaces }}'
+</pre>
+
+<pre class="language-yaml" lang="yaml">
+# ./routers-configure-interfaces.yml
+#
+# Configura interfaces de los routers Cisco IOS
+# 
+# OBS: se debe definir una lista con los valores a configurar para el router:
+# interfaces:
+#   - interface: GigabitEthernet2
+#     ip_address: '10.X.201.254'
+#     netmask: '255.255.255.0'
+#     description: Configurado desde el nuevo rol
+# ...
+- name: Ejercicio 9 - Configurar interfaces de los routers
+  hosts: routers
+  connection: local
+  gather_facts: no
+  roles:
+    - configure_interfaces
+</pre>
 </details>
 
----
-
-Ahora que tenemos el rol, podemos configurar estas opciones dentro del archivo de inventario. Carguemos esta información en nuestro inventario.
-
-```yaml
----
-all:
-  children:
-    routers:
-      vars:
-        ansible_user: ec2-user
-        ansible_network_os: ios
-        ansible_become: yes
-        ansible_become_method: enable
-        ansible_connection: network_cli
-      children:
-        hub:
-          hosts:
-            10.X.254.254:
-              hostname: hub
-              interfaces:
-                - interface: GigabitEthernet1
-                  ip_address: 10.X.254.254
-                  netmask: 255.255.255.0
-                  description: Conexion con red Hub
-                - interface: GigabitEthernet2
-                  ip_address: 10.X.201.254
-                  netmask: 255.255.255.0
-                  description: Conexión con red de tránsito 1
-                - interface: GigabitEthernet3
-                  ip_address: 10.X.202.254
-                  netmask: 255.255.255.0
-                  description: Conexión con red de tránsito 2
-        spokes:
-          hosts:
-            10.X.201.253:
-              hostname: spoke01
-              interfaces:
-                - interface: GigabitEthernet1
-                  ip_address: 10.X.201.253
-                  netmask: 255.255.255.0
-                  description: Conexión con red de tránsito 1
-                - interface: GigabitEthernet2
-                  ip_address: 10.X.1.254
-                  netmask: 255.255.255.0
-                  description: Conexión con red Spoke 1
-            10.X.202.253:
-              hostname: spoke02
-              interfaces:
-                - interface: GigabitEthernet1
-                  ip_address: 10.X.202.253
-                  netmask: 255.255.255.0
-                  description: Conexión con red de tránsito 2
-                - interface: GigabitEthernet2
-                  ip_address: 10.X.2.254
-                  netmask: 255.255.255.0
-                  description: Conexión con red Spoke 2
-    servers:
-      children:
-        master:
-          hosts:
-            10.X.254.100:
-        slaves:
-          hosts:
-            10.X.1.100:
-            10.X.2.100:
-      vars:
-        ansible_user: ubuntu
-        ansible_python_interpreter: /usr/bin/python3
-  vars:
-    ansible_ssh_private_key_file: ~/.ssh/ansible101-podX-key.pem
 
 
-```
+
+
 
 ---
 
