@@ -1,0 +1,13 @@
+# ---
+# ./roles/configure_interfaces/tasks/main.yml
+#
+# Tareas para configurar la interfaz de un equipo.
+# ---
+- name: 'Configuro interfaces de router Cisco IOS'
+  ios_config:
+    lines:
+      - 'description {{ item.description }}'
+      - 'ip address {{ item.ip_address }} {{ item.netmask }}'
+      - no shutdown
+    parents: 'interface {{ item.interface }}'
+  loop: '{{ interfaces }}'
