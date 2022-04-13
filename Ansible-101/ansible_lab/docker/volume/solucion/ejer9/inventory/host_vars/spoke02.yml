@@ -5,6 +5,6 @@ interfaces:
     netmask: 255.255.255.0
     description: Conexion con red Tunnel-02
   - interface: GigabitEthernet2
-    ip_address: 10.1.2.254
+    ip_address: 10.1.2.253
     netmask: 255.255.255.0
     description: Conexión con red Spoke-02
