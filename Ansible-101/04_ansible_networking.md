@@ -474,7 +474,7 @@ interfaces:
 
 <details>
 <summary>Pista #4</summary>
-Tenga en cuenta que la lista de <code>interfaces</code> de cada router tendrá una cantidad indefinida de ítems (algún router puede tener solo una interface, otros dos, tres, cinco, etc.). Para referenciar los valores de configuración, deberá iterar sobre dicha lista, por ejemplo utilizando <code>loop:</code> 
+Tenga en cuenta que la lista de <code>interfaces</code> de cada router tendrá una cantidad indefinida de ítems (algún router puede tener solo una interface, otros dos, tres, cinco, etc.). Para referenciar los valores de configuración, deberá iterar sobre dicha lista, utilizando <code>loop:</code> 
 </details>
 
 
@@ -534,7 +534,7 @@ interfaces:
     netmask: 255.255.255.0
     description: Conexion con red Tunnel-01
   - interface: GigabitEthernet1
-    ip_address: 10.1.1.254
+    ip_address: 10.1.1.253
     netmask: 255.255.255.0
     description: Conexión con red Spoke-01
 </pre>
@@ -548,7 +548,7 @@ interfaces:
     netmask: 255.255.255.0
     description: Conexion con red Tunnel-02
   - interface: GigabitEthernet2
-    ip_address: 10.1.2.254
+    ip_address: 10.1.2.253
     netmask: 255.255.255.0
     description: Conexión con red Spoke-02
 </pre>
@@ -609,7 +609,7 @@ https://docs.ansible.com/ansible/devel/modules/ios_user_module.html#ios-user-mod
 
 ---
 
-### Ejercicio #9
+### Ejercicio #10
 
 Construya un `playbook` que le permita crear un usuario en todos los routers con las siguientes credenciales:
 
