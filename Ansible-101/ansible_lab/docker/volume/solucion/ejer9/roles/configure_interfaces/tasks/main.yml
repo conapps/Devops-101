@@ -10,4 +10,5 @@
       - 'ip address {{ item.ip_address }} {{ item.netmask }}'
       - no shutdown
     parents: 'interface {{ item.interface }}'
+    save_when: modified
   loop: '{{ interfaces }}'

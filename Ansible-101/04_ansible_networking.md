@@ -351,13 +351,20 @@ TASK [Comando para hallar las diferencias] *************************************
 ## Cambios masivos
 Como ya vimos, es sencillo realizar configuraciones en múltiples equipos utilizando Ansible. Alcanza con aplicar el mismo `playbook` a múltiples `hosts` y Ansible se encarga de ejecutar las tareas sobre todos ellos.
 
-Los routers del laboratorio ya están configurados para poder comunicarse entre sí. Sin embargo, no podemos llegar a las redes `10.X.1.0/24` y `10.X.2.0/24` porque las interfaces de los routers `spokes` que se encuentran en dichas redes no están configuradas. Esto implcia que tampoco tenemos conectividad con los equipos `slave1` y `slave2`, que se encuentran en esas redes. Veamos entonces como solucionar esto.
+Los routers del laboratorio ya están configurados para poder comunicarse entre sí. Sin embargo, no podemos llegar a los equipos `slave1-X` y `slave2-X` desde `controller`:
+```
+(controller) # ping slave1-1.labs.conatest.click
+PING slave1-1.labs.conatest.click (10.1.1.100) 56(84) bytes of data.
+^C
+--- slave1-1.labs.conatest.click ping statistics ---
+6 packets transmitted, 0 received, 100% packet loss, time 5106ms
 
-Nuevamente, para configurar las interfaces del router utilizamos el módulo `ios_config` de Ansible, cuya documentación se encuentra [aquí](https://docs.ansible.com/ansible/latest/collections/cisco/ios/ios_config_module.html).
+```
+Esto se debe a que las interfaces `GigabitEthernet1` de los routers `spokes`, que conectan con dichos equipos, no están configuradas. Veamos entonces como solucionarlo.
 
-Por ejemplo, si quisieramos configurar una interfaz del router `hub`, lo podríamos hacer mediante el siguiente `playbook`.
+Nuevamente, para configurar las interfaces del router utilizamos el módulo `ios_config`, cuya documentación se encuentra [aquí](https://docs.ansible.com/ansible/latest/collections/cisco/ios/ios_config_module.html).
 
-:warning: No es necesario modificar la configuración del `hub`, dado que éste ya se encuentra configurado y tenemos conectividad con los `spokes`.
+Por ejemplo, si quisieramos configurar una interfaz del router `hub`, lo podríamos hacer mediante el siguiente `playbook`: 
 
 ```yaml
 # ---
@@ -378,48 +385,48 @@ Por ejemplo, si quisieramos configurar una interfaz del router `hub`, lo podría
         parents: interface GigabitEthernet2
 ```
 
-:point_right: Note como le indicamos al módulo `ios_config` cual es el `parent` sobre el cual debemos realizar los comandos, en este caso, la `interface GigabitEthernet2`. Y básicamente, escribimos las líneas que ingresaríamos en el router, para aplicar la configuración sobre dicha interface.
+:point_right: Vea como le indicamos al módulo `ios_config` cual es el `parent` sobre el cual debemos realizar los comandos, en este caso, la `interface GigabitEthernet2`. Y básicamente, escribimos las líneas que ingresaríamos en el router, para aplicar la configuración sobre dicha interface.
 
+:warning: No es necesario modificar la configuración del router `hub` dado que se encuentra funcionando correctamente. Sea especialmente cuidadoso si decide aplicar cambios sobre el `hub` porque podría perder la conectividad a todos los equipos del lab.
 
-Esta claro que con este `playbook` no podríamos realizar cambios en múltiples equipos. Para poder generalizarlo tenemos que crear un `role`. 
+Esta claro que con este `playbook` no podríamos realizar cambios en múltiples equipos. Para poder generalizarlo tenemos que utilizar `variables` para no tener los valores fijos en las tareas, pero sobre todo, lo ideal es crear un `role`. 
 
 ---
 
 ### Ejercicio #9
 
-Cree un nuevo rol llamado `configure_interfaces` que configure las interfaces de un router, a partir de una **lista** llamada `interfaces`, con las siguiente estructura:
+Cree un nuevo rol llamado `configure_interfaces` que configure las interfaces de los routers, a partir de una **lista** de `interfaces`, con las siguiente estructura:
 
 ```yml
 interfaces:
   - interface: GigabitEhernet1
     ip_address: x.x.x.x
     netmask: -.-.-.-
-    description: <descripción 1>
+    description: <descripción de la interface 1>
   - interface: GigabitEthernet2
     ip_address: y.y.y.y
     netmask: -.-.-.-
-    description: <descripción 2>
+    description: <descripción de la interface 2>
     (...)
 ```
 
-
 El rol luego será llamado a través del siguiente `playbook`
-
 ```yaml
 # ---
 # configure_interfaces_with_role.yml
 #
 # Configura interfaces de un router Cisco IOS
 # 
-# OBS: se debe definir una lista con los valores a configurar para el router
+# Se debe definir una lista con los valores a configurar para el router:
 #   interfaces:
-#     - interface: GigabitEthernet2
-#       ip_address: '10.X.201.254'
+#     - interface: GigabitEthernet1
+#       ip_address: '1.2.3.4'
 #       netmask: '255.255.255.0'
-#       description: Configurado desde el nuevo rol
-# ...
+#       description: Conexión con red-1
+# ---
+
 - name: Configuración de interface
-  hosts: spokes
+  hosts: <equipos a configurar>
   connection: local
   gather_facts: no
   roles:
@@ -447,12 +454,7 @@ roles/
 
 <details>
 <summary>Pista #2</summary>
-El router <code>hub</code> tiene tres interfaces <code>GigabitEthernet1</code>, <code>GigabitEthernet2</code> y <code>GigabitEthernet3</code>. Mientras que cada router <code>spoke</code> tienen dos interfaces <code>GigabitEthernet1</code>, <code>GigabitEthernet2</code> 
-</details>
-
-<details>
-<summary>Pista #3</summary>
-Debe definir la lista de <code>interfaces</code> con la información requerida para cada uno de los routers. Esto puede definirlo en diversos lugares (host_vars/group_vars/inventory vars/etc.).
+Debe definir la lista de <code>interfaces</code> con la información requerida para cada uno de los routers. Esto puede definirlo en diversos lugares del código (host_vars/group_vars/inventory vars/etc.).
 
 Por ej, para <code>hub</code>:
 <pre>
@@ -473,8 +475,10 @@ interfaces:
 </details>
 
 <details>
-<summary>Pista #4</summary>
-Tenga en cuenta que la lista de <code>interfaces</code> de cada router tendrá una cantidad indefinida de ítems (algún router puede tener solo una interface, otros dos, tres, cinco, etc.). Para referenciar los valores de configuración, deberá iterar sobre dicha lista, utilizando <code>loop:</code> 
+<summary>Pista #3</summary>
+Tenga en cuenta que la lista <code>interfaces</code> de cada router tendrá una cantidad indefinida de ítems (algunos routers pueden tener dos interfaces, otros tres, cinco, etc.). Para referenciar los valores de configuración, deberá iterar sobre dicha lista, por ejemplo utilizando <code>loop:</code>.
+
+Puede además usar la opción <code>save_when:</code> del módulo <code>ios_config</code> para grabar la configuración si se realizaron cambios. Revise la documentación del módulo para ver como aplicarña.
 </details>
 
 
@@ -495,11 +499,11 @@ all:
         ansible_connection: network_cli
       hosts:
           hub:
-            ansible_host: 10.1.254.254
+            ansible_host: 10.X.254.254
           spoke01:
-            ansible_host: 10.1.201.253
+            ansible_host: 10.X.201.253
           spoke02:
-            ansible_host: 10.1.202.253
+            ansible_host: 10.X.202.253
       children:
         spokes:
           hosts:
@@ -512,15 +516,15 @@ all:
 hostname: hub
 interfaces:
   - interface: GigabitEthernet1
-    ip_address: 10.1.254.254
+    ip_address: 10.X.254.254
     netmask: 255.255.255.0
     description: Conexion con red Hub
   - interface: GigabitEthernet2
-    ip_address: 10.1.201.254
+    ip_address: 10.X.201.254
     netmask: 255.255.255.0
     description: Conexión con red Tunnel-01
   - interface: GigabitEthernet3
-    ip_address: 10.1.202.254
+    ip_address: 10.X.202.254
     netmask: 255.255.255.0
     description: Conexión con red Tunnel-02
 </pre>
@@ -529,12 +533,12 @@ interfaces:
 # ./inventory/host_vars/spoke01.yml
 hostname: spoke01
 interfaces:
-  - interface: GigabitEthernet2
-    ip_address: 10.1.201.253
+  - interface: GigabitEthernet1
+    ip_address: 10.X.201.253
     netmask: 255.255.255.0
     description: Conexion con red Tunnel-01
-  - interface: GigabitEthernet1
-    ip_address: 10.1.1.253
+  - interface: GigabitEthernet2
+    ip_address: 10.X.1.253
     netmask: 255.255.255.0
     description: Conexión con red Spoke-01
 </pre>
@@ -544,11 +548,11 @@ interfaces:
 hostname: spoke02
 interfaces:
   - interface: GigabitEthernet1
-    ip_address: 10.1.202.253
+    ip_address: 10.X.202.253
     netmask: 255.255.255.0
     description: Conexion con red Tunnel-02
   - interface: GigabitEthernet2
-    ip_address: 10.1.2.253
+    ip_address: 10.X.2.253
     netmask: 255.255.255.0
     description: Conexión con red Spoke-02
 </pre>
@@ -566,6 +570,7 @@ interfaces:
       - 'ip address {{ item.ip_address }} {{ item.netmask }}'
       - no shutdown
     parents: 'interface {{ item.interface }}'
+  save_when: modified
   loop: '{{ interfaces }}'
 </pre>
 
@@ -575,11 +580,11 @@ interfaces:
 # Configura interfaces de los routers Cisco IOS
 # 
 # OBS: se debe definir una lista con los valores a configurar para el router:
-# interfaces:
-#   - interface: GigabitEthernet2
-#     ip_address: '10.X.201.254'
-#     netmask: '255.255.255.0'
-#     description: Configurado desde el nuevo rol
+#   interfaces:
+#     - interface: GigabitEthernet1
+#       ip_address: '1.2.3.4'
+#       netmask: '255.255.255.0'
+#       description: Conexión con red-1
 # ...
 - name: Ejercicio 9 - Configurar interfaces de los routers
   hosts: routers
@@ -599,13 +604,9 @@ interfaces:
 
 ### `ios_user`
 
-Como vimos anteriormente existen múltiples módulos adicionales para configurar equipos de red. Los mismos exponentes distintas opciones para interactuar con los los equipos. Por ejemplo, el módulo `ios_user` permite crear usuarios en dispositivos con sistema operativo `ios` de forma más sencilla que tirando los comandos individuales utilizando el comando  `ios_user`.
+Como vimos anteriormente existen múltiples módulos adicionales para configurar equipos de red. Los mismos exponentes distintas opciones para interactuar con los los equipos. Por ejemplo, el módulo `ios_user` permite crear usuarios en dispositivos con sistema operativo `ios` de forma más sencilla que haciendolo con los comandos individuales.
 
-La documentación de este módulo se encuentra en la siguiente dirección:
-
-```
-https://docs.ansible.com/ansible/devel/modules/ios_user_module.html#ios-user-module
-```
+Puede encontrar la documentación de este módulo [aquí](https://docs.ansible.com/ansible/latest/collections/cisco/ios/ios_user_module.html).
 
 ---
 
