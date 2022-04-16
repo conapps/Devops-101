@@ -1,28 +1,28 @@
 ### Devnet DNA Center API documentation
 
 ```
-https://developer.cisco.com/site/dna-center-rest-api/
+https://developer.cisco.com/docs/dna-center/#!cisco-dna-1-3-3-x-api-overview
 ```
 
 ### Devnet DNA Center API URL (to get the token)
 
 ```
-"https://sandboxdnac.cisco.com/api/system/v1"
+https://sandboxdnac2.cisco.com/dna/system/api/v1/auth/token
 ```
 
 ### Devnet DNA Center API URL (to access resources)
 
 ```
-"https://sandboxdnac.cisco.com/api/v1"
+https://sandboxdnac2.cisco.com/api/v1
 ```
 
-### Spark API URL
+### Webex API URL
 
 ```
-https://api.ciscospark.com/v1/
+https://webexapis.com/v1
 ```
 
-### Spark API documentation
+### Webex API documentation
 
 ```
 https://developer.webex.com/
@@ -31,13 +31,13 @@ https://developer.webex.com/
 ### Meraki API URL
 
 ```
-https://dashboard.meraki.com/api/v0
+https://api.meraki.com/api/v1
 ```
 
 ### Meraki API documentation
 
 ```
-https://documenter.getpostman.com/view/897512/meraki-dashboard-prov-api/2To9xm#intro
+https://developer.cisco.com/meraki/api-latest
 ```
 
 ### preventaconatel@gmail.com Meraki API Key:
