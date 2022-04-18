@@ -454,22 +454,17 @@ roles/
 
 <details>
 <summary>Pista #2</summary>
-Debe definir la lista de <code>interfaces</code> con la información requerida para cada uno de los routers. Esto puede definirlo en diversos lugares del código (host_vars/group_vars/inventory vars/etc.).
-
-Por ej:
+Debe definir (como variable). la lista de <code>interfaces</code> con la información de configuración para cada uno de los routers <code>spokes</code>. Esto puede definirlo en diversos lugares del código (host_vars/group_vars/inventory vars/etc.). Ejemplo:
+<pre>
 interfaces:
   - interface: GigabitEthernet1
-    ip_address: 10.X.254.254
+    ip_address: 10.xxx.xxx.xxx
     netmask: 255.255.255.0
-    description: Conexion con red Hub
+    description: Conexion con red xxxx
   - interface: GigabitEthernet2
-    ip_address: 10.X.201.254
+    ip_address: 10.xxx.xxx.xxx
     netmask: 255.255.255.0
-    description: Conexión con red Tunnel 01
-  - interface: GigabitEthernet3
-    ip_address: 10.X.202.254
-    netmask: 255.255.255.0
-    description: Conexión con red Tunnel 02
+    description: Conexión con red xxxx
 </pre>
 </details>
 
@@ -477,7 +472,7 @@ interfaces:
 <summary>Pista #3</summary>
 Tenga en cuenta que la lista <code>interfaces</code> de cada router tendrá una cantidad indefinida de ítems (algunos routers pueden tener dos interfaces, otros tres, cinco, etc.). Para referenciar los valores de configuración, deberá iterar sobre dicha lista, por ejemplo utilizando <code>loop:</code>.
 
-Puede además usar la opción <code>save_when:</code> del módulo <code>ios_config</code> para grabar la configuración si se realizaron cambios. Revise la documentación del módulo para ver como aplicarña.
+Opcional: puede además usar la opción <code>save_when:</code> del módulo <code>ios_config</code> para que grabe la configuración de los routers cuando se realicen cambios. Revise la documentación del módulo para ver como aplicarña.
 </details>
 
 
@@ -508,24 +503,6 @@ all:
           hosts:
             spoke01:
             spoke02:
-</pre>
-
-<pre class="language-yaml" lang="yaml">
-# ./inventory/host_vars/hub.yml
-hostname: hub
-interfaces:
-  - interface: GigabitEthernet1
-    ip_address: 10.X.254.254
-    netmask: 255.255.255.0
-    description: Conexion con red Hub
-  - interface: GigabitEthernet2
-    ip_address: 10.X.201.254
-    netmask: 255.255.255.0
-    description: Conexión con red Tunnel-01
-  - interface: GigabitEthernet3
-    ip_address: 10.X.202.254
-    netmask: 255.255.255.0
-    description: Conexión con red Tunnel-02
 </pre>
 
 <pre class="language-yaml" lang="yaml">
@@ -586,7 +563,7 @@ interfaces:
 #       description: Conexión con red-1
 # ...
 - name: Ejercicio 9 - Configurar interfaces de los routers
-  hosts: routers
+  hosts: spokes
   connection: local
   gather_facts: no
   roles:
