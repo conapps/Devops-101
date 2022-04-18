@@ -1,0 +1,59 @@
+# ---
+# interfaces.yml
+#
+# Configura intefaces down
+# ---
+
+- name: Configuro interfaces
+  hosts: spokes
+  connection: local
+  gather_facts: no
+  tasks:
+    - name: Consulto show interfaces description | i down
+      ios_command:
+        commands: show interface description | i down 
+      register: salida
+  
+    - name: Filtro las Interfaces
+      set_fact:
+        down: |
+          {{ salida.stdout[0] |regex_findall('^(..[0-9]+)[ ]+(down|admin down)[ ]+(down)([ ]+|.*)(.*)', multiline=True) }} 
+
+    - name: Listo salida
+      debug:
+        var: salida
+
+    - name: Listo down
+      debug:
+        var: down
+
+    - name: inicializo 
+      set_fact:
+        filtro: []
+
+    - name: Keys  
+      set_fact:
+        keys: 
+          - "Interface"
+          - "Admin"
+          - "Status"
+          - "Space"
+          - "Description"
+
+    - name: Filtro
+      set_fact:
+        filtro: "{{ filtro + [dict(keys|zip(item))] }}"
+      loop: 
+        "{{ down }}"
+
+    - name: Configuro interfaces
+      ios_config:
+        save_when: modified
+        lines: 
+          - description No link UP
+          - shutdown
+        parents: 'interface {{ item.Interface }}'
+      when: 
+        - item.Description == ""  
+      loop:
+        "{{ filtro }}"
