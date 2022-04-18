@@ -360,7 +360,7 @@ PING slave1-1.labs.conatest.click (10.1.1.100) 56(84) bytes of data.
 6 packets transmitted, 0 received, 100% packet loss, time 5106ms
 
 ```
-Esto se debe a que las interfaces `GigabitEthernet1` de los routers `spokes`, que conectan con dichos equipos, no están configuradas. Veamos entonces como solucionarlo.
+Esto se debe a que las interfaces `GigabitEthernet2` de los routers `spokes`, que conectan con dichos equipos, no están configuradas. Veamos entonces como solucionarlo.
 
 Nuevamente, para configurar las interfaces del router utilizamos el módulo `ios_config`, cuya documentación se encuentra [aquí](https://docs.ansible.com/ansible/latest/collections/cisco/ios/ios_config_module.html).
 
@@ -456,8 +456,7 @@ roles/
 <summary>Pista #2</summary>
 Debe definir la lista de <code>interfaces</code> con la información requerida para cada uno de los routers. Esto puede definirlo en diversos lugares del código (host_vars/group_vars/inventory vars/etc.).
 
-Por ej, para <code>hub</code>:
-<pre>
+Por ej:
 interfaces:
   - interface: GigabitEthernet1
     ip_address: 10.X.254.254
