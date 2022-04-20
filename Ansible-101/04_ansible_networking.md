@@ -726,7 +726,7 @@ Utilice el módulo <code>ios_config</code> para configurar las interfaces del ro
       - no shutdown
     parents: interface GigabitEthernet2
 </pre>
-Vea como se le indica cual es el `parent` sobre el cual se realizan los comandos, en este caso, la `interface GigabitEthernet2`. Y básicamente, escribimos las líneas que ingresaríamos en la consola del router, para aplicar la configuración sobre dicha interface.
+Vea como se le indica cual es el <code>parent</code> sobre el cual se realizan los comandos, en este caso, la <code>interface GigabitEthernet2</code>. Y básicamente, escribimos las líneas que ingresaríamos en la consola del router, para aplicar la configuración sobre dicha interface.
 </details>
 
 <details>	
