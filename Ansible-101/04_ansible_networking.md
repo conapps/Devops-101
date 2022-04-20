@@ -725,7 +725,7 @@ Utilice el módulo <code>ios_config</code> para configurar las interfaces del ro
       - ip address 10.X.201.254 255.255.255.0
       - no shutdown
     parents: interface GigabitEthernet2
-
+</pre>
 Vea como se le indica cual es el `parent` sobre el cual se realizan los comandos, en este caso, la `interface GigabitEthernet2`. Y básicamente, escribimos las líneas que ingresaríamos en la consola del router, para aplicar la configuración sobre dicha interface.
 </details>
 
