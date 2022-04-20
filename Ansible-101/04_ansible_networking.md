@@ -641,7 +641,7 @@ Veamos como resolverlo con el siguiente ejercicio.
 ---
 
 ### Ejercicio #10
-Cree un nuevo rol llamado `configure_interfaces` que configure las interfaces de los routers, a partir de una `lista` de `interfaces`, con las siguiente estructura:
+Cree un nuevo rol llamado `configure_interfaces` que configure las interfaces de los routers Cisco IOS, a partir de una `lista` de `interfaces`, con las siguiente estructura:
 
 ```yml
 interfaces:
@@ -655,7 +655,7 @@ interfaces:
     description: <descripción de la interface 2>
     (...)
 ```
-Tenga en cuenta que los diferentes routers, tienen diferentes cantidad de interfaces (los `spoke` tiene dos interfaces, `hub` tiene tres inferfaces, etc.) por lo cual el rol ebe poder manejar una cantidad indefinida de items en esta la lista. 
+Tenga en cuenta que los routers pueden tener diferentes cantidades de interfaces (los `spoke` tiene dos interfaces, el `hub` tiene tres inferfaces, etc.) por lo cual el rol ebe poder manejar una cantidad indefinida de items en esta la lista. 
 
 :point_right: recuerde grabar la configuración si realiza cambios en los routers.
 
@@ -676,7 +676,7 @@ El rol luego será llamado a través del siguiente `playbook`:
 ```
 
 
-:warning: Tenga especial cuidado si realiza cambios de configuración en el router `hub` porque podría perder la conectividad a todos los equipos del lab.
+:warning: Debe tener especial cuidado si realiza cambios de configuración en el router `hub` porque podría perder la conectividad a todos los equipos del laboratorio!
 
 
 <details>
