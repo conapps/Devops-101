@@ -603,7 +603,7 @@ user_privilege: 15
 ---
 
 ### `ios_command`
-Como ya vimos, existen múltiples módulos para configurar equipos de red, que permiten realizar configuraciones específicas. Pero puede ocurrir que necesitemos realizar cierta configuración, y no contemos con un módulo específico para esto.
+Como ya vimos, existen múltiples módulos para configurar equipos IOS, que permiten realizar configuraciones específicas. Pero puede ocurrir que necesitemos realizar cierta configuración y no contemos con un módulo específico para esto.
 En ese caso, podemos recurrir al módulo `ios_command` que nos permite ejecutar comandos directamente como si los estuvieramos escribiendo en la consola del equipo.
 
 Puede encontrar la documentación de este módulo [aquí](https://docs.ansible.com/ansible/latest/collections/cisco/ios/ios_command_module.html).
@@ -637,12 +637,8 @@ Esto se debe a que las interfaces `GigabitEthernet2` de los routers `spokes`, qu
         "type": "CSR vNIC"
     },
 ```
-
-Nuevamente, para configurar las interfaces del router utilizamos el módulo `ios_config`, cuya documentación se encuentra [aquí](https://docs.ansible.com/ansible/latest/collections/cisco/ios/ios_config_module.html). Revise los detalles del módulo y los ejemplos de configuración.
-
+Veamos como resolverlo con el siguiente ejercicio.
 ---
-
-Veamos entonces como solucionarlo.
 
 ### Ejercicio #10
 Cree un nuevo rol llamado `configure_interfaces` que configure las interfaces de los routers, a partir de una `lista` de `interfaces`, con las siguiente estructura:
