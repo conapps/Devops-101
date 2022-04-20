@@ -124,7 +124,7 @@ Para verificar que todo funcine correctamente, hacemos un `ansible ping` al grup
 }
 ```
 
-Ahora que sabemos que la conectividad funciona, agreguemos los routers `spoke` al inventario, separándolos en dos grupos `hub` y `spokes`. Podemos mejorar un poco nuestro inventario y asignarle nombre a los routers, para no tener que hacerle referencia por la dirección IP, ademas de agregar un grupo para los `spokes`.
+Ahora que sabemos que la conectividad funciona, agreguemos los routers `spoke` al inventario. Podemos mejorar un poco nuestro inventario y asignarle nombre a los routers, para no tener que hacerle referencia por la dirección IP, ademas de agregar un grupo para los `spokes`.
 En caso que estemos usando el mismo inventario que habíamos definido antes, movamos los servidores linux a otro grupo `servers` con sus propias variables definidas dentro.
 
 ```yaml
@@ -174,9 +174,9 @@ all:
 
 ### `ios_config`
 
-Uno de los módulos más comunes para utilizar con equipos `ios` es `ios_config`, cuya documentación puede ver [aquí](https://docs.ansible.com/ansible/latest/modules/ios_config_module.html).
+Uno de los módulos más comunes para utilizar con equipos Cisco IOS es `ios_config`, cuya documentación puede ver [aquí](https://docs.ansible.com/ansible/latest/modules/ios_config_module.html).
 
-El primer `playbook` que vamos a crear permitira almacenar un respaldo de las configuraciones de los `routers` en un directorio que indicamos:
+El primer `playbook` que vamos a crear permitirá almacenar un respaldo de las configuraciones de los `routers` en el directorio que indiquemos:
 
 ```yaml
 # ---
@@ -356,8 +356,6 @@ TASK [Comando para hallar las diferencias] *************************************
 Existen otros módulos que también se pueden utilizar para obtener información de los dispositivos.
 Por ejemplo `ios.facts`, cuya documentación puede ver [aquí](https://docs.ansible.com/ansible/latest/collections/cisco/ios/ios_facts_module.html)
 
-
-
 ```yaml
 # ---
 # routers-get-facts.yml
@@ -381,7 +379,7 @@ Por ejemplo `ios.facts`, cuya documentación puede ver [aquí](https://docs.ansi
 :point_right: el módulo `debug:` de Ansible permite desplegar información como parte de la salida del playbook. Podemos desplegar el contenido de una variable con `var:`, o el mensaje que querramos con `msg:`. Puede ver la documentación del módulo [aquí](https://docs.ansible.com/ansible/latest/collections/ansible/builtin/debug_module.html).
 
 
-Podemos ejecutar el `playbook` anterior sobre `spoke01` y ver la salida que devuelve:
+Podemos ejecutar el `playbook` anterior sobre `hub` y ver la salida que devuelve:
 
 ```
 ansible-playbook router-get-facts.yml 
@@ -511,14 +509,14 @@ hub                        : ok=2    changed=0    unreachable=0    failed=0    s
 
 
 ### `ios_user`
-Otro módulo que nos puede resultar útil para configurar equipos con IOS, es el módulo `ios_user`, que permite gestionar usuarios de forma más sencilla que haciendolo con los comandos individuales.
+Otro módulo que nos puede resultar útil es `ios_user`, que permite gestionar usuarios de forma más sencilla que con comandos individuales.
 Puede encontrar la documentación del módulo [aquí](https://docs.ansible.com/ansible/latest/collections/cisco/ios/ios_user_module.html).
 
 ---
 
 ### Ejercicio #9
 
-Construya un `playbook` llamado `routers-create-user.yml` que agregue un usuario en todos los routers, con las siguientes credenciales:
+Construya un `playbook` llamado `routers-create-user.yml` que agregue un usuario en todos los routers, con las siguientes características:
 
 - User: conatel
 - Pass: conatel
