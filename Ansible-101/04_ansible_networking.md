@@ -114,7 +114,7 @@ host_key_checking = False
 retry_files_enabled = False
 ```
 
-Para verificar que este todo funcionando correctamente, hacemos un `ansible ping` al grupo `routers`, siempre trabajando desde el `controller`:
+Para verificar que todo funcine correctamente, hacemos un `ansible ping` al grupo `routers`, siempre trabajando desde el `controller`:
 
 ```
 # ansible routers -m ping
