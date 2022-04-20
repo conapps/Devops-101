@@ -786,6 +786,24 @@ interfaces:
     description: Conexión con red Spoke-02
 </pre>
 
+<pre class="language-yaml" lang="yaml">
+# ./inventory/host_vars/hub.yml
+hostname: hub
+interfaces:
+  - interface: GigabitEthernet1
+    ip_address: 10.1.254.254
+    netmask: 255.255.255.0
+    description: Conexion con red Hub
+  - interface: GigabitEthernet2
+    ip_address: 10.1.201.254
+    netmask: 255.255.255.0
+    description: Conexion con red Tunnel-01
+  - interface: GigabitEthernet3
+    ip_address: 10.1.202.254
+    netmask: 255.255.255.0
+    description: Conexion con red Tunnel-02
+</pre>
+
 
 <pre class="language-yaml" lang="yaml">
 # ./roles/configure_interfaces/tasks/main.yml
