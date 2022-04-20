@@ -1,0 +1,19 @@
+# ---
+# router-create-user.yml
+#
+# Crea un usuario en routers Cisco IOS
+# ---
+
+- name: Ejercicio 9 - Crear usuario en Cisco IOS
+  hosts: routers
+  connection: local
+  gather_facts: no
+  tasks:
+    - name: Crear el usuario
+      ios_user:
+        name: '{{user_name}}'
+        configured_password: '{{user_password}}'
+        privilege: '{{user_privilege}}'
+        state: present
+        update_password: always
+      no_log: true

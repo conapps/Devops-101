@@ -11,11 +11,11 @@
 #     description: Configurado desde el nuevo rol
 # ...
 - name: Get routers facts
-  hosts: spoke01
+  hosts: hub
   connection: local
   gather_facts: no
   tasks:
-    - cisco.ios.facts:
+    - ios_facts:
       register: result 
 
     - debug:
