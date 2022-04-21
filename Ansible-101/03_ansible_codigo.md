@@ -1,14 +1,14 @@
 
 ## Reutilización del código
+Ref: [Re-using Ansible Artifacts](https://docs.ansible.com/ansible/latest/user_guide/playbooks_reuse.html)
 
 A medida que queremos realizar tareas mas complejas, el contenido de nuestro playbook será mas extenso. Y si bien es posible escribir todo el playbook en un único archivo `.yml` grande, eventualmente vamos a querer partirlo en secciones mas pequeñas, que nos permitan no solo gestionarlo de mejor manera, sino además reutilizar código en otros playbooks, algo que a la larga nos resultará muy útil.
 
-En Ansible, hay tres formas de hacer esto: `includes`, `imports`, and `roles`. 
-Si bien mencionaremos como funcionan las tres, nos concentraremos en al utilización de `roles`, que es sin dudas uno de los puntos fuertes de Ansible.
+En Ansible, hay tres formas de reutilizar código: `includes`, `imports`, and `roles`. 
+- Con `includes` o `imports` podemos dividir nuestro código en múltiples archivos mas pequeños, con funciones específicas, y luego invocarlos desde otro playbook.
+- Los `roles` van bastante más lejos, dado que además del código, permiten incluir definiciones adicionales, como ser variables, handlers, templates, plugins, etc. Los roles pueden además ser subidos y compartidos por medio de [Ansible Galaxy](https://galaxy.ansible.com/).
 
-Mediante `include` e `import` podemos dividir nuestro código complejo o largo, en múltiples archivos mas pequeños, con funciones específicas, y luego invocarlos desde otros playbooks.
-
-Los `roles` van mas lejos, dado que además del código, permiten incluir definiciones adicionales, como ser variables, handlers, templates, plugins, etc. Los roles pueden además ser subidos y compartidos por medio de [Ansible Galaxy](https://galaxy.ansible.com/).
+#### Static & Dynamic
 
 Es necesario entender primero que Ansible cuenta con dos modos de operación:
 - `static`: Ansible pre-procesa todos los archivos (ej. playbooks) y sus referencias, antes de comenzar a ejecutar las taeas en los hosts.
@@ -20,10 +20,12 @@ Existen algunas limitaciones en el uso de `import` e `include` que es importante
 - Solo podemos realizar `Loops` en modalidad `dinámica`, esto es, con `include`. 
 - Las variables definidas a nivel de inventario no serán consumidas en modalidad `estática`, con `import`.
 
+#### `import_playbook:`
+
 Por ejemplo, podemos tener un `playbook` que instale una determinada aplicación:
 ```yaml
-# webservers.yml
-- hosts: app
+# deploy_webservers.yml
+- hosts: web-server
   tasks:
     - name: Install apache2
       apt: 
@@ -32,11 +34,82 @@ Por ejemplo, podemos tener un `playbook` que instale una determinada aplicación
         update_cache: yes
 ```
 
-y luego en otro `playbook` importar el anterior, para poder ejecutarlo:
-```yaml        
-# three_tier_app.yml
-- import_playbook: webservers.yml
+```yaml
+# deploy_db.yml
+- hosts: db-server
+  tasks:
+    - name: Install SQLite
+      apt: 
+        name: sqlite3 
+        state: latest
+        update_cache: yes
 ```
+
+y luego desde otro `playbook` importar el anterior, para poder ejecutarlo:
+```yaml        
+# mi_playbook_principal.yml
+- hosts: localhost
+  tasks:
+    - debug:
+        msg: Este es mi playbook principal
+
+- name: "Instalar el web-server"
+  import_playbook: ./deploy_webservers.yml
+
+# ESTO FALLA!! pues no puedo importar un playbook dentro de un play
+- name: "Instalar el db-server"
+  hosts: db-server
+  tasks:
+    import_playbook: /deploy_db.yml
+```
+
+
+#### `import_tasks` & `include_tasks:`
+Ref: [include_tasks module](https://docs.ansible.com/ansible/latest/collections/ansible/builtin/include_tasks_module.html) | [import_tasks module](https://docs.ansible.com/ansible/latest/collections/ansible/builtin/import_playbook_module.html)
+
+
+Importar un `playbook` completo no es lo más común. En general solemos importar `tareas` que realizan funciones específicas, y que tenemos escritas en archivos .yml independientes. Esto nos permite reutilizar nuestro código de forma mas eficiente.
+
+```yaml
+# deploy_webservers.yml
+- name: Install apache2
+  apt: 
+    name: apache2
+    state: latest
+    update_cache: yes
+```
+
+```yaml
+# deploy_db.yml
+- name: Install SQLite
+  apt: 
+    name: sqlite3 
+    state: latest
+    update_cache: yes
+```
+
+y luego llamamos estas tareas en nuestro `playbook`:
+```yaml        
+
+# mi_playbook_principal.yml
+- hosts: localhost
+  tasks:
+    - debug:
+        msg: Este es mi playbook principal
+
+- name: "Instalar el web-server"
+  hosts: web-server
+  tasks:
+    import_tasks: ./deploy_webservers.yml
+
+- name: "Instalar el db-server"
+  hosts: database-server
+  tasks:
+    include_tasks: /deploy_db.yml
+
+```
+
+Pero la forma más eficiente y potente de reutilizar nuestro código es mediante el uso de `roles`.
 
 ---
 
