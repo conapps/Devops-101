@@ -741,7 +741,7 @@ También podemos definir variables en diferentes lugares de nuestro `playbook`:
 En este caso estamos:
   - cargando el archivo de variables `./vars/variables.yml` a nivel del `playbook`
   - definiendo la variable `application_owner` también a nivel del `playbook`
-  - definiendo la variable `application_doc` a nivel del `play`
+  - definiendo la variable `application_doc` a nivel del `play`, utilizando el módulo `ansible_facts:`
   - definiendo la varialbe `application_pod` a nivel de la `task` final `debug:`
 
 :point_right: también puede definir variables dentro del mismo código, utilizando el módulo `sect_facts:` cuya documentación se encuenta [aquí](https://docs.ansible.com/ansible/latest/collections/ansible/builtin/set_fact_module.html#examples)
@@ -808,8 +808,9 @@ Todas las tareas que ejecuta Ansible, emiten por defecto una salida, en donde se
     - debug:
         var: result
 ```
-La opción `register` almacena la salida de la tarea `shell` en una variable de entorno llamada `result` (si bien este nombre de variable es típicamente utilizado con este fin, podemos usar cualquier otro nombre de variable que querramos). 
-Luego, la siguiente tarea `debug:` despliega el contenido de dicha variable.
+La opción `register` almacena la salida de la tarea `shell` en una variable de entorno llamada `result`. Si bien este nombre de variable es típicamente utilizado con este fin, podemos usar cualquier otro nombre de variable que querramos. 
+
+Luego, usamos el módulo `debug:` pero ahora con la opción `var:`, que despliega el contenido de dicha variable.
 
 
 ```
@@ -844,18 +845,33 @@ PLAY RECAP *********************************************************************
 localhost                  : ok=2    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
 ```
 
->OBS: notese que este playbook lo estamos ejecutando contra *localhost*, o sea, contra el mismo nodo *controller* y por tanto no esta utilizando el inventario que tenemos definido.
+:point_right: Note que este playbook lo estamos ejecutando contra `localhost`, o sea, contra el mismo nodo *controller* y por tanto no está utilizando el inventario que tenemos definido.
 
-Guardar esta salida es sumamente útil cuando estamos haciendo debug de nuestro código, dado que si un módulo o comando falla podemos ver información adicional que nos ayude a encontrar el problema.
-Pero aunque es recomendable almacenar esta información, no siempre es necesario desplegarla, para evitar sobrecargar la salida standard de nuestro `playbook` a pantalla.
+Guardar la salida resultante de la ejecución de un módulo puede ser necesario en muchos casos. Por ejemplo, si está utilizando un playbook para desplegar una máquina virtual en la nube, el módulo le devolverá información que seguramente necesite mas adelante, como la dirección IP que le asignó a la misma. 
+
+Pero aunque muchas veces es necesario o recomendable almacenar esta información, no siempre es necesario desplegarla, para evitar sobrecargar la salida standard de nuestro `playbook` a pantalla.
+
+---
+
+### Debug
+
+Guardar la salida resultante de la ejecución de un módulo puede ser útil también cuando estamos haciendo debug de nuestro código. Dado que nos permite ver información adicional que nos ayude a encontrar un problema.
+
+Otra opción que tenemos para hacer debug, es correr nuestro playbook en modo `verbose`, esto lo hacemos como se indica [aquí](https://docs.ansible.com/ansible/latest/cli/ansible-playbook.html#cmdoption-ansible-playbook-v). 
+
+Pruebe de correr el playbook anterior de esta forma: `ansible-playbook primer-playbook.yml --verbose` y revise la salida que produce. Luego aumente el nivel de información con `-vv` o `-vvv` y vea las diferencias.
+
+
 
 ---
 ### Condicionales
+Ref: [Conditionals](https://docs.ansible.com/ansible/latest/user_guide/playbooks_conditionals.html)
+
 Como comentamos antes, Ansible esta desarrollado sobre Python, pero las configuraciones se realizan a través de documentos escritos en YAML para simplificar su escritura. Sin embargo, el hecho de contar con Python trabajando detrás de escena, nos permite incorporar funcionalidades más avanzadas a nuestros `playbooks`. Los condicionales son uno de ellos.
+`
+Mediante la utilización de la opción `when:` en la definición de una tarea, podemos hacer que solo se ejecute la misma cuando se cumpla una determinada condición. El contenido de la opción `when` es una sentencia condicional de Python valida, que puede referenciar variables definidas de forma dinámica o estática.
 
-Mediante la utilización de la opción `when` en la definición de una tarea, podemos hacer que solo se ejecute la misma cuando se cumpla una determinada condición. El contenido de la opción `when` es una sentencia condicional de Python valida, que puede referenciar variables definidas de forma dinámica o estática.
-
-Por ejemplo, si queremos generalizar una tarea para que se ejecute tanto en servidores Ubuntu como en CentOS, podemos agregar un condicional `when`, de forma de poder invocar al módulo de ansible correcto dependiendo de cuál sea el sistema operativo del host.
+Por ejemplo, si queremos generalizar una tarea para que se ejecute tanto en servidores Ubuntu como en CentOS, podemos agregar un condicional `when:`, de forma de poder invocar al módulo de ansible correcto dependiendo de cuál sea el sistema operativo del host.
 
 ```yaml
 # tercer_playbook.yml
@@ -903,16 +919,18 @@ host02                     : ok=2    changed=0    unreachable=0    failed=0    s
 ```
 
 Al ejecutarlo, podemos ver una tarea inicial llamada `[Gathering Facts]`. 
+
 Esta tarea es ejecutada siempre por Ansible (salvo que le indiquemos no hacerlo) para obtener información relevante de los `hosts` donde va a correr. Entre dicha información, se obtiene por ejemplo la familia de sistema operativo del host, la cuál la devuelve en la variable `ansible_os_family`. Esta es la variable que utilizamos nosotros luego en la sentencia `when` para chequear sobre que sistema operativo estamos ejecutando. 
 
 Podemos ver entonces, que la tarea de instalación fue ejecutada para Ubuntu pero fue salteada (`skipping`) para CentOS, dado que ninguno de nuestros hosts del laborotorio tiene CentOS instalado.
 
 ---
-## Loops
+### Iteraciones
+Ref: [Loops](https://docs.ansible.com/ansible/latest/user_guide/playbooks_loops.html)
 
 También podemos realizar iteraciones en el código utilizando la sentencia `loop`.
 
-La opción `loop` toma una lista de opciones y ejecuta la tarea para cada uno de los elementos de la lista. Podemos acceder a los elementos de la lista durante la ejecución a través de la variable `item`.
+La opción `loop` toma una `lista` y ejecuta la tarea para cada uno de los elementos de la misma. Utilizamos la variable `item` para referenciar a los elementos de la lista durante la ejecución del loop.
 
 ```yaml
 # ---
@@ -931,9 +949,9 @@ La opción `loop` toma una lista de opciones y ejecuta la tarea para cada uno de
         - tres
 ```
 
->OBS: No es conveniente definir variables con el nombre `item` porque la misma por defecto será reemplazada cuando se utilicen loops.
+:warning: no es conveniente definir nosotros variables con el nombre `item` porque la misma por defecto será reemplazada cuando se utilicen loops. Si es necesario, podemos indicarle al loop que utilice otra variable con diferente nombre, revise la documentación para ver como hacerlo.
 
-Los elementos de cada lista pueden ser valores más complejos, como objetos u otras listas. Por ejemplo:
+Los elementos de cada lista pueden ser valores un poco más complejos, como otras listas o diccionarios. Por ejemplo:
 
 ```yaml
 - name: Ejemplo de como utilizar loop en un playbook de Ansible
@@ -947,9 +965,9 @@ Los elementos de cada lista pueden ser valores más complejos, como objetos u ot
         - { name: 'testuser1', groups: 'wheel' }
         - { name: 'testuser2', groups: 'root' }
 ```
-En este caso, cada elemento del `loop` es una lista, que tiene dentro dos elementos (name y groups). Y cuando itero sobre los mismos despliego ambos valores.
+En este caso, iteramos sobre una `lista` donde cada elemento es un `diccionario`, el cuál tiene dentro dos llaves (name y groups) con sus valores. En este caso, al iterar sobre el diccionario accedo al valor mediante `item.clave.
 
-**until-loops**
+#### until loops
 Otro tipo de iteración que podemos realizar es `until` loops. Este tipo de loop es utilizado para reintentar una tarea hasta que se cumpla cierta condición.
 
 Para utilizar este loop se necesitan básicamente tres argumentos en la tarea:
