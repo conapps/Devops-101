@@ -42,7 +42,7 @@ Los técnicos de ACME se encargarán luego de configurar sus sistemas para que e
 
 ##### Clave para poder autenticar con la API de Meraki
 
-MERAKI_KEY = "a definir el día del laboratorio"
+MERAKI_KEY = "4e071834c19d13104776af28be360d297cc365fb"
 
 ##### Nombre de la organización que contiene la red para la cuál hay que obtener estadísticas
 
@@ -62,4 +62,4 @@ WEBEX_KEY = "a definir el día del laboratorio"
 
 ##### Nombre de la sala donde hay que publicar las alarmas de tráfico
 
-WEBEX_ROOM_NAME = "a definir el día del laboratorio"
+WEBEX_ROOM_NAME = "devnet_express_telefonica"

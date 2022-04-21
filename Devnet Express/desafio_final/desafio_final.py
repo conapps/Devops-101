@@ -9,7 +9,7 @@ UMBRAL = int(sys.argv[1])
 TIME_SPAN = 2592000
 
 # Clave para poder autenticar con la API de Meraki
-MERAKI_KEY = "definir el día del laboratorio"
+MERAKI_KEY = "4e071834c19d13104776af28be360d297cc365fb"
 
 # Nombre de la organización en Meraki que contiene la red para la cuál hay que obtener estadísticas
 ORG_NAME = 'C008 - Preventa Conatel'
@@ -21,5 +21,5 @@ NETWORK_NAME = 'X001 - LAB CONATEL'
 WEBEX_KEY = 'definir el día del laboratorio'
 
 # Nombre de la sala donde hay que publicar las alarmas de tráfico
-WEBEX_ROOM_NAME = 'definir el día del laboratorio'
+WEBEX_ROOM_NAME = 'devnet_express_telefonica'
 
