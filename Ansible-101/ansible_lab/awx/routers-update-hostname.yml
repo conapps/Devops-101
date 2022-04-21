@@ -5,7 +5,7 @@
 # ---
 
 - name: Ejercicio 8 - Modificar hostname de los routers
-  hosts: '{{ equipos }}'
+  hosts: '{{ equipo }}'
   connection: local
   gather_facts: no
   tasks:
