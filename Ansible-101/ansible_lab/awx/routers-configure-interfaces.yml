@@ -1,0 +1,18 @@
+# ---
+# routers-configure-interfaces.yml
+#
+# Configura interfaces de los routers Cisco IOS
+# 
+# OBS: se debe definir una lista con los valores a configurar para el router:
+# interfaces:
+#   - interface: GigabitEthernet2
+#     ip_address: '10.X.201.254'
+#     netmask: '255.255.255.0'
+#     description: Configurado desde el nuevo rol
+# ...
+- name: Ejercicio 9 - Configurar interfaces de los routers
+  hosts: spokes
+  connection: local
+  gather_facts: no
+  roles:
+    - configure_interfaces

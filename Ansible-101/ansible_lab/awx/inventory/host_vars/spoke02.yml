@@ -1,0 +1,10 @@
+hostname: spoke02
+interfaces:
+  - interface: GigabitEthernet1
+    ip_address: 10.6.202.253
+    netmask: 255.255.255.0
+    description: Conexion con red Tunnel-02
+  - interface: GigabitEthernet2
+    ip_address: 10.6.2.253
+    netmask: 255.255.255.0
+    description: Conexión con red Spoke-02

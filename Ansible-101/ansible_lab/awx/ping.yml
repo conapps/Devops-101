@@ -1,0 +1,8 @@
+- name: Ansible ping
+  hosts: "{{equipos}}"
+  vars:
+    ansible_persistent_log_messages: True
+  gather_facts: no
+  tasks:
+    - name: Inicializar archivo salida
+      ping:

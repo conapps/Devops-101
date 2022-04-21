@@ -1,0 +1,17 @@
+# ---
+- name: Facts
+  hosts: '{{ equipos }}'
+  connection: local
+  gather_facts: no
+  tasks:
+    - name: Obtener facts
+      ios_facts:
+        gather_subset: "{{ item }}"
+      with_items:
+        -  "{{ item_facts }}"
+      register: salida
+
+    - name: Print facts
+      debug:
+        var: salida
+
