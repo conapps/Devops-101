@@ -968,6 +968,8 @@ Los elementos de cada lista pueden ser valores un poco más complejos, como otra
 En este caso, iteramos sobre una `lista` donde cada elemento es un `diccionario`, el cuál tiene dentro dos llaves (name y groups) con sus valores. En este caso, al iterar sobre el diccionario accedo al valor mediante `item.clave.
 
 #### until loops
+Ref: [Retrying a task until a condition is met](https://docs.ansible.com/ansible/latest/user_guide/playbooks_loops.html#retrying-a-task-until-a-condition-is-met)
+
 Otro tipo de iteración que podemos realizar es `until` loops. Este tipo de loop es utilizado para reintentar una tarea hasta que se cumpla cierta condición.
 
 Para utilizar este loop se necesitan básicamente tres argumentos en la tarea:
