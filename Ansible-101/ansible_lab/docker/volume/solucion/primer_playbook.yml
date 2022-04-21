@@ -9,10 +9,13 @@
     - ping:
     - ansible.builtin.user:
         name: user1
+    - set_fact:
+        application_doc: "www.{{application_name}}.com/{{application_env}}/help"
     - debug:
-        msg: 
+        msg:
           - "La aplicación {{application_name}} se encuentra instalada en {{application_path}}"
           - "El ambiente para este equipo es: {{application_env}}"
           - "El dueño de la aplicación es {{application_owner}} y corre en {{application_pod}}"
+          - "Puede acceder a la documentación en: {{application_doc}}"
       vars:
         - application_pod: pod-1

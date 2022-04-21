@@ -557,7 +557,11 @@ Y en  nuestro `playbook` incluimos este archivo mediante `var_files`:
     - debug:
         msg: "La aplicación se encuentra instalada en {{application_path}}"
 ```
-Al correrlo podemos ver que la variable `application_path` es sustituida por su valor `/opt/my_app`:
+
+:point_right: el módulo `debug:` de Ansible permite desplegar información como parte de la salida del playbook. Podemos desplegar el contenido de una variable con `var:`, o como en este caso, el mensaje que querramos con `msg:`. Puede ver la documentación del módulo [aquí](https://docs.ansible.com/ansible/latest/collections/ansible/builtin/debug_module.html).
+
+
+Al correr el playbook anterior, podemos ver que la variable `application_path` es sustituida por su valor `/opt/my_app`:
 ```
 # ansible-playbook primer_playbook.yml 
 
@@ -665,7 +669,10 @@ Y en  nuestro `playbook`:
           - "El ambiente para este equipo es: {{application_env}}"
 ```
 
-Luego al correrlo podemos ver la precedencia que se aplica de `host_vars` sobre `group_vars`:
+:point_right: la opción `msg:` del módulo `debug:` acepta una lista de mensajes a desplegar, puede verlo [aquí](https://docs.ansible.com/ansible/latest/collections/ansible/builtin/debug_module.html).
+
+
+Luego al correr el playbook, podemos ver la precedencia que se aplica de `host_vars` sobre `group_vars`:
 ```
 ansible-playbook primer_playbook.yml 
 
@@ -719,17 +726,31 @@ También podemos definir variables en diferentes lugares de nuestro `playbook`:
     - ping:
     - ansible.builtin.user:
         name: user1
+    - set_fact:
+        application_doc: "www.{{application_name}}.com/{{application_env}}/help"
     - debug:
         msg: 
           - "La aplicación {{application_name}} se encuentra instalada en {{application_path}}"
           - "El ambiente para este equipo es: {{application_env}}"
           - "El dueño de la aplicación es {{application_owner}} y corre en {{application_pod}}"
+          - "Puede acceder a la documentación en: {{application_doc}}"
       vars:
         - application_pod: pod-1
 ```
 
+En este caso estamos:
+  - cargando el archivo de variables `./vars/variables.yml` a nivel del `playbook`
+  - definiendo la variable `application_owner` también a nivel del `playbook`
+  - definiendo la variable `application_doc` a nivel del `play`
+  - definiendo la varialbe `application_pod` a nivel de la `task` final `debug:`
+
+:point_right: también puede definir variables dentro del mismo código, utilizando el módulo `sect_facts:` cuya documentación se encuenta [aquí](https://docs.ansible.com/ansible/latest/collections/ansible/builtin/set_fact_module.html#examples)
+
+
+
+
 ```
-# ansible-playbook primer_playbook.yml 
+(controller) # ansible-playbook primer_playbook.yml 
 
 PLAY [Primer playbook] *************************************************************************************************************************
 
@@ -745,29 +766,32 @@ TASK [ansible.builtin.user] ****************************************************
 ok: [host02]
 ok: [host01]
 
+TASK [set_fact] ********************************************************************************************************************************
+ok: [host01]
+ok: [host02]
+
 TASK [debug] ***********************************************************************************************************************************
 ok: [host01] => {
     "msg": [
         "La aplicación prod_app se encuentra instalada en /opt/my_app",
         "El ambiente para este equipo es: produccion",
-        "El dueño de la aplicación es conatel y corre en pod-1"
+        "El dueño de la aplicación es conatel y corre en pod-1",
+        "Puede acceder a la documentación en: www.prod_app.com/produccion/help"
     ]
 }
 ok: [host02] => {
     "msg": [
         "La aplicación prod_app se encuentra instalada en /opt/my_app",
         "El ambiente para este equipo es: desarrollo",
-        "El dueño de la aplicación es conatel y corre en pod-1"
+        "El dueño de la aplicación es conatel y corre en pod-1",
+        "Puede acceder a la documentación en: www.prod_app.com/desarrollo/help"
     ]
 }
 
 PLAY RECAP *************************************************************************************************************************************
-host01                     : ok=4    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
-host02                     : ok=4    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
-
+host01                     : ok=5    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+host02    
 ```
-
-
 
 ### Registros de salida
 Todas las tareas que ejecuta Ansible, emiten por defecto una salida, en donde se incluye información general sobre la ejecución de la misma, más el mensaje generado por el módulo durante su ejecución. Sin embargo, esta salida no puede ser accedida a menos que se indique específicamente, mediante la opción `register`.

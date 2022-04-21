@@ -376,9 +376,6 @@ Por ejemplo `ios.facts`, cuya documentación puede ver [aquí](https://docs.ansi
 
 ```
 
-:point_right: el módulo `debug:` de Ansible permite desplegar información como parte de la salida del playbook. Podemos desplegar el contenido de una variable con `var:`, o el mensaje que querramos con `msg:`. Puede ver la documentación del módulo [aquí](https://docs.ansible.com/ansible/latest/collections/ansible/builtin/debug_module.html).
-
-
 Podemos ejecutar el `playbook` anterior sobre `hub` y ver la salida que devuelve:
 
 ```
