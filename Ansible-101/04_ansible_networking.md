@@ -601,12 +601,20 @@ user_privilege: 15
 
 ### `ios_command`
 Como ya vimos, existen múltiples módulos para configurar equipos IOS, que permiten realizar configuraciones específicas. Pero puede ocurrir que necesitemos realizar cierta configuración y no contemos con un módulo específico para esto.
+
 En ese caso, podemos recurrir al módulo `ios_command` que nos permite ejecutar comandos directamente como si los estuvieramos escribiendo en la consola del equipo.
 
-Puede encontrar la documentación de este módulo [aquí](https://docs.ansible.com/ansible/latest/collections/cisco/ios/ios_command_module.html).
 
+```yml
+- name: Consulto show interfaces description | i down
+  ios_command:
+    commands: show interface description | i down
+  register: salida
+```
 
+:point_right: Puede encontrar la documentación del módulo [aquí](https://docs.ansible.com/ansible/latest/collections/cisco/ios/ios_command_module.html).
 
+---
 ### Cambios a varios dispositivos
 Como ya vimos, es sencillo realizar configuraciones en múltiples equipos utilizando Ansible. Alcanza con aplicar el mismo `playbook` a múltiples `hosts` y Ansible se encarga de ejecutar las tareas sobre todos ellos.
 
@@ -620,7 +628,8 @@ PING slave1-1.labs.conatest.click (10.1.1.100) 56(84) bytes of data.
 ```
 
 Esto se debe a que las interfaces `GigabitEthernet2` de los routers `spokes`, que conectan a los equipos `slaves`, no están configuradas. Esto podemos verlo, por ejemplo, si corremos el playbook `router-get-facts.yml` contra los `spokes`, que devuelve algo como esto:
-```
+
+```yml
     "GigabitEthernet2": {
         "bandwidth": 1000000,
         "description": null,
@@ -632,9 +641,10 @@ Esto se debe a que las interfaces `GigabitEthernet2` de los routers `spokes`, qu
         "mtu": 1500,
         "operstatus": "administratively down",
         "type": "CSR vNIC"
-    },
+    }
 ```
 Veamos como resolverlo con el siguiente ejercicio.
+
 ---
 
 ### Ejercicio #10

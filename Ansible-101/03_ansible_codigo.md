@@ -1069,7 +1069,7 @@ username: !vault |
 :point_right: puede tener varias variables definidas en el mismo archivo, algunas encriptadas y otras en texto plano, según se desee. Y como siempre, dependiendo donde se definan, se aplica la precedencia de variables de Ansible, como con cualquier otra variable.
 
 ---
-### Ejercicio #7  - Ansible Galaxy 
+### Ejercicio #7  - Ansible Vault 
 
 Tomando como base el [Ejercicio #6](#ejercicio-6-ansible-galaxy) configure MySQL para que solicite usuario y contraseña al intentar acceder con el comando `mysql`. 
 Ni el nombre de usuario ni la contraseña deben estar visibles en nuestro código.
