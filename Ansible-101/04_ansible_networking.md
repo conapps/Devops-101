@@ -19,7 +19,7 @@ Cada Pod cuenta con 3 routers configurados Hub & Spoke. El `hub` se encuentra en
 
 :point_right: La idea de esta parte del curso es realizar las configuraciones de los routers a través de `Ansible`, y no con la `cli` conectado a la consola. Sin embargo, puede resultar útil conectarse a la consola para ver como se aplican los cambios, verificar configuraciones, etc.
 
-Para **conectarnos al router `hub` recomendamos hacerlo desde el equipo `controller`**, dado que ya tenemos preconfigurado para conectarnos por nombre (la X corresponde al número de POD asignado):
+Si necesitamos **conectarnos al router `hub`** lo hacemos desde el equipo `controller`, donde ya tenemos preconfigurado el ambiente para conectarnos por nombre (la X corresponde al número de POD asignado):
 ```bash
 $ ssh hub-X.labs.conatest.click
 
@@ -39,7 +39,7 @@ Compiled Sun 05-Sep-21 00:37 by mcpre
 (...)
 ```
 
-También podemos **conectarnos a los routers `spoke1` y `spoke2` desde `controller`** de forma similar (la X corresponde al número de POD asignado):
+También podemos **conectarnos a los routers `spoke1` y `spoke2`** desde `controller`, de forma similar (la X corresponde al número de POD asignado):
 ```bash
 $ ssh spoke1-X.labs.conatest.click
 
@@ -52,19 +52,10 @@ ip-10-X-202-253#
 ```
 
 
-
-Si queremos **conectarnos a los routers directamente por internet**, debemos incluir opciones adicionales al ssh:
-```bash
-$ ssh -i devops101-labs.pem -o KexAlgorithms=diffie-hellman-group-exchange-sha1 ec2-user@hub-X.labs.conatest.click
-```
-> OBS: Si al intentar conectarnos nos tira para afuera sin nungún mensaje, puede deberse a que el router busca el certificado ssh en la lista de hosts conocidos de nuestra máquina, la cuál puede ver con: `ssh-add -l`. Si este es el caso, intente agregar el certificado a la lista de host conocidos mediante `ssh-add devops101-lab.pem` y vuelva a probar. Si el problema persiste, recomendamos conectarse desde el equipo `controller` que ya se encuentra preconfigurado para facilitar la conexión.
-
-
 Para poder **establecer la conexión a los routers a través de Ansible** tenemos que realizar algunos pasos previos, los cuales haremos en el siguiente **Demo Lab**.
 
->OBS: si lo prefiere, en lugar de modificar los archivos que venimos utilizando de los labs anteriores, puede crear un nuevo directorio para comenzar desde cero, y trabajar en el mismo creando un nuevo archivo de inventario, nuevos directorios según sean requeridos, etc. También puede reinicial el ambiente desde cero, borrando su contenido, como vimos [aqui](https://github.com/conapps/Devops-101/blob/master/Ansible-101/01_ansible.md#demo-lab-1---lanzar-el-laboratorio).
 
-
+---
 ### Demo Lab #3 - Configurar el ambiente requerido para Ansible
 
 Lo primero que debemos hacer es agregar nuestros equipos de Networking al inventario.
