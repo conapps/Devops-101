@@ -741,12 +741,10 @@ También podemos definir variables en diferentes lugares de nuestro `playbook`:
 En este caso estamos:
   - cargando el archivo de variables `./vars/variables.yml` a nivel del `playbook`
   - definiendo la variable `application_owner` también a nivel del `playbook`
-  - definiendo la variable `application_doc` a nivel del `play`, utilizando el módulo `ansible_facts:`
+  - definiendo la variable `application_doc` a nivel del `play`, utilizando el módulo `set_fact:`
   - definiendo la varialbe `application_pod` a nivel de la `task` final `debug:`
 
-:point_right: también puede definir variables dentro del mismo código, utilizando el módulo `sect_facts:` cuya documentación se encuenta [aquí](https://docs.ansible.com/ansible/latest/collections/ansible/builtin/set_fact_module.html#examples)
-
-
+:point_right: puede definir variables como parte de las tareas, utilizando el módulo `set_facts:` cuya documentación se encuenta [aquí](https://docs.ansible.com/ansible/latest/collections/ansible/builtin/set_fact_module.html#examples)
 
 
 ```
