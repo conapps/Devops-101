@@ -341,7 +341,7 @@ TASK [Comando para hallar las diferencias] *************************************
 (...)
 (...)
 ```
-
+---
 ### `ios_facts`
 
 Existen otros módulos que también se pueden utilizar para obtener información de los dispositivos.
@@ -497,8 +497,7 @@ hub                        : ok=2    changed=0    unreachable=0    failed=0    s
 
 
 ### `ios_user`
-Otro módulo que nos puede resultar útil es `ios_user`, que permite gestionar usuarios de forma más sencilla que con comandos individuales.
-Puede encontrar la documentación del módulo [aquí](https://docs.ansible.com/ansible/latest/collections/cisco/ios/ios_user_module.html).
+Otro módulo que nos puede resultar útil es `ios_user`, que permite gestionar usuarios de forma más sencilla que con comandos individuales. Puede encontrar la documentación del módulo [aquí](https://docs.ansible.com/ansible/latest/collections/cisco/ios/ios_user_module.html).
 
 ---
 
