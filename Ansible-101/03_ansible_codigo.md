@@ -32,6 +32,14 @@ Por ejemplo, podemos tener un `playbook` que instale una determinada aplicación
         name: apache2
         state: latest
         update_cache: yes
+
+    - name: Create document root
+      file:
+        path: "/var/www/html"
+        state: directory
+
+    - name: Copy index.html to document root
+      (...)
 ```
 
 y luego desde otro `playbook` importar el anterior, para poder ejecutarlo:
@@ -55,11 +63,20 @@ Importar un `playbook` completo no es lo más común. En general solemos importa
     name: apache2
     state: latest
     update_cache: yes
+
+- name: Create document root
+  file:
+    path: "/var/www/html"
+    state: directory
+
+- name: Copy index.html to document root
+  (...)
+
 ```
 
-y luego llamamos estas tareas desde nuestro `playbook`. De esta forma, podemos reutilizar esas tareas desde mútiples playbooks diferentes, o aplicandolo a varios `hosts` sin tener que modificar el código de la tarea en si:
-```yaml        
+Y luego importamos estas tareas desde nuestro `playbook`, pudiendo por ejemplo, aplicarlo a varios `hosts` sin tener que modificar el código de la tarea en si:
 
+```yaml        
 # mi_playbook_principal.yml
 - name: "Instalar web-servers"
   hosts: web-server1, web-server2, web-server3
