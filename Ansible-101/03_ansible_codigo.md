@@ -118,13 +118,11 @@ Pero la forma más eficiente y potente de reutilizar nuestro código es mediante
 
 Los roles son un elemento fundamental a la hora de escribir nuestro código en forma mas sencilla y estructurada, y poder además reutilizarlo e incluso compartirlo.
 
-Los roles permiten importar de forma automática no solo las tareas a ejecutar, sino también variables, handlers, templates, y otros componentes, basado en una estructura de directorios especifica. Los roles puede ser luego utilizados en multiples `playbooks`, o compartidos a traves de Ansible Galaxy.
+Los roles permiten importar no solo las tareas a ejecutar, sino que también incluyen variables, handlers, templates, y otros componentes. Los roles puede ser luego utilizados en multiples `playbooks`, o incluso compartirlo, por ejemplo mediante Ansible Galaxy.
 
-Los `roles` requieren cierta estructura de directorios definida para su funcionamiento. Para empezar, deben ubicarse siempre dentro del directorio `./roles` de nuestro proyecto.
-Allí, se crea un directorio para cada `role` con el nombre que querramos darle, el cuál se referenciará luego para su invocación desde el `playbook`. 
+Los `roles` requieren cierta estructura de directorios despecífica para su funcionamiento. Para empezar, deben ubicarse siempre dentro del directorio `./roles` de nuestro proyecto. Allí, se crea un directorio para cada `role` que definamos, cuyo nombre se referenciará luego para su invocación desde el `playbook`. 
 
-Dentro del rol se crea la siguiente estrucutura de directorios:
-
+El `rol` tiene la siguiente estrucutura de directorios:
 ```
 roles/
   nombre-del-rol/
@@ -139,7 +137,9 @@ roles/
     README.md
 ```
 
-Al menos uno de estos directorios debe existir dentro de la carpeta del rol, sin embargo, no es necesario que existan todos. Típicamente se utiliza por lo menos el directorio `tasks`, que contiene el código con las tareas a ejecutar, y `defaults` (o `vars`) que contiene las variables predefinidas para el rol.
+Al menos uno de estos directorios debe existir dentro de la carpeta del rol, sin embargo, no es necesario que existan todos estos directorios. En general se utiliza siempre el directorio `tasks` que contiene las tareas que vamos a ejecutar. Y típicamente, se utilizan ademas los directorios `defaults` o `vars` que contiene las variables predefinidas para el rol. También podemos tener el directorio `templates` (cuya utilidad veremos más adelante), y `files`.
+
+:point_right: Es buena práctica utilizar un archivo de `README.md` que explique el funcionamiento y requerimientos del rol.
 
 Para cada directorio que creemos dentro del rol, debe existir un archivo llamado `main.yml`, en donde se encuentra la información por defecto que va ir a buscar Ansible para ese directorio. Los principales son:
 
@@ -158,8 +158,9 @@ Dentro de `tasks/main.yml`, se encuentran las tareas a ejecutar por defecto para
 - tarea2
 - tarea3
 ```
+:point_right: Cuando invoquemos al `rol` desde el `playbook`, Ansible ejecutará automáticamente todas las tareas que se encuentren en este archivo `tasks/main.yml`.
 
-Podemos escribir todo nuestro código de corrido en `tasks/main.yml`, o bien podemos separarlo en varios archivos e invocarlos según los necesitemos, lo cual nos permite simplificar la escritura en caso de roles más complejos. 
+Aquí también podemos escribir todo nuestro código de corrido en `tasks/main.yml`, o separarlo en varios archivos e invocarlos según los necesitemos, simplificando la escritura en caso de roles más complejos. 
 
 Por ejemplo, cuando se quiere que un rol sea capaz de interactuar con multiples sistemas operativos, los cuales pueden requerir realizar distintas tareas y utilizar distintos módulos, para cumplir con un mismo objetivo final. En la documentación de Ansible se presenta un ejemplo similar al siguiente, para demostrar esta práctica:
 
@@ -195,7 +196,7 @@ roles/
     state: present
 ```
 
-#### roles:
+#### `roles:`
 Una vez definido el rol, el mismo puede ser invocado desde un `playbook` a través de la sentencia `roles:`, la cuál consume una lista de roles a ejecutar:
 
 ```yml
@@ -285,8 +286,10 @@ ejer4_playbook.yml
 
 ---
 
-#### include_role: / import_role:
-En nuestro playbook, podemos también invocar los roles desde nuestra lista de `tasks:`, por medio de `include_role:` (en forma dinámica) o `import_role:` (en forma estática).  En general es mucho más común hacerlo de esta forma, en lugar de invocarlos mediante `roles:` como vimos mas [arriba](#roles). 
+#### `include_role:` & `import_role:`
+Ref: [include_role](https://docs.ansible.com/ansible/latest/collections/ansible/builtin/include_role_module.html) | [import_role](https://docs.ansible.com/ansible/latest/collections/ansible/builtin/import_role_module.html)
+
+En nuestro playbook, podemos también invocar los roles desde nuestra lista de `tasks:`, por medio de `include_role:` (en forma dinámica) o `import_role:` (en forma estática).  En general es mucho más común hacerlo de esta forma, en lugar de invocarlos mediante `roles:` como vimos antes. 
 ```yaml
 # playbook.yml
 - name: install apache2 
@@ -296,12 +299,29 @@ En nuestro playbook, podemos también invocar los roles desde nuestra lista de `
         name: apache2
 ```
 
+También podemos utilizar `loops` en la llamda a nuestros roles, siempre que usemos `include_role:`. Vea el siguiente ejemplo, similar al que se encuentra en la documentación del módulo:
+```yaml
+- name: Use role in loop
+  include_role:
+    name: my-role
+  vars:
+    some_role_variable: '{{ loop_var }}'
+  loop:
+    - '{{ roleinput1 }}'
+    - '{{ roleinput2 }}'
+  loop_control:
+    loop_var: loop_var
 
-:point_right: Aquí puede ver la documentación oficial de los módulos [include_role](https://docs.ansible.com/ansible/latest/collections/ansible/builtin/include_role_module.html) e [import_role](https://docs.ansible.com/ansible/latest/collections/ansible/builtin/import_role_module.html).
+```
+:point_right: note que en lugar de usar la variable por defecto `item` para iterar sobre el loop, en este caso lo cambia por otra variable, llamada `loop_var`. Entiende por que puede ser necesario hacer esto??
+<details>
+<summary> Respuesta </summary>
+  Si dentro de código de <code>my-role</code> se ejecuta algún <code>loop:</code>, seguramente utilice la variable por defecto <code>item:</code>. Y si también utilizo la misma variable <code>item:</code> al llamar al role, la estaría sobreescribiendo, lo que podría causar inconsistencias durante la ejecución de las tareas del role.
+</details>
 
 
-####tasks_from:
-Como vimos antes, cuando se llama a un rol desde un playbook Ansible ejecutará por defecto las tareas que se encuentren en el archivo `task/main.yml`. Pero puede suceder que en realidad querramos ejecutar tareas que se encuentren en otro archivo `.yml`. Esto podemos hacerlo utilizando la sentencia `tasks_from`:
+#### `tasks_from:`
+Como vimos antes, cuando se llama a un rol desde un playbook Ansible ejecutará por defecto las tareas que se encuentren en el archivo `./task/main.yml`. Pero puede suceder que en realidad querramos ejecutar tareas que se encuentren en otro archivo `.yml`. Esto podemos hacerlo utilizando la sentencia `tasks_from:`
 
 ```yaml
 # playbook.yml
@@ -327,16 +347,19 @@ roles/
       verify-web-services.yml
 ```
 
-Por defecto los roles consumiran siempre las variables que definamos dentro de `./defaults/main.yml`.
+#### variables dentro del role:
+El primer lugar donde un rol va a buscar la definición de una variable es dentro de `./defaults/main.yml`. Este es además, el lugar que tiene la menor precedencia posible, en cuanto a la definición de variables. Por lo cuál es una buena práctica definir ahí todas las variables que utilice el rol, con sus valores por defecto, para que la ejecución del rol no falle por falta de una variable.
 
-Pero si queremos, podemos pasarle variables al rol desde nuestro `playbook` en el momento de su invocación, utilizando la sentencia `vars:`. Esto hará que se sobreescriban los valores por defecto del rol, con los que pasemos a nivel del playbook:
+Luego, dentro de `./vars/main.yml` podemos definir variables particulares que necesitemos para la ejecución del rol en determinado ambiente. De esta forma podemos reutilizar el código, en diferentes ambientes, simplemente modificando los valores de ciertas variables. Las variables aquí definidas, sobreescribiran a las definidas en `./defaults/main.yml`. 
+
+Y también, podemos pasarle variables al rol al momento de su invocación, utilizando la sentencia `vars:`. Estas tendrán mayor precedencia que las dos opciones anteriores, por lo cual las sobreescribirán. Por ejemplo:
 
 
 ```yaml
-# roles/apache2/defaults/main.yml
+# ./roles/apache2/defaults/main.yml
 webserver_document_root: "/var/www/html"
 
-# playbook.yml
+# ./instalar-apache-playbook.yml
 - name: install apache2 
   hosts: web
   tasks:
@@ -350,11 +373,15 @@ roles/
   apache2/
     defaults/main.yml
     tasks/main.yml
-playbook.yml
+instalar-apache-playbook.yml
 ```
-En el caso anterior, la variable `webserver_document_root` tomará el valor `/home/apache/main/html` definido a nivel del playbook, el cual sobreescribirá el valor por defecto definido en el rol. Esto se debe a la forma en que Ansible maneja la [precedencia de variables](https://docs.ansible.com/ansible/latest/user_guide/playbooks_variables.html#understanding-variable-precedence) de acuerdo al lugar donde éstas sean definidas.
+En el caso anterior, la variable `webserver_document_root` tomará el valor `/home/apache/main/html` definido a nivel del playbook, el cual sobreescribirá el valor por defecto definido en el rol. 
 
->OBS: recordemos que las variables definidas en `./defaults/main.yml` siempre van a tener el `menor nivel de precedencia posible` respecto a variables definidas en cualquier otro lugar de nuestro código.
+:point_right: Esto se debe a la forma en que Ansible maneja la [precedencia de variables](https://docs.ansible.com/ansible/latest/user_guide/playbooks_variables.html#understanding-variable-precedence) de acuerdo al lugar donde éstas se definan.
+
+Si luego necesito instalar apache2 en otro equipo, pero con el `document_root` en otra ubicación, no necesito modificar el código del rol. Simplemente alcanza con modificar la variable al invocar al rol.
+
+:warning: Es importante tomar en cuenta este tipo de cosas a la hora de construir nuestros roles, como escribir nuestro código de forma de poder luego reutilizarlo en diferentes ambientes. Los `templates` es algo que también pueden ayudarnos mucho a esto.
 
 ---
 ## Templates
