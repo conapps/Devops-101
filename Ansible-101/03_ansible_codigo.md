@@ -54,16 +54,19 @@ y luego desde otro `playbook` importar el anterior, para poder ejecutarlo:
 Ref: [include_tasks module](https://docs.ansible.com/ansible/latest/collections/ansible/builtin/include_tasks_module.html) | [import_tasks module](https://docs.ansible.com/ansible/latest/collections/ansible/builtin/import_playbook_module.html)
 
 
-Importar un `playbook` completo no es lo más común. En general solemos importar `tareas` que realizan funciones específicas, y que tenemos escritas en archivos .yml independientes. Esto nos permite reutilizar nuestro código de forma mas eficiente.
+Importar un `playbook` completo no es lo más común. En general solemos importar/incluir `tareas` que realizan funciones específicas, y que tenemos escritas en archivos .yml independientes. Esto nos permite reutilizar nuestro código de forma mas eficiente.
 
 ```yaml
-# deploy_webservers.yml
+# deploy_webserver.yml
 - name: Install apache2
   apt: 
     name: apache2
     state: latest
     update_cache: yes
+```
 
+```yaml
+# configure_webserver.yml
 - name: Create document root
   file:
     path: "/var/www/html"
@@ -74,7 +77,7 @@ Importar un `playbook` completo no es lo más común. En general solemos importa
 
 ```
 
-Y luego importamos estas tareas desde nuestro `playbook`, pudiendo por ejemplo, aplicarlo a varios `hosts` sin tener que modificar el código de la tarea en si:
+Y luego invocamos estas tareas desde nuestro `playbook`, pudiendo por ejemplo, aplicarlo a varios `hosts` sin tener que modificar el código de la tarea en si:
 
 ```yaml        
 # mi_playbook_principal.yml
@@ -82,8 +85,12 @@ Y luego importamos estas tareas desde nuestro `playbook`, pudiendo por ejemplo, 
   hosts: web-server1, web-server2, web-server3
   tasks:
     import_tasks: ./deploy_webservers.yml
+    include_tasks: ./configure_webserver.yml
 
 ```
+
+:point_right: recuerde que `import_tasks` lo hace en forma estática (antes de ejecutar el código), mientras que `include_task:` lo hace en forma dinámica (al momento de ejecutar el código).
+
 Pero la forma más eficiente y potente de reutilizar nuestro código es mediante el uso de `roles`.
 
 ---
@@ -388,6 +395,15 @@ También podemos utilizar `loops` en la llamada a un rol, siempre que lo hagamos
 #### `tasks_from:`
 Como vimos antes, cuando se llama a un rol desde un playbook, Ansible ejecutará por defecto las tareas que se encuentren en el archivo `./task/main.yml`. Pero puede suceder que en realidad querramos ejecutar tareas que se encuentren en otro archivo del rol. Esto podemos hacerlo utilizando la sentencia `tasks_from:`
 
+```yml
+# estructura de directorios
+roles/
+  apache2/
+    tasks/
+      main.yml
+      configure_web_server.yml
+      update_web_content.yml
+```
 
 ```yaml
 # playbook.yml
@@ -402,16 +418,6 @@ Como vimos antes, cuando se llama a un rol desde un playbook, Ansible ejecutará
     - include_role:
         name: apache2
         tasks_from: update_web_content
-```
-
-```yml
-# estructura de directorios
-roles/
-  apache2/
-    tasks/
-      main.yml
-      configure_web_server.yml
-      update_web_content.yml
 ```
 
 ---
