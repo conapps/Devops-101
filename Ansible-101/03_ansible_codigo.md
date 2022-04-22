@@ -34,33 +34,11 @@ Por ejemplo, podemos tener un `playbook` que instale una determinada aplicación
         update_cache: yes
 ```
 
-```yaml
-# deploy_db.yml
-- hosts: db-server
-  tasks:
-    - name: Install SQLite
-      apt: 
-        name: sqlite3 
-        state: latest
-        update_cache: yes
-```
-
 y luego desde otro `playbook` importar el anterior, para poder ejecutarlo:
 ```yaml        
 # mi_playbook_principal.yml
-- hosts: localhost
-  tasks:
-    - debug:
-        msg: Este es mi playbook principal
-
 - name: "Instalar el web-server"
   import_playbook: ./deploy_webservers.yml
-
-# ESTO FALLA!! pues no puedo importar un playbook dentro de un play
-- name: "Instalar el db-server"
-  hosts: db-server
-  tasks:
-    import_playbook: /deploy_db.yml
 ```
 
 
@@ -79,36 +57,16 @@ Importar un `playbook` completo no es lo más común. En general solemos importa
     update_cache: yes
 ```
 
-```yaml
-# deploy_db.yml
-- name: Install SQLite
-  apt: 
-    name: sqlite3 
-    state: latest
-    update_cache: yes
-```
-
-y luego llamamos estas tareas en nuestro `playbook`:
+y luego llamamos estas tareas desde nuestro `playbook`. De esta forma, podemos reutilizar esas tareas desde mútiples playbooks diferentes, o aplicandolo a varios `hosts` sin tener que modificar el código de la tarea en si:
 ```yaml        
 
 # mi_playbook_principal.yml
-- hosts: localhost
-  tasks:
-    - debug:
-        msg: Este es mi playbook principal
-
-- name: "Instalar el web-server"
-  hosts: web-server
+- name: "Instalar web-servers"
+  hosts: web-server1, web-server2, web-server3
   tasks:
     import_tasks: ./deploy_webservers.yml
 
-- name: "Instalar el db-server"
-  hosts: database-server
-  tasks:
-    include_tasks: /deploy_db.yml
-
 ```
-
 Pero la forma más eficiente y potente de reutilizar nuestro código es mediante el uso de `roles`.
 
 ---
