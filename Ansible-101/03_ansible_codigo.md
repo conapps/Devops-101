@@ -224,64 +224,83 @@ roles/
 Cree dos roles, uno llamado `apache2` y otro `sqlite3`, que instalen `apache` y `sqlite3` respectivamente. Luego, cree un `playbook` que aplique el rol `apache2` a los servidores del grupo `app` y el rol `sqlite3` a los servidores del grupo `db` de nuestro inventario.
 
 <details>
-	<summary>
-		Pista #1
-	</summary>
-	Recuerde que los roles deben ubicarse dentro del directorio <code>/roles</code> del proyecto, comience por crear la estructura de directorios necesaria.
-</details>
-<details>
-	<summary>
-		Pista #2
-	</summary>
-	Las carpetas creadas para el rol deben contrar con el archivo <code>main.yml</code>, que es el que Ansible irá a buscar por defecto.
-</details>
-<details>
-	<summary>
-		Pista #3
-	</summary>
-	Debe crear dos roles diferentes, y luego en el playbook invocar un rol para el grupo de hosts <code>app</code> y otro rol para el grupo de hosts <code>db</code>.
+<summary>Pista #1</summary>
+Recuerde que los roles deben ubicarse dentro del directorio <code>/roles</code> del proyecto, comience por crear la estructura de directorios necesaria.
 </details>
 
 <details>
-    <summary>Solución</summary>
-    <pre>
-# estructura de directorios
-inventory/
-  hosts.yml
-roles/
-  apache2/
-    tasks/
-      main.yml
-  sqlite3/
-    tasks/
-      main.yml
-ejer4_playbook.yml
+<summary>Pista #2</summary>
+Las carpetas creadas para el rol deben contrar con el archivo <code>main.yml</code>, que es el que Ansible irá a buscar por defecto.
+</details>
+
+<details>
+<summary>Pista #3</summary>
+Debe crear dos roles diferentes, y luego en el playbook invocar un rol para el grupo de hosts <code>app</code> y otro rol para el grupo de hosts <code>db</code>.
+</details>
+
+<details>
+<summary>Verificación</summary>
+<pre class="language-yaml" lang="yaml">
+(host01) # apache2 -v
+Server version: Apache/2.4.41 (Ubuntu)
+Server built:   2022-03-16T16:52:53
 </pre>
-<pre>
+
+<pre class="language-yaml" lang="yaml">
+(host02) # apache2 -v
+Server version: Apache/2.4.41 (Ubuntu)
+Server built:   2022-03-16T16:52:53
+</pre>
+
+<pre class="language-yaml" lang="yaml">
+(host03) # sqlite3 --version
+3.31.1 2020-01-27 19:55:54 3bfa9cc97da10598521b342961df8f5f68c7388fa117345eeb516eaa837balt1
+</pre>
+</details>
+
+<details>
+<summary>Solución</summary>
+<pre class="language-yaml" lang="yaml">
 # ./roles/apache2/tasks/main.yml
 - apt:
     name: apache2
     state: present
     update_cache: yes
 </pre>
-<pre>
+
+<pre class="language-yaml" lang="yaml">
 # ./roles/sqlite3/tasks/main.yml
 - apt:
     name: sqlite3
     state: present
     update_cache: yes
 </pre>
-<pre>
+
+<pre class="language-yaml" lang="yaml">
 # ejer4_playbook.yml
-- name: "Instalar los servidores web"
+- name: "Instalar servidores web"
   hosts: app
   roles:
     - apache2
-- name: "Instalar los servidores de bases de datos"
+
+- name: "Instalar servidores de bases de datos"
   hosts: db
   roles:
     - sqlite3
 </pre>
+
+<pre class="language-yaml" lang="yaml">
+# estructura de directorios
+inventory/
+  hosts.yml
+roles/
+  apache2/
+    tasks/main.yml
+  sqlite3/
+    tasks/main.yml
+ejer4_playbook.yml
+</pre>
+
 </details>
 
 ---
@@ -289,7 +308,7 @@ ejer4_playbook.yml
 #### `include_role:` & `import_role:`
 Ref: [include_role](https://docs.ansible.com/ansible/latest/collections/ansible/builtin/include_role_module.html) | [import_role](https://docs.ansible.com/ansible/latest/collections/ansible/builtin/import_role_module.html)
 
-En nuestro playbook, podemos también invocar los roles desde nuestra lista de `tasks:`, por medio de `include_role:` (en forma dinámica) o `import_role:` (en forma estática).  En general es mucho más común hacerlo de esta forma, en lugar de invocarlos mediante `roles:` como vimos antes. 
+Podemos también invocar los roles desde nuestra lista de tareas, utilizando  `include_role:` (en forma dinámica) o `import_role:` (en forma estática).  En general, es más común hacerlo de esta forma que con `roles:`, dado que de esta forma podemos incluir los roles como parte de múltiples taras a realizar en el play. 
 ```yaml
 # playbook.yml
 - name: install apache2 
@@ -299,21 +318,33 @@ En nuestro playbook, podemos también invocar los roles desde nuestra lista de `
         name: apache2
 ```
 
-También podemos utilizar `loops` en la llamda a nuestros roles, siempre que usemos `include_role:`. Vea el siguiente ejemplo, similar al que se encuentra en la documentación del módulo:
-```yaml
-- name: Use role in loop
-  include_role:
-    name: my-role
-  vars:
-    some_role_variable: '{{ loop_var }}'
-  loop:
-    - '{{ roleinput1 }}'
-    - '{{ roleinput2 }}'
-  loop_control:
-    loop_var: loop_var
+También podemos utilizar `loops` en la llamada a un rol, siempre que lo hagamos con `include_role:`. Vea el siguiente ejemplo:
 
+```yaml
+#./roles/desplegar_mensaje/tasks/main.yml
+- debug:
+    var: mensaje
 ```
-:point_right: note que en lugar de usar la variable por defecto `item` para iterar sobre el loop, en este caso lo cambia por otra variable, llamada `loop_var`. Entiende por que puede ser necesario hacer esto??
+
+```yaml
+# role_with_loop.yml
+- name: "Ejemplo de role con loop"
+  hosts: localhost
+  gather_facts: no
+  tasks:
+    - include_role:
+        name: desplegar_mensaje
+      vars:
+        mensaje: '{{loop_var}}'
+      loop:
+        - 'primer mensaje del loop'
+        - 'segundo mensaje del loop'
+      loop_control:
+        loop_var: loop_var
+```
+
+:point_right: Note que en lugar de usar la variable por defecto `item` para iterar sobre el `loop:`, en este caso estamos utilizando otra variable, llamada `loop_var`. 
+:question: Por qué es buena idea hacer esto cuando invocamos a un rol??
 <details>
 <summary> Respuesta </summary>
   Si dentro de código de <code>my-role</code> se ejecuta algún <code>loop:</code>, seguramente utilice la variable por defecto <code>item:</code>. Y si también utilizo la misma variable <code>item:</code> al llamar al role, la estaría sobreescribiendo, lo que podría causar inconsistencias durante la ejecución de las tareas del role.
@@ -321,7 +352,7 @@ También podemos utilizar `loops` en la llamda a nuestros roles, siempre que use
 
 
 #### `tasks_from:`
-Como vimos antes, cuando se llama a un rol desde un playbook Ansible ejecutará por defecto las tareas que se encuentren en el archivo `./task/main.yml`. Pero puede suceder que en realidad querramos ejecutar tareas que se encuentren en otro archivo `.yml`. Esto podemos hacerlo utilizando la sentencia `tasks_from:`
+Como vimos antes, cuando se llama a un rol desde un playbook, Ansible ejecutará por defecto las tareas que se encuentren en el archivo `./task/main.yml`. Pero puede suceder que en realidad querramos ejecutar tareas que se encuentren en otro archivo `.yml`. Esto podemos hacerlo utilizando la sentencia `tasks_from:`
 
 ```yaml
 # playbook.yml
