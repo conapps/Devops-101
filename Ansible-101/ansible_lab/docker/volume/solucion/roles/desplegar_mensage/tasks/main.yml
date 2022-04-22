@@ -1,0 +1,4 @@
+#./roles/desplegar_mensaje/tasks/main.yml
+- debug:
+    msg: "{{mensaje}}"
+#    msg: "despliego un mensaje desde un role"
