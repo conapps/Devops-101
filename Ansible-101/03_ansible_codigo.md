@@ -24,7 +24,7 @@ Existen algunas limitaciones en el uso de `import` e `include` que es importante
 
 Por ejemplo, podemos tener un `playbook` que instale una determinada aplicación:
 ```yaml
-# deploy_webservers.yml
+# deploy_webserver.yml
 - hosts: web-server
   tasks:
     - name: Install apache2
@@ -46,7 +46,7 @@ y luego desde otro `playbook` importar el anterior, para poder ejecutarlo:
 ```yaml        
 # mi_playbook_principal.yml
 - name: "Instalar el web-server"
-  import_playbook: ./deploy_webservers.yml
+  import_playbook: ./deploy_webserver.yml
 ```
 
 
