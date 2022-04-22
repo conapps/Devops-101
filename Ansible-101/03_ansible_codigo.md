@@ -385,25 +385,28 @@ Si luego necesito instalar apache2 en otro equipo, pero con el `document_root` e
 
 ---
 ## Templates
-Ref: [Ansible Templates (jinja2)](https://docs.ansible.com/ansible/latest/user_guide/playbooks_templating.html)
+Ref: [Templating (jinja2)](https://docs.ansible.com/ansible/latest/user_guide/playbooks_templating.html)
 
-[Jinja2](https://jinja.palletsprojects.com/en/3.1.x/) es un lenguaje de templating desarrollado sobre python. El mismo se utiliza en varios frameworks importantes de Python como Django para crear páginas web por ejemplo, sin embargo, se puede usar para crear todo tipo de documentos.
+[Jinja2](https://jinja.palletsprojects.com/en/3.1.x/) es un lenguaje de templating desarrollado sobre python. El mismo se utiliza en varios frameworks importantes de Python como Django para crear páginas web por ejemplo, sin embargo, se puede usar para crear todo tipo de archivos.
 
-Ansible utiliza `Jinja2` para modificar archivos antes de que estos sean distrubuidos a los `hosts`, siendo una de las herramientas más utilizadas para el manejo de templates. 
+Ansible utiliza `Jinja2` para modificar archivos en forma dinámica antes de que estos sean distrubuidos a los `hosts`, siendo una herramienta muy utilizada, que nos ayuda a reutilizar nuestro código. 
 
-Por ejemplo, podemos crear un `template` para un archivo de configuración, y por medio de un playbook desplegar ese archivo de configuración a múltiples hosts, pero modificando algunas partes del mismo al momento de copiarlo, para poder colocarle la información correcta de cada host, como ser dirección IP, hostname, etc.
-De esta forma evitamos tener que escribir un archivo de configuración específico para cada host, y reutilizamos el mismo código, modificando su contenido en forma dinámica por medio de variables.
+Por ejemplo, podemos crear un `template` para un archivo de configuración que necesitemos aplicar . Y, por medio de un playbook, desplegar ese archivo de configuración a múltiples hosts, pero modificando algunas partes del mismo al momento de copiarlo, para poder colocarle la información correcta de cada host (como dirección IP, hostname, etc.). 
+De esta forma evitamos tener que escribir un archivo de configuración específico para cada host (solo porque cambia la dirección IP o el hostname), y reutilizamos el `template`, modificando su contenido en forma dinámica por medio de variables.
 
-La conversión del `template` se realiza en el Ansible controller, antes de que la tarea sea enviada y ejecutada en el host. Esto evita la necesidad de tener instalado `jinja2` en el host destino, sino que el mismo solo es requerido en el controller, es decir, donde corre Ansible.
+La conversión del `template` se realiza en el Ansible controller, antes de que la tarea sea enviada y ejecutada en el host. Esto evita la necesidad de tener instalado `jinja2` en el host destino, y el mismo solo es requerido en el controller, es decir, donde corre Ansible.
 
-Los templates pueden ubicarse dentro del directorio `./templates` de nuestro proyecto, o en caso de ser parte de un rol, dentro de `roles/nombre-del-rol/templates` y son archivos con extensión `.j2`.
+Los templates son archivos con extensión `.j2`. Pueden ubicarse dentro del directorio `./templates` de nuestro proyecto, o en caso de ser parte de un rol, deben estar dentro de `./roles/nombre-del-rol/templates`.
+
+:point_right: `jinja2` es una librería de Python y por tanto se instala con el comando `pip3`. En nuestro laboratorio ya se encuentra instalado en el nodo `contoller`, puede verificarlo con `pip3 freeze | grep -i jinja2`. 
+
 
 ### Demo Lab: Templates
-A modo de ejemplo, tomemos la funcionalidad de poder desplegar un mensaje de bienvenida en Linux cuando un usuario se conecta, algo conocido como [motd](https://manpages.ubuntu.com/manpages/trusty/man5/motd.5.html) (message of the day). Para esto, es necesario crear un archivo con el texto que queremos desplegar, y ubicarlo en `/etc/motd` dentro del host.
+A modo de ejemplo, tomemos la funcionalidad de poder desplegar un mensaje de bienvenida en Linux cuando un usuario se conecta al mismo, algo conocido como [motd](https://manpages.ubuntu.com/manpages/trusty/man5/motd.5.html) (message of the day). Para esto, es necesario crear un archivo con el texto que queremos desplegar, y ubicarlo en `/etc/motd` dentro del host.
 
-Pero supongamos que queremos colocar información específica del host donde se está corriendo, dentro de ese mensaje, como ser su dirección IP y nombre del host, etc.
+Pero supongamos que queremos colocar en el mensaje de bienvendia, información específica del host donde se está corriendo como el nombre del host, distribución de linux, etc.
 
-Creamos el archivo de template:
+Creamos entonces el archivo de template:
 ```yml
 # ./templates/motd.j2
 
@@ -414,6 +417,7 @@ Have a nice day!!
 ----------------------------------------------------------------------------------
 
 ```
+
 Luego creamos nuestro `playbook` que copiará el `template` anterior a los hosts, sustituyendo las variables definidas de forma que quede customizado para cada uno.
 
 ```yml
@@ -432,10 +436,13 @@ Luego creamos nuestro `playbook` que copiará el `template` anterior a los hosts
         mode: 0644
 ```
 
-:point_right: Puede encontrar la documentación del módulo `template` en el siguiente [link](https://docs.ansible.com/ansible/latest/collections/ansible/builtin/template_module.html#template-module).
+#### `template:`
+Para copiar un template a los hosts, y que su contenido sea modificado dinámicamente, utilizamos el módulo `template:`, cuya documentación puede encontrar [aquí](https://docs.ansible.com/ansible/latest/collections/ansible/builtin/template_module.html#template-module).
 
-Luego corremos el playbook (ya deberíamos saber como hacerlo), y cuando nos conectemos a alguno de nuestros `hosts` mediante ssh vamos a ver nuestro mensaje como parte del mensaje de bienvenida:
-```
+En este caso indicamos cuál es el archivo de template a copiar (*motd.j2*), a que directorio del `host` lo vamos a copiar (*/etc*), con que nombre de archivo (*motd*), y que permisos le vamos a asignar al archivo (*root.root -rw-r--r--*).
+
+Luego corremos el playbook (ya deberíamos saber como hacer esto!), y confirmamos que los cambios fueron realizados. Y cuando nos conectemos a alguno de nuestros `hosts` mediante `ssh` deberíamos ver nuestro nuevo mensaje como parte del mensaje de bienvenida de linux:
+``` 
 (controller) # ssh host01
 (...parte de la salida omitida para mayor claridad...)
 
@@ -444,19 +451,35 @@ Welcome Ansible-101 on host01.
 Running Ubuntu 20.04 on x86_64 architecture.
 Have a nice day!!
 ----------------------------------------------------------------------------------
+
 (...)
 ```
 
-El `template` que creamos mas arriba consume la variable `course_name` desde el propio playbook.
-El resto de las variables son cargadas por Ansible en forma automática previo a la ejecución de las tareas en cada uno de los `hosts`, gracias a la ejecución del modulo [gather_facts](https://docs.ansible.com/ansible/2.9/modules/gather_facts_module.html). Puede ver la información que este último trae, mediante el comando `ansible host01 -m gather_facts`, contra cualquiera de los hosts.
+Como podemos ver, las variables del `template` son sustituidas por su valor al momento de ejecutar el playbook, y el archivo ya "viaja" modificado al host remoto. De hecho, si se conecta por ssh a uno de los hosts y hace un `cat /etc/motd` verá el archivo con los valores finales.
 
-Las variables del `template` son sustituidas por su valor al momento de ejecutar el playbook, y antes de copiar el archivo al `host` remoto. De hecho, si se conecta por ssh a uno de los hosts y hace un `cat /etc/motd` verá el archivo modificado.
+El `template` que creamos mas arriba consume la variable `course_name` desde el propio playbook. Pero el resto de las variables no las definimos nosotros en ningún lado, sino que son cargadas por Ansible en forma automática para cada uno de los `hosts`, gracias a la ejecución del modulo `gather_facts:`.
+
+#### `gather_facts:`
+
+El módulo `gather_facts:`, cuya documentación se encuentra [aquí](https://docs.ansible.com/ansible/2.9/modules/gather_facts_module.html), se conecta a los `hosts:` antes de comenzar a ejecutar las tareas del playbook. Recaba información específica del `host` y la devuelve en determinadas variables que nosotros luego podemos consumir como parte de nuestras tareas. 
+
+Puede ver las variables que devuelve este módulo ejecutando el siguiente comando add-hoc `ansible <nombre-del-host> -m gather_facts`, o también en la documentación que se encuentra [aquí](https://docs.ansible.com/ansible/latest/user_guide/playbooks_vars_facts.html). 
+
+Por defecto, Ansible siempre ejecutará el `gather_facts:`, salvo que nosotros le indiquemos que no lo haga, mediante la sentencia `gather_facts: no` a nivel del `playbook`.
+
+```yml
+- name: Este playbook no hace gather_facts 
+  hosts: all
+  gather_facts: no
+  tasks:
+    - xxxx
+```
 
 ---
 
-### Ejercicio #5 
+### Ejercicio #5 - Templates
 
-Tomando como base el [Ejercicio #4](#ejercicio-4) modifique el rol `apache2`, para que cambie el contenido de la página web por defecto dependiendo en que `host` se encuentre. El servidor web deberá desplegar una página similar a la siguiente:
+Tomando como base el [Ejercicio #4](#ejercicio-4) modifique el rol `apache2` para que cambie el contenido de la página web por defecto del servidor, dependiendo en que `host` se encuentre ejecutando. El servidor web deberá desplegar una página similar a la siguiente:
 ```bash
   Este sitio web se encuentra corriendo en el nodo <host01|host02>.
   Este es el ambiente de <produccion|desarrollo>!!
@@ -464,7 +487,7 @@ Tomando como base el [Ejercicio #4](#ejercicio-4) modifique el rol `apache2`, pa
 
 <details>
   <summary>
-HTML
+Aquí puede verlo en formato HTML
   </summary>
 </html>
 <pre>
@@ -480,32 +503,36 @@ HTML
 
 
 .
-Utilice un `template` para modificar el contenido de esta página, según se encuentre en `host01 | produccion` o `host02 | desarrollo`. 
+Utilice un `template` para modificar el contenido de la página, según se encuentre en `host01 | produccion` o `host02 | desarrollo`, de forma de no tener que escribir el contenido de la página a mano dos veces.
 
-:warning: Tenga en cuenta que debe iniciar los servicios de Apache en cada host para que el servidor web responda, dado que por defecto se encuentra apagado. Esto puede hacerlo ejecutando el comando `service apache2 restart` en cada host. Pruebe de incluir este paso como una tarea más del rol, para no tener que realizarlo en forma manual. Puede utilizar el módulo `service:` de Ansible, cuya documentación se encuentra [aqui](https://docs.ansible.com/ansible/latest/collections/ansible/builtin/service_module.html).
+Recuerde que ya instalamos Apache previamente en el ejercicio 4, por lo cuál no es necesario volver a instalarlo. 
+
+Tenga en cuenta que debe iniciar los servicios de Apache en cada host para que el servidor web responda, dado que por defecto éstos se encuentran detenidos. Incluya este paso como parte del rol, para no tener que hacerlo en forma manual en cada `host`. 
+
+El comando `service apache2 restart` inicia los servicios de apache en el equipo, pero mejor busque si no existe un módulo de Ansible específico para hacer esto!
 
 
 
 <details>
-	<summary>
-		Pista #1
-	</summary>
-	El directorio <code>document root</code> del servidor web Apache se encuentra ubicado en <code>/var/www/html/</code>, y tiene el archivo <code>index.html</code> que se carga por defecto al acceder al mismo con un navegador.
+<summary> Pista #1 </summary>
+El directorio <code>document root</code> del servidor web Apache se encuentra ubicado en <code>/var/www/html/</code>, y tiene dentro el archivo <code>index.html</code>, el cuál se carga por defecto al acceder al servidor con un navegador web.
 </details>
 
 <details>
-	<summary>
-		Pista #2
-	</summary>
-	Recuerde que puede definir las <code>variables</code> a utilizar en múltiples lugares del proyecto, incluyendo un archivo específico de variables, en el inventario dentro de <code>host_vars/group_vars</code>, en los directorios <code>./defaults ./vars</code> del rol, entre otros.  
+<summary> Pista #2 </summary>
+Recuerde que puede definir las <code>variables</code> a utilizar en múltiples lugares del proyecto, incluyendo un archivo específico de variables, en el inventario dentro de <code>host_vars/group_vars</code>, en los directorios <code>./defaults ./vars</code> del rol, entre otros.  
 </details>
 
 <details>
-	<summary>
-		Pista #3
-	</summary>
-	Recuerde que es posible definir tareas dentro del rol en otros archivos por fuera del <code>tasks/main.yml</code>. Luego puede invocar estas tareas, mediante <code>include_role:</code> o <code>import_role:</code> con la opción <code>tasks_from:</code>.  
+<summary>Pista #3</summary>
+Recuerde que es posible definir tareas dentro de un rol, en otros archivos por fuera del <code>tasks/main.yml</code>. Luego puede invocar estas tareas direcamente, mediante la opción <code>tasks_from:</code> de <code>include_role:</code> o <code>import_role:</code>.  
 </details>
+
+<details>
+<summary>Pista #4</summary>
+Google es (como siempre) el mejor aliado para buscar módulos específicos de Ansible, para usar en lugar de comandos de Linux. Busque algo como <code>linux service command ansible module</code> y seguro lo encontrará facilmente.  
+</details>
+
 
 <details>
 	<summary>
