@@ -866,8 +866,8 @@ Pruebe de correr el playbook anterior de esta forma: `ansible-playbook primer-pl
 Ref: [Conditionals](https://docs.ansible.com/ansible/latest/user_guide/playbooks_conditionals.html)
 
 Como comentamos antes, Ansible esta desarrollado sobre Python, pero las configuraciones se realizan a través de documentos escritos en YAML para simplificar su escritura. Sin embargo, el hecho de contar con Python trabajando detrás de escena, nos permite incorporar funcionalidades más avanzadas a nuestros `playbooks`. Los condicionales son uno de ellos.
-`
-Mediante la utilización de la opción `when:` en la definición de una tarea, podemos hacer que solo se ejecute la misma cuando se cumpla una determinada condición. El contenido de la opción `when` es una sentencia condicional de Python valida, que puede referenciar variables definidas de forma dinámica o estática.
+
+Mediante la utilización de la opción `when:` en la definición de una tarea, podemos hacer que solo se ejecute la misma cuando se cumpla una determinada condición. El contenido de la opción `when:` es una sentencia condicional de Python valida, que puede referenciar variables definidas de forma dinámica o estática.
 
 Por ejemplo, si queremos generalizar una tarea para que se ejecute tanto en servidores Ubuntu como en CentOS, podemos agregar un condicional `when:`, de forma de poder invocar al módulo de ansible correcto dependiendo de cuál sea el sistema operativo del host.
 
