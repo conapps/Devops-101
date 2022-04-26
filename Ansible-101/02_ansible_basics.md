@@ -649,7 +649,7 @@ application_env: produccion
 
 ```yaml
 # Archivo ./group_vars/app.yml
-envirapplication_env: desarrollo
+application_env: desarrollo
 ```
 
 Y en  nuestro `playbook`:
