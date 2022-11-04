@@ -129,6 +129,7 @@ $ ssh -i devops101-labs.pem ubuntu@servernumX.labs.conatest.click
 Desde Windows, se puede acceder de dos formas.
 
 La primera es utilizando `Windows Power Shell`:
+
 - Descargar a la notebook el certificado (.pem) recibido y coloclarlo en una carpeta de fácil acceso.
 - Abrir la aplicación `Windows Power Shell`, y ubicarse en dicha carpeta.
 - Utilizar el comando `ssh` tal como lo haríamos para Linux en el caso anterior:
@@ -137,6 +138,7 @@ La primera es utilizando `Windows Power Shell`:
   ```
 
 La segunda opción es utilizando la herramienta `Putty`:
+
 - Descargar a la notebook el certificado (.ppk) recibido.
 - Instalar [Putty](https://www.chiark.greenend.org.uk/~sgtatham/putty/) y abrirlo.
 - Dentro del panel "Category" elegir "Session" y luego completar los siguientes campos:
@@ -146,16 +148,118 @@ La segunda opción es utilizando la herramienta `Putty`:
   connection-type: ssh
   port: 22
   ```
-
--  Dentro de "Category" --> "Connection" --> "SSH" --> "Auth" seleccionar "Browse" y elegir el certificado `devops101-labs.ppk`
-- Opcional: puede grabar la configuración de la sesión mediante "Save" para poder volver a utilizarla luego. 
-- Seleccionar "Open" para conectarse, y luego "Accept" para aceptar la Security Alert. 
+- Dentro de "Category" --> "Connection" --> "SSH" --> "Auth" seleccionar "Browse" y elegir el certificado `devops101-labs.ppk`
+- Opcional: puede grabar la configuración de la sesión mediante "Save" para poder volver a utilizarla luego.
+- Seleccionar "Open" para conectarse, y luego "Accept" para aceptar la Security Alert.
 
 ## Docker cli
 
-Comencemos por repasar los comandos mas comunes disponibilizados por Docker a través de su **cli**.
+Docker se controla a nivel local mediante una interfaz de línea de comandos (cli), que por debajo interactúa con el Docker daemon a traves de la API.
 
-### Cómo crear un contenedor - `docker run`
+### Standalone Commands vs Management Commands
+
+Debido a su desarrollo y evolución, la `docker cli` cuenta con dos tipos de comandos diferentes, que permiten realizar las mismas tareas de dos formas.
+En las primeras versiones, la `cli` contaba con una serie de comandos independientes (que siguen siendo válidos) denominados `Standalone Commands`. Suelen ser comandos de tipo "verbos", como por ejemplo `docker run`, `docker pull`, `docker build`, que en general realizan una acción específica. Sin embargo, a medida que la plataforma crecía y se agregaban nuevas funcionalidades, resultaba cada vez mas difícil encontrar "verbos" adecuados para poder reflejar las mismas.
+
+A partir de la versión 1.13+, la `docker cli` evolucionó, para incluir un nuevo conjunto de comandos denominados `Management Commands`,  con el objetivo es agrupar los comandos para que puedan adecuarse a las nuevas funcionalidades y sean mas sencillos de recordar. Los `Management Commands` suelen comenzar con "sustantivos" que se asocian con los diversos componentes de la plataforma, por ejemplo `docker container` o `docker image` seguidos de subcomandos en forma de "verbos", que se asocian a la acción que se realiza, por ejemplo `docker container run` o `docker image ls`.
+
+A lo largo de esta guía trataremos de utilizar en la mayoría de los casos los relativamente nuevos `Management Commands`, pero como la misma también ha ido evolucionando desde las primeras versiones del curso hace varios años, es posible que en algunos lugares todavía se haga referencia al antiguo set de Standalone Commands, los cuales de todas formas siguen siendo válidos.
+
+Simplementa a modo de ejemplo, si quisieramos listar los contenedores que están corriendo actualmente, utilizando los `Management commands` ejecutaríamos:
+
+```bash
+$ docker container ls
+```
+
+mientras que con los Standalone Commands sería:
+
+```bash
+$ docker ls
+```
+
+
+### Ayuda: `docker help`
+
+Una de las fuentes importantes de referencia es la propia ayuda que proporciona la propia cli, al ejecutar el comando `docker help`:
+
+```bash
+$ docker help
+(...)
+
+Management Commands:
+  config      Manage Docker configs
+  container   Manage containers
+  image       Manage images
+(...)
+
+Commands:
+  attach      Attach local standard input, output, and error streams to a running container
+  build       Build an image from a Dockerfile
+  commit      Create a new image from a container's changes
+  cp          Copy files/folders between a container and the local filesystem
+  create      Create a new container
+  diff        Inspect changes to files or directories on a container's filesystem
+  events      Get real time events from the server
+  exec        Run a command in a running container
+(...)
+ 
+
+```
+
+
+
+Y podemos también obtener detelles específicos de un Management Command, por ejemplo:
+
+```bash
+$ docker container --help
+Usage:  docker container COMMAND
+
+Manage containers
+
+Commands:
+  attach      Attach local standard input, output, and error streams to a running container
+  commit      Create a new image from a container's changes
+  cp          Copy files/folders between a container and the local filesystem
+  create      Create a new container
+  diff        Inspect changes to files or directories on a container's filesystem
+  exec        Run a command in a running container
+  export      Export a container's filesystem as a tar archive
+  inspect     Display detailed information on one or more containers
+(...)
+```
+
+
+
+O bajar mas de nivel a un comando específico, por ejemplo:
+
+
+```
+$ docker container ls --help
+Usage:  docker container ls [OPTIONS]
+
+List containers
+
+Aliases:
+  ls, ps, list
+
+Options:
+  -a, --all             Show all containers (default shows just running)
+  -f, --filter filter   Filter output based on conditions provided
+      --format string   Pretty-print containers using a Go template
+  -n, --last int        Show n last created containers (includes all states) (default -1)
+  -l, --latest          Show the latest created container (includes all states)
+      --no-trunc        Don't truncate output
+  -q, --quiet           Only display container IDs
+  -s, --size            Display total file sizes
+```
+
+
+
+
+Comencemos por conocer los comandos mas comunes disponibilizados por Docker a través de su **cli**.
+
+
+### Cómo crear un contenedor: `docker run`
 
 > Genera un contenedor a partir de una imagen y lo pone a correr.
 
@@ -232,7 +336,7 @@ $
 
 ##### Opción `--name`
 
-Esta opción permite darle un nombre al contenedor que estamos creando. En caso de que no se le brinde un nombre, Docker asignará uno generado randómicamente. El nombre permite ejecutar diferentes acciones sobre el contenedor de forma nemotécnica. Veremos esto en profundidad mas adelante.
+Esta opción permite darle un nombre al contenedor que estamos creando. En caso de que no se le brinde un nombre, Docker asignará uno generado randómicamente. El nombre permite ejecutar diferentes acciones sobre el contenedor de forma nemotécnica. Lo veremos en detalle mas adelante.
 
 ##### Opción `--rm`
 
@@ -242,7 +346,11 @@ Esta opción le indica a Docker que el contedor debe ser eliminado una vez que s
 
 Esta opción mapea un puerto del contenedor a un puerto del equipo host. Se utiliza cuando se necesita publicar externamente el servicio que proporciona el contenedor. Si por ejemplo tuvieramos un contenedor corriendo un servidor web esuchando en el puerto 8080 y quisieramos publicar dicho servicio en la máquina `host` utilizando el puerto 80, agregaríamos la opción `-p 80:8080`. Veremos la opción `-p` en mas detalle en la sección [Networking](4_Networking.md)
 
-### Cómo listar los contenedores. `docker ps`
+##### Opción `-e`
+
+Esta opción mapea un puerto del contenedor a un puerto del equipo host. Se utiliza cuando se necesita publicar externamente el servicio que proporciona el contenedor. Si por ejemplo tuvieramos un contenedor corriendo un servidor web esuchando en el puerto 8080 y quisieramos publicar dicho servicio en la máquina `host` utilizando el puerto 80, agregaríamos la opción `-p 80:8080`. Veremos la opción `-p` en mas detalle en la sección [Networking](4_Networking.md)
+
+### Cómo listar los contenedores: `docker ps`
 
 El comando:
 
@@ -254,11 +362,12 @@ lista los contenedores que están corriendo, por lo tanto, si lo ejecutamos con 
 
 ```bash
 $ docker ps
-CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                  NAMES
-7ed9736d1ec5        ghost               "docker-entrypoint.s…"   3 minutes ago       Up 3 minutes        0.0.0.0:80->2368/tcp   ejercicio2
+CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS      NAMES
+7ed9736d1ec5        nginx               "docker-entrypoint.s…"   3 minutes ago       Up 3 minutes        80/tcp     friendly_bartik
 ```
 
-Como puede verse en el text-box anterior, cada contenedor tiene un ID autogenerado así como un nombre; como vimos anteriormente, este último puede especificarse al momento de generar el container con `docker run` y la opción `--name`, pero en caso de no hacerlo Docker auto-genera uno. Estos campos son fundamentales dado que los utilizaremos en la línea de comandos cada vez que nos quieramos referir a un contenedor determinado para ejecutar alguna acción.
+Como puede verse, cada contenedor tiene un ID autogenerado, así como un nombre (autogenerado o asignado con la opción `--name`).
+Estos campos son fundamentales dado que los utilizaremos en cada vez que nos querramos referir a un contenedor para ejecutar alguna acción.
 
 Para listar todos los contenedores del sistema, estén corriendo o no, se agrega la opción `-a` de la siguiente manera:
 
@@ -266,67 +375,31 @@ Para listar todos los contenedores del sistema, estén corriendo o no, se agrega
 $ docker ps -a
 ```
 
-A partir de la versión 1.13+, Docker incluye un nuevo set de comandos ( `Management commands`), cuyo objetivo es agrupar algunos de los comandos estándar, como por ejemplo: `docker ps`, `docker run`, `docker start`, etc, y hacerlos mas sencillos de recordar.
 
-Podemos ver este conjunto de `Management commands` al ejecutar `docker help`.
 
-```bash
-$ docker help
 
-<-- Salida omitida para mayor claridad ->
 
-Management Commands:
-  config      Manage Docker configs
-  container   Manage containers
-  image       Manage images
-<-- Salida omitida para mayor claridad ->
-
-Commands:
-  attach      Attach local standard input, output, and error streams to a running container
-  build       Build an image from a Dockerfile
-  commit      Create a new image from a container's changes
-  <-- Salida omitida para mayor claridad ->
-
-```
-
-A modo de ejemplo, si utilizando los `Management commands` quisieramos listar los contenedores que están corriendo en un momento determinado ejecutaríamos:
-
-```bash
-$ docker container ls
-```
-
-Si por otro lado quisieramos listar todos los contenedores, inclusive los que están apagados, el comando sería:
-
-```bash
-$ docker container ls -a
-```
-
-Para crear un nuevo contenedor mediante los `Management commandos` se debe ejecutar:
-
-```bash
-$ docker container run
-```
-
-### Cómo apagar un contenedor. `docker stop`
+Cómo apagar un contenedor: `docker stop`
 
 Para apagar un contenedor que está corriendo se puede ejecutar `docker stop` seguido del nombre o el id del contenedor. Por ejemplo:
 
 ```bash
 $ docker ps
-CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                  NAMES
-48e5d16a8fa7        ghost               "docker-entrypoint.s…"   2 seconds ago       Up 1 second         0.0.0.0:80->2368/tcp   ejercicio2
+CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS      NAMES
+7ed9736d1ec5        nginx               "docker-entrypoint.s…"   3 minutes ago       Up 3 minutes        80/tcp     friendly_bartik
 
-$ docker stop ejercicio2
-ejercicio2
+$ docker stop friendly_bartik
+friendly_bartik
 
 $ docker ps
 CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
-$
+
 ```
 
-> **Nota:** asignar nombres nemotécnicos a los contenedores nos evita tener que listarlos previamente para obtener su ID o nombre autogenerado para poder apagarlos.
 
-### Cómo prender un contenedor. `docker start`
+> **Nota:** asignar nombres nemotécnicos a los contenedores nos evita tener que listarlos previamente para obtener su ID o su nombre autogenerado para poder ejecutar comandos sobre el mismo, como por ejemplo apagarlo.
+
+### Cómo encender un contenedor que se encuentra apagado: `docker start`
 
 Para prender un contenedor que se encuentra apagado podemos ejecutar `docker start` seguido del nombre del contenedor o su ID.
 
@@ -334,26 +407,30 @@ Para prender un contenedor que se encuentra apagado podemos ejecutar `docker sta
 
 ```bash
 $ docker ps -a
-CONTAINER ID        IMAGE                             COMMAND                  CREATED             STATUS                      PORTS                      NAMES
-48e5d16a8fa7        ghost                             "docker-entrypoint.s…"   3 minutes ago       Exited (0) 3 minutes ago                               ejercicio2
+CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              	PORTS   NAMES
+7ed9736d1ec5        nginx               "docker-entrypoint.s…"   3 minutes ago       xited (0) 2 minutes ago    	friendly_bartik
 
-$ docker start 48e5d16a8fa7
-48e5d16a8fa7
-$ docker ps
-CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                  NAMES
-48e5d16a8fa7        ghost               "docker-entrypoint.s…"   4 minutes ago       Up 1 second         0.0.0.0:80->2368/tcp   ejercicio2
+$ docker start 7ed9736d1ec5
+7ed9736d1ec5
+
+$ docker container ls
+CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS          NAMES
+7ed9736d1ec5        nginx               "docker-entrypoint.s…"   4 minutes ago       Up 1 second         80/tcp   	friendly_bartik
 ```
+
 
 > **Nota:** asignar nombres nemotécnicos a los contenedores nos evita tener que listarlos previamente para obtener su ID o nombre autogenerado para poder apagarlos.
 
-### Cómo borrar un contenedor - `docker rm`
 
-Ya vimos como prender y apagar un contenedor, pero ¿qué sucede cuando ya no lo necesitamos mas?. Los contenedores pueden eliminarse del sistema con el comando `$ docker rm <nombre-del-contenedor/id-del-contenedor>`. Esto elimina el container por completo por lo que al ejecutar `$ docker ps -a` tampoco lo veremos:
+
+### Cómo borrar un contenedor: `docker rm`
+
+Ya vimos como prender y apagar un contenedor, pero ¿qué sucede cuando ya no lo necesitamos?. Los contenedores pueden eliminarse del sistema con el comando `$ docker rm <nombre-del-contenedor/id-del-contenedor>`. Esto elimina el container por completo por lo que al ejecutar `$ docker ps -a` tampoco lo veremos:
 
 ```bash
-$ docker ps
-CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
-$ docker rm ejercicio2
+$ docker rm 7ed9736d1ec5
+7ed9736d1ec5
+
 $ docker ps -a
 CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
 ```
@@ -382,21 +459,21 @@ d83cb28ee25cc1abda77f8f45248d3f80e4c42f93ddde9cd5338739498e9e66e
 2. Listo el contenedor y luego apago y lo elimino
 
 ```bash
-ubuntu@serverNum1:~$ docker ps
+ubuntu@serverNum1:~$ docker container ls
 CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
 d83cb28ee25c        ubuntu              "/bin/bash"         3 seconds ago       Up 2 seconds                            pedantic_bell
 
-ubuntu@serverNum1:~$ docker stop pedantic_bell
+ubuntu@serverNum1:~$ docker container stop pedantic_bell
 pedantic_bell
 
-ubuntu@serverNum1:~$ docker rm pedantic_bell
+ubuntu@serverNum1:~$ docker container rm pedantic_bell
 pedantic_bell
 ```
 
-3. Vuelvo a crear el contenedor, esta vez con la imagen presente de forma local
+3. Vuelvo a crear el contenedor, lo cuál esta vez es inmediato, dado que la imagen ya se encuentra presente de forma local
 
 ```bash
-ubuntu@serverNum1:~$ docker run -d -it ubuntu
+ubuntu@serverNum1:~$ docker container run -d -it ubuntu
 b1332396d3fbfe3629a3c3fe5d829995e9d9fd8642bfd234b929e887fb7a81ed
 
 
@@ -413,15 +490,17 @@ CONTAINER ID        IMAGE               COMMAND             CREATED             
 b1332396d3fb        ubuntu              "/bin/bash"         4 seconds ago       Up 3 seconds                            relaxed_lichterman
 ```
 
-### Cómo conectarse a un contenedor corriendo en segundo plano - `docker attach`
 
-Cuando un contenedor está corriendo en segundo plano podemos conectar nuestra `STDIN, STDOUT Y STDERR` al mismo utilizando el comando `docker attach`.
+
+### Cómo conectarse a un contenedor corriendo en segundo plano: `docker attach`
+
+Cuando un contenedor está corriendo en segundo plano podemos conectar nuestra `STDIN, STDOUT Y STDERR` al mismo, utilizando el comando `docker attach`.
 
 ```bash
-$ docker run -itd --rm --name ejemplo_attach ubuntu top
+$ docker container run -itd --rm --name ejemplo_attach ubuntu top
 7e0da3c794cb1f64ce0ed20dce277741965dfb1ee96a2990dde9ebeb16b9667d
 
-$ docker attach ejemplo_attach
+$ docker container attach ejemplo_attach
 root@33c2899ecb9e:/#
 top - 20:40:11 up 7 days, 22:10,  0 users,  load average: 1.14, 1.02, 0.98
 Tasks:   1 total,   1 running,   0 sleeping,   0 stopped,   0 zombie
@@ -433,7 +512,7 @@ KiB Swap: 12475900 total, 12384984 free,    90916 used.  3590716 avail Mem
     1 root      20   0   36640   3104   2676 R   0.0  0.0   0:00.03 top
 ```
 
-Una vez "dentro" del contenedor, para desconectar `STDIN, STDOUT Y STDERR` se ejecuta la combinación de teclas `ctl+p`, `ctl+q`. Esto permitirá volver a la máquina `host` y que el contendor siga corriendo.
+Una vez "dentro" del contenedor, para desconectarnos debemos ejecutar la combinación de teclas `ctrl+p`, `ctrl+q`. Esto permitirá volver a la máquina `host` y que el contendor siga corriendo. 
 
 ##### Ejercicio 2
 
@@ -443,28 +522,29 @@ Una vez "dentro" del contenedor, para desconectar `STDIN, STDOUT Y STDERR` se ej
 $ docker run -it -d --name ejercicio2 --rm ubuntu /bin/bash
 ```
 
-2. Conectarse a la consola del contenedor.
-3. Una vez dentro de la consola escribir `exit`.
-4. Ejecutar el comando `docker ps`. Intente explicar la salida del comando.
-5. Volver a ejecutar el paso 1.
-6. Conectarse una vez mas a la consola del contenedor.
-7. Volver a la consola del equipo host sin apagar el contenedor.
-8. Verificar mediante `docker ps` que el contenedor sigue prendido.
-9. Parado en el equipo `host` apagar el contenedor.
+2. Verificar que el contenedor se encuentra corriendo.
+3. Conectarse a la consola del contenedor.
+4. Una vez dentro de la consola ejecutar el comando `exit`.
+5. En el equipo `host`, ejecutar el comando `docker ps` y revisar la salida del mismo. Que puede notar?
+6. Volver a ejecutar el paso 1.
+7. Conectarse una vez mas a la consola del contenedor.
+8. Volver a la consola del equipo `host` pero ahora sin apagar el contenedor.
+9. Verificar mediante `docker ps` que el contenedor sigue encendido.
+10. Estando en el equipo `host` apagar el contenedor.
 
-### Cómo listar las imágenes - `docker images`
+### Cómo listar las imágenes: `docker images`
 
 ```bash
 $ docker images
 ```
 
-o
+o bien:
 
 ```bash
 $ docker image ls
 ```
 
-Muestra las imagenes que hay en la máquina local:
+Muestra las imagenes que hay en el equipo `host` local:
 
 ```bash
 $ docker images
@@ -484,26 +564,48 @@ conatel/config-backup     <none>              a2186fa14acc        3 months ago  
 
 Este ejercicio tiene como objetivo experimentar de primera mano la potencia de los contenedores a la hora de simplificar la puesta en producción de un servicio. Nos referimos mas concretamente al hecho de que una vez que la aplicación fue "contenerizada" tendremos la certeza absoluta que correrá sin problemas en cualquier plataforma que soporte Docker.
 
-Concretamente, el objetivo del ejercicio es poner en producción una aplicación, llamada Ghost, que permite registrarse y publicar Blogs al público en general. Esta plataforma ya fue "contenerizada" y su imagen está diponible en Dockerhub bajo el nombre `ghost`.
+Concretamente, el objetivo del ejercicio es poner en producción una aplicación, llamada Ghost, que permite registrarse y publicar Blogs al público en general. Esta plataforma ya fue "contenerizada" y su imagen está diponible públicamente en Dockerhub, bajo el nombre `ghost`.
 
-Cuando corremos un contenedor a partir de dicha imagen este queda "escuchando" en el puerto 2368, pero para simplificar el acceso de los clientes a la aplicación, el `host` deberá estar escuchando en el puerto `80`.
+Cuando corremos un contenedor a partir de dicha imagen, por defecto éste queda "escuchando" en el puerto 2368. Pero para simplificar el acceso de los clientes a la aplicación, el `host` deberá estar escuchando en el puerto `80`.
 
 Para finalizar, presentamos una lista de los requerimientos considerados necesarios para dar por resuelto el ejercicio. Algunos ya fueron mencionados anteriormente, pero se dejan en la lista para facilitar la referencia:
 
 - La imagen a utilizar se llama `ghost.`
-- El contendor debe tener un nombre definido por el administrador.
+- El contendor debe tener un nombre específico, definido por el administrador, en este caso: `ejercicio3`
 - El contenedor no debe ser eliminado al apagarse.
-- El servicio debe estar publicado al exterior en el puerto 80. (el puerto original es 2368)
+- El servicio debe estar publicado al exterior en el puerto 80 (el puerto original es 2368)
 - El contenedor debe correr en segundo plano.
 - El comando a utilizar es el que viene por defecto con la imagen.
 
 #### Verificación:
 
-- Mediante un navegador acceder a http://servernumX.labs.conatest.click, se debería ver el servicio publicado.
-- Apagar el contenedor utilizando `docker stop` y verificar que el servicio ya no está publicado.
+- Mediante un navegador acceder a [http://servernumX.labs.conatest.click](http://servernumX.labs.conatest.click), y deberá ver el servicio publicado.
+- Apagar el contenedor utilizando `docker stop` y verificar que el servicio ya no está accesible.
 - Encender el contenedor utilizando `docker start` y verificar que el servicio vuelve a estar online.
 
-### Cómo borrar una imagen - `docker rmi`
+
+<details>
+<summary>Pista #1</summary>
+La opción para mapear el puerto del contenedor al host es <code>-p:<puerto_contenedor>:<puerto_host></code>.
+</details>
+
+<details>
+    <summary>Solución</summary>
+    <pre>
+# Archivo de inventario: hosts.yml
+all:
+  vars:
+    ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
+    ansible_ssh_private_key_file: './master_key'
+  hosts:
+    host01:
+    host02:
+    host03:
+    </pre>
+</details>
+
+
+### Cómo borrar una imagen: `docker rmi`
 
 Anteriormente vimos como puede eliminarse un contenedor, pero ¿que sucede si además del contenedor quiero eliminar la copia local de la imagen de la cual proviene?
 El comando `docker rmi <id-de-la-imagen/nombre-de-la-imagen>` cumple precisamente esta función. Es importante notar que esta operación no puede realizarse mientras haya un contenedor que esté usando esta imagen, aún cuando el mismo esté apagado:
@@ -532,4 +634,4 @@ $ docker rmi ghost --force
 b8fb2fac700b
 ```
 
-[Siguiente-->](2_Images.md)
+[Siguiente--&gt;](2_Images.md)
