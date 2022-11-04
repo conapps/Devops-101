@@ -171,17 +171,19 @@ Simplementa a modo de ejemplo, si quisieramos listar los contenedores que están
 $ docker container ls
 ```
 
-mientras que con los Standalone Commands sería:
+mientras que con los `Standalone Commands` sería:
 
 ```bash
 $ docker ls
 ```
 
-### Ayuda: `docker help`
+
+
+#### Ayuda: `docker help`
 
 Una de las fuentes importantes de referencia es la propia ayuda que proporciona la propia cli, al ejecutar el comando `docker help`:
 
-```bash
+```
 $ docker help
 (...)
 
@@ -207,7 +209,7 @@ Commands:
 
 Y podemos también obtener detelles específicos de un Management Command, por ejemplo:
 
-```bash
+```
 $ docker container --help
 Usage:  docker container COMMAND
 
@@ -224,6 +226,8 @@ Commands:
   inspect     Display detailed information on one or more containers
 (...)
 ```
+
+
 
 O bajar mas de nivel a un comando específico, por ejemplo:
 
@@ -247,19 +251,21 @@ Options:
   -s, --size            Display total file sizes
 ```
 
-Comencemos por conocer los comandos mas comunes disponibilizados por Docker a través de su **cli**.
 
-### Cómo crear un contenedor: `docker run`
 
-> Genera un contenedor a partir de una imagen y lo pone a correr.
+Comencemos entonces por conocer los comandos mas comunes disponibilizados por Docker a través de su **cli**.
 
-La forma genérica del comando es `docker run` + `argumentos (opcional)` + `nombre de la imagen` + `comando a correr (opcional)`. En caso de no proporcionar el comando a correr se correrá el comando por defecto de la imagen en cuestión, mas sobre esto mas adelante.
+### Cómo crear un contenedor: `docker container run`
 
-Aquí hay que tener cuidado en no dejarse engañar por el nombre del comando, si bien el mismo se llama `run`, no se utiliza para poner a correr un contenedor sino que se utiliza para crearlo.
+El comando `docker container run` genera un nuevo contenedor a partir de una imagen y lo pone a correr. 
 
-> **Nota:** al ejecutar `docker run`, por defecto, además de ser creado, el contenedor se pone a correr. De hecho la mejor forma de pensar la utilidad de este comando es que sirve para: "correr un comando en un **nuevo contenedor**"
+Podemos revisar la ayuda del mismo con `docker container run --help`, donde vemos que la forma de ejecutarlo es: `docker container run [opciones] nombre-de-la-imagen [comando-a-ejecutar]`. En caso de no indicar el comando a ejecutar, el contendor correrá el comando por defecto que está configurado en la imagen (veremos esto en detalle más adelante).
 
-El comando `docker run` primero busca la imagen localmente y en caso de no encontrarla va a buscarla a un registro de imágenes, por defecto DockerHub.
+Aquí hay que tener cuidado en no dejarse engañar por el nombre del comando, si bien el mismo se llama `run`, no se utiliza para iniciar un contenedor, sino que se utiliza para crearlo. Pero además de crearlo, también lo inicia, lo pone a correr.
+
+> La mejor forma de pensar este comando es que sirve para: "correr un comando dentro de un **nuevo contenedor**"
+
+El comando `docker container run` primero busca la imagen del contenedor localmente, y en caso de no encontrarla va a buscarla a un registro de imágenes, que por defecto es [DockerHub](https://hub.docker.com/).
 
 #### Ejemplo:
 
