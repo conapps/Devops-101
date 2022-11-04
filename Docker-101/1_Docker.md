@@ -154,7 +154,7 @@ La segunda opción es utilizando la herramienta `Putty`:
 
 ## Docker cli
 
-Docker se controla a nivel local mediante una interfaz de línea de comandos (cli), que por debajo interactúa con el Docker daemon a traves de la API.
+Docker se controla a nivel local mediante una interfaz de línea de comandos `Docker cli`, que por debajo interactúa con el `Docker daemon` a través de la `Docker API`.
 
 ### Standalone Commands vs Management Commands
 
@@ -176,7 +176,6 @@ mientras que con los Standalone Commands sería:
 ```bash
 $ docker ls
 ```
-
 
 ### Ayuda: `docker help`
 
@@ -206,8 +205,6 @@ Commands:
 
 ```
 
-
-
 Y podemos también obtener detelles específicos de un Management Command, por ejemplo:
 
 ```bash
@@ -228,10 +225,7 @@ Commands:
 (...)
 ```
 
-
-
 O bajar mas de nivel a un comando específico, por ejemplo:
-
 
 ```
 $ docker container ls --help
@@ -253,11 +247,7 @@ Options:
   -s, --size            Display total file sizes
 ```
 
-
-
-
 Comencemos por conocer los comandos mas comunes disponibilizados por Docker a través de su **cli**.
-
 
 ### Cómo crear un contenedor: `docker run`
 
@@ -375,10 +365,6 @@ Para listar todos los contenedores del sistema, estén corriendo o no, se agrega
 $ docker ps -a
 ```
 
-
-
-
-
 Cómo apagar un contenedor: `docker stop`
 
 Para apagar un contenedor que está corriendo se puede ejecutar `docker stop` seguido del nombre o el id del contenedor. Por ejemplo:
@@ -395,7 +381,6 @@ $ docker ps
 CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
 
 ```
-
 
 > **Nota:** asignar nombres nemotécnicos a los contenedores nos evita tener que listarlos previamente para obtener su ID o su nombre autogenerado para poder ejecutar comandos sobre el mismo, como por ejemplo apagarlo.
 
@@ -418,10 +403,7 @@ CONTAINER ID        IMAGE               COMMAND                  CREATED        
 7ed9736d1ec5        nginx               "docker-entrypoint.s…"   4 minutes ago       Up 1 second         80/tcp   	friendly_bartik
 ```
 
-
 > **Nota:** asignar nombres nemotécnicos a los contenedores nos evita tener que listarlos previamente para obtener su ID o nombre autogenerado para poder apagarlos.
-
-
 
 ### Cómo borrar un contenedor: `docker rm`
 
@@ -490,8 +472,6 @@ CONTAINER ID        IMAGE               COMMAND             CREATED             
 b1332396d3fb        ubuntu              "/bin/bash"         4 seconds ago       Up 3 seconds                            relaxed_lichterman
 ```
 
-
-
 ### Cómo conectarse a un contenedor corriendo en segundo plano: `docker attach`
 
 Cuando un contenedor está corriendo en segundo plano podemos conectar nuestra `STDIN, STDOUT Y STDERR` al mismo, utilizando el comando `docker attach`.
@@ -512,7 +492,7 @@ KiB Swap: 12475900 total, 12384984 free,    90916 used.  3590716 avail Mem
     1 root      20   0   36640   3104   2676 R   0.0  0.0   0:00.03 top
 ```
 
-Una vez "dentro" del contenedor, para desconectarnos debemos ejecutar la combinación de teclas `ctrl+p`, `ctrl+q`. Esto permitirá volver a la máquina `host` y que el contendor siga corriendo. 
+Una vez "dentro" del contenedor, para desconectarnos debemos ejecutar la combinación de teclas `ctrl+p`, `ctrl+q`. Esto permitirá volver a la máquina `host` y que el contendor siga corriendo.
 
 ##### Ejercicio 2
 
@@ -583,7 +563,6 @@ Para finalizar, presentamos una lista de los requerimientos considerados necesar
 - Apagar el contenedor utilizando `docker stop` y verificar que el servicio ya no está accesible.
 - Encender el contenedor utilizando `docker start` y verificar que el servicio vuelve a estar online.
 
-
 <details>
 <summary>Pista #1</summary>
 La opción para mapear el puerto del contenedor al host es <code>-p:<puerto_contenedor>:<puerto_host></code>.
@@ -603,7 +582,6 @@ all:
     host03:
     </pre>
 </details>
-
 
 ### Cómo borrar una imagen: `docker rmi`
 
