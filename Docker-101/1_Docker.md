@@ -46,7 +46,7 @@ Los contenedores se han vuelto extremadamente populares porque son ideales para 
 
 ![alt text](Imagenes/Container_Architecture.png "Arquitectura de contenedores")
 
-La diferencia principal entre los contenedores y las máquinas virtuales es que las máquinas virtuales corren un sistema operativo completo cada una, mientras que los contenedores comparten el kernel del host. La única información necesaria en una imagen de Docker es la aplicación misma y sus dependencias. Por este motivo, las imagenes de docker son órdenes de magnitud mas pequeñas que un archivo ovf/ova.
+La diferencia principal entre los contenedores y las máquinas virtuales es que las máquinas virtuales corren un sistema operativo completo cada una, mientras que los contenedores comparten el kernel del host. La única información necesaria en una imagen de Docker es la aplicación misma y sus dependencias. Por este motivo, las imágenes de docker son órdenes de magnitud mas pequeñas que un archivo ovf/ova.
 
 ### Ventajas principales
 
@@ -89,7 +89,7 @@ En caso de querer instalar Docker, (`dockerd`, API y `docker`), en la máquina l
 
 ## DockerHub
 
-[DockerHub](http://dockerhub.com) es un repositorio, típicamente público, aunque también puede ser privado, de imágenes de contenedores Docker. En DockerHub hay mas de 100.000 imágenes públicas, desarrolladas por la comunidad que están disponibles para bajar. Dentro de estas imagenes se encuentran las aplicaciones mas comunes que utilizaremos cuando estemos desarrollando como ser: NGINX, MySQL, PostgreSQL, Ubuntu, Python, Node.js, haproxy, etc.
+[DockerHub](http://dockerhub.com) es un repositorio, típicamente público, aunque también puede ser privado, de imágenes de contenedores Docker. En DockerHub hay mas de 100.000 imágenes públicas, desarrolladas por la comunidad que están disponibles para bajar. Dentro de estas imágenes se encuentran las aplicaciones mas comunes que utilizaremos cuando estemos desarrollando como ser: NGINX, MySQL, PostgreSQL, Ubuntu, Python, Node.js, haproxy, etc.
 
 DockerHub está integrado de forma nativa dentro de Docker, por lo que al instalar este último ya tendremos acceso de forma automática a las imágenes públicas de DockerHub, aún sin tener una cuenta registrada.
 
@@ -247,7 +247,9 @@ Options:
   -s, --size            Display total file sizes
 ```
 
-Comencemos entonces por conocer los comandos mas comunes disponibilizados por Docker a través de su **cli**.
+Comencemos entonces por conocer los comandos mas comunes disponibilizados por Docker a través de su **cli** para el trabajo con **contenedores**.
+
+## Trabajando con Contenedores
 
 ### Cómo crear un contenedor: `docker container run`
 
@@ -329,13 +331,14 @@ Esta opción le indica a Docker que el contedor debe ser eliminado una vez que e
 
 ##### Opción `-p`
 
-La opción `-p` (`--publish`) mapea un puerto del contenedor a un puerto del equipo host. Se utiliza cuando se necesita publicar externamente el servicio que proporciona el contenedor. Si por ejemplo tenemos un contenedor corriendo un servidor web que escucha en el puerto 8080, y queremos publicar dicho servicio en el puerto 80 de la máquina `host`, agregaríamos la opción `-p 80:8080`. Veremos la opción `-p` en mas detalle en la sección [Networking](4_Networking.md).
+La opción `-p` (`--publish`) mapea un puerto del contenedor a un puerto del equipo host. Se utiliza cuando se necesita publicar externamente el servicio que proporciona el contenedor. Si por ejemplo tenemos un contenedor corriendo un servidor web que escucha en el puerto 8080, y queremos publicar dicho servicio en el puerto 80 de la máquina `host`, agregaríamos la opción `-p 80:8080`.
+Veremos la opción `-p` en mas detalle en la sección [Networking](4_Networking.md).
 
 ##### Opción `-e`
 
 La opción `-e` (`--env`) permite pasarle variables de entorno al contenedor. Se utiliza cuando se necesita específicar alguna variable de entorno al momento de correr el contenedor, por ejemplo, si la aplicación (comando) lo requierre para su ejecución.
 
-> El comando `docker container run` acepta muchas opciones más, para conocerlas puede revisar la ayuda del mismo: `docker container run --help`.
+> ℹ️  El comando `docker container run` acepta muchas opciones más, para conocerlas puede revisar la ayuda del mismo: `docker container run --help`.
 
 ##### Ejercicio 1
 
@@ -357,13 +360,7 @@ root@98adb368cf78:/# exit
 
 #### Cómo listar los contenedores: `docker container ls`
 
-El comando:
-
-```bash
-$ docker container ls
-```
-
-lista los contenedores que están corriendo, por lo tanto, si lo ejecutamos con un contenedor corriendo deberíamos ver algo así:
+El siguiente comando lista los contenedores que están corriendo:
 
 ```bash
 $ docker container ls
@@ -401,18 +398,18 @@ CONTAINER ID        IMAGE               COMMAND             CREATED             
 
 > 👉 asignar nombres nemotécnicos a los contenedores nos evita tener que listarlos previamente para obtener su ID o su nombre autogenerado para poder ejecutar comandos sobre el mismo, como por ejemplo apagarlo.
 
-### Cómo encender un contenedor que se encuentra apagado: `docker start`
+### Cómo encender un contenedor:  `docker container start`
 
-Para prender un contenedor que se encuentra apagado podemos ejecutar `docker start` seguido del nombre del contenedor o su ID.
+Para prender un contenedor que se encuentra apagado podemos ejecutar `docker container start` seguido del nombre del contenedor o su ID.
 
 ##### Ejemplo
 
 ```bash
-$ docker ps -a
+$ docker container ls -a
 CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              	PORTS   NAMES
 7ed9736d1ec5        nginx               "docker-entrypoint.s…"   3 minutes ago       xited (0) 2 minutes ago    	friendly_bartik
 
-$ docker start 7ed9736d1ec5
+$ docker container start 7ed9736d1ec5
 7ed9736d1ec5
 
 $ docker container ls
@@ -420,28 +417,28 @@ CONTAINER ID        IMAGE               COMMAND                  CREATED        
 7ed9736d1ec5        nginx               "docker-entrypoint.s…"   4 minutes ago       Up 1 second         80/tcp   	friendly_bartik
 ```
 
-> **Nota:** asignar nombres nemotécnicos a los contenedores nos evita tener que listarlos previamente para obtener su ID o nombre autogenerado para poder apagarlos.
+> 👉 Asignar nombres nemotécnicos a los contenedores nos ayuda a identificarlos de mejor forma, y no depender de su ID o nombre autogenerado para poder apagarlos.
 
-### Cómo borrar un contenedor: `docker rm`
+### Cómo borrar un contenedor: `docker container rm`
 
-Ya vimos como prender y apagar un contenedor, pero ¿qué sucede cuando ya no lo necesitamos?. Los contenedores pueden eliminarse del sistema con el comando `$ docker rm <nombre-del-contenedor/id-del-contenedor>`. Esto elimina el container por completo por lo que al ejecutar `$ docker ps -a` tampoco lo veremos:
+Ya vimos como encender y apagar un contenedor, pero ¿qué sucede cuando ya no lo necesitamos?. Los contenedores pueden eliminarse del sistema con el comando `$ docker container rm <nombre-del-contenedor/id-del-contenedor>`. Esto elimina el container por completo, por lo que al ejecutar `$ docker container ls -a` tampoco lo veremos.
 
 ```bash
-$ docker rm 7ed9736d1ec5
+$ docker container rm 7ed9736d1ec5
 7ed9736d1ec5
 
-$ docker ps -a
+$ docker container ls -a
 CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
 ```
 
-> **Nota:** Es importante notar que este comando elimina el contenedor pero no la imagen de la cual el contenedor proviene. Esto quiere decir que si nosotros quisieramos volver a correr el contenedor, la imagen se encuentra almacenada localmente y por tanto no es necesario descargarla nuevamente.
+> 👉 Es importante notar que este comando elimina el contenedor pero **no elimina la imagen** de la cuál el contenedor proviene. Esto quiere decir que si nosotros quisieramos volver a correr el contenedor, la imagen se encuentra almacenada localmente y por tanto no es necesario descargarla nuevamente.
 
 De esta forma, si volvieramos a crear un contenedor previamente eliminado, a diferencia de la primera vez donde `dockerd` tuvo que descargar la imagen, el contenedor se crearía de forma prácticamente instantánea. Veámos un ejemplo:
 
 1. Creo un contenedor cuya imagen no se encuentra localmente
 
 ```bash
-docker run -d -it ubuntu
+$ docker container run -d -it ubuntu
 Unable to find image 'ubuntu:latest' locally
 latest: Pulling from library/ubuntu
 124c757242f8: Pull complete
@@ -455,43 +452,39 @@ d83cb28ee25cc1abda77f8f45248d3f80e4c42f93ddde9cd5338739498e9e66e
 
 ```
 
-2. Listo el contenedor y luego apago y lo elimino
+2. Listo el contenedor, luego lo apago y lo elimino
 
 ```bash
-ubuntu@serverNum1:~$ docker container ls
+$ docker container ls
 CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
 d83cb28ee25c        ubuntu              "/bin/bash"         3 seconds ago       Up 2 seconds                            pedantic_bell
 
-ubuntu@serverNum1:~$ docker container stop pedantic_bell
+$ docker container stop pedantic_bell
 pedantic_bell
 
-ubuntu@serverNum1:~$ docker container rm pedantic_bell
+$ docker container rm pedantic_bell
 pedantic_bell
 ```
 
-3. Vuelvo a crear el contenedor, lo cuál esta vez es inmediato, dado que la imagen ya se encuentra presente de forma local
+3. Vuelvo a crear el contenedor, lo cuál esta vez es inmediato, dado que la imagen ya se encuentra presente de forma local:
 
 ```bash
-ubuntu@serverNum1:~$ docker container run -d -it ubuntu
+$ docker container run -d -it ubuntu
 b1332396d3fbfe3629a3c3fe5d829995e9d9fd8642bfd234b929e887fb7a81ed
-
-
 ```
 
-4. Listo el nuevo contenedor
-
-Notemos que al ejecutar `$ docker ps` que el ID ahora es diferente dado que se trata de otro contenedor.
+4. Listo el nuevo contenedor, y vemos que el ID ahora es diferente dado que se trata de otro contenedor.
 
 ```bash
 
-ubuntu@serverNum1:~$ docker ps
+$ docker container ls
 CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
 b1332396d3fb        ubuntu              "/bin/bash"         4 seconds ago       Up 3 seconds                            relaxed_lichterman
 ```
 
-### Cómo conectarse a un contenedor corriendo en segundo plano: `docker attach`
+### Cómo conectarse a un contenedor corriendo en segundo plano: `docker container attach`
 
-Cuando un contenedor está corriendo en segundo plano podemos conectar nuestra `STDIN, STDOUT Y STDERR` al mismo, utilizando el comando `docker attach`.
+Cuando un contenedor está corriendo en segundo plano podemos conectarnos al mismo (a su consola), utilizando el comando `docker container attach`.
 
 ```bash
 $ docker container run -itd --rm --name ejemplo_attach ubuntu top
@@ -509,39 +502,81 @@ KiB Swap: 12475900 total, 12384984 free,    90916 used.  3590716 avail Mem
     1 root      20   0   36640   3104   2676 R   0.0  0.0   0:00.03 top
 ```
 
-Una vez "dentro" del contenedor, para desconectarnos debemos ejecutar la combinación de teclas `ctrl+p`, `ctrl+q`. Esto permitirá volver a la máquina `host` y que el contendor siga corriendo.
+Una vez "dentro" del contenedor, para desconectarnos debemos ejecutar la combinación de teclas `ctrl+p`, `ctrl+q`. Esto permitirá volver a la máquina `host` y que el contendor siga corriendo en segundo plano.
 
 ##### Ejercicio 2
 
 1. Ejecutar el siguiente comando:
 
 ```bash
-$ docker run -it -d --name ejercicio2 --rm ubuntu /bin/bash
+$ docker container run -it -d --name ejercicio2 --rm ubuntu /bin/bash
 ```
 
 2. Verificar que el contenedor se encuentra corriendo.
 3. Conectarse a la consola del contenedor.
 4. Una vez dentro de la consola ejecutar el comando `exit`.
-5. En el equipo `host`, ejecutar el comando `docker ps` y revisar la salida del mismo. Que puede notar?
+5. En el equipo `host`, listar nuevamente los contenedores que se encuentran corriendo. Que puede notar?
 6. Volver a ejecutar el paso 1.
 7. Conectarse una vez mas a la consola del contenedor.
-8. Volver a la consola del equipo `host` pero ahora sin apagar el contenedor.
-9. Verificar mediante `docker ps` que el contenedor sigue encendido.
+8. Salir del contenedor y volver a la consola del equipo `host`, pero esta vez sin apagar el contenedor.
+9. Listar los contenedores y verificar que sigue encendido.
 10. Estando en el equipo `host` apagar el contenedor.
 
-### Cómo listar las imágenes: `docker images`
+<details>
+    <summary>Solución</summary>
+<pre><code>
+  $ docker container ls
+  CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
+  .
+  $ docker container run -it -d --name ejercicio2 --rm ubuntu /bin/bash
+  e68c8510b4e0b8ad25be05a8604591e57bde2e75b0b48d3c57f84d834a940062
+  .
+  $ docker container ls
+  CONTAINER ID   IMAGE     COMMAND       CREATED         STATUS         PORTS     NAMES
+  e68c8510b4e0   ubuntu    "/bin/bash"   6 seconds ago   Up 4 seconds             ejercicio2
+  .
+  $ docker container attach ejercicio2 
+  root@e68c8510b4e0:/# exit
+  exit
+  .
+  $ docker container ls
+  CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
+  .
+  $ docker container run -it -d --name ejercicio2 --rm ubuntu /bin/bash
+  7db45dbe1b9ca9df8bdf28905326b46bdbc24b1dcc9a3cf76f05c1caedfc4017
+  .
+  $ docker container ls
+  CONTAINER ID   IMAGE     COMMAND       CREATED          STATUS          PORTS     NAMES
+  7db45dbe1b9c   ubuntu    "/bin/bash"   11 seconds ago   Up 10 seconds             ejercicio2
+  .
+  $ docker container attach ejercicio2 
+  root@7db45dbe1b9c:/# <ctrl-p><ctrl-q>
+  root@7db45dbe1b9c:/# read escape sequence
+  .
+  $ docker container ls
+  CONTAINER ID   IMAGE     COMMAND       CREATED          STATUS          PORTS     NAMES
+  7db45dbe1b9c   ubuntu    "/bin/bash"   25 seconds ago   Up 24 seconds             ejercicio2
+  .
+  $ docker container stop ejercicio2 
+  ejercicio2
+  .
+  $ docker container ls
+  CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
+  .
+</code></pre>
+</details>
 
-```bash
-$ docker images
-```
+## Trabajando con las Imágenes
 
-o bien:
+Hasta ahora hemos trabajado directamente con los contenedores. Veamos ahora algunos comandos básicos para trabajar con las imágenes, con las cuáles trabajaremos luego en más profundidad, en la sección [Imágenes y contenedores](2_Images.md).
+
+### Cómo listar las imágenes: `docker image ls`
 
 ```bash
 $ docker image ls
 ```
 
-Muestra las imagenes que hay en el equipo `host` local:
+Muestra las imágenes que se encuentran descargadas en el equipo `host` local, por ejemplo:
 
 ```bash
 $ docker images
@@ -555,78 +590,111 @@ conatel/config-backup     <none>              a2186fa14acc        3 months ago  
 
 ```
 
-> **Nota:** estudiaremos las imágenes mas en profundidad el la sección [Imágenes y contenedores](2_Images.md),
-
 ### Ejercicio 3
 
 Este ejercicio tiene como objetivo experimentar de primera mano la potencia de los contenedores a la hora de simplificar la puesta en producción de un servicio. Nos referimos mas concretamente al hecho de que una vez que la aplicación fue "contenerizada" tendremos la certeza absoluta que correrá sin problemas en cualquier plataforma que soporte Docker.
 
-Concretamente, el objetivo del ejercicio es poner en producción una aplicación, llamada Ghost, que permite registrarse y publicar Blogs al público en general. Esta plataforma ya fue "contenerizada" y su imagen está diponible públicamente en Dockerhub, bajo el nombre `ghost`.
+Concretamente, el objetivo del ejercicio es poner en producción una aplicación, llamada [Ghost](https://ghost.org/), que permite publicar Blogs al público en general. Esta plataforma ya fue "contenerizada" y su imagen está diponible públicamente en [Dockerhub](https://hub.docker.com/_/ghost), bajo el nombre `ghost`.
 
-Cuando corremos un contenedor a partir de dicha imagen, por defecto éste queda "escuchando" en el puerto 2368. Pero para simplificar el acceso de los clientes a la aplicación, el `host` deberá estar escuchando en el puerto `80`.
+Los requerimientos para el ejercicio son:
 
-Para finalizar, presentamos una lista de los requerimientos considerados necesarios para dar por resuelto el ejercicio. Algunos ya fueron mencionados anteriormente, pero se dejan en la lista para facilitar la referencia:
-
-- La imagen a utilizar se llama `ghost.`
-- El contendor debe tener un nombre específico, definido por el administrador, en este caso: `ejercicio3`
+- Ejecutar un contenedor utilizando la imagen `ghost` disponible en dockerhub.
+- El contendor debe correr con el nombre `ejercicio3.`
 - El contenedor no debe ser eliminado al apagarse.
-- El servicio debe estar publicado al exterior en el puerto 80 (el puerto original es 2368)
 - El contenedor debe correr en segundo plano.
-- El comando a utilizar es el que viene por defecto con la imagen.
+- El servicio debe quedar publicado al exterior en el puerto `80` del host, teniendo en cuenta que el puerto original de la aplicación `ghost` es `2368`.
+- Para que el contenedor se ejecute correctamente, se le debe pasar la variable de entorno `NODE_ENV` con el valor `development`, de lo contrario dará error y el servicio no inciará.
+- El comando a utilizar es el que viene por defecto con la imagen: `ghost`
 
-#### Verificación:
+**Verificación:**
 
 - Mediante un navegador acceder a [http://servernumX.labs.conatest.click](http://servernumX.labs.conatest.click), y deberá ver el servicio publicado.
 - Apagar el contenedor utilizando `docker stop` y verificar que el servicio ya no está accesible.
 - Encender el contenedor utilizando `docker start` y verificar que el servicio vuelve a estar online.
+  ![alt text](Imagenes/ghost.png "Ghost")
 
 <details>
 <summary>Pista #1</summary>
-La opción para mapear el puerto del contenedor al host es <code>-p:<puerto_contenedor>:<puerto_host></code>.
+La opción para mapear el puerto del contenedor al host es <code>-p puerto-host:puerto-contenedor</code>
+</details>
+
+<details>
+<summary>Pista #2</summary>
+La opción para pasarle una variable de entorno al contenedor es <code>-e VARIABLE=valor</code>
 </details>
 
 <details>
     <summary>Solución</summary>
-    <pre>
-# Archivo de inventario: hosts.yml
-all:
-  vars:
-    ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
-    ansible_ssh_private_key_file: './master_key'
-  hosts:
-    host01:
-    host02:
-    host03:
-    </pre>
+<pre>
+<code>
+$ docker container run -it -d --name ejercicio3 -p 80:2368 -e NODE_ENV=development ghost
+Unable to find image 'ghost:latest' locally
+latest: Pulling from library/ghost
+e9995326b091: Already exists 
+c723fd0ba54b: Pull complete 
+5d85eedfbf2f: Pull complete 
+2c659d758c47: Pull complete 
+205113720a73: Pull complete 
+ca494298314e: Pull complete 
+88f2c2df7ae5: Pull complete 
+3f86652ebe08: Pull complete 
+1e8bfba403e7: Pull complete 
+Digest: sha256:53784cc1681df843801e6344e1fdbebc80fd1f6c36fa776036bd499a033ab0b5
+Status: Downloaded newer image for ghost:latest
+d9b61c41f133723a1c598104d02dbd08f8ddb5de9ed5f8b42f8c121736fcc4e6
+.
+$ docker container ls
+CONTAINER ID   IMAGE     COMMAND                  CREATED          STATUS         PORTS                                   NAMES
+d9b61c41f133   ghost     "docker-entrypoint.s…"   10 seconds ago   Up 9 seconds   0.0.0.0:80->2368/tcp, :::80->2368/tcp   ejercicio3
+.
+</code>
+</pre>
 </details>
 
-### Cómo borrar una imagen: `docker rmi`
+### Cómo borrar una imagen: `docker image rm`
 
-Anteriormente vimos como puede eliminarse un contenedor, pero ¿que sucede si además del contenedor quiero eliminar la copia local de la imagen de la cual proviene?
-El comando `docker rmi <id-de-la-imagen/nombre-de-la-imagen>` cumple precisamente esta función. Es importante notar que esta operación no puede realizarse mientras haya un contenedor que esté usando esta imagen, aún cuando el mismo esté apagado:
+Anteriormente vimos como puede eliminarse un contenedor, pero ¿que sucede si además del contenedor queremos eliminar la copia local de la imagen de la cuál proviene?
+El comando `docker image rm <id-de-la-imagen/nombre-de-la-imagen>` cumple precisamente esta función.
 
-```bash
-$ docker ps
-CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                    NAMES
-7a950a434a1c        ghost               "docker-entrypoint.sh"   4 minutes ago       Up 4 minutes        0.0.0.0:8080->2368/tcp   primer-prueba
-
-$ docker stop primer-prueba
-primer-prueba
-
-$ docker rmi ghost
-Error response from daemon: conflict: unable to remove repository reference "ghost" (must force) - container 7a950a434a1c is using its referenced image b8fb2fac700b
-```
-
-Si queremos borrar una imagen lo correcto es primero eliminar el contenedor y luego la imagen.
-En caso de que se quiera borrar la imagen pero mantener el contenedor se puede "forzar" el borrado de la siguiente manera:
+Es importante notar que esta operación no puede realizarse mientras haya un contenedor que esté usando la imagen, aún cuando el mismo se encuentre apagado.
 
 ```bash
-$ docker ps
-CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                    NAMES
-7a950a434a1c        ghost               "docker-entrypoint.sh"   4 minutes ago       Up 4 minutes        0.0.0.0:8080->2368/tcp   primer-prueba
+$ docker container ls
+CONTAINER ID   IMAGE     COMMAND                  CREATED          STATUS         PORTS                                   NAMES
+d9b61c41f133   ghost     "docker-entrypoint.s…"   10 seconds ago   Up 9 seconds   0.0.0.0:80->2368/tcp, :::80->2368/tcp   ejercicio3
 
-$ docker rmi ghost --force
-b8fb2fac700b
+$ docker stop ejercicio3 
+ejercicio3
+
+$ docker image ls
+REPOSITORY    TAG       IMAGE ID       CREATED         SIZE
+ubuntu        latest    a8780b506fa4   4 days ago      77.8MB
+ghost         latest    e7697f79d3c0   5 days ago      566MB
+nginx         latest    76c69feac34e   13 days ago     142MB
+hello-world   latest    feb5d9fea6a5   13 months ago   13.3kB
+
+$ docker image rm ghost
+Error response from daemon: conflict: unable to remove repository reference "ghost" (must force) - container d9b61c41f133 is using its referenced image e7697f79d3c0
+
 ```
 
-[Siguiente--&gt;](2_Images.md)
+
+
+Si queremos borrar una imagen lo correcto es primero eliminar el contenedor que la está usando (o los contenedores), y luego si, eliminar la imagen.
+
+```bash
+$ docker container rm ejercicio3
+ejercicio3
+
+$ docker image rm ghost
+docker image rm ghost --force
+Untagged: ghost:latest
+Untagged: ghost@sha256:53784cc1681df843801e6344e1fdbebc80fd1f6c36fa776036bd499a033ab0b5
+Deleted: sha256:e7697f79d3c051185ca7827974d25bcc51ee207ab6cda4115159dc52a3b93fe4
+
+```
+
+> 👉 En caso de que se quiera forzar el borrado de la imagen, aunque existan contenedores asociados a la misma, se puede agregar la opción `--force`.
+
+
+[Siguiente--](2_Images.md)
