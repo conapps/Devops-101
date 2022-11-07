@@ -97,7 +97,7 @@ Type "help", "copyright", "credits" or "license" for more information.
 
 <details>
     <summary>Solución</summary>
-<pre class="language-yaml" lang="yaml">
+<pre>
    $ docker container run --name ejercicio4 -it ubuntu bash
 </pre>
 
