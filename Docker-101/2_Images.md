@@ -1,5 +1,8 @@
 | [&lt;-- Volver](1_Docker.md) |
 [Siguiente --&gt;](3_Storage.md) |
+```
+
+```
 
 ## Imágenes y contenedores
 
@@ -91,6 +94,7 @@ Type "help", "copyright", "credits" or "license" for more information.
 4. Utilizando `docker commit` generar una nueva imagen de `Ubuntu` con `nano` instalado.
 5. A partir de la nueva imagen, generar un nuevo contenedor y verficiar que se puede correr `nano`.
 
+
 <details>
     <summary>Solución</summary>
 <pre>
@@ -123,10 +127,10 @@ ubuntu_con_nano       latest    84a9196c1c28   8 seconds ago    118MB
 $ docker container run -it --name ejercicio4_nuevo ubuntu_con_nano
 root@88ebe0cb22f8:/# nano
 root@88ebe0cb22f8:/# exit
-exit
 .
 </pre>
 </code>
+
 
 ### Dockerfile
 
@@ -352,7 +356,8 @@ En este ejercicio exploraremos como utilizar las variables de entorno cambiando 
 
 <details>
     <summary>Solución</summary>
-<pre><code>
+<pre>
+<code>
 ~/contexto$ cat Dockerfile
 FROM ubuntu
 ADD archivo?.cfg /data/
@@ -367,27 +372,22 @@ CMD python3
 root@2b1b88794be8:/# cd
 root@2b1b88794be8:~# pwd
 /mi_casa
+</code>
+</pre>
 
-`code`
+### Optimización de la construcción de imágenes
 
-## `Optimización de la construcción de imágenes`
+Antes de aprender como escribir nuestro archivo Dockerfile para generar nuestras imágenes de forma mas eficiente, es necesario entender como funciona el proceso de construcción de una imágen a bajo nivel. Cuando creamos una imagen a partir de un archivo Dockerfile con el comando
 
-`Antes de aprender como escribir nuestro archivo Dockerfile para generar nuestras imágenes de forma mas eficiente, es necesario entender como funciona el proceso de construcción de una imágen a bajo nivel.
-Cuando creamos una imagen a partir de un archivo Dockerfile con el comando `
+El objetivo de la estructura de capas almacenadas en cache es optimizar el tiempo de construcción de las imagenes y el espacio en disco que consumen los contenedores, mas sobre esto
 
-```
-code
-```
+En caso de que encuentre una imagen que se corresponda con dicha directiva, se saltea el paso de la generación de la misma (porque ya está generada) y pasa a la siguiente directiva. Este proceso se repite hasta que alguna de las imágenes no se encuentre en cache local, en tal caso Docker crea dicha imagen
 
-`El objetivo de la estructura de capas almacenadas en cache es optimizar el tiempo de construcción de las imagenes y el espacio en disco que consumen los contenedores, mas sobre esto `
+Dado que las capas son read-only, si una capa posterior modifica un archivo contenido en una capa anterior, es necesario copiar nuevamente el archivo completo en la capa posterior, siéndo esta última copia la que se utilizará. Esta forma de construir las imágenes como capas una sobre otra, tiene la implicancia de que si modificamos una capa "del medio", será necesario volver a generar todas las capas sucesivas, dado que las capas no son autocontenidas sino que se basan en su capa anterior incluyendo únicamente los "nuevos archivos".
 
-`En caso de que encuentre una imagen que se corresponda con dicha directiva, se saltea el paso de la generación de la misma (porque ya está generada) y pasa a la siguiente directiva. Este proceso se repite hasta que alguna de las imágenes no se encuentre en cache local, en tal caso Docker crea dicha imagen `
+Entender esto es la clave para generar archivos Dockerfile mas eficientes; veámoslo con un ejemplo.
 
-`Dado que las capas son read-only, si una capa posterior modifica un archivo contenido en una capa anterior, es necesario copiar nuevamente el archivo completo en la capa posterior, siéndo esta última copia la que se utilizará. Esta forma de construir las imágenes como capas una sobre otra, tiene la implicancia de que si modificamos una capa "del medio", será necesario volver a generar todas las capas sucesivas, dado que las capas no son autocontenidas sino que se basan en su capa anterior incluyendo únicamente los "nuevos archivos".`
-
-`Entender esto es la clave para generar archivos Dockerfile mas eficientes; veámoslo con un ejemplo.`
-
-`Cuando construímos nuestra imagen `
+Cuando construímos nuestra imagen 
 
 #### `Ejercicio 9`
 
@@ -451,8 +451,7 @@ code
 
 ### `Contenedores vs imágenes`
 
-`Si bien conceptualmente las diferencias entre contenedores e imágenes son importantes, la realidad es que si análizamos uno y otro a bajo nivel, tienen una estructura casí idéntica. De hecho la imagen es parte del contenedor; veamos esto en mas detalle.
-Un contenedor es una imagen a la que se le agrega una capa adicional con permisos de escritura. Esta capa contendrá todos los archivos que se generen en el contenedor mientras el mismo esté corriendo. Esta capa con permiso de escritura permanecerá en nuestro sistema haciendo persistentes los datos contenidos en ella mientras el contenedor exista; cuando borramos un contenedor de nuestro sistema con el comando `
+`Si bien conceptualmente las diferencias entre contenedores e imágenes son importantes, la realidad es que si análizamos uno y otro a bajo nivel, tienen una estructura casí idéntica. De hecho la imagen es parte del contenedor; veamos esto en mas detalle. Un contenedor es una imagen a la que se le agrega una capa adicional con permisos de escritura. Esta capa contendrá todos los archivos que se generen en el contenedor mientras el mismo esté corriendo. Esta capa con permiso de escritura permanecerá en nuestro sistema haciendo persistentes los datos contenidos en ella mientras el contenedor exista; cuando borramos un contenedor de nuestro sistema con el comando `
 
 `img`
 
