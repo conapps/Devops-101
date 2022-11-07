@@ -163,7 +163,7 @@ En las primeras versiones, la `cli` contaba con una serie de comandos independie
 
 A partir de la versión 1.13+, la `docker cli` evolucionó, para incluir un nuevo conjunto de comandos denominados `Management Commands`,  con el objetivo es agrupar los comandos para que puedan adecuarse a las nuevas funcionalidades y sean mas sencillos de recordar. Los `Management Commands` suelen comenzar con "sustantivos" que se asocian con los diversos componentes de la plataforma, por ejemplo `docker container` o `docker image` seguidos de subcomandos en forma de "verbos", que se asocian a la acción que se realiza, por ejemplo `docker container run` o `docker image ls`.
 
-> :information_source: A lo largo de esta guía trataremos de utilizar en la mayoría de los casos los `Management Commands`, pero como este curso también ha ido evolucionando desde las primeras versiones hace varios años, es posible que en algunos lugares todavía se haga referencia al antiguo set de `Standalone Commands`, los cuales de todas formas siguen siendo válidos.
+> ℹ️ A lo largo de esta guía trataremos de utilizar en la mayoría de los casos los `Management Commands`, pero como este curso también ha ido evolucionando desde las primeras versiones hace varios años, es posible que en algunos lugares todavía se haga referencia al antiguo set de `Standalone Commands`, los cuales de todas formas siguen siendo válidos.
 
 Simplementa a modo de ejemplo, si quisieramos listar los contenedores que están corriendo actualmente, utilizando los `Management commands` ejecutaríamos:
 
@@ -257,7 +257,7 @@ Podemos revisar la ayuda del mismo con `docker container run --help`, donde vemo
 
 Aquí hay que tener cuidado en no dejarse engañar por el nombre del comando, si bien el mismo se llama `run`, no se utiliza para iniciar un contenedor, sino que se utiliza para crearlo. Pero además de crearlo, también lo inicia, lo pone a correr.
 
-> La mejor forma de pensar este comando es que sirve para: "correr un comando dentro de un **nuevo contenedor**"
+> 💡 La mejor forma de pensar este comando es que sirve para: "correr un comando dentro de un **nuevo contenedor**"
 
 El comando `docker container run` primero busca la imagen del contenedor localmente, y en caso de no encontrarla va a buscarla a un registro de imágenes, que por defecto es [DockerHub](https://hub.docker.com/).
 
@@ -299,8 +299,6 @@ Como se puede apreciar en la primera línea de la salida del comando, dado que l
 > **Nota:** cada imagen tiene una etiqueta asignada que sirve para que el creador de dicha imagen pueda identificar diferentes versiones de la misma. La etiqueta se especifica colocando `:` inmediatamente después del nombre de la imagen, seguido de la etiqueta en si misma de la siguiente forma `nombredelaimagen:etiqueta`.
 > En caso de que se omita el nombre de la etiqueta, Docker utiliza `latest` que hace referencia a la última versión disponible.
 
-
-
 #### Opciones de `docker container run`
 
 El comando `docker container run ` acepta varias opciones, a continuación repasaremos las mas comunes o utilizadas:
@@ -337,9 +335,7 @@ La opción `-p` (`--publish`) mapea un puerto del contenedor a un puerto del equ
 
 La opción `-e` (`--env`) permite pasarle variables de entorno al contenedor. Se utiliza cuando se necesita específicar alguna variable de entorno al momento de correr el contenedor, por ejemplo, si la aplicación (comando) lo requierre para su ejecución.
 
-
 > El comando `docker container run` acepta muchas opciones más, para conocerlas puede revisar la ayuda del mismo: `docker container run --help`.
-
 
 ##### Ejercicio 1
 
@@ -355,8 +351,9 @@ e96e057aae67: Pull complete
 Digest: sha256:4b1d0c4a2d2aaf63b37111f34eb9fa89fa1bf53dd6e4ca954d47caebca4005c2
 Status: Downloaded newer image for ubuntu:latest
 root@98adb368cf78:/#
+root@98adb368cf78:/# exit
 </pre>
-
+</details>
 
 #### Cómo listar los contenedores: `docker container ls`
 
@@ -384,8 +381,6 @@ $ docker container ls -a
 ```
 
 > 👉 es muy común utilizar el comando standalone  `$ docker ps` para listar los contenedores de igual forma que lo hace `docker container ls.`
-
-
 
 ### Cómo apagar un contenedor: `docker container stop`
 
