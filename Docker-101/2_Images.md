@@ -131,11 +131,6 @@ $ docker container run -it --name ejercicio4_nuevo ubuntu_con_nano
 root@88ebe0cb22f8:/# nano
 root@88ebe0cb22f8:/# exit
 .
-
-
-
-
-
 </pre>
 </code>
 
