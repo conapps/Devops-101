@@ -95,67 +95,46 @@ Type "help", "copyright", "credits" or "license" for more information.
 5. A partir de la nueva imagen, generar un nuevo contenedor y verficiar que se puede correr `nano`.
 
 
-
-
-
 <details>
     <summary>Solución</summary>
-<pre>
-<code>
-$ docker container run --name ejercicio4 -it ubuntu bash
-.
-root@0f7e17479085:/# nano
-bash: nano: command not found
-.
-root@0f7e17479085:/# apt-get update && apt-get install -y nano
-Get:1 http://security.ubuntu.com/ubuntu jammy-security InRelease [110 kB]
-Get:2 http://archive.ubuntu.com/ubuntu jammy InRelease [270 kB]
-Get:3 http://archive.ubuntu.com/ubuntu jammy-updates InRelease [114 kB]
-(...)
-.  
-root@0f7e17479085:/# nano
-root@0f7e17479085:/# exit
-.
-$ docker container ls -l
-CONTAINER ID   IMAGE     COMMAND   CREATED         STATUS                     PORTS     NAMES
-0f7e17479085   ubuntu    "bash"    4 minutes ago   Exited (0) 9 seconds ago             ejercicio4
-.
-$ docker container commit ejercicio4 ubuntu_con_nano
-sha256:84a9196c1c28041ee4ac976b28917539209f282025b5dc848f829e70b5822cf6
-.
-$ docker image ls
-REPOSITORY            TAG       IMAGE ID       CREATED          SIZE
-ubuntu_con_nano       latest    84a9196c1c28   8 seconds ago    118MB
-.
-$ docker container run -it --name ejercicio4_nuevo ubuntu_con_nano
-root@88ebe0cb22f8:/# nano
-root@88ebe0cb22f8:/# exit
-.
+<pre class="language-yaml" lang="yaml">
+   $ docker container run --name ejercicio4 -it ubuntu bash
 </pre>
-</code>
 
+<pre class="language-yaml" lang="yaml">
+   root@0f7e17479085:/# nano
+   bash: nano: command not found 
+</pre>
 
+<pre class="language-yaml" lang="yaml">
+   root@0f7e17479085:/# apt-get update && apt-get install -y nano
+   Get:1 http://security.ubuntu.com/ubuntu jammy-security InRelease [110 kB]
+   Get:2 http://archive.ubuntu.com/ubuntu jammy InRelease [270 kB]
+   Get:3 http://archive.ubuntu.com/ubuntu jammy-updates InRelease [114 kB]
+   (...)
+   root@0f7e17479085:/#
+   root@0f7e17479085:/# nano
+   root@0f7e17479085:/# exit
+</pre>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+<pre class="language-yaml" lang="yaml">
+   $ docker container ls -l
+   CONTAINER ID   IMAGE     COMMAND   CREATED         STATUS                     PORTS     NAMES
+   0f7e17479085   ubuntu    "bash"    4 minutes ago   Exited (0) 9 seconds ago             ejercicio4
+   $
+   $ docker container commit ejercicio4 ubuntu_con_nano
+   sha256:84a9196c1c28041ee4ac976b28917539209f282025b5dc848f829e70b5822cf6
+   $
+   $ docker image ls
+   REPOSITORY            TAG       IMAGE ID       CREATED          SIZE
+   ubuntu_con_nano       latest    84a9196c1c28   8 seconds ago    118MB
+</pre>
+<pre class="language-yaml" lang="yaml">
+   $ docker container run -it --name ejercicio4_nuevo ubuntu_con_nano
+   root@88ebe0cb22f8:/# nano
+   root@88ebe0cb22f8:/# exit
+</pre>
+</details>
 
 ### Dockerfile
 
