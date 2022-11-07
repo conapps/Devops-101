@@ -163,7 +163,7 @@ En las primeras versiones, la `cli` contaba con una serie de comandos independie
 
 A partir de la versión 1.13+, la `docker cli` evolucionó, para incluir un nuevo conjunto de comandos denominados `Management Commands`,  con el objetivo es agrupar los comandos para que puedan adecuarse a las nuevas funcionalidades y sean mas sencillos de recordar. Los `Management Commands` suelen comenzar con "sustantivos" que se asocian con los diversos componentes de la plataforma, por ejemplo `docker container` o `docker image` seguidos de subcomandos en forma de "verbos", que se asocian a la acción que se realiza, por ejemplo `docker container run` o `docker image ls`.
 
-A lo largo de esta guía trataremos de utilizar en la mayoría de los casos los relativamente nuevos `Management Commands`, pero como la misma también ha ido evolucionando desde las primeras versiones del curso hace varios años, es posible que en algunos lugares todavía se haga referencia al antiguo set de Standalone Commands, los cuales de todas formas siguen siendo válidos.
+> :information_source: A lo largo de esta guía trataremos de utilizar en la mayoría de los casos los `Management Commands`, pero como este curso también ha ido evolucionando desde las primeras versiones hace varios años, es posible que en algunos lugares todavía se haga referencia al antiguo set de `Standalone Commands`, los cuales de todas formas siguen siendo válidos.
 
 Simplementa a modo de ejemplo, si quisieramos listar los contenedores que están corriendo actualmente, utilizando los `Management commands` ejecutaríamos:
 
@@ -176,8 +176,6 @@ mientras que con los `Standalone Commands` sería:
 ```bash
 $ docker ls
 ```
-
-
 
 #### Ayuda: `docker help`
 
@@ -227,8 +225,6 @@ Commands:
 (...)
 ```
 
-
-
 O bajar mas de nivel a un comando específico, por ejemplo:
 
 ```
@@ -251,13 +247,11 @@ Options:
   -s, --size            Display total file sizes
 ```
 
-
-
 Comencemos entonces por conocer los comandos mas comunes disponibilizados por Docker a través de su **cli**.
 
 ### Cómo crear un contenedor: `docker container run`
 
-El comando `docker container run` genera un nuevo contenedor a partir de una imagen y lo pone a correr. 
+El comando `docker container run` genera un nuevo contenedor a partir de una imagen y lo pone a correr.
 
 Podemos revisar la ayuda del mismo con `docker container run --help`, donde vemos que la forma de ejecutarlo es: `docker container run [opciones] nombre-de-la-imagen [comando-a-ejecutar]`. En caso de no indicar el comando a ejecutar, el contendor correrá el comando por defecto que está configurado en la imagen (veremos esto en detalle más adelante).
 
@@ -270,7 +264,7 @@ El comando `docker container run` primero busca la imagen del contenedor localme
 #### Ejemplo:
 
 ```bash
-$ docker run hello-world
+$ docker container run hello-world
 Unable to find image 'hello-world:latest' locally
 latest: Pulling from library/hello-world
 9db2ca6ccae0: Pull complete
@@ -303,29 +297,26 @@ For more examples and ideas, visit:
 Como se puede apreciar en la primera línea de la salida del comando, dado que la imagen `hello-world:latest` no se encuentra localmente, el demonio de Docker la descarga desde [dockerhub](https://hub.docker.com/)
 
 > **Nota:** cada imagen tiene una etiqueta asignada que sirve para que el creador de dicha imagen pueda identificar diferentes versiones de la misma. La etiqueta se especifica colocando `:` inmediatamente después del nombre de la imagen, seguido de la etiqueta en si misma de la siguiente forma `nombredelaimagen:etiqueta`.
->
-> En caso de que se omita el nombre de la etiqueta, Docker utiliza `latest`.
+> En caso de que se omita el nombre de la etiqueta, Docker utiliza `latest` que hace referencia a la última versión disponible.
 
-#### Opciones de `docker run`
 
-El comando `docker run ` acepta varias opciones, a continuación repasaremos las mas comunes.
+
+#### Opciones de `docker container run`
+
+El comando `docker container run ` acepta varias opciones, a continuación repasaremos las mas comunes o utilizadas:
 
 ##### Opción `-it`
 
-El comando `docker run` tiene un par de opciones que usualmente se utilizan en conjunto, estas son `-i` y `-t`. La opción `-i` (`--interactive`) mantiene `STDIN` abierto para el contenedor, lo que se traduce en que podremos utilizar nuestro teclado para enviarle comandos. Por otro lado, la opción `-t` (`--tty`) asigna una `tty` al contenedor, lo que en otras palabras quiere decir que tendremos acceso a una terminal de linux cuando vayamos a interactuar a través de `STDIN, STDOUT, STDERR` con el contenedor.
-
-##### Ejercicio 1
-
-Partiendo de la imagen llamada `ubuntu` levantar un contenedor que corra una terminal de bash (`/bin/bash`) en modo interactivo.
+Estas dos opciones usualmente se utilizan en conjunto. La opción `-i` (`--interactive`) mantiene `STDIN` abierto para el contenedor, lo que se traduce en que podremos utilizar nuestro teclado para enviarle comandos al contenedor que está corriendo. Mientras que la opción `-t` (`--tty`) asigna una `tty` al contenedor, lo que en otras palabras quiere decir que tendremos acceso a una terminal (la consola) cuando vayamos a interactuar con el mismo.
 
 ##### Opción `-d`
 
-La opción `-d` (`--detach`) indica a Docker que el contenedor debe de correr en segundo plano, como si fuese un servicio. Esto es útil cuando el contenedor que estamos creando no necesita interacción por parte del administrador y fue creado para correr en background sirviendo requests de clientes, por ejemplo un servidor Web, DNS, DHCP, etc.
+La opción `-d` (`--detach`) indica que el contenedor debe de correr en segundo plano (background), como un servicio. Esto es útil cuando el contenedor que estamos creando no necesita interacción por parte del usuario, y fue creado para correr en background sirviendo requests de clientes, por ejemplo un servidor Web, DNS, DHCP, etc.
 
 El siguiente ejemplo muestra como correr un servidor web NGINX en segundo plano:
 
 ```bash
-$ docker run -d nginx
+$ docker container run -d nginx
 9a95e5d34baa8af84eec14569a4966cb40690cafe0c0b28034eb5c9c1d829fd2
 $
 ```
@@ -336,59 +327,84 @@ Esta opción permite darle un nombre al contenedor que estamos creando. En caso 
 
 ##### Opción `--rm`
 
-Esta opción le indica a Docker que el contedor debe ser eliminado una vez que se detenga. Por defecto los contenedores permanecen en el sistema una vez apagados.
+Esta opción le indica a Docker que el contedor debe ser eliminado una vez que el mismo se detenga. Por defecto los contenedores permanecen en el sistema una vez apagados, pero si colocamos esta opción, el mismo se elimina cuando termina su ejecución. Esto es muy útil cuando estamos realizando pruebas y no queremos dejar múltilples contenedores en nuestro equipo host que no sean realmente necesarios.
 
 ##### Opción `-p`
 
-Esta opción mapea un puerto del contenedor a un puerto del equipo host. Se utiliza cuando se necesita publicar externamente el servicio que proporciona el contenedor. Si por ejemplo tuvieramos un contenedor corriendo un servidor web esuchando en el puerto 8080 y quisieramos publicar dicho servicio en la máquina `host` utilizando el puerto 80, agregaríamos la opción `-p 80:8080`. Veremos la opción `-p` en mas detalle en la sección [Networking](4_Networking.md)
+La opción `-p` (`--publish`) mapea un puerto del contenedor a un puerto del equipo host. Se utiliza cuando se necesita publicar externamente el servicio que proporciona el contenedor. Si por ejemplo tenemos un contenedor corriendo un servidor web que escucha en el puerto 8080, y queremos publicar dicho servicio en el puerto 80 de la máquina `host`, agregaríamos la opción `-p 80:8080`. Veremos la opción `-p` en mas detalle en la sección [Networking](4_Networking.md).
 
 ##### Opción `-e`
 
-Esta opción mapea un puerto del contenedor a un puerto del equipo host. Se utiliza cuando se necesita publicar externamente el servicio que proporciona el contenedor. Si por ejemplo tuvieramos un contenedor corriendo un servidor web esuchando en el puerto 8080 y quisieramos publicar dicho servicio en la máquina `host` utilizando el puerto 80, agregaríamos la opción `-p 80:8080`. Veremos la opción `-p` en mas detalle en la sección [Networking](4_Networking.md)
+La opción `-e` (`--env`) permite pasarle variables de entorno al contenedor. Se utiliza cuando se necesita específicar alguna variable de entorno al momento de correr el contenedor, por ejemplo, si la aplicación (comando) lo requierre para su ejecución.
 
-### Cómo listar los contenedores: `docker ps`
+
+> El comando `docker container run` acepta muchas opciones más, para conocerlas puede revisar la ayuda del mismo: `docker container run --help`.
+
+
+##### Ejercicio 1
+
+Partiendo de la imagen llamada `ubuntu` levantar un contenedor que corra una terminal de bash (`/bin/bash`) en modo interactivo, y que se autoelimine al finalizar su ejecución.
+
+<details>
+    <summary>Solución</summary>
+<pre>
+$ docker container run -it --rm ubuntu /bin/bash
+Unable to find image 'ubuntu:latest' locally
+latest: Pulling from library/ubuntu
+e96e057aae67: Pull complete 
+Digest: sha256:4b1d0c4a2d2aaf63b37111f34eb9fa89fa1bf53dd6e4ca954d47caebca4005c2
+Status: Downloaded newer image for ubuntu:latest
+root@98adb368cf78:/#
+</pre>
+
+
+#### Cómo listar los contenedores: `docker container ls`
 
 El comando:
 
 ```bash
-$ docker ps
+$ docker container ls
 ```
 
 lista los contenedores que están corriendo, por lo tanto, si lo ejecutamos con un contenedor corriendo deberíamos ver algo así:
 
 ```bash
-$ docker ps
+$ docker container ls
 CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS      NAMES
 7ed9736d1ec5        nginx               "docker-entrypoint.s…"   3 minutes ago       Up 3 minutes        80/tcp     friendly_bartik
 ```
 
-Como puede verse, cada contenedor tiene un ID autogenerado, así como un nombre (autogenerado o asignado con la opción `--name`).
+Como puede verse, cada contenedor tiene un ID (autogenerado) y un nombre (autogenerado o asignado con la opción `--name`).
 Estos campos son fundamentales dado que los utilizaremos en cada vez que nos querramos referir a un contenedor para ejecutar alguna acción.
 
-Para listar todos los contenedores del sistema, estén corriendo o no, se agrega la opción `-a` de la siguiente manera:
+Para listar todos los contenedores del sistema, los que estén corriendo y los que estén detenidos, se agrega la opción `-a` de la siguiente manera:
 
 ```bash
-$ docker ps -a
+$ docker container ls -a
 ```
 
-Cómo apagar un contenedor: `docker stop`
+> 👉 es muy común utilizar el comando standalone  `$ docker ps` para listar los contenedores de igual forma que lo hace `docker container ls.`
 
-Para apagar un contenedor que está corriendo se puede ejecutar `docker stop` seguido del nombre o el id del contenedor. Por ejemplo:
+
+
+### Cómo apagar un contenedor: `docker container stop`
+
+Para apagar un contenedor que está corriendo se puede ejecutar `docker container stop` seguido del nombre o el id del contenedor. Por ejemplo:
 
 ```bash
-$ docker ps
+$ docker container ls
 CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS      NAMES
 7ed9736d1ec5        nginx               "docker-entrypoint.s…"   3 minutes ago       Up 3 minutes        80/tcp     friendly_bartik
 
-$ docker stop friendly_bartik
+$ docker container stop friendly_bartik
 friendly_bartik
 
-$ docker ps
+$ docker container ls
 CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
 
 ```
 
-> **Nota:** asignar nombres nemotécnicos a los contenedores nos evita tener que listarlos previamente para obtener su ID o su nombre autogenerado para poder ejecutar comandos sobre el mismo, como por ejemplo apagarlo.
+> 👉 asignar nombres nemotécnicos a los contenedores nos evita tener que listarlos previamente para obtener su ID o su nombre autogenerado para poder ejecutar comandos sobre el mismo, como por ejemplo apagarlo.
 
 ### Cómo encender un contenedor que se encuentra apagado: `docker start`
 
