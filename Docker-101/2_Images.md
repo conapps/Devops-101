@@ -280,32 +280,33 @@ Donde dice `<completar>` se debe escribir, en una única línea, el comando nece
 <details>
     <summary>Solución</summary>
 <pre>
-<code>
-~/contexto$ cat Dockerfile
-FROM ubuntu
-ADD archivo?.cfg /data/
-.
-~/contexto$ docker build -t ejercicio5 .
-Sending build context to Docker daemon  3.584kB
-Step 1/2 : FROM ubuntu
- ---> a8780b506fa4
-Step 2/2 : ADD archivo?.cfg /data/
- ---> 2db5ac716d3d
-Successfully built 2db5ac716d3d
-Successfully tagged ejercicio5:latest
-.
-~/contexto$ docker container run -it --rm ejercicio5
-root@f69759d29668:/# cd /data
-root@f69759d29668:/data# ls -la
-total 8
-drwxr-xr-x 2 root root 4096 Nov  7 17:17 .
-drwxr-xr-x 1 root root 4096 Nov  7 17:17 ..
--rw-rw-r-- 1 root root    0 Nov  7 17:16 archivo1.cfg
--rw-rw-r-- 1 root root    0 Nov  7 17:16 archivo2.cfg
--rw-rw-r-- 1 root root    0 Nov  7 17:16 archivo3.cfg
-root@f69759d29668:/data# exit
-</code>
+   ~/contexto$ cat Dockerfile
+   FROM ubuntu
+   ADD archivo?.cfg /data/
 </pre>
+<pre>
+   ~/contexto$ docker build -t ejercicio5 .
+   Sending build context to Docker daemon  3.584kB
+   Step 1/2 : FROM ubuntu
+   ---> a8780b506fa4
+   Step 2/2 : ADD archivo?.cfg /data/
+   ---> 2db5ac716d3d
+   Successfully built 2db5ac716d3d
+   Successfully tagged ejercicio5:latest
+</pre>
+<pre>
+   ~/contexto$ docker container run -it --rm ejercicio5
+   root@f69759d29668:/# cd /data
+   root@f69759d29668:/data# ls -la
+   total 8
+   drwxr-xr-x 2 root root 4096 Nov  7 17:17 .
+   drwxr-xr-x 1 root root 4096 Nov  7 17:17 ..
+   -rw-rw-r-- 1 root root    0 Nov  7 17:16 archivo1.cfg
+   -rw-rw-r-- 1 root root    0 Nov  7 17:16 archivo2.cfg
+   -rw-rw-r-- 1 root root    0 Nov  7 17:16 archivo3.cfg
+   root@f69759d29668:/data# exit
+</pre>
+</details>
 
 #### Ejercicio 6
 
@@ -324,12 +325,28 @@ root@08f5d92ad130:/#
 
 <details>
     <summary>Solución</summary>
-<pre><code>
-~/contexto$ cat Dockerfile
-FROM ubuntu
-ADD archivo?.cfg /data/
-RUN apt-get update && apt-get install -y python3
-</code></pre>
+<pre>
+   ~/contexto$ cat Dockerfile
+   FROM ubuntu
+   ADD archivo?.cfg /data/
+   RUN apt-get update && apt-get install -y python3
+</pre>
+<pre>
+   ~/contexto$ docker build -t ejercicio6 .
+   (...)
+   Successfully tagged ejercicio6:latest
+</pre>
+<pre>
+   ~/contexto$ docker container run -it --rm ejercicio6
+   root@cf9cc50371d9:/# python3
+   Python 3.10.6 (main, Nov  2 2022, 18:53:38) [GCC 11.3.0] on linux
+   Type "help", "copyright", "credits" or "license" for more information.
+   >>> exit()
+   root@cf9cc50371d9:/# exit
+   exit
+</pre>
+
+</details>
 
 #### Ejercicio 7
 
@@ -342,13 +359,22 @@ En este ejercicio haremos que, por defecto, los contenedores creados a partir de
 
 <details>
     <summary>Solución</summary>
-<pre><code>
-~/contexto$ cat Dockerfile
-FROM ubuntu
-ADD archivo?.cfg /data/
-RUN apt-get update && apt-get install -y python3
-CMD python3
-</code></pre>
+<pre>
+   ~/contexto$ cat Dockerfile
+   FROM ubuntu
+   ADD archivo?.cfg /data/
+   RUN apt-get update && apt-get install -y python3
+   CMD python3
+</pre>
+<pre>
+   ~/contexto$ cat Dockerfile
+   FROM ubuntu
+   ADD archivo?.cfg /data/
+   RUN apt-get update && apt-get install -y python3
+   CMD python3
+</pre>
+
+</details>
 
 #### Ejercicio 8
 
@@ -362,23 +388,26 @@ En este ejercicio exploraremos como utilizar las variables de entorno cambiando 
 <details>
     <summary>Solución</summary>
 <pre>
-<code>
-~/contexto$ cat Dockerfile
-FROM ubuntu
-ADD archivo?.cfg /data/
-RUN apt-get update && apt-get install -y python3
-ENV HOME /mi_casa
-RUN mkdir $HOME
-CMD python3
-.
-~/contexto$ docker build -t ejercicio8 .
-(...)
+   ~/contexto$ cat Dockerfile
+   FROM ubuntu
+   ADD archivo?.cfg /data/
+   RUN apt-get update && apt-get install -y python3
+   ENV HOME /mi_casa
+   RUN mkdir $HOME
+   CMD python3
+</pre>
+<pre>
+   ~/contexto$ docker build -t ejercicio8 .
+   (...)
+   Successfully tagged ejercicio8:latest
+</pre>
+<pre>
 ~/contexto$ docker container run -it --rm ejercicio8 /bin/bash
-root@2b1b88794be8:/# cd
+root@2b1b88794be8:/# cd $HOME
 root@2b1b88794be8:~# pwd
 /mi_casa
-</code>
 </pre>
+</details>
 
 ### Optimización de la construcción de imágenes
 
