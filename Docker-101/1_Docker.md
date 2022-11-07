@@ -697,4 +697,4 @@ Deleted: sha256:e7697f79d3c051185ca7827974d25bcc51ee207ab6cda4115159dc52a3b93fe4
 > 👉 En caso de que se quiera forzar el borrado de la imagen, aunque existan contenedores asociados a la misma, se puede agregar la opción `--force`.
 
 
-[Siguiente--](2_Images.md)
+[Siguiente-->](2_Images.md)
