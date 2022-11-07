@@ -101,12 +101,12 @@ Type "help", "copyright", "credits" or "license" for more information.
    $ docker container run --name ejercicio4 -it ubuntu bash
 </pre>
 
-<pre class="language-yaml" lang="yaml">
+<pre>
    root@0f7e17479085:/# nano
    bash: nano: command not found 
 </pre>
 
-<pre class="language-yaml" lang="yaml">
+<pre>
    root@0f7e17479085:/# apt-get update && apt-get install -y nano
    Get:1 http://security.ubuntu.com/ubuntu jammy-security InRelease [110 kB]
    Get:2 http://archive.ubuntu.com/ubuntu jammy InRelease [270 kB]
@@ -117,7 +117,7 @@ Type "help", "copyright", "credits" or "license" for more information.
    root@0f7e17479085:/# exit
 </pre>
 
-<pre class="language-yaml" lang="yaml">
+<pre>
    $ docker container ls -l
    CONTAINER ID   IMAGE     COMMAND   CREATED         STATUS                     PORTS     NAMES
    0f7e17479085   ubuntu    "bash"    4 minutes ago   Exited (0) 9 seconds ago             ejercicio4
@@ -129,7 +129,8 @@ Type "help", "copyright", "credits" or "license" for more information.
    REPOSITORY            TAG       IMAGE ID       CREATED          SIZE
    ubuntu_con_nano       latest    84a9196c1c28   8 seconds ago    118MB
 </pre>
-<pre class="language-yaml" lang="yaml">
+
+<pre>
    $ docker container run -it --name ejercicio4_nuevo ubuntu_con_nano
    root@88ebe0cb22f8:/# nano
    root@88ebe0cb22f8:/# exit
