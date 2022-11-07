@@ -1,5 +1,5 @@
-| [<-- Volver](1_Docker.md) |
-[Siguiente -->](3_Storage.md) |
+| [&lt;-- Volver](1_Docker.md) |
+[Siguiente --&gt;](3_Storage.md) |
 
 ## Imágenes y contenedores
 
@@ -12,23 +12,23 @@ Hasta ahora hemos creado contenedores provenientes de imagenes creadas por terce
 Supongamos que generamos un container a partir de la última imagen de ubuntu de la siguiente manera:
 
 ```bash
-$ docker run --name ejemplo_commit -i -t ubuntu bash
+$ docker container run --name ejemplo_commit -it ubuntu bash
 root@1dbc76e3acdb:/#
 ```
 
-Esto nos deja posicionados dentro de este nuevo contenedor, esto es gracias a las opciones `-i` que conecta la entrada estándar, en este caso el teclado, al contenedor generando una sesión interactiva y `-t` que asigna un terminal virtual al contenedor redirigiendo su salida estándar al monitor. Podemos ver que estamos dentro del contenedor y no dentro de nuestra máquina al observar el prompt, que como puede verse el en cuadro de texto mas arriba debería ser del estilo `root@1dbc76e3acdb:/#`.
+Esto nos deja posicionados dentro de este nuevo contenedor, gracias a las opciones `-it`. Podemos ver que estamos dentro del contenedor y no dentro de nuestra máquina `host` al observar el prompt, que pasa a ser del estilo `root@1dbc76e3acdb:/#`.
 
-Supongamos ahora que queremos abrir un intérprete de Python:
+Supongamos ahora que queremos ejecutar un intérprete de Python:
 
 ```bash
-root@1dbc76e3acdb:/# python
-bash: python: command not found
+root@1dbc76e3acdb:/# python3
+bash: python3: command not found
 ```
 
-El problema aquí es que Python no está instalado, a continuación lo instalamos:
+El problema aquí es que Python no está instalado en el contenedor, dado que la imagen de `ubuntu` por defecto no lo trae. A continuación lo instalamos:
 
 ```bash
-root@e6387986f32b:/# apt-get update && apt-get install -y python
+root@e6387986f32b:/# apt-get update && apt-get install -y python3
 Get:1 http://security.ubuntu.com/ubuntu xenial-security InRelease [102 kB]
 Get:2 http://archive.ubuntu.com/ubuntu xenial InRelease [247 kB]
 Get:3 http://security.ubuntu.com/ubuntu xenial-security/universe Sources [43.0 kB]
@@ -43,78 +43,114 @@ Get:8 http://security.ubuntu.com/ubuntu xenial-security/multiverse amd64 Package
 Una vez finalizado el proceso de instalación ya podemos utilizar Python:
 
 ```bash
-root@e6387986f32b:/# python
-Python 2.7.12 (default, Nov 19 2016, 06:48:10)
-[GCC 5.4.0 20160609] on linux2
+root@e6387986f32b:/# python3
+Python 3.10.6 (main, Nov  2 2022, 18:53:38) [GCC 11.3.0] on linux
 Type "help", "copyright", "credits" or "license" for more information.
->>>
->>>
->>>
 >>> exit()
+
 root@e6387986f32b:/#
 ```
 
 En este punto tenemos un contenedor completamente funcional que cumple con todas nuestras necesidades, en este caso únicamente Python.
-Pero que sucede si ahora queremos utilizar este contenedor en producción fuera de nuestra máquina local. Esto de hecho es una de las fortalezas mas importantes de la tecnología de contenedores, esto es, la posibilidad de crear un ambiente en nuestra máquina local y luego exportar y utilizar dicho ambiente en producción con exactamente los mismos paquetes y dependencias instaladas que lo que tenemos localmente (lo que utilizamos para desarrollar).
-El problema aquí es que, a diferencia del transporte marítimo, en Docker lo que se transporta no son los contenedores sino las imágenes y a partir de una imagen se pueden generar cualquier cantidad de contenedores idénticos.
-Dicho esto, si queremos transportar nuestro nuevo ambiente con Python instalado sobre una distribución Ubuntu, el desafío es generar una nueva imagen, dado que la imagen de la cual partimos no contiene Python. Para esto utilizaremos el comando `docker commit <contenedor> <nombre-de-la-nueva-imagen>`, por ejemplo:
+
+Pero que sucede si ahora queremos utilizar este contenedor en producción fuera de nuestra máquina local. Esto de hecho es una de las fortalezas mas importantes de la tecnología de contenedores, la posibilidad de crear un ambiente en nuestra máquina local y luego exportar y utilizar dicho ambiente en producción con exactamente los mismos paquetes y dependencias instaladas que lo que tenemos localmente (lo que utilizamos para desarrollar).
+
+El problema aquí es que, en Docker lo que se transporta no son los contenedores sino las imágenes,  y a partir de una imagen se pueden generar cualquier cantidad de contenedores idénticos. Dicho esto, si queremos transportar nuestro nuevo ambiente con Python instalado sobre una distribución Ubuntu, el desafío es generar una nueva imagen, dado que la imagen de la cual partimos no contiene Python.
+
+Para esto utilizaremos el comando `docker container commit <contenedor> <nombre-de-la-nueva-imagen>`, por ejemplo:
 
 ```bash
-$ docker commit ejemplo_commit ambiente-produccion
+$ docker container commit ejemplo_commit ambiente-produccion
 sha256:c2a9520001342c424d141f05c6f13761a74d58edd336f11b7a971c1a1d2ed317
-$ docker images
+
+$ docker image ls
 REPOSITORY                TAG                 IMAGE ID            CREATED             SIZE
 ambiente-produccion       latest              c2a952000134        5 seconds ago       189.2 MB
 ```
 
-Ahora que tengo una nueva imagen desde la cual generar contenedores con mi ambiente, podría eliminar el contenedor y volver a regenerarlo. Como se puede ver en el cuadro a continuación el nuevo contenedor ya tiene Python instalado:
+Ahora que tengo una nueva imagen con mi ambiente, podría eliminar el contenedor y volver a regenerarlo, pero utilizando nuestra imagen `ambiente-produccion`. Como se puede ver, el nuevo contenedor ahora tiene Python instalado:
 
 ```bash
-$ docker rm ejemplo_commit
+$ docker container rm ejemplo_commit
 ejemplo_commit
 
-$ docker run --name contenedor_con_python -it ambiente-produccion bash
-root@0f66ed1e694d:/# python
-Python 2.7.12 (default, Nov 19 2016, 06:48:10)
-[GCC 5.4.0 20160609] on linux2
+$ docker container run --name contenedor_con_python -it ambiente-produccion bash
+root@0f66ed1e694d:/# python3
+Python 3.10.6 (main, Nov  2 2022, 18:53:38) [GCC 11.3.0] on linux
 Type "help", "copyright", "credits" or "license" for more information.
->>>
+>>> 
 >>> exit()
-root@0f66ed1e694d:/#
-root@0f66ed1e694d:/#
+
 ```
 
 #### Ejercicio 4
 
-1. Partiendo de la última imagen de Ubuntu, generar un contenedor corriendo el proceso `bash`de forma interactiva.
+1. Partiendo de la última imagen de `ubuntu`, generar un contenedor corriendo el proceso `bash` de forma interactiva.
 2. Una vez dentro del contenedor, intentar ejecutar el editor de texto `nano` y verficar que no está instalado.
 3. Instalarlo y verficar que se puede correr.
-4. Utilizando `docker commit` generar una nueva imagen de Ubuntu con `nano` instalado.
+4. Utilizando `docker commit` generar una nueva imagen de `Ubuntu` con `nano` instalado.
 5. A partir de la nueva imagen, generar un nuevo contenedor y verficiar que se puede correr `nano`.
+
+<details>
+    <summary>Solución</summary>
+<pre>
+<code>
+$ docker container run --name ejercicio4 -it ubuntu bash
+.
+root@0f7e17479085:/# nano
+bash: nano: command not found
+.
+root@0f7e17479085:/# apt-get update && apt-get install -y nano
+Get:1 http://security.ubuntu.com/ubuntu jammy-security InRelease [110 kB]
+Get:2 http://archive.ubuntu.com/ubuntu jammy InRelease [270 kB]
+Get:3 http://archive.ubuntu.com/ubuntu jammy-updates InRelease [114 kB]
+(...)
+.  
+root@0f7e17479085:/# nano
+root@0f7e17479085:/# exit
+.
+$ docker container ls -l
+CONTAINER ID   IMAGE     COMMAND   CREATED         STATUS                     PORTS     NAMES
+0f7e17479085   ubuntu    "bash"    4 minutes ago   Exited (0) 9 seconds ago             ejercicio4
+.
+$ docker container commit ejercicio4 ubuntu_con_nano
+sha256:84a9196c1c28041ee4ac976b28917539209f282025b5dc848f829e70b5822cf6
+.
+$ docker image ls
+REPOSITORY            TAG       IMAGE ID       CREATED          SIZE
+ubuntu_con_nano       latest    84a9196c1c28   8 seconds ago    118MB
+.
+$ docker container run -it --name ejercicio4_nuevo ubuntu_con_nano
+root@88ebe0cb22f8:/# nano
+root@88ebe0cb22f8:/# exit
+exit
+.
+</pre>
+</code>
 
 ### Dockerfile
 
-El método anterior sirve para generar imágenes a partir de contenedores, pero tiene muchas desventajas a la hora de su uso en producción.
-Es poco flexible y la imagen no está optimizada para versionarse al igual que hacemos con nuestro código. Profundicemos sobre este punto con un ejemplo.
-Supongamos que nuestro ambiente de producción no incluye únicamente Python, sino también python3-pip, mysql-connector, requests, nginx, Django, MySQL, open-ssh, y tpftpd-hpa.
+El método anterior es útil para generar imágenes a partir de contenedores, pero tiene muchas desventajas a la hora de su uso en producción. Es poco flexible, y la imagen no está optimizada para versionarse al igual que hacemos con nuestro código. Profundicemos sobre este punto con un ejemplo.
+
+Supongamos que nuestro ambiente de producción no incluye únicamente Python3, sino también `python3-pip, `
 Pensemos en el proceso para armar un ambiente de este tipo; habría que generar un contenedor con Ubuntu, instalar todos estos paquetes y luego hacer un commit. Ahora, ¿qué pasaría si durante nuestro proceso de desarrollo decidimos explorar la posiblidad de cambiar nuestro motor de base de datos de MySQL a PostgreSQL? ¿Cómo haríamos para generar una nueva imágen? Podríamos intentar desinstalar MySQL e instalar PostgreSQL en su lugar, pero veamos que hay dependencias como mysql-connector que sólo tienen sentido si utilizamos MySQL y que deberían también ser desinstaladas para mantener "limpia" nuestra imagen que luego será utilzada en producción. Finalmente habría que instalar los módulos de Python correspondientes para trabajar con una base de datos PostgreSQL y hacer un commit para generar la nueva imagen.
 
 Principales desventajas del enfoque anterior:
 
-- Si la desición de cambiar a PostgreSQL se toma varias semanas o meses luego de generada la primer imagen, probablemente no recuerde que existían las librerías de Python que Soportan MySQL (mysql-connector) dado que los paquetes que hay instalados en la imagen no quedan documentados en ningún sitio (en realidad se pueden ver con el comando `docker history` pero esto no es práctico).
+- Si la decisión de cambiar a PostgreSQL se toma varias semanas o meses luego de generada la primer imagen, probablemente no recuerde que existían las librerías de Python que Soportan MySQL (mysql-connector) dado que los paquetes que hay instalados en la imagen no quedan documentados en ningún sitio (en realidad se pueden ver con el comando `docker history` pero esto no es práctico).
 - Los cambios en los ambientes de desarrollo pueden darse decenas de veces en el transcurso de un proyecto, la desinstalación de módulos y librerías que ya no son necesarias puede volverse una tarea tediosa.
-- En general cada cambio en el ambiente de desarrollo viene acompañado por un cambio en el código fuente de nuestra aplicación, lo que nos gustaría poder hacer es versionar nuestro ambiente utilizando los mismos mecanismos (GIT) que utilizamos para versionar nuestro código. Pero cada nueva imagen generada con el método `$ docker commit` pesa cientos de Megas y no contiene información de los paquetes que hay instalados en ella.
+- En general cada cambio en el ambiente de desarrollo viene acompañado por un cambio en el código fuente de nuestra aplicación, lo que nos gustaría poder hacer es versionar nuestro ambiente utilizando los mismos mecanismos (ej.: GIT) que utilizamos para versionar nuestro código. Pero cada nueva imagen generada con el método de `docker commit` pesa cientos de MB y no contiene información de los paquetes que hay instalados en ella.
 - Si queremos reutilizar nuestro ambiente para otro desarrollo no tenemos visibilidad de qué software hay instalado en la imagen para poder adaptarlo a las necesidades del nuevo proyecto.
-- En caso de que el proceso que necesitamos correr en nuestro contenedor no sea "bash", ni siquiera hay una forma sencilla y directa de generar el ambiente utilizando esta estrategia de `docker commit`.
+- En caso de que el proceso que necesitamos correr en nuestro contenedor no sea "bash", ni siquiera hay una forma sencilla y directa de generar el ambiente por medio de  `docker commit`.
 
-La solución a los problemas planteados anteriormente es la utilización de un archivo 'Dockerfile' para la construcción de nuestra imagen.
-Un archivo 'Dockerfile' es básicamente un archivo de texto que describe de forma unívoca cuál es el contenido de la imagen. Para entenderlo mejor, veamos como aplicaríamos esta técnica para la confección de la imagen del ejemplo anterior.
+La solución a los problemas planteados anteriormente es la utilización de un archivo `Dockerfile` para la construcción de nuestra imagen.
+Un archivo `Dockerfile` es básicamente un archivo de texto que describe de forma unívoca cuál es el contenido de la imagen. Para entenderlo mejor, veamos como aplicaríamos esta técnica para la creación de la imagen del ejemplo anterior.
+
 El contenido del archivo 'Dockerfile' sería el siguiente:
 
 ```dockerfile
 FROM ubuntu
 LABEL maintainer="cdh@conatel.com.uy"
-ADD config.txt /settings/config.txt
 RUN apt-get update
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends tzdata
 RUN apt-get install -y python3
@@ -134,40 +170,42 @@ RUN apt-get install -y nginx
 CMD bash
 ```
 
-Una vez que tenemos el archivo Dockerfile armado, lo único que nos resta por hacer para generar la imágen es guardarlo en un directorio vacío, agregar a dicho directorio un archivo `config.txt` con contenido arbitrario, posicionarnos con el prompt en dicho directorio y ejecutar:
+Una vez que tenemos el archivo `Dockerfile` creado, lo único que debemos hacer para generar la imagen es guardarlo en un directorio vacío, que se denomina `contexto`, y luego  ubicados en el mismo ejecutar:
 
 ```bash
 $ docker build -t prod-env:0.1 .
 ```
 
-Esto generará una imágen llamada `prod-env:0.1` (0.1 es un string arbitrario que hace referencia a la versión) a partir de la cual podrémos generar la cantidad de contenedores que necesítemos.
+Este proceso generará una imágen llamada `prod-env:0.1` a partir de la cual podrémos generar la cantidad de contenedores que necesítemos.
+
+> 👉 El `:0.1` hace referencia al tag de la versión que le se asigna a la imagen que estoy creando, lo que me permite versionar diferentes ambientes o configuraciones. Si no lo especificamos, docker le asignará el tag por defecto, que es `:latest`
+
 Este método tiene las siguientes ventajas:
 
-- La especificación de la imagen ocupa apenas unos bytes por lo que se vuelve muy sencilla de transportar.
-- El archivo Dockerfile contiene la información exacta de los paqutetes que hay instalados en la imagen.
-- El archivo Dockerfile es totalmente versionable con GIT.
-- Si necesitamos hacer un cambio en nuestro ambiente sólo necesitamos modificar las líneas correspondientes en Dockerfile y volver a generar la imagen. No es necesario instalar y desinstalar paquetes manualmente.
+- La especificación de la imagen (el archivo `Dockerfile`) ocupa apenas unos bytes por lo que se vuelve muy sencilla de transportar.
+- El archivo `Dockerfile` contiene la información exacta de los paquetes que hay instalados en la imagen, lo que nos sirve de documentación.
+- El archivo `Dockerfile` es totalmente versionable con un gestor de código como GIT.
+- Si necesitamos hacer un cambio en nuestro ambiente sólo necesitamos modificar las líneas correspondientes del `Dockerfile` y volver a generar la imagen. No es necesario instalar y desinstalar paquetes manualmente.
 
-Ahora, si quisiéramos generar un contenedor a partir de la imagen que construímos podríamos ejecutar:
+Ahora, si quisiéramos generar un contenedor a partir de la imagen que construímos anteriormente, podemos ejecutar como siempre:
 
 ```bash
-$ docker run -it prod-env:0.1
+$ docker container run -it prod-env:0.1
 root@08322e95d53c:/#
 ```
 
-A continuación analizaremos cada una de los comandos especificados en Dockerfile para entender cuál es su cometido.
+A continuación indicaremos los principales comandos que se utilizan dentro de un archivo `Dockerfile`:
 
-## `FROM`
+#### `FROM`
 
-Especifíca la imagen base a utilizar, en este caso `ubuntu:latest`.
+Especifíca la imagen base a utilizar, sobre la cuál se construiría la nueva imagen. En el ejemplo estamos usando `ubuntu`.
 
-## `LABEL`
+#### `LABEL`
 
-Permite agregar metadata de forma arbitraria a la imagen. Esto puede utilizarse con múltiples propósitos, en este caso particular se está utilizando para indicar el correo del "dueño" de la imagen.
-Esta medatada puede consultarse con el comando `docker inspect`.
+Permite agregar metadata de forma arbitraria a la imagen (opcional). Esto puede utilizarse con múltiples propósitos, en este caso particular se está utilizando para indicar el correo del "dueño" de la imagen. Esta medatada puede consultarse luego, cuando el contenedor esté creado, con el comando `docker inspect`.
 
 ```bash
-$ docker inspect prod-env:0.1
+$ docker image inspect prod-env:0.1
 ...
 ...
 "Labels": {
@@ -177,61 +215,92 @@ $ docker inspect prod-env:0.1
 ...
 ```
 
-## `ADD`
+#### `ADD`
 
-Agrega un archivo o directorio desde el contexto al lugar especificado en el filesystem de la imagen.
-La sintaxis es la siguiente `ADD <source> <destination>` siendo `<source>`el path al archivo en la máquina `host` y `<destination>` el path a la ubicación del archivo o directorio dentro del contenedor.
+Permite agregar un archivo (o directorio) a la imagen que estoy creando. Puede utilizarse por ejemplo, para incluir archivos con datos de configuración que requiera nuestra aplicación.
 
-Para definir `<source>` se pueden utilizar wildcards, de esta forma `ADD configuracion?.txt /data/` agregará al directorio `/data` dentro del contenedor todos los archivos del contexto que comiencen con `configuracion` que luego tengan exactamente un caracter y que terminen con la extensión `.txt`
+La sintaxis es `ADD <source> <destination>` siendo `<source>` la ubicación (path) del archivo dentro del directorio `contexto` del equipo host, y `<destination>` la ubicación donde quiero colocar el archivo dentro del contenedor.
 
-## `RUN`
+Para definir `<source>` se pueden utilizar wildcards. Por ejemplo `ADD configuracion?.txt /data/` agregará al directorio `/data` del contenedor todos los archivos del contexto que comiencen con `configuracion` que luego tengan exactamente un caracter y que terminen con la extensión `.txt`
 
-Ejecuta un comando, por defecto con el shell `/bin/sh -c`, y hace un `commit` agregando una nueva capa a la imagen resultante una vez finalizada la ejecución del comando.
+#### `RUN`
 
-## `CMD`
+Ejecuta un comando, por defecto con el shell `/bin/sh -c`, agregando el resultado del comando a la imagen que se está construyendo (en una nueva capa).
 
-Comando a ejecutar **por defecto** en caso de que el usuario no especifique uno al correr `docker run`.
+#### `ENV`
 
-## `ENV`
+Define una variable de entorno que será disponibilizada dentro del contenedor cuando éste se encuentre corriendo.
 
-Define variables de entorno para ser utilizadas dentro del Dockerfile o dentro del contenedor.
+#### `CMD`
+
+Indica cuál es el comando que el contenedor va a ejecutar por defecto cuando se ejecute, en caso de que el usuario al crear el contenedor (`docker container run`) no indique un comando específico. Esta línea en general se colocal al final del archivo `Dockerfile.`
 
 #### Ejercicio 5
 
 1. Crear un directorio y navegar hacia él:
 
 ```bash
-~$ mkdir contexto
-~$ cd contexto
+$ mkdir contexto
+$ cd contexto
 ~/contexto$
 ```
 
-2. Dentro del nuevo directorio crear 3 archivos vacios de la siguiente manera:
+2. Dentro del nuevo directorio crear 3 archivos vacíos, con el comando `touch`, de la siguiente manera:
 
 ```bash
 ~/contexto$ touch archivo1.cfg archivo2.cfg archivo3.cfg
 ```
 
-3. Dentro del mismo directorio crear un archivo Dockerfile con las siguientes líneas:
+3. Dentro del mismo directorio crear un archivo `Dockerfile` con las siguientes líneas:
 
 ```dockerfile
 FROM ubuntu
 ADD <completar>
 ```
 
-Donde dice \<completar> se debe escribir, en una única línea, el comando necesario para agregar al directorio `/data` de la imagen los tres archivos creados en el paso 2.
+Donde dice `<completar>` se debe escribir, en una única línea, el comando necesario para agregar al directorio `/data` de la imagen los tres archivos creados en el paso 2.
 
 4. Construir una imagen a partir del Dockerfile:
 
 ```bash
-~/contexto$ docker build -t nombredelaimagen .
+~/contexto$ docker build -t ejercicio5 .
 ```
 
-5. Crear un contenedor a partir de la nueva imagen y verificar que los archivos están presentes en `/data`
+5. Crear un contenedor a partir de la nueva imagen y verificar que los 3 archivos están presentes en `/data`
+
+<details>
+    <summary>Solución</summary>
+<pre>
+<code>
+~/contexto$ cat Dockerfile
+FROM ubuntu
+ADD archivo?.cfg /data/
+.
+~/contexto$ docker build -t ejercicio5 .
+Sending build context to Docker daemon  3.584kB
+Step 1/2 : FROM ubuntu
+ ---> a8780b506fa4
+Step 2/2 : ADD archivo?.cfg /data/
+ ---> 2db5ac716d3d
+Successfully built 2db5ac716d3d
+Successfully tagged ejercicio5:latest
+.
+~/contexto$ docker container run -it --rm ejercicio5
+root@f69759d29668:/# cd /data
+root@f69759d29668:/data# ls -la
+total 8
+drwxr-xr-x 2 root root 4096 Nov  7 17:17 .
+drwxr-xr-x 1 root root 4096 Nov  7 17:17 ..
+-rw-rw-r-- 1 root root    0 Nov  7 17:16 archivo1.cfg
+-rw-rw-r-- 1 root root    0 Nov  7 17:16 archivo2.cfg
+-rw-rw-r-- 1 root root    0 Nov  7 17:16 archivo3.cfg
+root@f69759d29668:/data# exit
+</code>
+</pre>
 
 #### Ejercicio 6
 
-1. Modificar el Dockerfile construido en el ejercicio anterior para que tenga una sentencia `RUN` que instale Python de la siguiente manera `apt-get update && apt-get install -y python3 `.
+1. Modificar el `Dockerfile` construido en el ejercicio anterior para que tenga una sentencia `RUN` que instale Python de la siguiente manera `apt-get update && apt-get install -y python3 `
 2. Volver a construir la imagen.
 3. Crear un contenedor a partir de la imagen y verificar que Python está instalado de la siguiente manera:
 
@@ -244,14 +313,33 @@ Type "help", "copyright", "credits" or "license" for more information.
 root@08f5d92ad130:/#
 ```
 
+<details>
+    <summary>Solución</summary>
+<pre><code>
+~/contexto$ cat Dockerfile
+FROM ubuntu
+ADD archivo?.cfg /data/
+RUN apt-get update && apt-get install -y python3
+</code></pre>
+
 #### Ejercicio 7
 
 En este ejercicio haremos que, por defecto, los contenedores creados a partir de nuestra nueva imagen corran python en lugar de `bash`
 
-1. En el Dockerfile que utilizamos en los dos ejercicios anteriores, agregar una línea al final de la siguiente manera: `CMD python3`.
+1. En el Dockerfile que utilizamos en los ejercicios anteriores, agregar una línea al final de la siguiente manera: `CMD python3`.
 2. Volver a construir la imagen.
 3. Crear un contenedor a partir de la nueva imagen, pero no especificar un comando a ejecutar.
 4. Verificar que al crearse, el contenedor nos deja posicionados en el interprete de Python.
+
+<details>
+    <summary>Solución</summary>
+<pre><code>
+~/contexto$ cat Dockerfile
+FROM ubuntu
+ADD archivo?.cfg /data/
+RUN apt-get update && apt-get install -y python3
+CMD python3
+</code></pre>
 
 #### Ejercicio 8
 
@@ -260,229 +348,116 @@ En este ejercicio exploraremos como utilizar las variables de entorno cambiando 
 1. Partiendo del Dockerfile utilizado anteriormente, agregar la siguiente líne `ENV HOME /mi_casa`
 2. Luego vamos a crear el directorio `mi_casa` dentro de la imagen agregando al Dockerfile la siguiente línea `RUN mkdir $HOME`
 3. Volver a construir la imagen.
-4. A partir de la nueva imagen, crear un contenedor y verficiar que al tipear `cd ~` quedamos posicionados dentro del directorio `mi_casa`. (recuerde que en el ejercicio anterior modificó el comando por defecto del contenedor, por lo que ahora para ejecutar `bash` hay que hacerlo explicitamente).
+4. A partir de la nueva imagen, crear un contenedor y verficiar que al tipear `cd ~` quedamos posicionados dentro del directorio `mi_casa`. (recuerde que en el ejercicio anterior modificó el comando por defecto del contenedor, por lo que ahora para ejecutar `bash` hay que hacerlo explicitamente, o bien volver a colocar bash como comando por defecto en el Dockerfile).
 
-## Optimización de la construcción de imágenes
-
-Antes de aprender como escribir nuestro archivo Dockerfile para generar nuestras imágenes de forma mas eficiente, es necesario entender como funciona el proceso de construcción de una imágen a bajo nivel.
-Cuando creamos una imagen a partir de un archivo Dockerfile con el comando `docker build`, lo que hace básicamente docker es tomar la imagen base especificada en la directiva `FROM` e ir ejecutando de forma secuencial los comandos especificados en las directivas `RUN`, ejecutando implícitamente un `docker commit` luego de cada comando y almacenando la imagen resultante en cache local.
-Por lo que, al final del día, tendremos almacenada nuestra imagen final y todas las imágenes intermedias que se fueron creando para llegar a la misma. Esta estructura de capas puede verse al ejecutar el siguiente comando:
-
-```bash
-$ docker history prod-env:0.1
-IMAGE               CREATED             CREATED BY                                      SIZE                COMMENT
---> Lineas omitidas para mayor claridad <--
-1d20f906abf2        5 minutes ago       /bin/sh -c apt-get install -y python3-pip       259 MB
-262a82549ff1        17 minutes ago      /bin/sh -c apt-get install -y python3           37.28 MB
-65e5f33f7859        18 minutes ago      /bin/sh -c apt-get update                       38.81 MB
-c2b62f673858        21 minutes ago      /bin/sh -c #(nop)  CMD ["/bin/sh" "-c" "bash"   0 B
-9c2c661471f1        21 minutes ago      /bin/sh -c #(nop) ADD file:f3324fde77ff764cb1   7 B
-afafd17c2c9c        26 hours ago        /bin/sh -c #(nop)  LABEL maintainer=cdh   0 B
-6a2f32de169d        3 months ago        /bin/sh -c #(nop)  CMD ["/bin/bash"]            0 B
-<missing>           3 months ago        /bin/sh -c mkdir -p /run/systemd && echo 'doc   7 B
-<missing>           3 months ago        /bin/sh -c sed -i 's/^#\s*\(deb.*universe\)$/   2.759 kB
-<missing>           3 months ago        /bin/sh -c rm -rf /var/lib/apt/lists/*          0 B
-<missing>           3 months ago        /bin/sh -c set -xe   && echo '#!/bin/sh' > /u   745 B
-<missing>           3 months ago        /bin/sh -c #(nop) ADD file:b8a2c16d65e533a2bc   117.2 MB
-```
-
-El objetivo de la estructura de capas almacenadas en cache es optimizar el tiempo de construcción de las imagenes y el espacio en disco que consumen los contenedores, mas sobre esto [aquí](https://docs.docker.com/engine/userguide/storagedriver/imagesandcontainers/#images-and-layers). Este proceso funciona de la siguiente manera: al invocar `docker build -t <nombre-de-la-imagen> .`, lo que hace Docker es, antes de ejecutar cada directiva del archivo Dockerfile, fijarse si no hay en cache una imagen derivada de la directiva correspondiente y de todas las anteriores (comenzando por la directiva `FROM` que siempre es la primera). 
-
-En caso de que encuentre una imagen que se corresponda con dicha directiva, se saltea el paso de la generación de la misma (porque ya está generada) y pasa a la siguiente directiva. Este proceso se repite hasta que alguna de las imágenes no se encuentre en cache local, en tal caso Docker crea dicha imagen **y todas las sucesivas**. Dicho de otra forma, una imagen está compuesta por capas **read-only** que contienen los archivos resultantes de las directivas ejecutadas desde el archivo Dockerfile; estas capas se construyen una sobre otra, de forma incremental, agregando los archivos "delta" (sólo la diferencia) entre una capa y otra. 
-
-Dado que las capas son read-only, si una capa posterior modifica un archivo contenido en una capa anterior, es necesario copiar nuevamente el archivo completo en la capa posterior, siéndo esta última copia la que se utilizará. Esta forma de construir las imágenes como capas una sobre otra, tiene la implicancia de que si modificamos una capa "del medio", será necesario volver a generar todas las capas sucesivas, dado que las capas no son autocontenidas sino que se basan en su capa anterior incluyendo únicamente los "nuevos archivos".
-
-Entender esto es la clave para generar archivos Dockerfile mas eficientes; veámoslo con un ejemplo.
-
-Cuando construímos nuestra imagen `prod-env:0.1` cargamos en ella una archivo de configuración llamado `config.txt`. Supongamos ahora que queremos cambiar dicho archivo porque nos interesa modificar la configuración de nuestra aplicación; como la línea `ADD config.txt /settings/config.txt` se encuentra en tercer lugar en el archivo Dockerfile, Docker se verá obligado a volver a generar todas las imágenes correspondientes a las líneas 4 en adelante. Si por el contrario nuestro archivo de configuración, que es lo único frecuentemente modificable de nuestra imagen, se encontrara en el último lugar, el proceso de reconstrucción de nuestra imagen sería mucho mas rápido.
-
-#### Ejercicio 9
-
-1. Generar una nueva carpeta:
-
-   ```bash
-   $ mkdir prod_env
-   $ cd prod_env
-   ```
-
-2. Dentro de la nueva carpeta, generar un archivo de configuración:
-
-   ```bash
-   prod-env/$ touch config.txt
-   ```
-
-3. Generar un archivo `Dockerfile` utilizando el comando `nano Dockerfile` y copiar el contenido que se muestra a continuación:
-
-```dockerfile
+<details>
+    <summary>Solución</summary>
+<pre><code>
+~/contexto$ cat Dockerfile
 FROM ubuntu
-LABEL maintainer="cdh@conatel.com.uy"
-# Colocamos el archivo config.txt al principio del Dockerfile
-ADD config.txt /settings/config.txt
-RUN apt-get update
-RUN DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends tzdata
-RUN apt-get install -y python3
-RUN apt-get install -y python3-pip
-RUN pip3 install --upgrade pip
-RUN pip3 install requests
-RUN pip3 install mysql-connector==2.2.9
-RUN pip3 install django==1.10
-RUN echo "mysql-server mysql-server/root_password password CursoDocker2022." | debconf-set-selections
-RUN echo "mysql-server mysql-server/root_password_again password CursoDocker2022." | debconf-set-selections
-RUN apt-get install -y mysql-server
-RUN apt-get install -y tftpd-hpa
-ENV TZ=America/Montevideo
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
-RUN apt-get install -y openssh-server
-RUN apt-get install -y nginx
-CMD bash
+ADD archivo?.cfg /data/
+RUN apt-get update && apt-get install -y python3
+ENV HOME /mi_casa
+RUN mkdir $HOME
+CMD python3
+.
+~/contexto$ docker build -t ejercicio8 .
+(...)
+~/contexto$ docker container run -it --rm ejercicio8 /bin/bash
+root@2b1b88794be8:/# cd
+root@2b1b88794be8:~# pwd
+/mi_casa
+
+`code`
+
+## `Optimización de la construcción de imágenes`
+
+`Antes de aprender como escribir nuestro archivo Dockerfile para generar nuestras imágenes de forma mas eficiente, es necesario entender como funciona el proceso de construcción de una imágen a bajo nivel.
+Cuando creamos una imagen a partir de un archivo Dockerfile con el comando `
+
+```
+code
 ```
 
-4. Construir la imagen.
+`El objetivo de la estructura de capas almacenadas en cache es optimizar el tiempo de construcción de las imagenes y el espacio en disco que consumen los contenedores, mas sobre esto `
 
-```bash
-$ docker build -t prod-env:0.2 .
---> Proceso largo, salida omitida para mayor claridad <--
+`En caso de que encuentre una imagen que se corresponda con dicha directiva, se saltea el paso de la generación de la misma (porque ya está generada) y pasa a la siguiente directiva. Este proceso se repite hasta que alguna de las imágenes no se encuentre en cache local, en tal caso Docker crea dicha imagen `
+
+`Dado que las capas son read-only, si una capa posterior modifica un archivo contenido en una capa anterior, es necesario copiar nuevamente el archivo completo en la capa posterior, siéndo esta última copia la que se utilizará. Esta forma de construir las imágenes como capas una sobre otra, tiene la implicancia de que si modificamos una capa "del medio", será necesario volver a generar todas las capas sucesivas, dado que las capas no son autocontenidas sino que se basan en su capa anterior incluyendo únicamente los "nuevos archivos".`
+
+`Entender esto es la clave para generar archivos Dockerfile mas eficientes; veámoslo con un ejemplo.`
+
+`Cuando construímos nuestra imagen `
+
+#### `Ejercicio 9`
+
+1. `Generar una nueva carpeta:`
+
+   ```
+   code
+   ```
+2. `Dentro de la nueva carpeta, generar un archivo de configuración:`
+
+   ```
+   code
+   ```
+3. `Generar un archivo `
+
+```
+code
 ```
 
-5. Modificar el archivo de configuración.
+4. `Construir la imagen.`
 
-```bash
-$ nano config.txt
-...
+```
+code
 ```
 
-6. Construir la nueva imagen y ver que todas las capas posteriores a la sentencia `ADD config.txt /settings/config.txt` se vuelven a construir.
+5. `Modificar el archivo de configuración.`
 
-```bash
-$ docker build -t prod-env:0.3 .
-Sending build context to Docker daemon  3.584kB
-Step 1/17 : FROM ubuntu
- ---> 16508e5c265d
-Step 2/17 : LABEL maintainer="cdh@conatel.com.uy"
- ---> Using cache
- ---> 13023f512a0f
-Step 3/17 : ADD config.txt /settings/config.txt
- ---> ed04beea8b1a
-Step 4/17 : RUN apt-get update
- ---> Running in 203e9bce73d2
-Get:1 http://security.ubuntu.com/ubuntu bionic-security InRelease [83.2 kB]
-Get:2 http://security.ubuntu.com/ubuntu bionic-security/universe Sources [17.4 kB]
-Get:3 http://archive.ubuntu.com/ubuntu bionic InRelease [242 kB]
-Get:4 http://security.ubuntu.com/ubuntu bionic-security/main amd64 Packages [200 kB]
-Get:5 http://security.ubuntu.com/ubuntu bionic-security/universe amd64 Packages [69.0 kB]
-Get:6 http://security.ubuntu.com/ubuntu bionic-security/multiverse amd64 Package
---> Proceso largo, salida omitida para mayor claridad <--
+```
+code
 ```
 
-7. Ahora modificamos el Dockerfile colocando la sentencia `ADD config.txt /settings/config.txt` al final. El nuevo `Dockerfile` será:
+6. `Construir la nueva imagen y ver que todas las capas posteriores a la sentencia `
 
-```dockerfile
-FROM ubuntu
-LABEL maintainer="cdh@conatel.com.uy"
-RUN apt-get update
-RUN DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends tzdata
-RUN apt-get install -y python3
-RUN apt-get install -y python3-pip
-RUN pip3 install --upgrade pip
-RUN pip3 install requests
-RUN pip3 install mysql-connector==2.2.9
-RUN pip3 install django==1.10
-RUN echo "mysql-server mysql-server/root_password password CursoDocker2022." | debconf-set-selections
-RUN echo "mysql-server mysql-server/root_password_again password CursoDocker2022." | debconf-set-selections
-RUN apt-get install -y mysql-server
-RUN apt-get install -y tftpd-hpa
-ENV TZ=America/Montevideo
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
-RUN apt-get install -y openssh-server
-RUN apt-get install -y nginx
-# Ahora colocamos el archivo config.txt al final del Dockerfile
-ADD config.txt /settings/config.txt
-CMD bash
+```
+code
 ```
 
-7. Volvemos a construir la imagen
+7. `Ahora modificamos el Dockerfile colocando la sentencia `
 
-```bash
-$ docker build -t prod-env:0.4 .
---> Proceso largo, salida omitida para mayor claridad <--
+```
+code
 ```
 
-8. Modificar nuevamente el archivo
+7. `Volvemos a construir la imagen`
 
-```bash
-$ nano config.txt
-...
+```
+code
 ```
 
-9. Finalmente, construimos una última vez la imagen viendo que esta vez el proceso es mucho mas rápido.
+8. `Modificar nuevamente el archivo`
 
-```bash
-$ docker build -t prod-env:0.5 .
-Sending build context to Docker daemon  3.584kB
-Step 1/17 : FROM ubuntu
- ---> 16508e5c265d
-Step 2/17 : LABEL maintainer="ialmandos@conatel.com.uy"
- ---> Using cache
- ---> 13023f512a0f
-Step 3/17 : RUN apt-get update
- ---> Using cache
- ---> 8f11a5fbeb71
-Step 4/17 : RUN apt-get install -y python3
- ---> Using cache
- ---> 9e52395f90e6
-Step 5/17 : RUN apt-get install -y python3-pip
- ---> Using cache
- ---> 2d18bb390a33
-Step 6/17 : RUN pip3 install --upgrade pip
- ---> Using cache
- ---> b523e8703373
-Step 7/17 : RUN pip3 install requests
- ---> Using cache
- ---> cc6aa336d156
-Step 8/17 : RUN pip3 install mysql-connector==2.2.9
- ---> Using cache
- ---> f1a406b63c80
-Step 9/17 : RUN pip3 install django==1.10
- ---> Using cache
- ---> 4c5cf52459e5
-Step 10/17 : RUN echo "mysql-server mysql-server/root_password password CursoDocker2022." | debconf-set-selections
- ---> Using cache
- ---> 9c4f71e5d970
-Step 11/17 : RUN echo "mysql-server mysql-server/root_password_again password CursoDocker2022." | debconf-set-selections
- ---> Using cache
- ---> 6d8dd3a11e39
-Step 12/17 : RUN apt-get install -y mysql-server
- ---> Using cache
- ---> 85859a68be31
-Step 13/17 : RUN apt-get install -y tftpd-hpa
- ---> Using cache
- ---> 47756b51af83
-Step 14/17 : RUN apt-get install -y openssh-server
- ---> Using cache
- ---> 144b6cf04d58
-Step 15/17 : RUN apt-get install -y nginx
- ---> Using cache
- ---> d11dd15bc4c6
-Step 16/17 : ADD config.txt /settings/config.txt
- ---> 5451a7ece1b5
-Step 17/17 : CMD bash
- ---> Running in 59d811d43bc4
-Removing intermediate container 59d811d43bc4
- ---> 65efbd2e6484
-Successfully built 65efbd2e6484
-Successfully tagged prod-env:0.3
+```
+code
 ```
 
-### Contenedores vs imágenes
+9. `Finalmente, construimos una última vez la imagen viendo que esta vez el proceso es mucho mas rápido.`
 
-Si bien conceptualmente las diferencias entre contenedores e imágenes son importantes, la realidad es que si análizamos uno y otro a bajo nivel, tienen una estructura casí idéntica. De hecho la imagen es parte del contenedor; veamos esto en mas detalle.
-Un contenedor es una imagen a la que se le agrega una capa adicional con permisos de escritura. Esta capa contendrá todos los archivos que se generen en el contenedor mientras el mismo esté corriendo. Esta capa con permiso de escritura permanecerá en nuestro sistema haciendo persistentes los datos contenidos en ella mientras el contenedor exista; cuando borramos un contenedor de nuestro sistema con el comando `docker rm <nombre-del-contenedor>` lo que en realidad estamos haciendo es borrar esta última capa. La imagen a continuación muestra gráficamente la estructura de capas explicada anteriormente:
+```
+code
+```
 
-![alt text](Imagenes/container-layers.jpg "Estructura de capas de un contenedor")
+### `Contenedores vs imágenes`
 
-La forma en que están estructurados los contenedores presenta un beneficio muy importante, y es que si corremos varios conenedores derivados de una misma imagen, el espacio que ocupará cada uno en disco será unicamente la sumatoria de todas las capas superiores (capas de contenedor) mas la imagen en sí, que se sumará una única vez. El diagrama a continuación muestra este concepto gráficamente:
+`Si bien conceptualmente las diferencias entre contenedores e imágenes son importantes, la realidad es que si análizamos uno y otro a bajo nivel, tienen una estructura casí idéntica. De hecho la imagen es parte del contenedor; veamos esto en mas detalle.
+Un contenedor es una imagen a la que se le agrega una capa adicional con permisos de escritura. Esta capa contendrá todos los archivos que se generen en el contenedor mientras el mismo esté corriendo. Esta capa con permiso de escritura permanecerá en nuestro sistema haciendo persistentes los datos contenidos en ella mientras el contenedor exista; cuando borramos un contenedor de nuestro sistema con el comando `
 
-![alt text](Imagenes/sharing-layers.jpg "Varios contenedores utilizando una imagen")
+`img`
 
-| [<-- Volver](1_Docker.md) |
-[Siguiente -->](3_Storage.md) |
+`La forma en que están estructurados los contenedores presenta un beneficio muy importante, y es que si corremos varios conenedores derivados de una misma imagen, el espacio que ocupará cada uno en disco será unicamente la sumatoria de todas las capas superiores (capas de contenedor) mas la imagen en sí, que se sumará una única vez. El diagrama a continuación muestra este concepto gráficamente:`
+
+`img`
+
+`| `
