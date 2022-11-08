@@ -1,5 +1,5 @@
-| [<-- Volver](2_Images.md) |
-[Siguiente -->](4_Networking.md) |
+| [&lt;-- Volver](2_Images.md) |
+[Siguiente --&gt;](4_Networking.md) |
 
 ## Storage
 
@@ -7,26 +7,28 @@
 
 ### Espacio en disco ocupado por un contenedor
 
-Si ejecutamos
+Es bastante difícil poder calcular el tamaño exacto que ocupa un contenedor.
+
+Si ejecutamos el comando `docker container ls -s` vamos a ver que en la columna `SIZE` aparecen dos valores, el primero hace referencia al tamaño de la capa read-write de ese contenedor en particular y el `virtual size` que hace referencia al tamaño de la imagen a partir de la cual se generó el contenedor + el tamaño de la capa RW del contenedor.
 
 ```bash
-$ docker ps -s
-CONTAINER ID        IMAGE                  COMMAND             CREATED             STATUS              PORTS                              NAMES               SIZE
-f667d89cc276        ismaa10/nodejs-image   "bash"              19 hours ago        Up 19 hours         0.0.0.0:3000->3000/tcp, 8080/tcp   test                994kB (virtual 271MB)
+$ docker container ls -s
+CONTAINER ID   IMAGE     COMMAND                  CREATED         STATUS         PORTS     NAMES             SIZE
+6da23ebd22d4   nginx     "/docker-entrypoint.…"   5 seconds ago   Up 4 seconds   80/tcp    competent_elion   1.09kB (virtual 142MB)
+
 ```
 
-vamos a ver que en la columna `SIZE` aparecen dos valores, el primero hace referencia al tamaño de la capa read-write de ese contenedor en particular y el `virtual size` que hace referencia al tamaño de la imagen a partir de la cual se generó el contenedor + el tamaño de la capa RW del contenedor.
-
 El `virtual size` constituye el tamaño total que ocupa un contenedor en el disco.
+
 Algunas consideraciones importantes a tener en cuenta a la hora de estimar cuanto espacio ocupan los contenedores:
 
-- En escenarios donde tengo varios contenedores derivados de la misma imágen, tengo que tener el cuenta de sumar el `virtual size` una única vez.
-- Es posible que dos imagenes distintas compartan algunas capas, por lo que, en este escenario, si corremos dos contenedores, uno derivado de cada imagen, tampoco sería correcto sumar los `virtual size` de ambos.
-- Además de su capa read-write, los contenedores pueden escribir datos en volúmenes externos. En tal caso este espacio no figura en la salida del comando `docker ps -s`
+- En escenarios donde tengo varios contenedores derivados de la misma imagen, tengo que sumar el `virtual size` una única vez.
+- Es posible que dos imagenes distintas compartan algunas capas, por lo que en este escenario, si corremos dos contenedores uno derivado de cada imagen, tampoco sería correcto sumar los `virtual size` de ambos.
+- Además de su capa read-write, los contenedores pueden escribir datos en volúmenes externos. En tal caso este espacio no figura en la salida de este comando.
 
 #### Ejercicio 10
 
-En este ejercicio vamos a explorar el `size` y el `virtual size` de un contenedor y a verficar que el segundo es la suma del tamaño de la imagen y el primero.
+En este ejercicio autoguiado vamos a explorar el `size` y el `virtual size` de un contenedor, y a verficar que el segundo es la suma del tamaño de la imagen y del primero.
 
 1 - A partir del siguiente Dockerfile generemos una imagen llamada `imagen_de_prueba`.
 
@@ -35,93 +37,106 @@ FROM ubuntu
 RUN apt-get update && apt-get install -y nano
 ```
 
+```
+~/ejercicio10$ docker build -t imagen_de_prueba .
+(...)
+Successfully built b1906390bf18
+Successfully tagged imagen_de_prueba:latest
+
+```
+
 2 - Verifiquemos las capas que componen la imagen:
 
 ```bash
-$ docker image history imagen_de_prueba:latest
-IMAGE               CREATED             CREATED BY                                      SIZE                COMMENT
-2e860defcdce        23 minutes ago      /bin/sh -c apt-get update && apt-get install…   41.9MB
-20c44cd7596f        8 months ago        /bin/sh -c #(nop)  CMD ["/bin/bash"]            0B
-<missing>           8 months ago        /bin/sh -c mkdir -p /run/systemd && echo 'do…   7B
-<missing>           8 months ago        /bin/sh -c sed -i 's/^#\s*\(deb.*universe\)$…   2.76kB
-<missing>           8 months ago        /bin/sh -c rm -rf /var/lib/apt/lists/*          0B
-<missing>           8 months ago        /bin/sh -c set -xe   && echo '#!/bin/sh' > /…   745B
-<missing>           8 months ago        /bin/sh -c #(nop) ADD file:280a445783f309c90…   123MB
+$ docker image history imagen_de_prueba:latest 
+IMAGE          CREATED         CREATED BY                                      SIZE      COMMENT
+b1906390bf18   4 minutes ago   /bin/sh -c apt-get update && apt-get install…   40.7MB  
+a8780b506fa4   5 days ago      /bin/sh -c #(nop)  CMD ["bash"]                 0B  
+<missing>      5 days ago      /bin/sh -c #(nop) ADD file:29c72d5be8c977aca…   77.8MB  
+ubuntu@docker-101-pod-1:~/ejer10$ 
+
 ```
 
 3 - Ahora vamos a crear un contenedor, corriendo en segundo plano, a partir de dicha imagen :
 
 ```bash
-$ docker run -itd --rm --name contenedor_de_prueba imagen_de_prueba bash
+$ docker container run -itd --rm --name contenedor_de_prueba imagen_de_prueba bash
 ```
 
-4 - Verfiquemos ahora el tamaño de dicho contenedor:
+4 - Verfiquemos el tamaño de dicho contenedor:
 
 ```bash
 $ docker container ls -s
-CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES                  SIZE
-e3173657fec9        imagen_de_prueba    "bash"              16 seconds ago      Up 15 seconds                           contenedor_de_prueba   0B (virtual 165MB)
+CONTAINER ID   IMAGE              COMMAND   CREATED         STATUS         PORTS     NAMES                  SIZE
+109a4567197c   imagen_de_prueba   "bash"    16 seconds ago  Up 15 seconds            contenedor_de_prueba   0B (virtual 118MB)
 ```
 
-5 - Ahora vamos a ingresar al contenedor y vamos a crear, dentro del mismo, un archivo de 35M.
+5 - Ahora vamos a ingresar al contenedor, y vamos a crear dentro del mismo un archivo de 35M.
 
 ```bash
-$ docker attach contenedor_de_prueba
+$ docker container attach contenedor_de_prueba
 root@e3173657fec9:/# fallocate -l 35M archivo_grande.txt
-root@e3173657fec9:/# ls
-archivo_grande.txt  bin  boot  dev  etc  home  lib  lib64  media  mnt  opt  proc  root  run  sbin  srv  sys  tmp  usr  var
+
 root@e3173657fec9:/# ls -la
 total 35912
 drwxr-xr-x   1 root root     4096 Aug  8 23:00 .
 drwxr-xr-x   1 root root     4096 Aug  8 23:00 ..
 -rwxr-xr-x   1 root root        0 Aug  8 22:57 .dockerenv
 -rw-r--r--   1 root root 36700160 Aug  8 23:00 archivo_grande.txt
-<-- salida omitida para mayor claridad -->
+(...)
 ```
 
-6 - Usando la secuencia de escape `ctl+p`,`ctl+q` salir del contenedor y verificar que ahora ambos tamaños, el `size` y el `virtual size` han aumentado en 35M.
+6 - Usando la secuencia de escape `ctl+p`,`ctl+q` salimos del contenedor y verificar que ahora ambos tamaños, el `size` y el `virtual size` han aumentado en 35MB
 
-### Funcionamiento de los drivers mas comúnes (aufs, overlay y overlay2)
+```bash
+$ docker container ls -s
+CONTAINER ID   IMAGE              COMMAND   CREATED         STATUS         PORTS     NAMES                  SIZE
+109a4567197c   imagen_de_prueba   "bash"    3 minutes ago   Up 3 minutes             contenedor_de_prueba   36.7MB (virtual 155MB)
 
-Las lecturas y escrituras al filesystem que se genera para los contenedores a partir de las capas read-only y read-write, se realizan mediante algún _storage driver_. Para el caso de _Ubuntu_, el driver por defecto es _overlay2_, sin embargo, el comportamiento que describiremos a continuación vale también para _overlay_ y _aufs_.
+```
 
-Cada vez que un contedor quiere modificar un archivo de su filesystem, primero busca dicho archivo en las capas read-only, comenzando por la capa superior, avanzando hacia abajo una capa a la vez. Al encontrar el archivo, detiene la búsqueda y realiza una copia del mismo en la capa superior (read-write). De ahora en adelante, cada vez que quiera acceder a este archivo, el contenedor no tendrá acceso a la copia original, sino que se usará siempre la copia de la capa superior.
+### Drivers de acceso a disco mas comúnes (aufs, overlay y overlay2)
 
-Este comportamiento se repite también en la generación de imágenes, donde cada vez que una capa superior modifica un archivo, realiza una copia del mismo invalidando las copias que puedan existir en capas inferiores.
+Las lecturas y escrituras al filesystem que se genera para los contenedores a partir de las capas read-only y read-write, se realizan mediante algún _storage driver_, donde los mas comunes son `aufs`, `overlay` y `overlay2`. Para el caso de _Ubuntu_, que es el sistema operativo que usamos en nuestro laboratorio, el driver por defecto es `overlay2`. Sin embargo, el comportamiento que describiremos a continuación aplica también para los otros dos drivers mencionados.
+
+Cada vez que un contedor quiere modificar un archivo de su filesystem, primero busca dicho archivo en las capas read-only, comenzando por la capa superior y avanzando hacia abajo una capa a la vez. Al encontrar el archivo, detiene la búsqueda y realiza una copia del mismo en la capa superior (read-write). De ahora en adelante, cada vez que quiera acceder a este archivo el contenedor no tendrá acceso al archivo original, sino que usará siempre la copia que realizó en la capa superior.
+
+Este comportamiento se repite también en la generación de imágenes, donde cada vez que una capa superior modifica un archivo realiza una copia del mismo, invalidando las copias que puedan existir en capas inferiores.
 
 ### Alternativas para la persistencia de datos
 
 #### Capa read-write del contenedor.
 
-Es posible guardar la información de forma persistente en la capa read-write de cada contenedor, sin embargo esto tiene varias desventajas:
+Como vimos en algunos de los ejercicios, es posible guardar información de forma persistente en la capa read-write de un contenedor. Sin embargo esto tiene varias desventajas:
 
 - Los datos se perderán al borrar el contenedor.
-- Los datos generados no se pueden exportar fácilmente fuera de la máquina _host_.
-- La escritura a la capa read-write de los contenedores se hace mediante un _storage driver_, lo que lo hace poco performante.
+- Los datos no se pueden exportar fácilmente fuera de la máquina _host_.
+- La escritura a la capa read-write de los contenedores se hace mediante un _storage driver,_ lo que lo hace poco performante pensando en ambientes de producción.
 
-Debido a las debilidades que evidencia la estrategia de guardar los datos en la capa R/W del contenedor, Docker ofrece tres alternativas para manejar la persistencia de datos en el host:
+Lo correcto entonces, es no almacenar datos en el contenedor, sino que, almacenarlos directamente en el servidor `host`. Para esto, Docker ofrece tres alternativas que permiten manejar la persistencia de datos en el host:
 
 #### _bind mount_
 
-En esta modalidad lo que se hace es montar un directorio de la máquina anfitrión (_host_), en un directorio del propio contenedor. Varios contenedores se pueden montar sobre el mismo directorio de la máquina _host_ y escribir y leer de forma simultánea.
+En esta modalidad, lo que se hace es montar un directorio del servidor `host`, en un directorio interno del propio contenedor. Varios contenedores se pueden montar sobre el mismo directorio del `host,` pudiendo leer y escribir datos sobre el mismo de forma simultánea.
 
 Este método presenta como ventajas principales:
 
-- Es mucho mas performante que guardar los archivos en la capa read-write de los contenedores dado que no utiliza el _storage driver_ de estos.
-- Los datos persisten aún cuando los contenedores se eliminan.
+- Es mucho mas performante que guardar los archivos en la capa read-write de los contenedores, dado que no utiliza el _storage driver_ del contenedor.
+- Los datos persisten, aún cuando los contenedores se eliminan.
 - Varios contenedores pueden acceder y modificar los mismos archivos de forma simultánea.
 
 #### _volumes_
 
-Esta modalidad es igual que la anterior, con la diferencia que no es el usuario quien define el directorio a montar en la máquina _host_, sino que es el propio motor de Docker el que provee un directorio (transparente al usuario) en la máquina _host_ para manejar la persistencia de los datos. Salvo en algunas excepciones, este método es recomendado sobre el uso de _bind mount_ dado que presenta las siguientes ventajas:
+Esta modalidad es prácticamente igual a la anterior, con la diferencia que no es el usuario quien elige el directorio a montar, sino que es el propio Docker el que asigna un directorio de la máquina _host_ para manejar la persistencia de los datos. En general este método es recomendado sobre el uso de _bind mount,_ dado que presenta las siguientes ventajas:
 
-- Permite desacoplar los comandos de Docker de la estructura de datos de la máquina _host_ donde este corre. Permitiendo migrar de un _host_ a otro con mínimo impacto.
-- Mediante el uso de _volume drivers_ específicos se puede sincronizar los _volumes_ con proveedores de nube. Mas sobre esto [aquí](https://docs.docker.com/engine/extend/legacy_plugins/#volume-plugins).
+- Permite migrar un contenedor de un _host_ a otro con mínimo impacto.
+- Permite desacoplar los comandos de Docker de la estructura de datos de la máquina _host_ donde este corre.
+- Se pueden utilizar _volume drivers_ específicos que proveen funcionalidades adicionales, como por ejemplo, sincronizar los _volumes_ con proveedores de nube o con otros servicios de storage. Se puede encontrar mas detalle sobre esto [aquí](https://docs.docker.com/engine/extend/legacy_plugins/#volume-plugins).
 
 #### _tmpfs mount_
 
-Los datos dentro de los _filesystems temporales_ son almacenados en la memoria RAM del host.
-Este método es ideal cuando no se necesitan los datos mas allá del tiempo de vida del contenedor y es necesaria alta performance para la lectura/escritura de los mismos.
+Esta modalidad coloca los datos dentro de _filesystems temporales_ que son almacenados en la memoria RAM del host. En este caso los datos se pierden al apagar el contenedor.
+Este método es ideal cuando no se necesitan los datos mas allá del tiempo de vida del contenedor, pero es necesaria una alta performance para la lectura/escritura de los mismos.
 
 La imagen a continuación presenta un resumen de los tres tipos de persistencia de datos disponibles en el host:
 
@@ -133,61 +148,143 @@ Exploremos esta estrategia de persistencia con un ejercicio.
 
 #### Ejercicio 11
 
-1 - Utilizando un Dockerfile generemos una imagen a partir de la imagen de Ubuntu con el editor de texto `nano` pre-instalado.
+1 - Utilizando un Dockerfile generar una imagen a partir de la imagen de Ubuntu, con el editor de texto `nano` pre-instalado.
 
 2 - Generar un contenedor corriendo `bash` en modo terminal interactiva.
 
-3 - Utilizando `nano` crear un archivo de texto con contenido arbitrario al que llamaremos `testigo.txt`
+3 - Dentro del contenedor, utilizando `nano` crear un archivo de texto con contenido arbitrario al que llamaremos `testigo.txt`
 
-4 - Salir del contenedor utilizando `exit` y verificar que al salir el contenedor se apagó.
+4 - Salir del contenedor utilizando `exit`, y verificar que al salir el contenedor se apagó.
 
-5 - Iniciar nuevamente el contenedor (`docker container start <nombredelcontenedor>`), conectarse al mismo (`docker container attach`) y verificar que el archivo aún está presente.
+5 - Iniciar nuevamente el contenedor, conectarse al mismo y verificar que el archivo aún está presente.
 
-6 - Salir del contenedor nuevamente y eliminarlo (`docker container rm <nombredelcontenedro>`).
+6 - Salir del contenedor nuevamente, y esta vez eliminarlo.
 
-7 - Repetir el paso 2 de este ejercicio y verificar que el archivo ya no está.
+7 - Generar un contenedor nuevamente a partir de la imagen, conectarse al mismo y verificar que el archivo no existe.
+
+<details>
+    <summary>Solución</summary>
+<pre>
+    $ mkdir ejercicio11
+    $ cd ejercicio11
+    ~/ejercicio11$ nano Dockerfile
+    FROM ubuntu
+    RUN apt-get update && apt-get install -y nano
+    CMD bash
+    (ctrl-X)
+</pre>
+<pre>
+    ~/ejercicio11$ docker build -t ejercicio11 .
+    (...)
+    Successfully built bcefa55e8eca
+    Successfully tagged ejercicio11:latest
+</pre>
+<pre>
+    ~/ejercicio11$ docker container run -it --name contenedor11 -it ejercicio11
+    root@77d732dae63f:/# nano testigo.txt
+    Texto de prueba
+    (ctrl-X)
+    root@77d732dae63f:/# exit
+    exit
+    ~/ejercicio11$ docker container ls
+    CONTAINER ID   IMAGE              COMMAND   CREATED       STATUS       PORTS     NAMES
+</pre>
+<pre>
+    ~/ejercicio11$ docker container start contenedor11
+    contenedor11
+    ~/ejercicio11$ docker container ls
+    CONTAINER ID   IMAGE         COMMAND             CREATED         STATUS         PORTS     NAMES
+    77d732dae63f   ejercicio11   "/bin/sh -c bash"   4 minutes ago   Up 3 seconds             contenedor11
+    ~/ejercicio11$ docker container attach contenedor11
+    root@77d732dae63f:/# ls -la testigo.txt
+    -rw-r--r--   1 root root   16 Nov  8 14:13 testigo.txt
+    root@77d732dae63f:/# cat testigo.txt 
+    Texto de prueba
+    root@77d732dae63f:/# exit
+    exit
+    ~/ejercicio11$ docker container rm contenedor11
+    contenedor11
+</pre>
+<pre>
+    ~/ejercicio11$ docker container run -it --name contenedor11 -it ejercicio11
+    root@ad5af9a9ad3b:/# ls -la testigo.txt
+    ls: cannot access 'testigo.txt': No such file or directory
+    root@ad5af9a9ad3b:/# exit
+    exit
+</pre>
+</details>
 
 ### Bind Mounts
 
-> Es posible que quien haya trabajado con Docker previamente esté acostumbrado al uso de la opción `-v` para la
-> configuración de Bind mounts.
-> A partir de la versión 17.06 Docker recomienda utilizar la opción `--mount`, por lo que en la presente guía seguiremos dicha recomendación y no haremos mención a las configuraciones mediante la opción `-v`.
-
-Los puntos de montado se configuran al momento de crear el contenedor de la siguiente manera:
+Para que el contenedor utilice un `bind mount` para almacenar datos, debemos indicarlo al momento de crear el contenedor, de la siguiente manera:
 
 ```bash
-$ docker run -it --mount type=bind,src=<folder_en_host>,dst=<folder_en_container> ubuntu bash
+$ docker container run -it --mount type=bind,src=<direcotrio-del-host>,dst=<directorio-del-contenedor> ubuntu bash
 ```
 
-Exploremos esta estratégia mas en profundidad con un ejercicio.
+Exploremos esto en el siguiente ejercicio.
 
 #### Ejercicio 12
 
-1 - Crear en la carpeta `/home/ubuntu` del host otra carpeta llamada `datos` y crear dentro de la misma un archivo de texto de la siguiente forma `touch testigo.txt`.
+1 - En el host, crear un directorio llamado `datos` y dentro del mismo crear un archivo de texto llamado `testigo.txt`.
 
-2 - Utilizando nuestra imagen con `nano` pre-instalado crear un contenedor y montar la carpeta `/home/ubuntu/datos` del host en la carpeta `/data` del contenedor de la siguiente forma:
+2 - Utilizando nuestra imagen del ejercicio 11 (con `nano` pre-instalado) crear un nuevo contenedor, pero esta vez montando la carpeta `/home/ubuntu/datos` del host en la carpeta `/data` del contenedor, de la siguiente forma:
 
-```bash
-$ docker run -it --rm --mount type=bind,src=/home/ubuntu/datos,dst=/data <nombredelaimagen> bash
-```
+3 - Una vez dentro del contenedor verficar que `testigo.txt` se encuentra dentro de `/data,` editarlo y agregarle información.
 
-3 - Una vez dentro del contenedor verficar que `testigo.txt` se encuentra dentro de `/data`
+4 - Todavía parados dentro del contenedor, crear un archivo nuevo archivo `testigo2.txt` en el directorio `/data`
 
-4 - Parados dentro del contenedor crear un archivo nuevo de la siguiente forma `touch /data/testigo2.txt`
+5 - Salir del contenedor, y verificar en el directorio `datos` del `host` que el archivo `testigo1.txt` se encuentra modificado, y que ahora hay un nuevo archivo `testigo2.txt`.
 
-5 - Salir del contenedor y verificar que `testigo2.txt` está presente en la carpeta `/datos` del host.
+<details>
+    <summary>Solución</summary>
+<pre>
+    $ cd /home/ubuntu
+    $ mkdir datos
+    $ touch datos/testigo.txt
+</pre>
+<pre>
+    $ docker container run -it --rm --mount type=bind,src=/home/ubuntu/datos,dst=/data ejercicio11 bash
+</pre>
+<pre>
+    root@8fae21109d08:/# ls -la /data/testigo.txt
+    -rw-rw-r-- 1 1000 1000 0 Nov  8 14:33 /data/testigo.txt
+    root@8fae21109d08:/# nano /data/testigo.txt
+    Agrego una linea al archivo.
+    (Ctrl-X)
+    root@8fae21109d08:/#
+</pre>
+<pre>
+    root@8fae21109d08:/# touch /data/testigo2.txt
+</pre>
+<pre>
+    root@8fae21109d08:/# exit
+    exit
+    $ cd datos
+    ~/datos$ ls -la
+    total 12
+    drwxrwxr-x  2 ubuntu ubuntu 4096 Nov  8 14:36 .
+    drwxr-xr-x 12 ubuntu ubuntu 4096 Nov  8 14:32 ..
+    -rw-rw-r--  1 ubuntu ubuntu   29 Nov  8 14:34 testigo.txt
+    -rw-r--r--  1 root   root      0 Nov  8 14:36 testigo2.txt
+    ~/datos$ cat testigo.txt
+    Agrego una linea al archivo.
+</pre>
+</details>
 
 > **Bonus:** montar varios contenedores a la misma carpeta y verificar que cuando modificamos el contenido de dicha carpeta desde un contenedor particular, estos cambios están disponibles automáticamente para todo el resto de los contenedores.
 
-### Volumenes
+### Volumes
 
-**Para crear un volumen:**
+Veamos ahora como trabajar con `volumes` con nuestros contenedores.
+
+##### **Crear un volumen**
 
 ```bash
 $ docker volume create nombre-del-volumen
 ```
 
-**Para listar un volumen:**
+##### **Listar un volumen**
 
 ```bash
 $ docker volume ls
@@ -195,7 +292,7 @@ DRIVER              VOLUME NAME
 local               nombre-del-volumen
 ```
 
-**Para inspeccionar un volumen:**
+##### **Ver los detalles de un volumen**
 
 ```bash
 $ docker volume inspect nombre-del-volumen
@@ -211,18 +308,22 @@ $ docker volume inspect nombre-del-volumen
 ]
 ```
 
-**Para eliminar un volumen**
+👉 en la salida del comando anterior podemos ver el punto de montaje del volumen dentro el `host.`
+
+##### **Eliminar un volumen**
 
 ```bash
 $ docker volume rm nombre-del-volumen
 ```
 
-**Para asociar un contenedor con un volumen**
+⚠️ este comando elimina todo el contenido almacenado en el volumen.
 
-Al momento de la creación de un contenedor se le puede asociar un volumen; si el volumen a asociar no existe, Docker lo crea junto con el contenedor.
+##### Asociar un contenedor con un volumen
+
+Al momento de la creación de un contenedor se le puede asociar un volumen. Si el volumen ya existe se asocia al contenedor, y si el volumen no existe el mismo es creado.
 
 ```bash
-$ docker run -d -it --name contenedor-de-prueba --mount source=mi-nuevo-volumen,target=/punto_de_montado ubuntu bash
+$ docker container run -d -it --name contenedor-de-prueba --mount source=mi-nuevo-volumen,target=/punto_de_montado ubuntu bash
 ```
 
 Verifiquemos que el contenedor tiene el volumen asociado:
@@ -245,24 +346,30 @@ Ahora vamos a crear datos para que queden almacenados en el volumen:
 ```bash
 $ docker container attach contenedor-de-prueba
 root@b5f618ef6d47:/# cd /punto_de_montado/
-root@b5f618ef6d47:/punto_de_montado# ls
 root@b5f618ef6d47:/punto_de_montado# touch testigo.txt
+root@b5f618ef6d47:/punto_de_montado# ls -l
+total 0
+-rw-r--r--  1 root root    0 Aug 21 19:11 testigo.txt
 root@b5f618ef6d47:/punto_de_montado# exit
 $
 ```
 
-Eliminemos el container y volvamos a crear otro para ver que los datos persisten. En este caso vamos a hacer que el nuevo contenedor tenga permisos de solo lectura sobre los datos:
+Eliminemos el container y volvamos a crear otro para ver que los datos persisten. En este caso vamos a hacer que el nuevo contenedor tenga permisos de solo lectura sobre los datos del volumen:
 
 ```bash
+
 $ docker container rm contenedor-de-prueba
 contenedor-de-prueba
-$ docker run -it --name nuevo-contenedor-de-prueba --mount source=mi-nuevo-volumen,target=/nuevo_punto_de_montado,readonly ubuntu bash
+$ docker container run -it --name nuevo-contenedor-de-prueba --mount source=mi-nuevo-volumen,target=/nuevo_punto_de_montado,readonly ubuntu bash
+
 root@65a9253f28c4:/# cd nuevo_punto_de_montado/
-root@65a9253f28c4:/nuevo_punto_de_montado# ll
-total 8
-drwxr-xr-x  2 root root 4096 Aug 21 19:11 ./
-drwxr-xr-x 41 root root 4096 Aug 21 19:14 ../
+root@65a9253f28c4:/nuevo_punto_de_montado# ls -l
+total 0
 -rw-r--r--  1 root root    0 Aug 21 19:11 testigo.txt
+
+$ echo prueba > testigo.txt 
+bash: testigo.txt: Read-only file system
+
 ```
 
 Notemos que si bien el archivo figura como `rw` para el **owner**, el mismo no es modificable.
@@ -290,25 +397,75 @@ mi-nuevo-volumen
 
 6 - Crear un nuevo contenedor montando `miVolumen` en una carpeta a elección dentro del contenedor y verificar que los datos persisten.
 
-> **Bonus:** utilizando el comando `docker inspect <nombre_de_volumen>` identificar donde se encuentran almacenados los datos y acceder a los mismos desde la máquina host.
+> **Bonus:** utilizando el comando `docker volume inspect <nombre_de_volumen>` identificar donde se encuentran almacenados los datos y acceder a los mismos desde la máquina `host`.
 
-> **Bonus2:** dado que la salida de los comandos del tipo `docker inspect` son del tipo JSON, podemos utilizarlos para tomar acciones de forma "programatica". En este Bonus proponemos instalar el paquete [jq](https://stedolan.github.io/jq/) `sudo apt-get install -y jq` y utilizarlo para parsear la salida del comando `docker inspect <nombredelvolumen>` y hacer lo mismo que en el Bonus anterior, pero esta vez de forma automática de la siguiente manera: `sudo ls $(docker volume inspect miVolumen | jq -r .[0].Mountpoint)`
+<details>
+    <summary>Solución</summary>
+<pre>
+    $ docker volume create miVolumen
+    miVolumen
+    $
+    $ docker container run -itd --rm --name contenedor1 --mount source=miVolumen,target=/data ubuntu bash
+    ca2c111487050a0e40b95377fee04d4b43e7274fcf1f070ab758880ba7f77bba
+    $ docker container run -itd --rm --name contenedor2 --mount source=miVolumen,target=/data ubuntu bash
+    0b25da2515c16128585eae17550009dde7941ca8596d0e19ba6a98c01b665ff0
+    $ docker container run -itd --rm --name contenedor3 --mount source=miVolumen,target=/data ubuntu bash
+    43c07e5ac42bcc17cc292d57f8166ed3ab93824745b38ff74d58cdbc161d9971
+    $ 
+    $ docker attach contenedor1
+    root@ca2c11148705:/# cd /data
+    root@ca2c11148705:/data# touch archivo1.txt archivo2.txt
+    root@ca2c11148705:/data# ls -l
+    total 0
+    -rw-r--r-- 1 root root 0 Nov  8 16:52 archivo1.txt
+    -rw-r--r-- 1 root root 0 Nov  8 16:52 archivo2.txt
+    root@ca2c11148705:/data# exit
+    exit
+    $
+    $ docker exec -it contenedor2 bash -c "ls -l /data"
+    total 0
+    -rw-r--r-- 1 root root 0 Nov  8 16:52 archivo1.txt
+    -rw-r--r-- 1 root root 0 Nov  8 16:52 archivo2.txt
+    $
+    $ docker exec -it contenedor3 bash -c "ls -l /data"
+    total 0
+    -rw-r--r-- 1 root root 0 Nov  8 16:52 archivo1.txt
+    -rw-r--r-- 1 root root 0 Nov  8 16:52 archivo2.txt
+    $
+    $ docker stop contenedor2 contenedor3
+    contenedor2
+    contenedor3
+    $
+    $ docker container ls -l
+    CONTAINER ID   IMAGE         COMMAND             CREATED       STATUS                   PORTS     NAMES
+    $
+    $ docker container run -it --rm --name nuevo-contenedor --mount source=miVolumen,target=/misdatos ubuntu bash
+    root@8ba5078b9d03:/# ls -la /misdatos
+    total 8
+    drwxr-xr-x 2 root root 4096 Nov  8 16:52 .
+    drwxr-xr-x 1 root root 4096 Nov  8 16:56 ..
+    -rw-r--r-- 1 root root    0 Nov  8 16:52 archivo1.txt
+    -rw-r--r-- 1 root root    0 Nov  8 16:52 archivo2.txt
+    $ exit
+    exit
+</pre>
+</details>
 
 ### Volumenes con drivers creados por los usuarios.
 
-Cuando creamos un volumen, por defecto este utilizará el driver `local`, sin embargo es posible que los usuarios generen drivers que extiendan la funcionalidad de los volúmenes para, por ejemplo, montar un filesystem alojado en un proveedor de nube.
+Cuando creamos un volumen, por defecto este utilizará el driver `local` para el acceso al mismo. Sin embargo es posible que los usuarios generen drivers que extiendan la funcionalidad de los volúmenes para, por ejemplo, montar un filesystem alojado en un proveedor de nube.
 Estos drivers generados por los usuarios pueden instalarse en la forma de `docker plugin` mediante un proceso muy sencillo.
 A continuación exploraremos este mecanismo con un par de ejemplos.
 
 #### sshFS - volume plugin para montar un directorio remoto a través de ssh
 
-Como mencionamos anteriormente, una de las principales ventajas de utilizar _volumenes_ por sobre utilizar _bind mounts_ es la posibilidad de montar storage externos al host. En este ejemplo veremos como montar un directorio remoto a través de ssh en uno, o varios, contenedores.
+Como mencionamos anteriormente, una de las principales ventajas de utilizar `volumes` por sobre `bind mounts`, es la posibilidad de montar storage externos al host. 
 
-Exploremos este proceso a través de un ejercicio guiado.
+En el siguiente ejercicio guiado, veremos como montar el directorio `/home/ubuntu/docker101` que se encuentra ubicado en forma remota en el servidor  `sshserver.labs.conatest.click` a través de ssh, para poder accederlo en uno o varios contenedores.
 
 #### Ejercicio 14
 
-_**Primero instalamos el plugin**_
+Primero instalamos el plugin `vieux/sshfs`
 
 ```bash
 $ docker plugin install --grant-all-permissions vieux/sshfs
@@ -317,21 +474,27 @@ latest: Pulling from vieux/sshfs
 Digest: sha256:c76ced50a5973d601ace498091eac80da6f66e78d9393866a00ab1b710a618ca
 Status: Downloaded newer image for vieux/sshfs:latest
 Installed plugin vieux/sshfs
+
 ```
 
-_**Ahora creamos el volumen**_
+Ahora creamos el volumen
 
 ```bash
 $ docker volume create --driver vieux/sshfs \
   -o sshcmd=ubuntu@sshserver.labs.conatest.click:/home/ubuntu/docker101 \
   -o password=conatel_docker101 \
   sshvolume
+
+$ docker volume ls
+DRIVER               VOLUME NAME
+vieux/sshfs:latest   sshvolume
+
 ```
 
 Ya estamos listos para generar un contenedor con este volumen montado en algún lugar de su filesystem.
 
 ```bash
-$ docker run -it --rm --name test-container --mount source=sshvolume,target=/data ubuntu bash
+$ docker container run -it --rm --name test-container --mount source=sshvolume,target=/data ubuntu bash
 root@ad2a828fcda3:/# cd /data/
 root@ad2a828fcda3:/data# ls
 holaMundoSSH.txt
@@ -339,13 +502,14 @@ holaMundoSSH.txt
 
 Si aparece el archivo `holaMundoSSH.txt` es porque todo está funcionando.
 
+
 #### REX-Ray - Volume plugin para montar storage en la nube.
 
-Como mencionamos anteriormente, una de las principales ventajas de utilizar _volumenes_ por sobre utilizar _bind mounts_ es la posibilidad de montar storage de proveedores de cloud. En el siguiente ejercicio guiado veremos como montar un bucket de S3 en uno, o varios, contenedores utilizando el plugin de [REX-Ray](https://rexray.readthedocs.io/en/stable/user-guide/schedulers/docker/plug-ins/aws/#aws-s3fs).
+Otra de las posibilidades al utilizar `volumenes` es por ejemplo la de montar storage de proveedores de cloud. En el siguiente ejercicio guiado veremos como montar un bucket de AWS S3 en uno, o varios, contenedores utilizando el plugin de [REX-Ray](https://rexray.readthedocs.io/en/stable/user-guide/schedulers/docker/plug-ins/aws/#aws-s3fs).
 
 #### Ejercicio 15
 
-_**Primero instalamos el plugin**_
+Primero instalamos el plugin:
 
 ```bash
 $ docker plugin install rexray/s3fs \
@@ -353,7 +517,7 @@ $ docker plugin install rexray/s3fs \
   S3FS_SECRETKEY=<se_proveera_en_la_capacitacion_presencial>
 ```
 
-Una vez instalado el plugin, este se encarga de generar un volumen por cada bucket en la cuenta.
+Una vez instalado el plugin, este se encarga de generar un volumen por cada bucket que existe en la cuenta.
 Podemos inspeccionar los volumenes disponibles con:
 
 ```bash
@@ -363,17 +527,19 @@ rexray/s3fs:latest   clase-de-docker
 <-- Salida omitida para mayor claridad -->
 ```
 
-Para este ejercicio utilizaremos el volumen llamado `clase-de-docker`.
+👉 Para este ejercicio utilizaremos el volumen llamado `clase-de-docker`.
+
+
 Ya estamos listos para generar un contenedor con este volumen montado en algún lugar de su filesystem.
 
 ```bash
-$ docker run -it --rm --name test-container --mount source=clase-de-docker,target=/data ubuntu bash
+$ docker container run -it --rm --name test-container --mount source=clase-de-docker,target=/data ubuntu bash
 root@ad2a828fcda3:/# cd /data/
 root@ad2a828fcda3:/data# ls
 helloWorldFromS3.txt
 ```
 
-Si aparece el archivo `helloWorldFromS3.txt` es porque todo está funcionando.
+Si aparece el archivo `helloWorldFromS3.txt` es porque todo está funcionando correctamente.
 
-| [<-- Volver](2_Images.md) |
-[Siguiente -->](4_Networking.md) |
+| [&lt;-- Volver](2_Images.md) |
+[Siguiente --&gt;](4_Networking.md) |
