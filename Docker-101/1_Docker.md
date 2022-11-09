@@ -221,7 +221,7 @@ Para esto seleccion `File > Open Folder` e indique la carpeta `/home/ubuntu/` ta
 
 ![alt text](Imagenes/vscode-open-folder.png "Open Remote Folder")
 
-La primera vez, le preguntará si confía en el autor de los archivos, indique que `Si` y seleccione el `checkbox` para que no vuelva a preguntarle.
+La primera vez, le preguntará si confía en el autor de los archivos, indique que `SI` y seleccione el `checkbox` para que no vuelva a preguntarle.
 
 Aguarde unos segundos, y sobre el panel de la izquierda tendrá acceso al contenido de ese directorio del servidor remoto, donde podrá crear nuevos archivos y/o directorios, así como seleccionar un archivo para editarlo en el panel derecho, guardando los cambios directo al servidor remoto.
 
