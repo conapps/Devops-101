@@ -34,14 +34,13 @@ De a poco Ansible fue superando en popularidad a otras herramientas similares, l
 
 ### Propiedades
 
-Ansible esta escrito en su totalidad en `python`. Las configuraciones de todas las entidades de Ansible se realizan a través de archivos de texto, escritos en formato [YAML](https://es.wikipedia.org/wiki/YAML). 
+Ansible esta escrito en su totalidad en `python`. Las configuraciones de todas las entidades de Ansible se realizan a través de archivos de texto, escritos en formato [YAML](https://es.wikipedia.org/wiki/YAML).
 
 A diferencia de otros sistemas, Ansible no necesita de un cliente instalado en los equipos (hosts) que va a administrar. Realiza todas las tareas a través de `SSH`, `WinRM`, o algún otro método configurado por el usuario. Esta forma de interactuar con los dispositivos finales permite a Ansible trabajar en base a un modelo `push` en vez de un modelo `pull`.
 
 ![Push vs Pull](./imagenes/ansible_002.svg)
 
->_OBS: El servidor de control tiene que poder llegar a todos los componentes que va a administrar. Esto no debería ser un problema si se cuenta con una red de management._
-
+> _OBS: El servidor de control tiene que poder llegar a todos los componentes que va a administrar. Esto no debería ser un problema si se cuenta con una red de management._
 
 #### Módulos
 
@@ -98,7 +97,7 @@ Dependiendo del estado del sistema con que vamos a interactuar, es la acción qu
 
 ![Acciones según código](./imagenes/ansible_006.svg)
 
->_OBS: **NO** todos los módulos cumplen con esta propiedad, en partícular los módulos de networking._
+> _OBS: **NO** todos los módulos cumplen con esta propiedad, en partícular los módulos de networking._
 
 ### Ejemplo de como interactuar con Ansible
 
@@ -149,7 +148,6 @@ Por último, la unión de los hosts con las tareas o los roles los definimos en 
 
 Luego ejecutaremos esta `playbook` utilizando Ansible. El sistema comenzara recabando datos de los hosts sobre los que debe operar, y luego pasará a ejecutar todos los `plays` de forma secuencial. Ansible decidirá al momento de ejecutar cada rol, las tareas que debe realizar para conseguir el estado desado. En caso de que se le proveea una lista de hosts sobre los cuales trabajar, Ansible realizará las configuraciones de forma paralela en todos los hosts.
 
-
 ### Conexión remota
 
 Ansible utiliza SSH para comunicarse con los host remotos. En particular utiliza la versión nativa de OpenSSH de la maquina de control (equipo desde donde ejecuto los playbooks). En caso de que la versión de OpenSSH a utilizar sea muy vieja, Ansible pasa a utilizar una implementación de OpenSSH programada en Python llamada `paramiko`. Esta es utilizada muchas veces cuando se trabaja contra equipos de Networking.
@@ -159,6 +157,7 @@ Se recomienda que la autenticación se realice a través de claves privadas, per
 ---
 
 ## Acceso al ambiente de trabajo
+
 En esta capacitación no trabajaremos directamente sobre las notebooks, sino que cada estudiante tendrá acceso a un Pod de equipos en la nube, desde donde se realizarán los laboratorios.
 
 Los servidores disponibles (del 1 al N depeniendo de la cantidad de estudiantes) siguen la siguiente convención de nombres:
@@ -174,8 +173,9 @@ Cada estudiante accederá únicamente al servidor (Pod) asignado.
 
 Previo al inicio del curso, debe haber recibido por mail los certificados para conectarse al equipo. Estos son `devops101-labs.pem` el cuál se utiliza directamente con ssh, y `devops101-labs.ppk` el cuál se utiliza con el cliente Putty (en Windows). En caso de no haberlo recibido, consulte al instructor.
 
-### Como acceder desde Linux/MacOS
-Para acceder al servidor de trabajo desde linux o Mac, se debe descargar el certificado (.pem) y colocarle permisos de solo lectura únicamente para el usuario. Esto se hace de la siguiente manera:
+### Como acceder desde Linux/Mac
+
+Para acceder al servidor de trabajo desde Linux o Mac, se debe descargar el certificado (.pem) y colocarle permisos de solo lectura únicamente para el usuario. Esto se hace de la siguiente manera:
 
 ```bash
 $ chmod 400 devops101-labs.pem
@@ -192,6 +192,7 @@ $ ssh -i devops101-labs.pem ubuntu@pod-X.labs.conatest.click
 Desde Windows, se puede acceder de dos formas.
 
 La primera es utilizando `Windows Power Shell`:
+
 - Descargar a la notebook el certificado (.pem) recibido y coloclarlo en una carpeta de fácil acceso.
 - Abrir la aplicación `Windows Power Shell`, y ubicarse en dicha carpeta.
 - Utilizar el comando `ssh` tal como lo haríamos para Linux en el caso anterior:
@@ -200,6 +201,7 @@ La primera es utilizando `Windows Power Shell`:
   ```
 
 La segunda opción es utilizando la herramienta `Putty`:
+
 - Descargar a la notebook el certificado (.ppk) recibido.
 - Instalar [Putty](https://www.chiark.greenend.org.uk/~sgtatham/putty/) y abrirlo.
 - Dentro del panel "Category" elegir "Session" y luego completar los siguientes campos:
@@ -209,20 +211,17 @@ La segunda opción es utilizando la herramienta `Putty`:
   connection-type: ssh
   port: 22
   ```
-
--  Dentro de "Category" --> "Connection" --> "SSH" --> "Auth" seleccionar "Browse" y elegir el certificado `devops101-labs.ppk`
-- Opcional: puede grabar la configuración de la sesión mediante "Save" para poder volver a utilizarla luego. 
-- Seleccionar "Open" para conectarse, y luego "Accept" para aceptar la Security Alert. 
-
-
+- Dentro de "Category" --> "Connection" --> "SSH" --> "Auth" seleccionar "Browse" y elegir el certificado `devops101-labs.ppk`
+- Opcional: puede grabar la configuración de la sesión mediante "Save" para poder volver a utilizarla luego.
+- Seleccionar "Open" para conectarse, y luego "Accept" para aceptar la Security Alert (la primera vez).
 
 ### DEMO Lab #1 - Lanzar el laboratorio
 
-El laboratorio consiste en un set de contenedores que simulan una granja de servidores. 
+El laboratorio consiste en un set de contenedores que simulan una granja de servidores.
 
 ![Diagrama de Lab en Docker](./imagenes/ansible_012.png)
 
-El servidor `master` es el que corre los contenedores `controller`, `host1`, `host2` y `host3`. Este es el equipo al cual se accede cuando se hace `ssh` mediante al nombre: `pod-X.labs.conatest.click`. 
+El servidor `master` es el que corre los contenedores `controller`, `host1`, `host2` y `host3`. Este es el equipo al cual se accede cuando se hace `ssh` mediante al nombre: `pod-X.labs.conatest.click`.
 En general no es necesario acceder al mismo, salvo que se desee reiniciar de cero el ambiente por algún motivo particular.
 
 Para verificar si el ambiente se encuentra levantado correctamente, conéctese al mismo y haga:
@@ -233,16 +232,17 @@ $ cd ansible_lab
 
 # Verificar el estado del ambiente
 $ make status
-    Name             Command        State                   Ports                
+    Name             Command        State                   Ports              
 ---------------------------------------------------------------------------------
 controller      /usr/sbin/sshd -D   Up       0.0.0.0:2222->22/tcp,:::2222->22/tcp
-docker_base_1   bash                Exit 0                                       
-host01          /var/run.sh         Up                                           
-host02          /var/run.sh         Up                                           
-host03          /var/run.sh         Up        
+docker_base_1   bash                Exit 0                                     
+host01          /var/run.sh         Up                                         
+host02          /var/run.sh         Up                                         
+host03          /var/run.sh         Up      
 ```
 
 En caso de requerirlo, puede reiniciar el ambiente haciendo:
+
 ```bash
 # Pararse en el directorio /home/ubuntu/ansible_lab
 $ cd ansible_lab
@@ -255,13 +255,13 @@ $ make up
 ```
 
 Como explicamos antes, no debería ser necesario conectarse al equipo master.
-Sino que todos los laboratorios se realizarán desde el equipo `controller`. Aquí es donde escribirá y ejecutará los playbooks/comandos de Ansible, los cuáles trabajarán contra los equipos `host01`, `host02` y `host03`. 
+Sino que todos los laboratorios se realizarán desde el equipo `controller`. Aquí es donde escribirá y ejecutará los playbooks/comandos de Ansible, los cuáles trabajarán contra los equipos `host01`, `host02` y `host03`.
 
 Para conectarse al equipo `controller` debe hacer un `ssh` a su `pod-X.labs.conatest.click` pero esta vez debe indicar el puerto `2222` y el usuario `root`:
 
-  ```bash
+```bash
   ssh -i devops101-labs.pem -p 2222 root@pod-X.labs.conatest.click
-  ```
+```
 
 Pruebe de conectarse y verificar la conectividad desde el `controller` hacia los equipos `host1`, `host2`y `host3` utilizando `ping`.
 
@@ -282,9 +282,10 @@ Host controller.labs.conatest.click
 ```
 
 Este archivo de configuración se encuentra ubicado en `~/.ssh/config` en linux o en `~\.ssh\config` en Windows (si no existe, puede crearlo).
-Esto además resultará sumamente útil para conectarse por medio de Visual Studio Code al equipo `controller` y poder escribir los playbooks directamente en el servidor desde el editor, cosa que recomendamos fuertemente para poder realizar los laboratorios. 
+Esto además resultará sumamente útil para conectarse por medio de Visual Studio Code al equipo `controller` y poder escribir los playbooks directamente en el servidor desde el editor, cosa que recomendamos fuertemente para poder realizar los laboratorios.
 
-En caso de que utilice `putty` puede grabar los profiles con la configuración de conexión a ambos equipos. 
+En caso de que utilice `putty` puede grabar los profiles con la configuración de conexión a ambos equipos.
 
 ---
-[Siguiente-->](02_ansible_basics.md)
+
+[Siguiente--&gt;](02_ansible_basics.md)
