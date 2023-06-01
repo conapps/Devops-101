@@ -1,13 +1,14 @@
 # MASTER image - used to create the master container to manage hosts
 
 # use builded ansible_base (defined in ../base/Dockerfile) as a starting point
-FROM ansible_base:latest
+# FROM ansible_base:latest
+FROM ansible101-base:latest
 
 RUN apt-get update
 RUN apt-get install --no-install-recommends --no-install-suggests -y software-properties-common
 RUN apt-add-repository ppa:ansible/ansible
 RUN apt-get update
-RUN apt-get install --no-install-recommends --no-install-suggests -y ansible python3-pip git tmux
+RUN apt-get install --no-install-recommends --no-install-suggests -y git tmux
 RUN pip3 install paramiko==2.4.2           
 
 # Generally a good idea to have these, extensions sometimes need them
