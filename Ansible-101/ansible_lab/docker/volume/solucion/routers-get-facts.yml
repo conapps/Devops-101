@@ -12,7 +12,6 @@
 # ...
 - name: Get routers facts
   hosts: hub
-  connection: local
   gather_facts: no
   tasks:
     - ios_facts:

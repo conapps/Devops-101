@@ -177,7 +177,6 @@ El primer `playbook` que vamos a crear permitirá almacenar un respaldo de las c
 # ---
 - name: Respaldo de configuraciones IOS
   hosts: routers
-  connection: local
   gather_facts: no
   tasks:
     - name: Comandos para respaldar las configuraciones
@@ -271,7 +270,6 @@ all:
 
 - name: Ejercicio 8 - Modificar hostname de los routers
   hosts: routers
-  connection: local
   gather_facts: no
   tasks:
     - name: Modificar el hostname
@@ -315,7 +313,6 @@ Por ejemplo, si corremos el siguiente `playbook` veremos las diferencias entre l
 
 - name: Running vs. Startup configuration diff (simple)
   hosts: hub
-  connection: local
   gather_facts: no
   tasks:
     - name: Comando para hallar las diferencias
@@ -356,7 +353,6 @@ Por ejemplo `ios.facts`, cuya documentación puede ver [aquí](https://docs.ansi
 # ...
 - name: Get routers facts
   hosts: hub
-  connection: local
   gather_facts: no
   tasks:
     - ios_facts:
@@ -572,8 +568,7 @@ user_privilege: 15
 # ---
 
 - name: Ejercicio 9 - Crear usuario en Cisco IOS
-  hosts: routers
-  connection: local
+  hosts: router
   gather_facts: no
   tasks:
     - name: Crear el usuario
@@ -666,7 +661,6 @@ El rol luego será llamado a través del siguiente `playbook`:
 
 - name: Configuración de interface
   hosts: <equipos a configurar>
-  connection: local
   gather_facts: no
   roles:
     - configure_interfaces
@@ -832,7 +826,6 @@ interfaces:
 # ...
 - name: Ejercicio 10 - Configurar interfaces de los routers
   hosts: spokes
-  connection: local
   gather_facts: no
   roles:
     - configure_interfaces

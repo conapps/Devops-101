@@ -1,6 +1,5 @@
 - name: Respaldo de configuraciones IOS
   hosts: routers
-  connection: local
   gather_facts: no
   tasks:
     - name: Comandos para respaldar las configuraciones

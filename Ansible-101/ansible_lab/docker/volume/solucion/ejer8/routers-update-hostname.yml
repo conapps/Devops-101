@@ -6,7 +6,6 @@
 
 - name: Ejercicio 8 - Modificar hostname de los routers
   hosts: routers
-  connection: local
   gather_facts: no
   tasks:
     - name: Modificar el hostname

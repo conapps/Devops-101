@@ -12,7 +12,6 @@
 # ...
 - name: Ejercicio 9 - Configurar interfaces de los routers
   hosts: routers
-  connection: local
   gather_facts: no
   roles:
     - configure_interfaces

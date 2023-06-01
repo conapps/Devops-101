@@ -6,7 +6,6 @@
 
 - name: Ejercicio 9 - Crear usuario en Cisco IOS
   hosts: routers
-  connection: local
   gather_facts: no
   tasks:
     - name: Crear el usuario
