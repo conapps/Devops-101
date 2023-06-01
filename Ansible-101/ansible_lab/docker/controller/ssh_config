@@ -9,6 +9,8 @@ Host 10.*.254.254 hub-*.labs.conatest.click
   StrictHostKeyChecking no
   UserKnownHostsFile /dev/null
   user ec2-user
+  HostKeyAlgorithms +ssh-rsa
+  PubkeyAcceptedKeyTypes +ssh-rsa
 
 Host 10.*.20?.253 spoke?-*.labs.conatest.click
   KexAlgorithms diffie-hellman-group-exchange-sha1
@@ -16,3 +18,5 @@ Host 10.*.20?.253 spoke?-*.labs.conatest.click
   StrictHostKeyChecking no
   UserKnownHostsFile /dev/null
   user ec2-user
+  HostKeyAlgorithms +ssh-rsa
+  PubkeyAcceptedKeyTypes +ssh-rsa

@@ -1,3 +1,4 @@
 {
-  "typewriterScrollMode.enable": false
+  "typewriterScrollMode.enable": false,
+  "ansible.python.interpreterPath": "/bin/python3"
 }
