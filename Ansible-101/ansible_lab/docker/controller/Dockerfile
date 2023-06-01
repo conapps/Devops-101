@@ -41,6 +41,7 @@ RUN chmod 600 /root/.ssh/config
 # Install Ansible Collections
 RUN ansible-galaxy collection install community.general
 RUN ansible-galaxy collection install cisco.ios
+RUN pip3 install ansible-pylibssh
 
 # Change default working directory when login
 RUN echo "cd /root/ansible" >> ~/.profile
