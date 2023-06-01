@@ -1,8 +1,7 @@
 # MASTER image - used to create the master container to manage hosts
 
 # use builded ansible_base (defined in ../base/Dockerfile) as a starting point
-# FROM ansible_base:latest
-FROM ansible101-base:latest
+FROM ansible_base:latest
 
 RUN apt-get update
 RUN apt-get install --no-install-recommends --no-install-suggests -y software-properties-common
