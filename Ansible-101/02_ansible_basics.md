@@ -227,6 +227,33 @@ Por ahora solo hemos utilizado la aplicación `ansible`, sin embargo, no es la �
 - `ansible-console`. [link](https://docs.ansible.com/ansible/latest/cli/ansible-console.html)
   - Un REPL para ejecutar múltiples tareas sobre un grupo de hosts.
   - `ansible-console -i hosts.yml all`
+  ```
+   [15] → ansible-console -i hosts.yml all
+      Welcome to the ansible console.
+      Type help or ? to list commands.
+
+      root@all (3)[f:5]$ ping
+      host01 | SUCCESS => {
+          "ansible_facts": {
+              "discovered_interpreter_python": "/usr/bin/python3"
+          },
+          "changed": false,
+          "ping": "pong"
+      }
+      host02 | SUCCESS => {
+          "ansible_facts": {
+              "discovered_interpreter_python": "/usr/bin/python3"
+          },
+          "changed": false,
+          "ping": "pong"
+      }
+      host03 | SUCCESS => {
+          "ansible_facts": {
+              "discovered_interpreter_python": "/usr/bin/python3"
+          },
+          "changed": false,
+          "ping": "pong"
+  ```
 - `ansible-doc`.
   - Muestra información sobre los módulos de ansible instalados.
   - `ansible-doc ping`
