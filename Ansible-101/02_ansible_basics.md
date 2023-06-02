@@ -2,10 +2,10 @@
 ## Inventario
 Ref: [How to build your inventory](https://docs.ansible.com/ansible/latest/user_guide/intro_inventory.html)
 
-La lista de hosts sobre los cuales Ansible trabajará se almacenan en `inventarios`. Estos son archivos de texto escritos en formato `yaml` o `ini`, conteniendo las IPs o nombres de los hosts a administrar.
+**La lista de hosts sobre los cuales Ansible trabajará se almacenan en `inventarios`. Estos son archivos de texto escritos en formato `yaml` o `ini`, conteniendo las IPs o nombres de los hosts a administrar.**
 
-Por defecto, Ansible buscará el archivo de inventario en `/etc/ansible/hosts`, pero podemos especificar la ubicación del mismo durante la invocación a través del parámetro`-i <archivo_de_inventario>`.
-O también se puede indicar la ubicación por defecto del inventario en la [configuración de ansible](https://docs.ansible.com/ansible/latest/reference_appendices/config.html), en un archivo `ansible.cfg`.
+Por defecto, Ansible buscará el archivo de inventario en **`/etc/ansible/hosts`**, pero podemos especificar la ubicación del mismo durante la invocación a través del parámetro **`-i <archivo_de_inventario>`**.
+O también se puede indicar la ubicación por defecto del inventario en la [configuración de ansible](https://docs.ansible.com/ansible/latest/reference_appendices/config.html), en un archivo **`ansible.cfg`**.
 
 Ansible es capaz de tomar hosts de múltiples inventarios al mismo tiempo, y puede también construirlos de forma dinámica previo a la realización de las tareas, mediante la utilización de [inventarios dinámicos](https://docs.ansible.com/ansible/latest/user_guide/intro_dynamic_inventory.html).
 
@@ -14,7 +14,7 @@ En el inventario podemos crear grupos y subgrupos de equipos, lo cuál nos permi
 ### DEMO Lab #2 - Crear un archivo de inventario
 
 Los inventarios de Ansible pueden contener múltiples grupos, y cada host puede pertenecer a uno o más grupos.
-En general, se comienza identificando un grupo llamado `all`  al cual pertenecerán todos los equipos y todos los demás grupos que definamos. Los equipos se definen como llaves de un objeto llamado `hosts`.
+En general, se comienza identificando un grupo llamado **`all`**  al cual pertenecerán todos los equipos y todos los demás grupos que definamos. Los equipos se definen como llaves de un objeto llamado `hosts`.
 
 Vamos a definir entonces un archivo de inventario inicial para nuestro **lab**.
 
@@ -34,7 +34,7 @@ all:
 
 Cada host, o grupo, puede contar con variables especificas definidas a nivel de inventario, que pueden o bien modificar el comportamiento de Ansible o ser utilizadas luego como parte de nuestros playbooks.
 
-Por ejemplo, vamos a agregar una variable que aplique a todos los hosts, para evitar que Ansible verifique si el host al que nos estamos conectando esta identificado como un host conocido (known_host) cuando se conecta por ssh:
+Por ejemplo, vamos a agregar una variable que aplique a todos los hosts, para evitar que Ansible verifique si el host al que nos estamos conectando esta identificado como un host conocido **(known_host)** cuando se conecta por ssh:
 
 ```yaml
 all:
@@ -47,7 +47,7 @@ all:
 ```
 > OBS: tenga en cuenta la correcta indentación del archivo.
 
-Ahora, cada vez que Ansible se quiera comunicar con cualquiera de los hosts (del grupo `all`) utilizará el argumento definido en la variable `ansible_ssh_common_args`.
+**Ahora, cada vez que Ansible se quiera comunicar con cualquiera de los hosts (del grupo `all`) utilizará el argumento definido en la variable `ansible_ssh_common_args`.**
 
 La lista de variables que podemos configurar para modificar el comportamiento de Ansible se encuentran en el siguiente [link](https://docs.ansible.com/ansible/latest/user_guide/intro_inventory.html#connecting-to-hosts-behavioral-inventory-parameters).
 
