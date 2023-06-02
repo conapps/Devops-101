@@ -221,7 +221,7 @@ Por ahora solo hemos utilizado la aplicación `ansible`, sin embargo, no es la �
 
 - `ansible` [link](https://docs.ansible.com/ansible/latest/cli/ansible.html)
   - Herramienta simple para correr una tarea en múltiples hosts remotos.
-- `ansible-config`. [](https://docs.ansible.com/ansible/latest/cli/ansible-config.html)
+- `ansible-config`. [link](https://docs.ansible.com/ansible/latest/cli/ansible-config.html)
   - Herramienta para configurar Ansible.
   - `ansible-config list`
 - `ansible-console`. [link](https://docs.ansible.com/ansible/latest/cli/ansible-console.html)
