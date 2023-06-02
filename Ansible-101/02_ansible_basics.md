@@ -94,7 +94,7 @@ Ref: [Introduction to ad hoc commands](https://docs.ansible.com/ansible/latest/u
 
 Estos son comandos sencillos, de una sola línea, que no necesitan de un archivo individual para contenerlos, o que no tenemos intención de salvarlos para el futuro. Por ejemplo: `ping`, `echo`, etc.
 
-Los comandos `ad-hoc` se llaman a través del flag `-m` seguidos del módulo de ansible que queremos utilizar, o bien, a través del flag `-a` seguidos del comando que queremos lanzar en los hosts remotos.
+**Los comandos `ad-hoc` se llaman a través del flag `-m` seguidos del módulo de ansible que queremos utilizar, o bien, a través del flag `-a` seguidos del comando que queremos lanzar en los hosts remotos.**
 
 Con el siguiente comando podemos realizar un ping sobre todos los hosts detallados en el inventario:
 ```bash
@@ -219,21 +219,26 @@ ansible -i hosts.yml all -m setup
 
 Por ahora solo hemos utilizado la aplicación `ansible`, sin embargo, no es la única disponible, tenemos otras como:
 
-- `ansible`
+- `ansible` [link](https://docs.ansible.com/ansible/latest/cli/ansible.html)
   - Herramienta simple para correr una tarea en múltiples hosts remotos.
-- `ansible-config`.
+- `ansible-config`. [](https://docs.ansible.com/ansible/latest/cli/ansible-config.html)
   - Herramienta para configurar Ansible.
   - `ansible-config list`
-- `ansible-console`.
+- `ansible-console`. [link](https://docs.ansible.com/ansible/latest/cli/ansible-console.html)
   - Un REPL para ejecutar múltiples tareas sobre un grupo de hosts.
   - `ansible-console -i hosts.yml all`
 - `ansible-doc`.
   - Muestra información sobre los módulos de ansible instalados.
   - `ansible-doc ping`
   - `ansible-doc ping -s`
-- `ansible-galaxy`.
+  - `ansible-doc -t connection -l`
+  - `ansible-doc -t connection -l local`
+- `ansible-galaxy`. [link](https://docs.ansible.com/ansible/latest/cli/ansible-galaxy.html)
   - Maneja roles compartidos en repositorios de terceros. Por defecto buscara los repositorios en [https://galaxy.ansible.com](https://galaxy.ansible.com).
-- `ansible-inventory`.
+  - Es posible instalar roles, collecciones e inicializar roles vacios
+  - `ansible-galaxy install community.docker`
+  - `ansible-galaxy init --offline cisco_config_nat`
+- `ansible-inventory`. [link](https://docs.ansible.com/ansible/latest/cli/ansible-inventory.html)
   - Util para validar el inventario con el que estamos trabajando.
   - `ansible-inventory -i hosts.yml --list`
   - `ansible-inventory -i hosts.yml --graph`
@@ -241,12 +246,12 @@ Por ahora solo hemos utilizado la aplicación `ansible`, sin embargo, no es la �
   - Aplicación capaz de ejecutar Ansible `playbooks`.
 - `ansible-pull`.
   - Invierte el proceso de ejecución de `push` a `pull`.
-- `ansible-vault`.
+- `ansible-vault`. [link](https://docs.ansible.com/ansible/latest/cli/ansible-vault.html)
   - Aplicación capaz de encriptar cualquier estructura de datos a utilizar por ansible.
   - `ansible-vault create secret.yml`
   - `ansible-vault edit secret.yml`
   - `ansible-vault encrypt sin_encriptar.yml`
-
+  - `ansible-vault encrypt_string '123456' --vault-password-file /home/jguida/.ssh/vault`
 Durante el resto del curso nos enfocaremos en `ansible-playbook` y mencionaremos alguna de las otras aplicaciones cuando corresponda, por ej.`ansible-vault`.
 
 ## Ansible playbooks
