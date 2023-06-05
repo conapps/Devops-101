@@ -328,9 +328,9 @@ A continuación podemos ver un ejemplo de un `playbook`, que cuenta con dos `pla
 ```
 ### Tareas
 
-Las tareas dentro del `playbook` son ejecutadas en el orden en que se definieron, de a una, contra todos los sistemas especificados en la lista de `hosts`. Si alguno de los `plays` falla para un host, el mismo se elimina de la lista para las siguientes tareas. Una vez corregido el error, se puede lanzar el `playbook` de nuevo, y Ansible se encargará de realizar las modificaciones en aquellos hosts que fallaron.
+***Las tareas dentro del `playbook` son ejecutadas en el orden en que se definieron, de a una, contra todos los sistemas especificados en la lista de `hosts`.*** Si alguno de los `plays` falla para un host, el mismo se elimina de la lista para las siguientes tareas. Una vez corregido el error, se puede lanzar el `playbook` de nuevo, y Ansible se encargará de realizar las modificaciones en aquellos hosts que fallaron.
 
-Se sugiere que cada tarea tenga un nombre, especificado bajo la clave `name`. Estos nombres aparecerán en la consola durante la ejecución del `playbook` y ayudan a debuguear su funcionamiento. 
+***Se sugiere que cada tarea tenga un nombre, especificado bajo la clave `name`. Estos nombres aparecerán en la consola durante la ejecución del `playbook` y ayudan a debuguear su funcionamiento.***
 
 Si no nos importa que algún comando falle podemos configurar la opción `ignore_error`. 
 
