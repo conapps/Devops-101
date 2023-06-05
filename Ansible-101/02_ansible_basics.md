@@ -389,7 +389,7 @@ Ejecutemos entonces nuestro playbook:
 # ansible-playbook --vervose -i hosts.yml primer-playbook --syntax-check.yml 
 ```
 
-```bash
+```
 # ansible-playbook -i hosts.yml primer-playbook.yml
 PLAY [Primer playbook] ****************************************************************************************************
 
