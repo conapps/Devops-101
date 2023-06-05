@@ -417,9 +417,12 @@ En el caso de que queramos correr múltiples tareas en un mismo `play`, podemos 
 - name: Primer playbook
   hosts: app
   tasks:
-    - ping:
-    - ansible.builtin.user:
-        name: user1
+    - name: Ping
+      ping:
+
+    - name: Creo usuario
+      ansible.builtin.user:
+        name: user1  
 ```
 
 Al ejecutarlo:
