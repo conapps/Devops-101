@@ -377,17 +377,20 @@ Para esto, crear un archivo `primer-playbook.yml` con el siguiente contenido:
 
 Para correr un `playbook` utilizamos el comando `ansible-playbook`, al cuál podemos pasarle el inventario queremos utilizar (luego veremos otra forma de especificar el inventario):
 
-```bash
-ansible-playbook -i hosts.yml primer-playbook.yml
+```
+ansible-playbook -i hosts.yml playbook.yml
 ```
 
 Si queremos comprobar que la sintaxis de nuestro `playbook` no tiene errores podemos utilizar el flag `--syntax-check`. Y, si queremos ver con más detalles las acciones que esta realizando Ansible para detectar errores (debug), podemos correrlo con el comando con el flag `--verbose`.
 
 
 Ejecutemos entonces nuestro playbook:
+```bash
+# ansible-playbook --vervose -i hosts.yml primer-playbook --syntax-check.yml 
 ```
-# ansible-playbook -i hosts.yml primer-playbook.yml
 
+```bash
+# ansible-playbook -i hosts.yml primer-playbook.yml
 PLAY [Primer playbook] ****************************************************************************************************
 
 TASK [Gathering Facts] *************************************************************************************************************************
