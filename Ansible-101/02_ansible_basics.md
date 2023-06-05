@@ -589,13 +589,15 @@ Y en  nuestro `playbook` incluimos este archivo mediante `var_files`:
 # primer_playbook.yml
 - name: Primer playbook
   hosts: app
-  vars_files:
-    - ./vars/variables.yml
   tasks:
-    - ping:
-    - ansible.builtin.user:
+    - name: Ping
+      ping:
+
+    - name: Creo usuario
+      ansible.builtin.user:
         name: user1
-    - debug:
+    - name: Debug
+      debug:
         msg: "La aplicación se encuentra instalada en {{application_path}}"
 ```
 
