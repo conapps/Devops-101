@@ -589,6 +589,8 @@ Y en  nuestro `playbook` incluimos este archivo mediante `var_files`:
 # primer_playbook.yml
 - name: Primer playbook
   hosts: app
+  vars_files:
+    - ./vars/variables.yml
   tasks:
     - name: Ping
       ping:
