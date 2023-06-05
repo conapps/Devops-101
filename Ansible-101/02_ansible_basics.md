@@ -386,11 +386,11 @@ Si queremos comprobar que la sintaxis de nuestro `playbook` no tiene errores pod
 
 Ejecutemos entonces nuestro playbook:
 ```bash
-# ansible-playbook --vervose -i hosts.yml primer-playbook --syntax-check.yml 
+ansible-playbook -i hosts.yml --verbose --syntax-check primer-playbook.yml
 ```
 
 ```bash
-# ansible-playbook -i hosts.yml primer-playbook.yml
+ansible-playbook -i hosts.yml primer-playbook.yml
 ```
 ```
 PLAY [Primer playbook] ****************************************************************************************************
