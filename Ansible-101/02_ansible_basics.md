@@ -285,9 +285,9 @@ Durante el resto del curso nos enfocaremos en `ansible-playbook` y mencionaremos
 Ref: [Intro to playbooks](https://docs.ansible.com/ansible/latest/user_guide/playbooks_intro.html)
 
 
-Si bien los comandos ad-hoc son útiles para operaciones simples, no son adecuados para escenarios mas complejos, como ser tareas de configuración de equipos, deploy de nuevos sericios, orquestación en la nube, etc. Para estos casos utilizaremos `playbooks`.
+Si bien los comandos ad-hoc son útiles para operaciones simples, no son adecuados para escenarios mas complejos, como ser tareas de configuración de equipos, deploy de nuevos servicios, orquestación en la nube, etc. Para estos casos utilizaremos `playbooks`.
 
-Los `playbooks` son archivos que describen lo que queremos hacer, es decir, las tareas que queremos ejecutar sobre los hosts administrados. Además de declarar configuraciones, los `playbooks` se pueden utilizar para orquestar cambios masivos en múltiples equipos de forma ordenada. 
+***Los `playbooks` son archivos que describen lo que queremos hacer, es decir, las tareas que queremos ejecutar sobre los hosts administrados. Además de declarar configuraciones, los `playbooks` se pueden utilizar para orquestar cambios masivos en múltiples equipos de forma ordenada.*** 
 
 El objetivo del `playbook` es el de mapear un grupo de hosts con los módulos de ansible que queremos ejecutar, a través de una lista de tareas. Cada una de estas uniones dentro de un `playbook` se denomina `play`. Una `task` es la mínima acción que se puede ejecutar sobre el host, esto es en general, la llamada a un módulo de ansible.
 
@@ -371,13 +371,14 @@ Para esto, crear un archivo `primer-playbook.yml` con el siguiente contenido:
 - name: Primer playbook
   hosts: app
   tasks:
-    - ping:
+    - name: Ping
+      ping:
 ```
 
 Para correr un `playbook` utilizamos el comando `ansible-playbook`, al cuál podemos pasarle el inventario queremos utilizar (luego veremos otra forma de especificar el inventario):
 
 ```bash
-ansible-playbook -i hosts.yml playbook.yml
+ansible-playbook -i hosts.yml primer-playbook.yml
 ```
 
 Si queremos comprobar que la sintaxis de nuestro `playbook` no tiene errores podemos utilizar el flag `--syntax-check`. Y, si queremos ver con más detalles las acciones que esta realizando Ansible para detectar errores (debug), podemos correrlo con el comando con el flag `--verbose`.
