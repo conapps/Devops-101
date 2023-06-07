@@ -271,7 +271,7 @@ Si ya configuró el `ssh config file` del punto anterior, alcanzará con indicar
 De lo contrario, si no realizó el paso anterior, podemos configurar lo necesario en este momento (solo se hace una vez), mediante los siguientes pasos:
 
 - seleccionar la opción `+ Add New SSH Host...`
-- agregar el comando ssh completo, es decir: `ssh -i ~/.ssh/devops101-labs.pem ubuntu@pod-X.labs.conatest.click -p 2222`
+- agregar el comando ssh completo, es decir: `ssh -i ~/.ssh/devops101-labs.pem root@pod-X.labs.conatest.click -p 2222`
 - luego nos pedirá la ubicación del ssh config file a utilizar, por ejemplo: `~/.ssh/config` en linux o en `~\.ssh\config` Windows
 - esto modificará la configuración del `ssh config` file agregando el acceso al pod, y ya podrá conectarse con el botón `Connect`
 
