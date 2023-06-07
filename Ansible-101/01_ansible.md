@@ -259,12 +259,12 @@ La instalación de la extensión es muy sencilla. Una vez instalado el editor, i
 
 Aparecerán múltiples resultados, donde recomendamos instalar la provista por `Microsoft `, tal como muestra la siguiente imagen:
 
-![alt text](Imagenes/vscode-extensions.png "Remote SSH Extension")
+![alt text](imagenes/vscode-extensions.png "Remote SSH Extension")
 
 Una vez instalada, aparecerá un pequeño botón verde en la esquina inferior izquierda del editor (es posible que deba reiniciarlo).
 Al seleccionarlo, nos dará la opción de conectarnos a un servidor remoto por `SSH Connect to Host...`
 
-![alt text](Imagenes/vscode-connect-ssh.png "Remote SSH Extension")
+![alt text](imagenes/vscode-connect-ssh.png "Remote SSH Extension")
 
 Si ya configuró el `ssh config file` del punto anterior, alcanzará con indicar el POD al cual conectarse, esto es: `controller-X.labs.conatest.click. `
 
@@ -284,7 +284,7 @@ Al conectarse al servidor remoto por primera vez, es posible que le solicite cu�
 Por último, una vez conectado con el editor a su pod (lo cual puede verlo en el botón verde abajo a la izquierda), puede abrir la carpeta remota en el servidor, para poder editar los archivos directamente en el mismo.
 Para esto seleccion `File > Open Folder` e indique la carpeta `/home/ubuntu/` tal como se muestra en la siguiente imagen, y presione `OK.`
 
-![alt text](Imagenes/vscode-open-folder.png "Open Remote Folder")
+![alt text](imagenes/vscode-open-folder.png "Open Remote Folder")
 
 La primera vez, le preguntará si confía en el autor de los archivos, indique que `SI` y seleccione el `checkbox` para que no vuelva a preguntarle.
 
