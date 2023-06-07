@@ -220,16 +220,17 @@ La segunda opción es utilizando la herramienta `Putty`:
 En caso que utilice `ssh` para conectarse a su `POD`, puede agregar las siguientes entradas al archivo `config` de ssh, para facilitar la conexión:
 
 ```bash
-Host master-X.labs.conatest.click
+Host master.labs.conatest.click
   HostName pod-X.labs.conatest.click
   IdentityFile ~/.ssh/devops101-labs.pem
+  Port 22
   User ubuntu
 
-Host controller-X.labs.conatest.click
-  Hostname pod-X.labs.conatest.click
-  User root
-  Port 2222
+Host controller.labs.conatest.click
+  HostName pod-X.labs.conatest.click
   IdentityFile ~/.ssh/devops101-labs.pem
+  Port 2222
+  User root
 ```
 
 - Recuerde sustituir la X por su número de POD asignado.
@@ -240,8 +241,8 @@ Host controller-X.labs.conatest.click
 Una vez modificado el `ssh config file` podrá conectarse al POD, tanto desde Linux como desde Windows Power Shell, simplemente haciendo:
 
 ```bash
-$ ssh master-X.labs.conatest.click
-$ ssh controller-X.labs.conatest.click
+$ ssh master.labs.conatest.click
+$ ssh controller.labs.conatest.click
 ```
 
 Esto además resultará sumamente útil para conectarse por medio de Visual Studio Code al `POD`, como veremos a continuación.
@@ -282,7 +283,7 @@ De lo contrario, si no realizó el paso anterior, podemos configurar lo necesari
 Al conectarse al servidor remoto por primera vez, es posible que le solicite cuál es la plataforma a la cual conectarse, indique `Linux.`
 
 Por último, una vez conectado con el editor a su pod (lo cual puede verlo en el botón verde abajo a la izquierda), puede abrir la carpeta remota en el servidor, para poder editar los archivos directamente en el mismo.
-Para esto seleccion `File > Open Folder` e indique la carpeta `/home/ubuntu/` tal como se muestra en la siguiente imagen, y presione `OK.`
+Para esto seleccion `File > Open Folder` e indique la carpeta `/home/root/ansible` tal como se muestra en la siguiente imagen, y presione `OK.`
 
 ![alt text](imagenes/vscode-open-folder.png "Open Remote Folder")
 
