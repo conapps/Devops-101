@@ -267,7 +267,7 @@ Al seleccionarlo, nos dará la opción de conectarnos a un servidor remoto por `
 
 ![alt text](imagenes/vscode-connect-ssh.png "Remote SSH Extension")
 
-Si ya configuró el `ssh config file` del punto anterior, alcanzará con indicar el POD al cual conectarse, esto es: `controller-X.labs.conatest.click. `
+Si ya configuró el `ssh config file` del punto anterior, alcanzará con indicar el POD al cual conectarse, esto es: `controller.labs.conatest.click. `
 
 De lo contrario, si no realizó el paso anterior, podemos configurar lo necesario en este momento (solo se hace una vez), mediante los siguientes pasos:
 
