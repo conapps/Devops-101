@@ -220,12 +220,12 @@ La segunda opción es utilizando la herramienta `Putty`:
 En caso que utilice `ssh` para conectarse a su `POD`, puede agregar las siguientes entradas al archivo `config` de ssh, para facilitar la conexión:
 
 ```bash
-Host master.labs.conatest.click
+Host master-X.labs.conatest.click
   HostName pod-X.labs.conatest.click
   IdentityFile ~/.ssh/devops101-labs.pem
   User ubuntu
 
-Host controller.labs.conatest.click
+Host controller-X.labs.conatest.click
   Hostname pod-X.labs.conatest.click
   User root
   Port 2222
