@@ -283,7 +283,7 @@ De lo contrario, si no realizó el paso anterior, podemos configurar lo necesari
 Al conectarse al servidor remoto por primera vez, es posible que le solicite cuál es la plataforma a la cual conectarse, indique `Linux.`
 
 Por último, una vez conectado con el editor a su pod (lo cual puede verlo en el botón verde abajo a la izquierda), puede abrir la carpeta remota en el servidor, para poder editar los archivos directamente en el mismo.
-Para esto seleccion `File > Open Folder` e indique la carpeta `/home/root/ansible` tal como se muestra en la siguiente imagen, y presione `OK.`
+Para esto seleccion `File > Open Folder` e indique la carpeta `/root/ansible` tal como se muestra en la siguiente imagen, y presione `OK.`
 
 ![alt text](imagenes/vscode-open-folder.png "Open Remote Folder")
 
