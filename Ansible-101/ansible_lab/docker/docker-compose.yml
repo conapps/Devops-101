@@ -8,6 +8,7 @@ services:
       - base
     build: ./controller/
     image: ansible_controller
+    restart: unless-stopped
     container_name: controller
     hostname: controller
     ports:
@@ -24,6 +25,7 @@ services:
       - controller
     build: ./host/
     image: ansible_host
+    restart: unless-stopped
     container_name: host01
     hostname: host01
     ports:
@@ -38,6 +40,7 @@ services:
       - controller
       - host01
     image: ansible_host
+    restart: unless-stopped
     container_name: host02
     hostname: host02
     ports:
@@ -52,6 +55,7 @@ services:
       - controller
       - host02
     image: ansible_host
+    restart: unless-stopped
     container_name: host03
     hostname: host03
     command: ['/var/run.sh']
