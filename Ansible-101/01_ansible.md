@@ -215,6 +215,81 @@ La segunda opción es utilizando la herramienta `Putty`:
 - Opcional: puede grabar la configuración de la sesión mediante "Save" para poder volver a utilizarla luego.
 - Seleccionar "Open" para conectarse, y luego "Accept" para aceptar la Security Alert (la primera vez).
 
+#### Opcional: configuración ssh file
+
+En caso que utilice `ssh` para conectarse a su `POD`, puede agregar las siguientes entradas al archivo `config` de ssh, para facilitar la conexión:
+
+```bash
+Host master.labs.conatest.click
+  HostName pod-X.labs.conatest.click
+  IdentityFile ~/.ssh/devops101-labs.pem
+  User ubuntu
+
+Host controller.labs.conatest.click
+  Hostname pod-X.labs.conatest.click
+  User root
+  Port 2222
+  IdentityFile ~/.ssh/devops101-labs.pem
+```
+
+- Recuerde sustituir la X por su número de POD asignado.
+- En `IdentityFile` debe colocar la ubicación del certificado `.pem` donde lo descargó en su máquina.
+- El archivo `config` se encuentra ubicado en el directorio  `~/.ssh/config` en linux, o en `~\.ssh\config` en Windows (si no existe, debe crearlo).
+- Si utiliza windows puede utilizar el editor notepad para editar el archivo, pero asegurese de guardarlo sin la extensión .txt que notepad le agrega por defecto.
+
+Una vez modificado el `ssh config file` podrá conectarse al POD, tanto desde Linux como desde Windows Power Shell, simplemente haciendo:
+
+```bash
+$ ssh master-X.labs.conatest.click
+$ ssh controller-X.labs.conatest.click
+```
+
+Esto además resultará sumamente útil para conectarse por medio de Visual Studio Code al `POD`, como veremos a continuación.
+
+
+#### Opcional: configuración de Visual Studio Code
+
+Si bien no es requerido, recomendamos instalar en su máquina el editor de texto Visual Studio Code, que puede descargar desde [aquí.](https://code.visualstudio.com/)
+Esto le permitirá conectarse a su `POD` remoto, directamente desde el editor que corre en su máquina local (por ssh) y así poder editar los archivos que se utilizan durante los laboratorios de forma mucho mas amigable que utilizando el editor `nano` o `vim` de linux. Esto será particularmente útil para la sección de `docker-compose` así como para el desafío final, que veremos en el segundo día de curso.
+
+Este editor es particularmente potente, gracias a la integración de múltiples extensiones que amplían su funcionalidad.
+Para poder utilizarlo en el curso, deberemos instalar al menos la extension [Remote - SSH](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-ssh), que permite acceder remotamente a un servidor y editar los archivos directamente en el mismo.
+
+La instalación de la extensión es muy sencilla. Una vez instalado el editor, iniciarlo, y luego ir a  `File > Preferences > Extensions` o presionar directamente `<ctrl-shift-X>. `Esto abrirá el panel de configuración de las `EXTENSIONS` y arriba del todo tendrá un panel de búsqueda donde podrá buscar la extensión "Remote - SSH".
+
+Aparecerán múltiples resultados, donde recomendamos instalar la provista por `Microsoft `, tal como muestra la siguiente imagen:
+
+![alt text](Imagenes/vscode-extensions.png "Remote SSH Extension")
+
+Una vez instalada, aparecerá un pequeño botón verde en la esquina inferior izquierda del editor (es posible que deba reiniciarlo).
+Al seleccionarlo, nos dará la opción de conectarnos a un servidor remoto por `SSH Connect to Host...`
+
+![alt text](Imagenes/vscode-connect-ssh.png "Remote SSH Extension")
+
+Si ya configuró el `ssh config file` del punto anterior, alcanzará con indicar el POD al cual conectarse, esto es: `controller-X.labs.conatest.click. `
+
+De lo contrario, si no realizó el paso anterior, podemos configurar lo necesario en este momento (solo se hace una vez), mediante los siguientes pasos:
+
+- seleccionar la opción `+ Add New SSH Host...`
+- agregar el comando ssh completo, es decir: `ssh -i ~/.ssh/devops101-labs.pem ubuntu@pod-X.labs.conatest.click -p 2222`
+- luego nos pedirá la ubicación del ssh config file a utilizar, por ejemplo: `~/.ssh/config` en linux o en `~\.ssh\config` Windows
+- esto modificará la configuración del `ssh config` file agregando el acceso al pod, y ya podrá conectarse con el botón `Connect`
+
+👉 recuerde sustituir la `X` por su número de `POD` asignado y colocar la ubicación correcta donde descargó el certificado `.pem`
+
+
+
+Al conectarse al servidor remoto por primera vez, es posible que le solicite cuál es la plataforma a la cual conectarse, indique `Linux.`
+
+Por último, una vez conectado con el editor a su pod (lo cual puede verlo en el botón verde abajo a la izquierda), puede abrir la carpeta remota en el servidor, para poder editar los archivos directamente en el mismo.
+Para esto seleccion `File > Open Folder` e indique la carpeta `/home/ubuntu/` tal como se muestra en la siguiente imagen, y presione `OK.`
+
+![alt text](Imagenes/vscode-open-folder.png "Open Remote Folder")
+
+La primera vez, le preguntará si confía en el autor de los archivos, indique que `SI` y seleccione el `checkbox` para que no vuelva a preguntarle.
+
+Aguarde unos segundos, y sobre el panel de la izquierda tendrá acceso al contenido de ese directorio del servidor remoto, donde podrá crear nuevos archivos y/o directorios, así como seleccionar un archivo para editarlo en el panel derecho, guardando los cambios directo al servidor remoto.
+
 ### DEMO Lab #1 - Lanzar el laboratorio
 
 El laboratorio consiste en un set de contenedores que simulan una granja de servidores.
