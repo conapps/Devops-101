@@ -712,6 +712,7 @@ Y en  nuestro `playbook`:
     - name: Creo usuario
       ansible.builtin.user:
         name: user1
+        
     - name: Debug
       debug:
         msg: 
@@ -780,7 +781,8 @@ También podemos definir variables en diferentes lugares de nuestro `playbook`:
       ansible.builtin.user:
         name: user1
 
-    - set_fact:
+    - name: Seteo Variable
+      set_fact:
         application_doc: "www.{{application_name}}.com/{{application_env}}/help"
 
     - name: Debug

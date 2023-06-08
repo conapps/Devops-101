@@ -6,13 +6,20 @@
   vars:
     - application_owner: conatel
   tasks:
-    - ping:
-    - ansible.builtin.user:
+    - name: Ping
+      ping:
+
+    - name: Creo usuario
+      ansible.builtin.user:
         name: user1
-    - set_fact:
+
+    - name: Seteo Variable
+      set_fact:
         application_doc: "www.{{application_name}}.com/{{application_env}}/help"
-    - debug:
-        msg:
+
+    - name: Debug
+      debug:
+        msg: 
           - "La aplicación {{application_name}} se encuentra instalada en {{application_path}}"
           - "El ambiente para este equipo es: {{application_env}}"
           - "El dueño de la aplicación es {{application_owner}} y corre en {{application_pod}}"
