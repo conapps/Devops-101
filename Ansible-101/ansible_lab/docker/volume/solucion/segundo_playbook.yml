@@ -1,9 +1,13 @@
+# segundo_playbook.yml
 - name: Ejemplo de como utilizar la opción 'register'
   hosts: localhost
   connection: local
   gather_facts: no
   tasks:
-    - shell: echo Hola
+    - name: Comando shell
+      shell: echo Hola
       register: result
-    - debug:
+
+    - name: Debug
+      debug:
         var: result

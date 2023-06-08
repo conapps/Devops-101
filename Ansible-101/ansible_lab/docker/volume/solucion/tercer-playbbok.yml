@@ -1,0 +1,18 @@
+# tercer_playbook.yml
+# OBS: la variable `ansible_os_family` es resuelta por Ansible previo a 
+#      la ejecución de las tareas en el host (Gathering Facts).
+- name: Ejemplo, instalar `jq` con `apt` en Ubuntu y con `yum` en CentOS
+  hosts: app
+  gather_facts: True
+  tasks:
+    - name: Instalar `jq` en Ubuntu con apt
+      apt:
+        name: jq
+        update_cache: yes
+      when: ansible_os_family == 'Debian'
+
+    - name: Instalar `jq` en CentOS con yum
+      yum:
+        name: jq
+        state: latest
+      when: ansible_os_family == 'RedHat'

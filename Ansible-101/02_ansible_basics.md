@@ -712,7 +712,7 @@ Y en  nuestro `playbook`:
     - name: Creo usuario
       ansible.builtin.user:
         name: user1
-        
+
     - name: Debug
       debug:
         msg: 
@@ -859,9 +859,12 @@ Todas las tareas que ejecuta Ansible, emiten por defecto una salida, en donde se
   connection: local
   gather_facts: no
   tasks:
-    - shell: echo Hola
+    - name: Comando shell
+      shell: echo Hola
       register: result
-    - debug:
+
+    - name: Debug
+      debug:
         var: result
 ```
 La opción `register` almacena la salida de la tarea `shell` en una variable de entorno llamada `result`. Si bien este nombre de variable es típicamente utilizado con este fin, podemos usar cualquier otro nombre de variable que querramos. 
@@ -935,6 +938,7 @@ Por ejemplo, si queremos generalizar una tarea para que se ejecute tanto en serv
 #      la ejecución de las tareas en el host (Gathering Facts).
 - name: Ejemplo, instalar `jq` con `apt` en Ubuntu y con `yum` en CentOS
   hosts: app
+  gather_facts: True
   tasks:
     - name: Instalar `jq` en Ubuntu con apt
       apt:
