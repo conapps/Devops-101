@@ -705,10 +705,14 @@ Y en  nuestro `playbook`:
   vars_files:
     - ./vars/variables.yml
   tasks:
-    - ping:
-    - ansible.builtin.user:
+    - name: Ping
+      ping:
+
+    - name: Creo usuario
+      ansible.builtin.user:
         name: user1
-    - debug:
+    - name: Debug
+      debug:
         msg: 
           - "La aplicación {{application_name}} se encuentra instalada en {{application_path}}"
           - "El ambiente para este equipo es: {{application_env}}"
@@ -768,12 +772,18 @@ También podemos definir variables en diferentes lugares de nuestro `playbook`:
   vars:
     - application_owner: conatel
   tasks:
-    - ping:
-    - ansible.builtin.user:
+    - name: Ping
+      ping:
+
+    - name: Creo usuario
+      ansible.builtin.user:
         name: user1
+
     - set_fact:
         application_doc: "www.{{application_name}}.com/{{application_env}}/help"
-    - debug:
+
+    - name: Debug
+      debug:
         msg: 
           - "La aplicación {{application_name}} se encuentra instalada en {{application_path}}"
           - "El ambiente para este equipo es: {{application_env}}"
