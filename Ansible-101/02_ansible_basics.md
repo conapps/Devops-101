@@ -641,6 +641,7 @@ host02                     : ok=4    changed=0    unreachable=0    failed=0    s
 
 #### Variables definidas en el inventario
 Podemos definir variables particulares para nuestros hosts o grupos, dentro del propio archivo de inventario.
+En este caso vamos a definir `application_name: prod_app`
 
 ```yml
 # archivo de inventario ./inventory/hosts.yml
