@@ -10,7 +10,7 @@
 #   && rm -rf /var/lib/apt/lists/*
 
 
-FROM ubuntu:22.04
+FROM ubuntu:20.04
 RUN apt-get update 
 RUN DEBIAN_FRONTEND=noninteractive TZ=America/Montevideo apt-get -y install tzdata
 RUN apt-get install -y ansible python3 python3-pip iputils-ping net-tools sudo vim
