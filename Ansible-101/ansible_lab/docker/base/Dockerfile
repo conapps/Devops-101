@@ -13,7 +13,7 @@
 FROM ubuntu:22.04
 RUN apt-get update
 RUN DEBIAN_FRONTEND=noninteractive TZ=America/Montevideo apt-get -y install tzdata
-RUN apt-get install -y python3 python3-pip iputils-ping net-tools sudo vim
+RUN apt-get install -y ansible python3 python3-pip iputils-ping net-tools sudo vim
 RUN apt-get upgrade -y
 RUN apt-get install -y apt-utils
 RUN apt-get install -y curl ca-certificates man openssh-server locales nano
