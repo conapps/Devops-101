@@ -40,8 +40,8 @@ RUN chmod 600 /root/.ssh/config
 # RUN chmod 600 /root/.ssh/devops101-labs.pem
 
 # Install Ansible Collections
-# RUN ansible-galaxy collection install community.general
-# RUN ansible-galaxy collection install cisco.ios
+RUN ansible-galaxy collection install community.general
+RUN ansible-galaxy collection install cisco.ios
 RUN pip3 install ansible-pylibssh
 
 # Change default working directory when login
