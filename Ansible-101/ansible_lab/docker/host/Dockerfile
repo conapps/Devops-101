@@ -2,6 +2,7 @@
 
 # use builded ansible_base (defined in ../base/Dockerfile) as a starting point
 FROM ansible_base:latest
+# FROM ansible101-base:latest
 
 # copy files from local disk to file system inside Docker image
 COPY run.sh /var/
