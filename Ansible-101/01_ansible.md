@@ -1,5 +1,11 @@
 # Ansible
 
+## Presentación
+
+¿Que es Ansible?
+
+Ansible es una herramienta de automatización que se utiliza para configurar, desplegar aplicaciones, orquestación o aprovisionamiento. 
+
 ## Introducción
 
 Durante los últimos años la forma con la que configuramos la infraestructura y las aplicaciones que conforman nuestro sistema han ido cambiando. Con el tiempo hemos ido automatizando los procesos de configuración y simplificando la forma en la que interactuamos con los dispositivos. Pasamos de escribir la configuración de todos los componentes de forma manual, a automatizar las mismas tareas a través de scripts. Hoy, hay un nuevo paradigma de automatización que se ha empezado a utilizar, conocido como `Infrastructure as Code` o `IaaS`.
