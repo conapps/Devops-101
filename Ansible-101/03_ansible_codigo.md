@@ -727,7 +727,7 @@ Para usar el rol en nuestra `playbook` alcanza con invocarlo como cualquier otro
 Tomando como base el [Ejercicio #4](#ejercicio-4) instale MySQL en el grupo de hosts `db`, utilizando un rol existente de [Ansibe Galaxy](https://galaxy.ansible.com/).
 
 Cuando se realiza una busqueda en el sitio web, la cantidad de roles disponibles en Ansible Galaxy es enorme.
-Si filtramos la busqueda con: <code>mysql install role ubuntu</code>., vemos que geerlingguy es la primera entrada debido a la gran cantidad de descargas.
+Si filtramos la busqueda con: <code>mysql install role ubuntu</code>, vemos que geerlingguy es la primera entrada debido a la gran cantidad de descargas.
 
 Por esto y que `geerlingguy` es muy conocido en la comunidad y cuyos roles hemos usado nosotros frecuentemente, es que  vamos a usar el role [geerlingguy.mysql](https://galaxy.ansible.com/geerlingguy/mysql)
 
@@ -747,7 +747,7 @@ ansible-galaxy install -r requirements.yml
 ```
 
 <details>
-	<summary> Pista #2 </summary>
+	<summary> Pista #1 </summary>
 	Para invocar un <code>rol</code> descargado de Ansible Galaxy en nuestro <code>playbook</code>, puede usar los mismos módulos que utilizamos con roles escritos por nosotros mismos, como ser: <code>roles:</code>, <code>include_role:</code>, o <code>import_role:</code>.
 
   Verifique en la documentación del rol si requiere escalar los privilegios de usuario, aunque recuerde que en nuestro caso ya estamos corriendo todas las tareas con el usuario <code>root</code>, por lo cuál esto no sería necesario.
@@ -790,14 +790,6 @@ mysql> quit;
 
 <details>
     <summary>Solución</summary>
-<pre>
-# ansible-galaxy install geerlingguy.mysql
-Starting galaxy role install process
-- downloading role 'mysql', owned by geerlingguy
-- downloading role from https://github.com/geerlingguy/ansible-role-mysql/archive/3.3.2.tar.gz
-- extracting geerlingguy.mysql to /root/.ansible/roles/geerlingguy.mysql
-- geerlingguy.mysql (3.3.2) was installed successfully
-</pre>
 
 <pre>
 # ./ejer6-playbook.yml 
