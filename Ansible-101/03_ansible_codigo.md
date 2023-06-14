@@ -726,22 +726,28 @@ Para usar el rol en nuestra `playbook` alcanza con invocarlo como cualquier otro
 
 Tomando como base el [Ejercicio #4](#ejercicio-4) instale MySQL en el grupo de hosts `db`, utilizando un rol existente de [Ansibe Galaxy](https://galaxy.ansible.com/).
 
+Cuando se realiza una busqueda en el sitio web, la cantidad de roles disponibles en Ansible Galaxy es enorme.
+Si filtramos la busqueda con: <code>mysql install role ubuntu</code>., vemos que geerlingguy es la primera entrada debido a la gran cantidad de descargas.
 
-<details>
-	<summary> Pista #1 </summary>
-	La cantidad de roles disponibles en Ansible Galaxy es enorme. Cuando realice una busqueda en el sitio web puede utilizar los filtros disponibles (por ej. para buscar solo dentro de roles), o ingresar palabras claves adicionales para acotar la busqueda. 
+Por esto y que `geerlingguy` es muy conocido en la comunidad y cuyos roles hemos usado nosotros frecuentemente, es que  vamos a usar el role [geerlingguy.mysql](https://galaxy.ansible.com/geerlingguy/mysql)
 
-  Por ejemplo en este caso pruebe de buscar: <code>mysql install role ubuntu</code>. 
-  En la lista de roles que aparecen como resultado, puede ver la cantidad de veces que se descargó cada rol o el puntaje que tiene asignado, estos datos pueden ser utiles al momento de elegir cual de ellos usar. También puede seleccionar roles de determinado usuario, como por ejemplo `geerlingguy`, quien es muy conocido en la comunidad y cuyos roles hemos usado nosotros frecuentemente, en este caso: https://galaxy.ansible.com/geerlingguy/mysql
-</details>
+**Pero por motivos de compatibilidad no se puede instalar la última versión del role, si no que vamos a instalar una aterior.**
+
+Para esto es necesario crear el archivo `requirements.yml`
+
+```yaml
+- name: geerlingguy.mysql
+  version: 4.2.2
+```
+
+Y para instalarlo ejecutamos lo siguiente:
+
+```bash
+ansible-galaxy install -r requirements.yml
+```
 
 <details>
 	<summary> Pista #2 </summary>
-	Recuerde que debe instalar el <code>rol</code> antes de poder usarlo. Revise la documentación del rol para saber como utilizarlo, y verificar si tiene requerimientos previos como definición de variables, dependencias con otros roles, etc.
-</details>
-
-<details>
-	<summary> Pista #3 </summary>
 	Para invocar un <code>rol</code> descargado de Ansible Galaxy en nuestro <code>playbook</code>, puede usar los mismos módulos que utilizamos con roles escritos por nosotros mismos, como ser: <code>roles:</code>, <code>include_role:</code>, o <code>import_role:</code>.
 
   Verifique en la documentación del rol si requiere escalar los privilegios de usuario, aunque recuerde que en nuestro caso ya estamos corriendo todas las tareas con el usuario <code>root</code>, por lo cuál esto no sería necesario.
