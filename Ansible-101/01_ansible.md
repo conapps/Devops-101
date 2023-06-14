@@ -4,7 +4,7 @@
 
 ¿Que es Ansible?
 
-Ansible es una herramienta de automatización que se utiliza para configurar, desplegar aplicaciones, orquestación o aprovisionamiento. 
+Ansible es una herramienta gratuita y de código abierto para la automatización de infraestructura (servidores, cloud, dispositivos de red), se utiliza para configurar y desplegar aplicaciones, orquestación o aprovisionamiento. 
 
 ![Presentacion](./imagenes/ansible_000.png)
 ## Introducción
