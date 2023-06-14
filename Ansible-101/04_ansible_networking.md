@@ -633,7 +633,7 @@ Veamos como resolverlo con el siguiente ejercicio.
 ---
 
 ### Ejercicio #10
-Cree un nuevo rol llamado `configure_interfaces` que configure las interfaces de los routers Cisco IOS, a partir de una `lista` de `interfaces`, con las siguiente estructura:
+Cree un nuevo rol llamado `configure_interfaces` que configure las interfaces de los routers spokes, a partir de una `lista` de `interfaces`, con las siguiente estructura:
 
 ```yml
 interfaces:
@@ -647,8 +647,6 @@ interfaces:
     description: <descripción de la interface 2>
     (...)
 ```
-Tenga en cuenta que los routers pueden tener diferentes cantidades de interfaces (los `spoke` tiene dos interfaces, el `hub` tiene tres inferfaces, etc.) por lo cual el rol ebe poder manejar una cantidad indefinida de items en esta la lista. 
-
 :point_right: recuerde grabar la configuración si realiza cambios en los routers.
 
 El rol luego será llamado a través del siguiente `playbook`:
@@ -660,14 +658,14 @@ El rol luego será llamado a través del siguiente `playbook`:
 # ---
 
 - name: Configuración de interface
-  hosts: <equipos a configurar>
+  hosts: spokes
   gather_facts: no
   roles:
     - configure_interfaces
 ```
 
 
-:warning: Debe tener especial cuidado si realiza cambios de configuración en el router `hub` porque podría perder la conectividad a todos los equipos del laboratorio!
+:warning: Debe tener especial cuidado de no realizar cambios de configuración en el router `hub` porque podría perder la conectividad a todos los equipos del laboratorio!
 
 
 <details>
@@ -775,24 +773,6 @@ interfaces:
     ip_address: 10.X.2.253
     netmask: 255.255.255.0
     description: Conexión con red Spoke-02
-</pre>
-
-<pre class="language-yaml" lang="yaml">
-# ./inventory/host_vars/hub.yml
-hostname: hub
-interfaces:
-  - interface: GigabitEthernet1
-    ip_address: 10.1.254.254
-    netmask: 255.255.255.0
-    description: Conexion con red Hub
-  - interface: GigabitEthernet2
-    ip_address: 10.1.201.254
-    netmask: 255.255.255.0
-    description: Conexion con red Tunnel-01
-  - interface: GigabitEthernet3
-    ip_address: 10.1.202.254
-    netmask: 255.255.255.0
-    description: Conexion con red Tunnel-02
 </pre>
 
 

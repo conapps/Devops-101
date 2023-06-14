@@ -11,7 +11,7 @@
 #     description: Configurado desde el nuevo rol
 # ...
 - name: Ejercicio 9 - Configurar interfaces de los routers
-  hosts: routers
+  hosts: spokes
   gather_facts: no
   roles:
     - configure_interfaces
