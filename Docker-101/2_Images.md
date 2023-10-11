@@ -193,7 +193,7 @@ $ cd prod-env
   <copiar el contenido del Dockerfile y grabar el archivo>
 
 ~/prod-env$ docker build -t prod-env:0.1 .
-=> [internal] load build definition from Dockerfile                       0.1s
+=> [internal] load build definition from Dockerfile                                                0.1s
 => => transferring dockerfile: 761B                                                                0.0s
 => [internal] load .dockerignore                                                                   0.0s
 => => transferring context: 2B                                                                     0.0s
@@ -207,14 +207,7 @@ $ cd prod-env
 => exporting to image                                                                             20.2s 
 => => exporting layers                                                                            20.2s
 => => writing image sha256:42362d3296822774a9a8c2d4d1a2021e5da4786ce6d7d643b23d5eca313617af        0.0s
-=> => naming to docker.io/library/prod-env:0.1        
-(...)
-(...)
-Step 19/19 : CMD bash
- ---> Using cache
- ---> b7af7d942475
-Successfully built b7af7d942475
-Successfully tagged prod-env:0.1
+=> => naming to docker.io/library/prod-env:0.1                                                     0.0s
 
 
 $ docker image ls                                                                                                            
@@ -324,13 +317,19 @@ Donde dice `<completar>` se debe escribir, en una única línea, el comando nece
 </pre>
 <pre>
    ~/contexto$ docker build -t ejercicio5 .
-   Sending build context to Docker daemon  3.584kB
-   Step 1/2 : FROM ubuntu
-   ---> a8780b506fa4
-   Step 2/2 : ADD archivo?.cfg /data/
-   ---> 2db5ac716d3d
-   Successfully built 2db5ac716d3d
-   Successfully tagged ejercicio5:latest
+ => [internal] load build definition from Dockerfile                                               0.0s
+ => => transferring dockerfile: 74B                                                                0.0s
+ => [internal] load .dockerignore                                                                  0.0s
+ => => transferring context: 2B                                                                    0.0s
+ => [internal] load metadata for docker.io/library/ubuntu:latest                                   0.0s
+ => [internal] load build context                                                                  0.0s
+ => => transferring context: 89B                                                                   0.0s
+ => CACHED [1/2] FROM docker.io/library/ubuntu                                                     0.0s
+ => [2/2] ADD archivo?.cfg /data/                                                                  0.1s
+ => exporting to image                                                                             0.0s
+ => => exporting layers                                                                            0.0s
+ => => writing image sha256:cb607239ae6e42b7d6e0648c09f798f5d67c41c85341f4acf06bdf5628c0a608       0.0s
+ => => naming to docker.io/library/ejercicio5                                                      0.0s
 </pre>
 <pre>
    ~/contexto$ docker container run -it --rm ejercicio5
@@ -548,7 +547,7 @@ CMD bash
 6. Construir la imagen, como una nueva versión, y observar el proceso.
    Se puede ver que, todas las capas a partir del comando `ADD` son reconstruidas nuevamente, mientras que solo las primeras dos sentencias `FROM` y `LABEL` son tomadas del cache.
 ```
-~/prod-env$ docker build -t prode-env:0.3 .                                                                                                                          
+~/prod-env$ docker build -t prode-env:0.3 .
  => [internal] load build definition from Dockerfile                                     0.0s
  => => transferring dockerfile: 796B                                                     0.0s
  => [internal] load .dockerignore                                                        0.0s
@@ -603,7 +602,6 @@ Agrego una segunda línea al archivo de configuración.
 
 ```
 ~/prod-env$ docker build -t prode-env:0.4 .
-[+] Building 0.3s (21/21) FINISHED                                                       docker:default
  => [internal] load build definition from Dockerfile                                               0.0s
  => => transferring dockerfile: 796B                                                               0.0s
  => [internal] load .dockerignore                                                                  0.0s
