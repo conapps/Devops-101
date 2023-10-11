@@ -369,10 +369,10 @@ For more examples and ideas, visit:
 
 ```
 
-Como se puede apreciar en la primera línea de la salida del comando, dado que la imagen `hello-world:latest` no se encuentra localmente, el demonio de Docker la descarga desde [dockerhub](https://hub.docker.com/)
+Como se puede apreciar en las primeras líneas de la salida del comando, dado que la imagen `hello-world:latest` no se encuentra localmente, el demonio de Docker la descarga desde [dockerhub](https://hub.docker.com/)
 
-> **Nota:** cada imagen tiene una etiqueta asignada que sirve para que el creador de dicha imagen pueda identificar diferentes versiones de la misma. La etiqueta se especifica colocando `:` inmediatamente después del nombre de la imagen, seguido de la etiqueta en si misma de la siguiente forma `nombredelaimagen:etiqueta`.
-> En caso de que se omita el nombre de la etiqueta, Docker utiliza `latest` que hace referencia a la última versión disponible.
+> ℹ️ **Nota:** Cada imagen tiene una etiqueta asignada que sirve para que el creador de dicha imagen pueda identificar diferentes versiones de la misma. La etiqueta se especifica colocando `:` inmediatamente después del nombre de la imagen, de la siguiente forma: `imagen:etiqueta`.
+> En caso de que nosotros no indiquemos la etiqueta (versión) de la imagen que queremos utilizar, por defecto se utiliza la etiqueta `latest` que hace referencia a la última versión disponible de la imagen, en nuestro ejemplo: `hello-world:latest`.
 
 #### Opciones de `docker container run`
 
@@ -384,7 +384,7 @@ Estas dos opciones usualmente se utilizan en conjunto. La opción `-i` (`--inter
 
 ##### Opción `-d`
 
-La opción `-d` (`--detach`) indica que el contenedor debe de correr en segundo plano (background), como un servicio. Esto es útil cuando el contenedor que estamos creando no necesita interacción por parte del usuario, y fue creado para correr en background sirviendo requests de clientes, por ejemplo un servidor Web, DNS, DHCP, etc.
+La opción `-d` (`--detach`) indica que el contenedor debe correr en segundo plano (background), como un servicio. Esto es útil cuando el contenedor que estamos creando no necesita interacción por parte del usuario, y fue creado para correr en background sirviendo requests de clientes, por ejemplo un servidor Web, DNS, DHCP, etc.
 
 El siguiente ejemplo muestra como correr un servidor web NGINX en segundo plano:
 
@@ -400,22 +400,23 @@ Esta opción permite darle un nombre al contenedor que estamos creando. En caso 
 
 ##### Opción `--rm`
 
-Esta opción le indica a Docker que el contedor debe ser eliminado una vez que el mismo se detenga. Por defecto los contenedores permanecen en el sistema una vez apagados, pero si colocamos esta opción, el mismo se elimina cuando termina su ejecución. Esto es muy útil cuando estamos realizando pruebas y no queremos dejar múltilples contenedores en nuestro equipo host que no sean realmente necesarios.
+Esta opción le indica a Docker que el contedor debe ser eliminado una vez que el mismo se detenga. Por defecto los contenedores permanecen en el sistema una vez apagados, pero si colocamos esta opción, el mismo se elimina cuando termina su ejecución. Esto es muy útil cuando estamos realizando pruebas y no queremos dejar múltilples contenedores en nuestro equipo `host` que no sean realmente necesarios.
 
 ##### Opción `-p`
 
-La opción `-p` (`--publish`) mapea un puerto del contenedor a un puerto del equipo host. Se utiliza cuando se necesita publicar externamente el servicio que proporciona el contenedor. Si por ejemplo tenemos un contenedor corriendo un servidor web que escucha en el puerto 8080, y queremos publicar dicho servicio en el puerto 80 de la máquina `host`, agregaríamos la opción `-p 80:8080`.
-Veremos la opción `-p` en mas detalle en la sección [Networking](4_Networking.md).
+La opción `-p` (`--publish`) mapea un puerto del contenedor a un puerto del equipo host. Se utiliza cuando se necesita publicar externamente el servicio que proporciona el contenedor. Si por ejemplo tenemos un contenedor corriendo un servidor web que escucha en el puerto 8080, y queremos publicar dicho servicio en el puerto 80 de la máquina `host`, agregaríamos la opción `-p 80:8080`. 
+Veremos esta opción en detalle más adelante, en la sección [Networking](4_Networking.md).
 
 ##### Opción `-e`
 
-La opción `-e` (`--env`) permite pasarle variables de entorno al contenedor. Se utiliza cuando se necesita específicar alguna variable de entorno al momento de correr el contenedor, por ejemplo, si la aplicación (comando) lo requierre para su ejecución.
+La opción `-e` (`--env`) permite pasarle variables de entorno al contenedor. Se utiliza cuando se necesita específicar alguna variable de entorno al momento de correr el contenedor, por ejemplo, si la aplicación que estamos ejecutando en el contenedor lo requierre.
+
 
 > ℹ️  El comando `docker container run` acepta muchas opciones más, para conocerlas puede revisar la ayuda del mismo: `docker container run --help`.
 
-##### Ejercicio 1
+#### Ejercicio 1
 
-Partiendo de la imagen llamada `ubuntu` levantar un contenedor que corra una terminal de bash (`/bin/bash`) en modo interactivo, y que se autoelimine al finalizar su ejecución.
+Partiendo de la imagen `ubuntu` levantar un contenedor que corra una terminal de bash (`/bin/bash`), en modo interactivo, y que se autoelimine al finalizar su ejecución.
 
 <details>
     <summary>Solución</summary>
@@ -441,7 +442,7 @@ CONTAINER ID        IMAGE               COMMAND                  CREATED        
 7ed9736d1ec5        nginx               "docker-entrypoint.s…"   3 minutes ago       Up 3 minutes        80/tcp     friendly_bartik
 ```
 
-Como puede verse, cada contenedor tiene un ID (autogenerado) y un nombre (autogenerado o asignado con la opción `--name`).
+Como puede verse, cada contenedor tiene un ID (autogenerado) y un nombre (autogenerado, o asignado con la opción `--name`).
 Estos campos son fundamentales dado que los utilizaremos en cada vez que nos querramos referir a un contenedor para ejecutar alguna acción.
 
 Para listar todos los contenedores del sistema, los que estén corriendo y los que estén detenidos, se agrega la opción `-a` de la siguiente manera:
@@ -450,7 +451,7 @@ Para listar todos los contenedores del sistema, los que estén corriendo y los q
 $ docker container ls -a
 ```
 
-> 👉 es muy común utilizar el comando standalone  `$ docker ps` para listar los contenedores de igual forma que lo hace `docker container ls.`
+> 👉 es muy común utilizar el comando standalone  `$ docker ps` para listar los contenedores, de igual forma que lo hace `docker container ls`.
 
 ### Cómo apagar un contenedor: `docker container stop`
 
@@ -469,7 +470,7 @@ CONTAINER ID        IMAGE               COMMAND             CREATED             
 
 ```
 
-> 👉 asignar nombres nemotécnicos a los contenedores nos evita tener que listarlos previamente para obtener su ID o su nombre autogenerado para poder ejecutar comandos sobre el mismo, como por ejemplo apagarlo.
+> 👉 Asignar nombres nemotécnicos a los contenedores nos ayuda a identificarlos de mejor forma, y no depender de su ID o nombre autogenerado, para poder ejecutar acciones como apagarlos.
 
 ### Cómo encender un contenedor:  `docker container start`
 
@@ -490,7 +491,6 @@ CONTAINER ID        IMAGE               COMMAND                  CREATED        
 7ed9736d1ec5        nginx               "docker-entrypoint.s…"   4 minutes ago       Up 1 second         80/tcp   	friendly_bartik
 ```
 
-> 👉 Asignar nombres nemotécnicos a los contenedores nos ayuda a identificarlos de mejor forma, y no depender de su ID o nombre autogenerado para poder apagarlos.
 
 ### Cómo borrar un contenedor: `docker container rm`
 
@@ -511,39 +511,35 @@ De esta forma, si volvieramos a crear un contenedor previamente eliminado, a dif
 1. Creo un contenedor cuya imagen no se encuentra localmente
 
 ```bash
-$ docker container run -d -it ubuntu
-Unable to find image 'ubuntu:latest' locally
-latest: Pulling from library/ubuntu
-124c757242f8: Pull complete
-2ebc019eb4e2: Pull complete
-dac0825f7ffb: Pull complete
-82b0bb65d1bf: Pull complete
-ef3b655c7f88: Pull complete
-Digest: sha256:72f832c6184b55569be1cd9043e4a80055d55873417ea792d989441f207dd2c7
-Status: Downloaded newer image for ubuntu:latest
-d83cb28ee25cc1abda77f8f45248d3f80e4c42f93ddde9cd5338739498e9e66e
-
+$ docker container run -d -it centos
+Unable to find image 'centos:latest' locally
+latest: Pulling from library/centos
+a1d0c7532777: Pull complete 
+Digest: sha256:a27fd8080b517143cbbbab9dfb7c8571c40d67d534bbdee55bd6c473f432b177
+Status: Downloaded newer image for centos:latest
+0cf79033bec95d08933f5ac3ee67c8ac98be5b02fff851a6f5b88d946a86212c
 ```
 
 2. Listo el contenedor, luego lo apago y lo elimino
 
 ```bash
 $ docker container ls
-CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
-d83cb28ee25c        ubuntu              "/bin/bash"         3 seconds ago       Up 2 seconds                            pedantic_bell
+CONTAINER ID   IMAGE     COMMAND                  CREATED          STATUS          PORTS     NAMES
+dd1784ae723d   centos    "/bin/bash"              12 seconds ago   Up 12 seconds             epic_kilby
 
-$ docker container stop pedantic_bell
-pedantic_bell
+$ docker container stop epic_kilby
+epic_kilby
 
-$ docker container rm pedantic_bell
-pedantic_bell
+$ docker container rm epic_kilby
+epic_kilby
 ```
 
 3. Vuelvo a crear el contenedor, lo cuál esta vez es inmediato, dado que la imagen ya se encuentra presente de forma local:
 
 ```bash
-$ docker container run -d -it ubuntu
-b1332396d3fbfe3629a3c3fe5d829995e9d9fd8642bfd234b929e887fb7a81ed
+$ docker container run -d -it centos
+3bcc61e2a4a411d25dc206b72f0202e2e9915e6b152d23475050a057dacfd6dd
+
 ```
 
 4. Listo el nuevo contenedor, y vemos que el ID ahora es diferente dado que se trata de otro contenedor.
@@ -552,7 +548,7 @@ b1332396d3fbfe3629a3c3fe5d829995e9d9fd8642bfd234b929e887fb7a81ed
 
 $ docker container ls
 CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
-b1332396d3fb        ubuntu              "/bin/bash"         4 seconds ago       Up 3 seconds                            relaxed_lichterman
+b1332396d3fb        centos              "/bin/bash"         4 seconds ago       Up 3 seconds                            relaxed_lichterman
 ```
 
 ### Cómo conectarse a un contenedor corriendo en segundo plano: `docker container attach`
@@ -564,7 +560,6 @@ $ docker container run -itd --rm --name ejemplo_attach ubuntu top
 7e0da3c794cb1f64ce0ed20dce277741965dfb1ee96a2990dde9ebeb16b9667d
 
 $ docker container attach ejemplo_attach
-root@33c2899ecb9e:/#
 top - 20:40:11 up 7 days, 22:10,  0 users,  load average: 1.14, 1.02, 0.98
 Tasks:   1 total,   1 running,   0 sleeping,   0 stopped,   0 zombie
 %Cpu(s):  5.5 us,  1.8 sy,  0.0 ni, 92.4 id,  0.1 wa,  0.0 hi,  0.3 si,  0.0 st
@@ -575,7 +570,7 @@ KiB Swap: 12475900 total, 12384984 free,    90916 used.  3590716 avail Mem
     1 root      20   0   36640   3104   2676 R   0.0  0.0   0:00.03 top
 ```
 
-Una vez "dentro" del contenedor, para desconectarnos debemos ejecutar la combinación de teclas `ctrl+p`, `ctrl+q`. Esto permitirá volver a la máquina `host` y que el contendor siga corriendo en segundo plano.
+👉 Una vez dentro del contenedor, para desconectarnos debemos ejecutar la combinación de teclas `ctrl+p`, `ctrl+q`. Esto permitirá volver a la máquina `host` y que el contendor siga corriendo en segundo plano.
 
 ##### Ejercicio 2
 
@@ -638,6 +633,41 @@ $ docker container run -it -d --name ejercicio2 --rm ubuntu /bin/bash
   .
 </code></pre>
 </details>
+
+### Cómo ejecutar un comando en un contenedor corriendo en segundo plano: `docker container exec`
+
+Cuando un contenedor está corriendo (en segundo plano, o no), el mismo se encuentra ejecutando cierto servicio (comando) que fue indicado al momento de crear el contenedor. 
+
+Por ejemplo, cuando antes ejecutamos `docker container run -itd --rm --name ejemplo_attach ubuntu top`, creamos un contenedor a partir de la imagen de `ubuntu` el cuál quedó ejecutando el comando `top`. Entonces si nos conectamos al contenedor con `docker container attach`,quedamos "viendo" directamente la salida del comando `top`.
+
+Si estuvieramos corriendo una aplicación un poco mas compleja, por ej. un servidor web, una base de datos, etc., podría ser necesario en algún momento conectarnos al contenedor, para poder ver logs, revisar alguna configuración, o hacer alguna tarea específica. Para lo cual necesitaríamos acceso a la consola (un shell) del contenedor, y así poder ejecutar comandos. Pero en este caso, no sería posible hacerlo con `docker container attach` porque nos dejaría dentro del servicio que corre el contenedor, no en un shell del sistema operativo.
+
+Para esto, podemos usar el comando `docker container exec`, indicando que comando queremos ejecutar dentro del contenedor.
+
+
+```bash
+$ docker container ls
+CONTAINER ID   IMAGE     COMMAND                  CREATED       STATUS       PORTS     NAMES
+583d95313b35   ubuntu    "top"                    2 hours ago   Up 2 hours             ejemplo_attach
+
+$ docker container exec -it ejemplo_attach /bin/bash
+root@583d95313b35:/# 
+root@583d95313b35:/# ls
+bin  boot  dev  etc  home  lib  lib32  lib64  libx32  media  mnt  opt  proc  root  run  sbin  srv  sys  tmp  usr  var
+root@583d95313b35:/# exit
+exit
+
+$ docker container ls
+CONTAINER ID   IMAGE     COMMAND                  CREATED       STATUS       PORTS     NAMES
+583d95313b35   ubuntu    "top"                    2 hours ago   Up 2 hours             ejemplo_attach
+
+```
+
+👉 En este caso, podemos "salir" del contenedor simplemente con el comando `exit`, y el contenedor sigue corriendo. Esto se debe a que, al salir, estamos finalizando el comando `/bin/bash` que habíamos iniciado a mano sobre el contenedor. Pero no estamos finalizando la ejecución del servicio del contenedor (en nuestro ejemplo: `top`), lo que haría que se detuviera el contenedor.
+
+👉 Podemos ejecutar cualquier comando sobre el contenedor, siempre y cuando el mismo se encuentre instalado dentro del propio contenedor (en la imagen).
+
+💡 En general, para conectarnos a un contenedor que se encuentra corriendo utilizamos `docker conatiner exec` de esta forma, en lugar de `docker container attach`, para evitar apagarlo sin querer por salir de forma incorrecta. 
 
 ## Trabajando con las Imágenes
 
