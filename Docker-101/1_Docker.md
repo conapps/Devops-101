@@ -572,7 +572,7 @@ KiB Swap: 12475900 total, 12384984 free,    90916 used.  3590716 avail Mem
 
 👉 Una vez dentro del contenedor, para desconectarnos debemos ejecutar la combinación de teclas `ctrl+p`, `ctrl+q`. Esto permitirá volver a la máquina `host` y que el contendor siga corriendo en segundo plano.
 
-##### Ejercicio 2
+#### Ejercicio 2
 
 1. Ejecutar el siguiente comando:
 
@@ -671,33 +671,26 @@ CONTAINER ID   IMAGE     COMMAND                  CREATED       STATUS       POR
 
 ## Trabajando con las Imágenes
 
-Hasta ahora hemos trabajado directamente con los contenedores. Veamos ahora algunos comandos básicos para trabajar con las imágenes, con las cuáles trabajaremos luego en más profundidad, en la sección [Imágenes y contenedores](2_Images.md).
+Hasta ahora hemos trabajado directamente con los contenedores. Veamos algunos comandos básicos para las imágenes, con las cuáles trabajaremos luego en más profundidad, en la sección [Imágenes y contenedores](2_Images.md).
 
 ### Cómo listar las imágenes: `docker image ls`
 
+El comando `docker image ls` muestra las imágenes que se encuentran descargadas en el equipo `host`, por ejemplo:
+
 ```bash
 $ docker image ls
+REPOSITORY    TAG       IMAGE ID       CREATED        SIZE
+ubuntu        latest    3565a89d9e81   2 weeks ago    77.8MB
+nginx         latest    61395b4c586d   2 weeks ago    187MB
+hello-world   latest    9c7a54a9a43c   5 months ago   13.3kB
+centos        latest    5d0da3dc9764   2 years ago    231MB
 ```
 
-Muestra las imágenes que se encuentran descargadas en el equipo `host` local, por ejemplo:
-
-```bash
-$ docker images
-REPOSITORY                TAG                 IMAGE ID            CREATED             SIZE
-nginx                     latest              c246cd3dd41d        5 weeks ago         107.5 MB
-hello-world               latest              1815c82652c0        6 weeks ago         1.84 kB
-ismaa10/devnetcontainer   latest              d00246b829df        7 weeks ago         488.9 MB
-conatel/config-backup     latest              32dde64fc2ca        12 weeks ago        706.8 MB
-conatel/config-backup     <none>              fc4791bcc292        3 months ago        706.8 MB
-conatel/config-backup     <none>              a2186fa14acc        3 months ago        706.8 MB
-
-```
-
-### Ejercicio 3
+#### Ejercicio 3
 
 Este ejercicio tiene como objetivo experimentar de primera mano la potencia de los contenedores a la hora de simplificar la puesta en producción de un servicio. Nos referimos mas concretamente al hecho de que una vez que la aplicación fue "contenerizada" tendremos la certeza absoluta que correrá sin problemas en cualquier plataforma que soporte Docker.
 
-Concretamente, el objetivo del ejercicio es poner en producción una aplicación, llamada [Ghost](https://ghost.org/), que permite publicar Blogs al público en general. Esta plataforma ya fue "contenerizada" y su imagen está diponible públicamente en [Dockerhub](https://hub.docker.com/_/ghost), bajo el nombre `ghost`.
+El objetivo del ejercicio es poner en producción una aplicación, llamada [Ghost](https://ghost.org/), que permite publicar Blogs al público en general. Esta plataforma ya fue "contenerizada" y su imagen está diponible públicamente en Dockerhub, bajo el nombre `ghost`, puede verla [aquí](https://hub.docker.com/_/ghost).
 
 Los requerimientos para el ejercicio son:
 
@@ -707,7 +700,7 @@ Los requerimientos para el ejercicio son:
 - El contenedor debe correr en segundo plano.
 - El servicio debe quedar publicado al exterior en el puerto `80` del host, teniendo en cuenta que el puerto original de la aplicación `ghost` es `2368`.
 - Para que el contenedor se ejecute correctamente, se le debe pasar la variable de entorno `NODE_ENV` con el valor `development`, de lo contrario dará error y el servicio no inciará.
-- El comando a utilizar es el que viene por defecto con la imagen: `ghost`
+- El comando a ejecutar por el contenedor, es el que viene por defecto con la imagen: `ghost`
 
 **Verificación:**
 
@@ -766,35 +759,54 @@ $ docker container ls
 CONTAINER ID   IMAGE     COMMAND                  CREATED          STATUS         PORTS                                   NAMES
 d9b61c41f133   ghost     "docker-entrypoint.s…"   10 seconds ago   Up 9 seconds   0.0.0.0:80->2368/tcp, :::80->2368/tcp   ejercicio3
 
-$ docker stop ejercicio3 
+$ docker container stop ejercicio3 
 ejercicio3
 
 $ docker image ls
-REPOSITORY    TAG       IMAGE ID       CREATED         SIZE
-ubuntu        latest    a8780b506fa4   4 days ago      77.8MB
-ghost         latest    e7697f79d3c0   5 days ago      566MB
-nginx         latest    76c69feac34e   13 days ago     142MB
-hello-world   latest    feb5d9fea6a5   13 months ago   13.3kB
+REPOSITORY    TAG       IMAGE ID       CREATED        SIZE
+ghost         latest    329c500c77c4   15 hours ago   666MB
+ubuntu        latest    3565a89d9e81   2 weeks ago    77.8MB
+nginx         latest    61395b4c586d   2 weeks ago    187MB
+hello-world   latest    9c7a54a9a43c   5 months ago   13.3kB
+centos        latest    5d0da3dc9764   2 years ago    231MB
+
 
 $ docker image rm ghost
-Error response from daemon: conflict: unable to remove repository reference "ghost" (must force) - container d9b61c41f133 is using its referenced image e7697f79d3c0
+Error response from daemon: conflict: unable to remove repository reference "ghost" (must force) - container 61e60bf08997 is using its referenced image 329c500c77c4
 
 ```
 
-Si queremos borrar una imagen lo correcto es primero eliminar el contenedor que la está usando (o los contenedores), y luego si, eliminar la imagen.
+Si queremos borrar una imagen, lo correcto es primero eliminar el contenedor que la está usando (o los contenedores), y luego si, eliminar la imagen.
 
 ```bash
 $ docker container rm ejercicio3
 ejercicio3
 
 $ docker image rm ghost
-docker image rm ghost --force
 Untagged: ghost:latest
-Untagged: ghost@sha256:53784cc1681df843801e6344e1fdbebc80fd1f6c36fa776036bd499a033ab0b5
-Deleted: sha256:e7697f79d3c051185ca7827974d25bcc51ee207ab6cda4115159dc52a3b93fe4
+Untagged: ghost@sha256:799e8b994969ebd783561009890b6e35f5bfb38f3f26cdbdf7bfcb11d6ec3734
+Deleted: sha256:329c500c77c4f2cb51537768607ac8b253a9caf85786db909a657ea921393af6
+Deleted: sha256:84743351084b6f07a86245a6597d1656700d862737bcf3fb225a66fdd284e3f9
+Deleted: sha256:ef581e7823a57365092e0aefa0585510f422a3bbe957fc751e2e6a48019ee15c
+Deleted: sha256:044e65091299743b14b830d23d83bce894354522d6bdbf6bf11d7a216f2f1820
+Deleted: sha256:2e8c1ddffa76a7676f6c408469489cccd52d68cc9c29575f3778b40d698b7aa7
+Deleted: sha256:98ac7dfe1444a59bbc8d1974b81c02d55530ad9d6ad91c8c1f48ca1a25d0208a
+Deleted: sha256:68260b31db0d7f3b372cc5ebfd10aa9ddb7bd514ca89be624f5da0a5d2ad97d2
+Deleted: sha256:4aefa76288dcfb68ca3495f9e47c81b7a091b590ddfa718a13a8f1a1c1987955
+Deleted: sha256:4210e9ebbafc080b972eeb654d0b230285da97c0b5a0e97f109b57261e96ac97
+Deleted: sha256:10764c37bcbc8dff79bd134e34e5e8d9c6a3e0d482ca2e6e0ff978485ada5c3c
+
+
+$ docker image ls
+REPOSITORY    TAG       IMAGE ID       CREATED        SIZE
+ubuntu        latest    3565a89d9e81   2 weeks ago    77.8MB
+nginx         latest    61395b4c586d   2 weeks ago    187MB
+hello-world   latest    9c7a54a9a43c   5 months ago   13.3kB
+centos        latest    5d0da3dc9764   2 years ago    231MB
+
 
 ```
 
-> 👉 En caso de que se quiera forzar el borrado de la imagen, aunque existan contenedores asociados a la misma, se puede agregar la opción `--force`.
+> 👉 En caso de que se quiera forzar el borrado de la imagen, aunque existan contenedores asociados a la misma, se puede agregar la opción `--force`. Se debe tener en cuenta que en este caso los contenedores no se borran. En general esta opción no es recomendada.
 
 [Siguiente--&gt;](2_Images.md)
