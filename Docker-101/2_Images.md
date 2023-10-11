@@ -190,24 +190,24 @@ $ mkdir prod-env
 $ cd prod-env
 
 ~/prod-env $ nano Dockerfile
-  <copiar el contenido del Dockerfily y grabar el archivo>
+  <copiar el contenido del Dockerfile y grabar el archivo>
 
 ~/prod-env$ docker build -t prod-env:0.1 .
-=> [internal] load build definition from Dockerfile                                                                   0.1s
- => => transferring dockerfile: 761B                                                                                  0.0s
- => [internal] load .dockerignore                                                                                     0.0s
- => => transferring context: 2B                                                                                       0.0s
- => [internal] load metadata for docker.io/library/ubuntu:latest                                                      0.0s
- => [ 1/15] FROM docker.io/library/ubuntu                                                                             0.0s
- => [ 2/15] RUN apt-get update                                                                                        3.6s
- => [ 3/15] RUN apt-get install -y python3                                                                            6.3s
+=> [internal] load build definition from Dockerfile                       0.1s
+=> => transferring dockerfile: 761B                                                                0.0s
+=> [internal] load .dockerignore                                                                   0.0s
+=> => transferring context: 2B                                                                     0.0s
+=> [internal] load metadata for docker.io/library/ubuntu:latest                                    0.0s
+=> [ 1/15] FROM docker.io/library/ubuntu                                                           0.0s
+=> [ 2/15] RUN apt-get update                                                                      3.6s
+=> [ 3/15] RUN apt-get install -y python3                                                          6.3s
 (...)
- => [14/15] RUN apt-get install -y openssh-server                                                                     19.5s 
- => [15/15] RUN apt-get install -y nginx                                                                               4.4s 
- => exporting to image                                                                                                20.2s 
- => => exporting layers                                                                                               20.2s 
- => => writing image sha256:42362d3296822774a9a8c2d4d1a2021e5da4786ce6d7d643b23d5eca313617af                          0.0s 
- => => naming to docker.io/library/prod-env:0.1        
+=> [14/15] RUN apt-get install -y openssh-server                                                  19.5s 
+=> [15/15] RUN apt-get install -y nginx                                                            4.4s 
+=> exporting to image                                                                             20.2s 
+=> => exporting layers                                                                            20.2s
+=> => writing image sha256:42362d3296822774a9a8c2d4d1a2021e5da4786ce6d7d643b23d5eca313617af        0.0s
+=> => naming to docker.io/library/prod-env:0.1        
 (...)
 (...)
 Step 19/19 : CMD bash
