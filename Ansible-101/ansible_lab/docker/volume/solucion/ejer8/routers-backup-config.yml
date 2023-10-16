@@ -1,0 +1,9 @@
+- name: Respaldo de configuraciones IOS
+  hosts: routers
+  gather_facts: no
+  tasks:
+    - name: Comandos para respaldar las configuraciones
+      ios_config:
+        backup: yes
+        backup_options:
+          dir_path: ./respaldo-routers

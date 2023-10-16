@@ -1,0 +1,22 @@
+# ---
+# routers-configure-interfaces.yml
+#
+# Configura interfaces de los routers Cisco IOS
+# 
+# OBS: se debe definir una lista con los valores a configurar para el router:
+# interfaces:
+#   - interface: GigabitEthernet2
+#     ip_address: '10.X.201.254'
+#     netmask: '255.255.255.0'
+#     description: Configurado desde el nuevo rol
+# ...
+- name: Get routers facts
+  hosts: hub
+  gather_facts: no
+  tasks:
+    - ios_facts:
+      register: result 
+
+    - debug:
+        var: result.ansible_facts
+
