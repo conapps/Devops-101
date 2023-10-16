@@ -873,7 +873,7 @@ Luego, usamos el módulo `debug:` pero ahora con la opción `var:`, que desplieg
 
 
 ```
-# ansible-playbook segundo-playbook.yml
+# ansible-playbook segundo_playbook.yml
 
 PLAY [Ejemplo de como utilizar la opción 'register'] *******************************************************************************************
 
