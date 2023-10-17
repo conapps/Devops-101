@@ -731,7 +731,7 @@ Si filtramos la busqueda con: <code>mysql install role ubuntu</code>, vemos que 
 
 Por esto y que `geerlingguy` es muy conocido en la comunidad y cuyos roles hemos usado nosotros frecuentemente, es que  vamos a usar el role [geerlingguy.mysql](https://galaxy.ansible.com/geerlingguy/mysql)
 
-**Pero por motivos de compatibilidad no se puede instalar la última versión del role, si no que vamos a instalar una aterior.**
+**Pero por motivos de compatibilidad no se puede instalar la última versión del role, si no que vamos a instalar una anterior.**
 
 Para esto es necesario crear el archivo `requirements.yml`
 
