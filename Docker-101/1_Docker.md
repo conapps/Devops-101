@@ -125,8 +125,6 @@ Luego se utiliza el comando `ssh` para acceder al servidor, sustituyendo la X po
 $ ssh -i devops101-labs.pem ubuntu@servernumX.labs.conatest.click
 ```
 
-
-
 #### Como acceder desde Windows
 
 Desde Windows, se puede acceder de dos formas.
@@ -171,8 +169,6 @@ Host servernumX.labs.conatest.click
 - El archivo `config` se encuentra ubicado en el directorio  `~/.ssh/config` en linux, o en `~\.ssh\config` en Windows (si no existe, debe crearlo).
 - Si utiliza windows puede utilizar el editor notepad para editar el archivo, pero asegurese de guardarlo sin la extensión .txt que notepad le agrega por defecto.
 
-
-
 Una vez modificado el `ssh config file` podrá conectarse al POD, tanto desde Linux como desde Windows Power Shell, simplemente haciendo:
 
 ```bash
@@ -180,7 +176,6 @@ $ ssh servernumX.labs.conatest.click
 ```
 
 Esto además resultará sumamente útil para conectarse por medio de Visual Studio Code al `POD`, como veremos a continuación.
-
 
 #### Opcional: configuración de Visual Studio Code
 
@@ -211,8 +206,6 @@ De lo contrario, si no realizó el paso anterior, podemos configurar lo necesari
 - esto modificará la configuración del `ssh config` file agregando el acceso al pod, y ya podrá conectarse con el botón `Connect`
 
 👉 recuerde sustituir la `X` por su número de `POD` asignado y colocar la ubicación correcta donde descargó el certificado `.pem`
-
-
 
 Al conectarse al servidor remoto por primera vez, es posible que le solicite cuál es la plataforma a la cual conectarse, indique `Linux.`
 
@@ -404,13 +397,12 @@ Esta opción le indica a Docker que el contedor debe ser eliminado una vez que e
 
 ##### Opción `-p`
 
-La opción `-p` (`--publish`) mapea un puerto del contenedor a un puerto del equipo host. Se utiliza cuando se necesita publicar externamente el servicio que proporciona el contenedor. Si por ejemplo tenemos un contenedor corriendo un servidor web que escucha en el puerto 8080, y queremos publicar dicho servicio en el puerto 80 de la máquina `host`, agregaríamos la opción `-p 80:8080`. 
+La opción `-p` (`--publish`) mapea un puerto del contenedor a un puerto del equipo host. Se utiliza cuando se necesita publicar externamente el servicio que proporciona el contenedor. Si por ejemplo tenemos un contenedor corriendo un servidor web que escucha en el puerto 8080, y queremos publicar dicho servicio en el puerto 80 de la máquina `host`, agregaríamos la opción `-p 80:8080`.
 Veremos esta opción en detalle más adelante, en la sección [Networking](4_Networking.md).
 
 ##### Opción `-e`
 
 La opción `-e` (`--env`) permite pasarle variables de entorno al contenedor. Se utiliza cuando se necesita específicar alguna variable de entorno al momento de correr el contenedor, por ejemplo, si la aplicación que estamos ejecutando en el contenedor lo requierre.
-
 
 > ℹ️  El comando `docker container run` acepta muchas opciones más, para conocerlas puede revisar la ayuda del mismo: `docker container run --help`.
 
@@ -490,7 +482,6 @@ $ docker container ls
 CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS          NAMES
 7ed9736d1ec5        nginx               "docker-entrypoint.s…"   4 minutes ago       Up 1 second         80/tcp   	friendly_bartik
 ```
-
 
 ### Cómo borrar un contenedor: `docker container rm`
 
@@ -636,14 +627,13 @@ $ docker container run -it -d --name ejercicio2 --rm ubuntu /bin/bash
 
 ### Cómo ejecutar un comando en un contenedor corriendo en segundo plano: `docker container exec`
 
-Cuando un contenedor está corriendo (en segundo plano, o no), el mismo se encuentra ejecutando cierto servicio (comando) que fue indicado al momento de crear el contenedor. 
+Cuando un contenedor está corriendo (en segundo plano, o no), el mismo se encuentra ejecutando cierto servicio (comando) que fue indicado al momento de crear el contenedor.
 
 Por ejemplo, cuando antes ejecutamos `docker container run -itd --rm --name ejemplo_attach ubuntu top`, creamos un contenedor a partir de la imagen de `ubuntu` el cuál quedó ejecutando el comando `top`. Entonces si nos conectamos al contenedor con `docker container attach`,quedamos "viendo" directamente la salida del comando `top`.
 
 Si estuvieramos corriendo una aplicación un poco mas compleja, por ej. un servidor web, una base de datos, etc., podría ser necesario en algún momento conectarnos al contenedor, para poder ver logs, revisar alguna configuración, o hacer alguna tarea específica. Para lo cual necesitaríamos acceso a la consola (un shell) del contenedor, y así poder ejecutar comandos. Pero en este caso, no sería posible hacerlo con `docker container attach` porque nos dejaría dentro del servicio que corre el contenedor, no en un shell del sistema operativo.
 
 Para esto, podemos usar el comando `docker container exec`, indicando que comando queremos ejecutar dentro del contenedor.
-
 
 ```bash
 $ docker container ls
@@ -667,7 +657,7 @@ CONTAINER ID   IMAGE     COMMAND                  CREATED       STATUS       POR
 
 👉 Podemos ejecutar cualquier comando sobre el contenedor, siempre y cuando el mismo se encuentre instalado dentro del propio contenedor (en la imagen).
 
-💡 En general, para conectarnos a un contenedor que se encuentra corriendo utilizamos `docker conatiner exec` de esta forma, en lugar de `docker container attach`, para evitar apagarlo sin querer por salir de forma incorrecta. 
+💡 En general, para conectarnos a un contenedor que se encuentra corriendo utilizamos `docker conatiner exec` de esta forma, en lugar de `docker container attach`, para evitar apagarlo sin querer por salir de forma incorrecta.
 
 ## Trabajando con las Imágenes
 
@@ -723,7 +713,7 @@ La opción para pasarle una variable de entorno al contenedor es <code>-e VARIAB
     <summary>Solución</summary>
 <pre>
 <code>
-$ docker container run -it -d --name ejercicio3 -p 80:2368 -e NODE_ENV=development ghost
+$ docker container run -d --name ejercicio3 -p 80:2368 -e NODE_ENV=development ghost
 Unable to find image 'ghost:latest' locally
 latest: Pulling from library/ghost
 e9995326b091: Already exists 
