@@ -397,6 +397,7 @@ $ docker network inspect red2
 
 👉 no olvide verificar nuevamente si funciona la resolución por DNS con los nombres de los contenedores.
 
+
 ```bash
 $ docker container exec -it c1 bash
 
@@ -444,7 +445,7 @@ PING 172.19.0.2 (172.19.0.2) 56(84) bytes of data.
 6 packets transmitted, 0 received, 100% packet loss, time 5114ms
 ```
 
-
+> Tip: La resolucion dns, en la red por defecto "bridge" esta deshabilitada, debido a un tema de compatibilidad hacia atras de versiones anteriores de docker, que no incluian la resolucion dns en la red bridge.
 
 ### Publicación de puertos
 
