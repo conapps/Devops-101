@@ -172,9 +172,6 @@ RUN pip3 install --upgrade pip
 RUN pip3 install requests
 RUN pip3 install mysql-connector==2.2.9
 RUN pip3 install django==1.10
-RUN echo "mysql-server mysql-server/root_password password CursoDocker2022." | debconf-set-selections
-RUN echo "mysql-server mysql-server/root_password_again password CursoDocker2022." | debconf-set-selections
-RUN apt-get install -y mysql-server
 RUN apt-get install -y tftpd-hpa
 ENV TZ=America/Montevideo
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
