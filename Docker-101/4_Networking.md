@@ -118,7 +118,7 @@ $ docker container run -d -it --name c3 --rm netubuntu bash
 3. Veamos como obtener la información de la red y los contenedores conectados a la misma:
 
 ```yaml
-$ docker network inspect ls
+$ docker network ls
 NETWORK ID     NAME      DRIVER    SCOPE
 f6d4e39a796f   bridge    bridge    local
 7bd0adc49b83   host      host      local
