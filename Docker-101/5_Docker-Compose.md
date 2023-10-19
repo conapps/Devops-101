@@ -215,7 +215,7 @@ En la sección **services:** es donde definimos todos los servicios que vamos a 
 
 **build:** si vamos a construir nuestra imagen, aquí indicamos el directorio donde se encuentra el archivo *Dockerfile* que se utilizará para crear la misma (camino relativo).
 
-**image:** si vamos a utilizar una imagen existente, aquí le indicamos cual es esa imagen. En caso de no encontrarla localmente la itentará bajar del repositorio de github.
+**image:** si vamos a utilizar una imagen existente, aquí le indicamos cual es esa imagen. En caso de no encontrarla localmente la itentará bajar del repositorio de Dockerhub.
 
 **command:** comando que le pasamos a la imagen para que corra al momento de ejecutar el contenedor.
 
