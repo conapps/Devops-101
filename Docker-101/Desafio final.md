@@ -2,8 +2,6 @@
 
 ![alt desafio_final](desafio_final.png)
 
-
-
 ## Objetivo
 
 El objetivo del desafío final es elaborar la topología que se muestra en la figura mas arriba utilizando `docker-compose` y ponerla a correr en el servidor utilizado para los laboratorios.
@@ -18,9 +16,21 @@ Si todo sale bien, además de recibirse el mensaje en el grupo de `Webex Teams` 
 
 ![alt desafio_final](desafio_success.png)
 
+## Requerimientos:
+
+### Usuario Webex Team
+
+Deben registarse como usuario en [Cisco Webex Teams](https://teams.webex.com/signin), con la misma dirección de correo que utilziaron para el curso.
+
+Serán agregados a un grupo de teams (room), cuyo nombre indicará el instructor durante el curso. Prueben que pueden enviar mensaje a dicho grupo, desde la página de Cisco Webex Teams.
+
+Ese mismo grupo es el que deben utilizar en el desafío final, en la variable de entorno `ROOM`.
 
 
+### API Webex Teams
 
+Para obtener la api se debe ingresar con un usuario registrado de Cisco a:
 
+https://developer.webex.com/docs/getting-started
 
-
+![Token de API](webexapi.png)
