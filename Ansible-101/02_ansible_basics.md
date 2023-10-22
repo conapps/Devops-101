@@ -460,7 +460,7 @@ A medida que los `playbooks` crecen en complejidad, es necesario crear una estru
 Existen ejemplos de mejores prácticas para dicha estructura, como el que se  puede encontrar [aquí](
 https://docs.ansible.com/ansible/latest/user_guide/sample_setup.html#sample-directory-layout).
 
-En nuestro **lab**, comenzarmos por colocar los `playbooks` en el directorio `~/ansible`, e iremos creando las estructuras de directos necesarias a medida que avancemos. A medida que vayamos avanzando lo iremos indicando.
+En nuestro **lab**, comenzarmos por colocar los `playbooks` en el directorio `~/ansible`, e iremos creando las estructuras de directorios necesarias a medida que avancemos (lo iremos indicando).
 
 ``` bash
 # estructura del lab en ~/ansible
