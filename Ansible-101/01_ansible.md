@@ -68,11 +68,13 @@ Además, de ser necesario se pueden escribir módulos nuevos, para utilizar cont
 
 **IaaC**
 
-Hay dos enfoques posibles para abordar la Infrastructure as Code, un enfoque declarativo o uno imperativo. 
+Hay dos enfoques posibles para abordar la Infrastructure as Code, un enfoque declarativo o uno imperativo.
+
 En el enfoque declarativo, definimos el estado deseado de los sistemas (recursos y propiedades), y la herramienta que utilicemos se encarga de aplicarlo, lo que nos abstrae de los detalles de implementación. En el enfoque imperativo, indicamos cuales son los comandos específicos que debemos ejecutar para lograr el despliegue y configuración deseada, los cuales se deben ejecutar en el orden correcto. La mayoría de las herramientas de IaaC pueden operar con ambos enfoques (aunque suelen priorizar alguno de ellos), y la forma en que la utilicemos dependerá muchas veces de las particularidades de nuestro entorno.
 
-Bajo el paradigma de IaaC deberíamos dejar de pensar en **como** queremos hacer algo, y pasar a pensar en **que** es lo que queremos que suceda (enfoque declarativo).
-Una de las ventajas que nos brinda el trabajar bajo este paradigma es que podemos aprovechar las herramientas de control de versiones (por ej. Git) y metodologías de programación que se han desarrollado con éxito en los últimos años. Podemos contar con múltiples versiones de configuración de nuestros sistemas, mantener un historial de todos los cambios realizados, y volver atrás en el tiempo luego de ejecutar un cambio si fuese necesario.
+Bajo el paradigma de IaaC deberíamos dejar de pensar en **como** queremos hacer algo, y pasar a pensar en **que** es lo que queremos que suceda.
+
+Una de las ventajas que nos brinda el trabajar bajo este paradigma es que podemos **aprovechar las herramientas de control de versiones** (como [Git](https://git-scm.com/)), y metodologías de programación que se han desarrollado con éxito en los últimos años. Podemos contar con múltiples versiones de configuración de nuestros sistemas, mantener un historial de todos los cambios realizados, y volver atrás en el tiempo luego de ejecutar un cambio si fuese necesario.
 
 ```yaml
 Usuario:
