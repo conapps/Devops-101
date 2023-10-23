@@ -67,6 +67,7 @@ De a poco Ansible fue superando en popularidad a otras herramientas similares, l
 Además, de ser necesario se pueden escribir módulos nuevos, para utilizar contra sistemas que no estén en la lista. Aunque primero vale la pena investigar si no existe un módulo ya desarrollado, en el repositorio de Ansible o en la comunidad que realice la tarea requerida (veremos `ansible-galaxy` más adelante que ayuda a encontrar estos módulos desarrollados por la comunidad).
 
 **IaaC**
+
 Hay dos enfoques posibles para abordar la Infrastructure as Code, un enfoque declarativo o uno imperativo. 
 En el enfoque declarativo, definimos el estado deseado de los sistemas (recursos y propiedades), y la herramienta que utilicemos se encarga de aplicarlo, lo que nos abstrae de los detalles de implementación. En el enfoque imperativo, indicamos cuales son los comandos específicos que debemos ejecutar para lograr el despliegue y configuración deseada, los cuales se deben ejecutar en el orden correcto. La mayoría de las herramientas de IaaC pueden operar con ambos enfoques (aunque suelen priorizar alguno de ellos), y la forma en que la utilicemos dependerá muchas veces de las particularidades de nuestro entorno.
 
