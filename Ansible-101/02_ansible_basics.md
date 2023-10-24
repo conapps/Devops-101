@@ -215,16 +215,19 @@ ansible -i hosts.yml all -m setup
 ```
 
 
-## Aplicaciones
+## Herramientas de Ansible
 
-Por ahora solo hemos utilizado la aplicación `ansible`, sin embargo, no es la única disponible, tenemos otras como:
+Por ahora solo hemos utilizado el comando `ansible`, sin embargo, no es la única herramienta disponible.
+Existen varios otros [comandos ansible](https://docs.ansible.com/ansible/latest/command_guide/command_line_tools.html) que podemos utilizar, tales como:
 
-- `ansible` [link](https://docs.ansible.com/ansible/latest/cli/ansible.html)
+- [ansible](https://docs.ansible.com/ansible/latest/cli/ansible.html)
   - Herramienta simple para correr una tarea en múltiples hosts remotos.
-- `ansible-config`. [link](https://docs.ansible.com/ansible/latest/cli/ansible-config.html)
+
+- [ansible-config](https://docs.ansible.com/ansible/latest/cli/ansible-config.html)
   - Herramienta para configurar Ansible.
   - `ansible-config list`
-- `ansible-console`. [link](https://docs.ansible.com/ansible/latest/cli/ansible-console.html)
+
+- [ansible-console](https://docs.ansible.com/ansible/latest/cli/ansible-console.html)
   - Un REPL para ejecutar múltiples tareas sobre un grupo de hosts.
   - `ansible-console -i hosts.yml all`
   ```
@@ -254,32 +257,40 @@ Por ahora solo hemos utilizado la aplicación `ansible`, sin embargo, no es la �
           "changed": false,
           "ping": "pong"
   ```
-- `ansible-doc`.
+
+- [ansible-doc](https://docs.ansible.com/ansible/latest/cli/ansible-doc.html)
   - Muestra información sobre los módulos de ansible instalados.
   - `ansible-doc ping`
   - `ansible-doc ping -s`
   - `ansible-doc -t connection -l`
   - `ansible-doc -t connection -l local`
-- `ansible-galaxy`. [link](https://docs.ansible.com/ansible/latest/cli/ansible-galaxy.html)
+
+- [ansible-galaxy](https://docs.ansible.com/ansible/latest/cli/ansible-galaxy.html)
   - Maneja roles compartidos en repositorios de terceros. Por defecto buscara los repositorios en [https://galaxy.ansible.com](https://galaxy.ansible.com).
   - Es posible instalar roles, collecciones e inicializar roles vacios
   - `ansible-galaxy install community.docker`
   - `ansible-galaxy init --offline cisco_config_nat`
-- `ansible-inventory`. [link](https://docs.ansible.com/ansible/latest/cli/ansible-inventory.html)
+
+- [ansible-inventory](https://docs.ansible.com/ansible/latest/cli/ansible-inventory.html)
   - Util para validar el inventario con el que estamos trabajando.
   - `ansible-inventory -i hosts.yml --list`
   - `ansible-inventory -i hosts.yml --graph`
-- `ansible-playbook`.
+  - `ansible-inventory -i hosts.yml --host <nombre-del-host>`
+
+- [ansible-playbook](https://docs.ansible.com/ansible/latest/cli/ansible-playbook.html)
   - Aplicación capaz de ejecutar Ansible `playbooks`.
+
 - [ansible-pull](https://docs.ansible.com/ansible/latest/cli/ansible-pull.html)
   - Invierte el proceso de ejecución de `push` a `pull`.
-- `ansible-vault`. [link](https://docs.ansible.com/ansible/latest/cli/ansible-vault.html)
-  - Aplicación capaz de encriptar cualquier estructura de datos a utilizar por ansible.
+
+- [ansible-vault](https://docs.ansible.com/ansible/latest/cli/ansible-vault.html)
+  - Aplicación capaz de encriptar cualquier estructura de datos a utilizar por ansible. Se utiliza para encriptar datos sensibles, como contraseñas, y que las mismas no queden referenciadas en *texto plano* en el código.
   - `ansible-vault create secret.yml`
   - `ansible-vault edit secret.yml`
   - `ansible-vault encrypt sin_encriptar.yml`
   - `ansible-vault encrypt_string '123456' --vault-password-file /home/jguida/.ssh/vault`
-Durante el resto del curso nos enfocaremos en `ansible-playbook` y mencionaremos alguna de las otras aplicaciones cuando corresponda, por ej.`ansible-vault`.
+
+Durante el resto del curso nos enfocaremos principalmente en `ansible-playbook`, pero también trabajaremos con otras aplicaciones como `ansible-vault` y `ansible-galaxy`.
 
 ## Ansible playbooks
 Ref: [Intro to playbooks](https://docs.ansible.com/ansible/latest/user_guide/playbooks_intro.html)
