@@ -271,7 +271,7 @@ Por ahora solo hemos utilizado la aplicación `ansible`, sin embargo, no es la �
   - `ansible-inventory -i hosts.yml --graph`
 - `ansible-playbook`.
   - Aplicación capaz de ejecutar Ansible `playbooks`.
-- `ansible-pull`.
+- [ansible-pull](https://docs.ansible.com/ansible/latest/cli/ansible-pull.html)
   - Invierte el proceso de ejecución de `push` a `pull`.
 - `ansible-vault`. [link](https://docs.ansible.com/ansible/latest/cli/ansible-vault.html)
   - Aplicación capaz de encriptar cualquier estructura de datos a utilizar por ansible.
