@@ -229,9 +229,8 @@ Existen varios otros [comandos ansible](https://docs.ansible.com/ansible/latest/
 
 - [ansible-console](https://docs.ansible.com/ansible/latest/cli/ansible-console.html)
   - Un REPL para ejecutar múltiples tareas sobre un grupo de hosts.
-  - `ansible-console -i hosts.yml all`
   ```
-   [15] → ansible-console -i hosts.yml all
+   $ ansible-console -i hosts.yml all
       Welcome to the ansible console.
       Type help or ? to list commands.
 
@@ -281,10 +280,12 @@ Existen varios otros [comandos ansible](https://docs.ansible.com/ansible/latest/
   - Aplicación capaz de ejecutar Ansible `playbooks`.
 
 - [ansible-pull](https://docs.ansible.com/ansible/latest/cli/ansible-pull.html)
-  - Invierte el proceso de ejecución de `push` a `pull`.
+  - Invierte el proceso de ejecución de `push` a `pull`, dejando de utilizar un `ansible controller` centralizado.
+  - Permite a los `hosts` aplicarse configuraciones a sí mismos, descargando los playbooks en forma directa desde un repositorio central (Git), y ejecutándolos localmente.
 
 - [ansible-vault](https://docs.ansible.com/ansible/latest/cli/ansible-vault.html)
-  - Aplicación capaz de encriptar cualquier estructura de datos a utilizar por ansible. Se utiliza para encriptar datos sensibles, como contraseñas, y que las mismas no queden referenciadas en *texto plano* en el código.
+  - Aplicación capaz de encriptar cualquier estructura de datos a utilizar por ansible.
+  - Se utiliza para encriptar datos sensibles, como contraseñas, y que las mismas no queden referenciadas en *texto plano* en el código.
   - `ansible-vault create secret.yml`
   - `ansible-vault edit secret.yml`
   - `ansible-vault encrypt sin_encriptar.yml`
