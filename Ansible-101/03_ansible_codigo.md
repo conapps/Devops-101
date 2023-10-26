@@ -727,7 +727,7 @@ Para usar el rol en nuestra `playbook` alcanza con invocarlo como cualquier otro
 Tomando como base el [Ejercicio #4](#ejercicio-4) instale MySQL en el grupo de hosts `db`, utilizando un rol existente de [Ansibe Galaxy](https://galaxy.ansible.com/).
 
 Cuando se realiza una busqueda en el sitio web, la cantidad de roles disponibles en Ansible Galaxy es enorme.
-Si filtramos la busqueda con: <code>mysql install role ubuntu</code>, vemos que geerlingguy es la primera entrada debido a la gran cantidad de descargas.
+Si filtramos la busqueda con la etiqueta: <code>mysql</code>, y ordenamos por descargas, vemos que geerlingguy es la primera entrada debido a la gran cantidad de descargas.
 
 Por esto y que `geerlingguy` es muy conocido en la comunidad y cuyos roles hemos usado nosotros frecuentemente, es que  vamos a usar el role [geerlingguy.mysql](https://galaxy.ansible.com/ui/standalone/roles/geerlingguy/mysql/)
 
