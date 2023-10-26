@@ -703,7 +703,7 @@ Utilizando el comando `ansible-galaxy` podemos:
 
 Aunque es posible buscar por roles desde la consola utilizando `ansible-galaxy`, es mucho más sencillo cuando realizamos la búsqueda a través de la web.
 
-Por ejemplo el siguiente rol instala docker en Linux: https://galaxy.ansible.com/geerlingguy/docker
+Por ejemplo el siguiente rol instala docker en Linux: https://galaxy.ansible.com/ui/standalone/roles/geerlingguy/docker/
 Dentro del sitio podemos ver los detalles de como instalarlo. Y en `Read Me`, en general se indica información detallada del rol, como usarlo, si requiere definir variables, si tiene dependencias, etc.
 
 Una vez que encontremos el rol, lo podemos instalar a través del comando `ansible-galaxy install`:
@@ -729,7 +729,7 @@ Tomando como base el [Ejercicio #4](#ejercicio-4) instale MySQL en el grupo de h
 Cuando se realiza una busqueda en el sitio web, la cantidad de roles disponibles en Ansible Galaxy es enorme.
 Si filtramos la busqueda con: <code>mysql install role ubuntu</code>, vemos que geerlingguy es la primera entrada debido a la gran cantidad de descargas.
 
-Por esto y que `geerlingguy` es muy conocido en la comunidad y cuyos roles hemos usado nosotros frecuentemente, es que  vamos a usar el role [geerlingguy.mysql](https://galaxy.ansible.com/geerlingguy/mysql)
+Por esto y que `geerlingguy` es muy conocido en la comunidad y cuyos roles hemos usado nosotros frecuentemente, es que  vamos a usar el role [geerlingguy.mysql](https://galaxy.ansible.com/ui/standalone/roles/geerlingguy/mysql/)
 
 **Pero por motivos de compatibilidad no se puede instalar la última versión del role, si no que vamos a instalar una anterior.**
 
