@@ -21,7 +21,7 @@ Cada Pod cuenta con 3 routers configurados Hub & Spoke. El `hub` se encuentra en
 
 Si necesitamos **conectarnos al router `hub`** lo hacemos desde el equipo `controller`, donde ya tenemos preconfigurado el ambiente para conectarnos por nombre (la X corresponde al número de POD asignado):
 ```bash
-$ ssh hub-X.labs.conatest.click
+$ ssh 10.X.254.254
 
 ip-10-X-254-254#
 ```
@@ -41,12 +41,12 @@ Compiled Sun 05-Sep-21 00:37 by mcpre
 
 También podemos **conectarnos a los routers `spoke1` y `spoke2`** desde `controller`, de forma similar (la X corresponde al número de POD asignado):
 ```bash
-$ ssh spoke1-X.labs.conatest.click
+$ ssh 10.X.201.253
 
 ip-10-X-201-253#
 ```
 ```bash
-$ ssh spoke2-X.labs.conatest.click
+$ ssh 10.X.202.253
 
 ip-10-X-202-253#
 ```
